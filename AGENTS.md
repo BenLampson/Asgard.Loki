@@ -1,5 +1,7 @@
 # Asgard.Loki 开发约定
 
+- 只能在功能分支上修改代码与文档，分支以 `ben/` 开头，通过 PR 合并到 `main`。不得直接推送或强推 `main`，不得关闭保护或跳过双平台 CI。
+- NuGet 使用 `publish.yml` 与 `nuget` 环境进行 OIDC 可信发布。默认模式 `verify` 仅验证登录；正式发布必须明确选择 `publish` 并确认版本，不得把配置验证当作发布授权。
 - 架构权威文档是 [docs/architecture.md](docs/architecture.md)。调整公共接口、依赖方向或供应商分包时同步更新该文档，并使用 UML 说明。
 - 这是纯 .NET 类库。不得引入 Web 项目、Controller、监听端口或应用业务功能。
 - 统一抽象只包含模块机制。入口包只引用统一抽象；能力包之间不互相引用。

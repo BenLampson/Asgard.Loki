@@ -20,6 +20,8 @@ Capability packages must remain independent. Put a provider in `Asgard.Loki.{Cap
 
 ## Pull requests
 
+Create a feature branch before editing code or documentation; maintainer branches use the `ben/` prefix. Submit a pull request into `main`. Direct pushes, force pushes and deletion of `main` are blocked, including for administrators. Both Windows and Linux CI checks must pass, the branch must be up to date, and review conversations must be resolved. No additional reviewer approval is currently required. Merge with squash.
+
 Keep changes focused and explain the public behavior and validation. Never include secrets, private prompts or generated user media in examples, issues, tests or logs. Follow [SECURITY.md](SECURITY.md) when reporting a vulnerability.
 
 Contributions are provided under this repository's [Apache-2.0 license](LICENSE).
