@@ -6,6 +6,8 @@ using Xunit;
 namespace Asgard.Loki.LLM.Volcengine.IntegrationTests;
 
 /// <summary>五次真实请求验证公共入口、最终参数、输出结构和响应链续接。</summary>
+[Trait("Suite", "Smoke")]
+[Collection("Volcengine live")]
 public sealed class VolcengineLiveTests(ITestOutputHelper output)
 {
     /// <summary>供 xUnit 动态跳过使用，不将离线执行报告成真实联调成功。</summary>

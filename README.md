@@ -206,7 +206,9 @@ Local protocol tests are not live-provider verification. Real account permission
 
 The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
 
-Live smoke verification with `doubao-seed-evolving` on the standard Ark API has passed for Chat JSON/streaming, Responses JSON/streaming and cross-client response continuation: five actual HTTPS requests. This verifies the covered scenarios for the configured account/model, not every parameter or other providers. Session storage in this fixture uses `MemoryDistributedCache`; Redis cross-process verification remains separate.
+The offline suite passes 219 tests, including 93 per LLM provider. Standard-Ark live verification with `doubao-seed-evolving` covers Chat/Responses JSON and SSE, tool calls and result return, strict JSON Schema, thinking on/off, actual output truncation, response continuation and opaque reasoning replay. **Both strict `tool_choice=none` cases currently fail:** upstream emits a function call although the final request correctly contains `none`. These failures remain visible. See the [protocol and parameter verification record](docs/llm-parameter-verification.md) for evidence and limits; OpenAI has offline coverage only.
+
+Use `pwsh -File eng/Test-Live.ps1 -Suite Parameters` or `-Suite All` for expanded checks, or add `-Scenario Structured`, `Tools`, `ToolChoice`, `Reasoning`, `Limits` or `Replay` to select a group. Default smoke makes five calls; Parameters plans 26 and All 31, with a hard limit of 32 per process. The expanded suites exit nonzero while the known tool-choice failure persists. The fixture uses `MemoryDistributedCache`; Redis cross-process verification remains separate.
 
 ## Contributing and releases
 

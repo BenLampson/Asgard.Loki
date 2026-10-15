@@ -11,6 +11,8 @@ Create `VolcengineLlmProvider(IHttpClientFactory)` and register it in `LlmOption
 
 Uses the named client `Asgard.Loki.LLM.Volcengine`; disable generation POST retries/hedging in that client's configuration. Raw tools, reasoning, caching parameters, IDs, usage, errors and unknown events are retained. Response streams require an actual terminal event.
 
-No native Responses WebSocket, protocol-to-protocol conversion or hard-coded model catalog. Unit tests use local HTTP stubs. The separate Volcengine LLM integration suite has passed five real standard-Ark requests with `doubao-seed-evolving`: Chat JSON/SSE, Responses JSON/SSE and response continuation after rebuilding LokiClient. Other accounts, models and parameter combinations require their own verification; the fixture does not establish Redis cross-process correctness.
+No native Responses WebSocket, protocol-to-protocol conversion or hard-coded model catalog. The provider has 93 offline tests using local HTTP stubs. Separate real standard-Ark checks with `doubao-seed-evolving` passed Chat/Responses JSON/SSE, strict JSON Schema, tool calls with result return, thinking on/off, output limits, response continuation and opaque reasoning replay.
+
+**Known live failure:** both protocols can return a function call despite a correctly transmitted `tool_choice="none"`; the strict integration tests remain failing. Loki preserves this upstream result and does not execute tools. Ark Responses currently reports token-limit truncation as `incomplete_details.reason="length"`, retained unchanged. See the [verification record](https://github.com/BenLampson/Asgard.Loki/blob/dev/docs/llm-parameter-verification.md) for the precise cases and limitations. Other accounts/models and Redis cross-process correctness require separate verification.
 
 Depends only on the LLM capability and standard Microsoft HTTP components. See the repository root README for a complete initialization example.

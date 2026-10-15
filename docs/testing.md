@@ -17,7 +17,7 @@ Both model variables can contain `doubao-seed-evolving`; they remain independent
 
 The current fixture fixes its standard Ark API root to `https://ark.cn-beijing.volces.com/api/v3/`. This is the standard API, not the Coding Plan endpoint. `LiveLlmContext` accepts an explicit address override in test code, and production callers can configure `LlmTarget.BaseAddress`. There is no additional address environment variable. See the [official address/authentication documentation](https://docs.volcengine.com/docs/ark/base-url-and-authentication?lang=en).
 
-Prompts, parameter cases, public aliases, Session IDs, request limits and timeouts belong in test code. The smoke scenario allows at most five generation requests per invocation, does not retry, uses a 90-second deadline per complete call including stream consumption, and caps output at 128 tokens per request. These values are deliberately not environment variables. Add credentials and environment contracts for other providers/capabilities only when they are actually introduced.
+Prompts, parameter cases, public aliases, Session IDs, request limits and timeouts belong in test code. There are no automatic retries. Each complete call, including stream consumption, has a 90-second deadline. Smoke caps output at 128 tokens; parameter cases normally use 512, reasoning uses 1024, and limit cases use one. Each scenario context permits at most five requests; a process-wide atomic budget rejects requests beyond 32 before sending. These values are deliberately not environment variables. Add credentials and environment contracts for other providers/capabilities only when they are actually introduced.
 
 ## Offline and live execution
 
@@ -29,11 +29,24 @@ Run explicitly from the repository root:
 
 ```powershell
 pwsh -File eng/Test-Live.ps1
+pwsh -File eng/Test-Live.ps1 -Suite Parameters
+pwsh -File eng/Test-Live.ps1 -Suite All
+pwsh -File eng/Test-Live.ps1 -Suite Parameters -Scenario Structured
 ```
 
 The script reads these four process environment variables. On Windows it fills missing values from current-user environment variables, which also supports terminals started before user settings were changed. Existing process values take precedence, including an explicit `ASGARD_LOKI_TEST_LIVE=false`. It does not read or execute `.env` files.
 
-With live testing disabled, xUnit reports the test as skipped. With it enabled, all three required target settings are validated before any network request; a missing setting fails and reports only the variable name. HTTP or protocol failures fail the test and must never be described as successful connectivity.
+With live testing disabled, xUnit reports selected cases as skipped. With it enabled, all three required target settings are validated before any network request; a missing setting fails and reports only the variable name. HTTP or protocol failures fail the test and must never be described as successful connectivity. The script builds with warnings as errors and runs cases sequentially using the native xUnit runner.
+
+| Suite | Cases | Planned maximum requests |
+| --- | --- | --- |
+| `Smoke` (default) | 1 | 5 |
+| `Parameters` | 21 | 26 |
+| `All` | 22 | 31 |
+
+`-Scenario` selects one parameter group and requires `-Suite Parameters` or `-Suite All`. Groups are `Structured` (4 requests), `Tools` (8), `ToolChoice` (2), `Reasoning` (8), `Limits` (2), and `Replay` (2). Selecting a group runs only that group. Repeated manual invocations each get a new process budget; opt-in does not impose an account-wide spending cap.
+
+The [parameter verification record](llm-parameter-verification.md) documents native protocol shapes, test evidence and limitations. Current `doubao-seed-evolving` behavior fails both strict `tool_choice=none` cases despite correct final payloads. Accordingly `ToolChoice`, `Parameters` and `All` exit nonzero while that issue remains; the assertions are deliberately retained.
 
 ## Five-request smoke scenario
 

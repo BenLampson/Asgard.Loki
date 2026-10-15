@@ -1,5 +1,9 @@
 param(
-    [string]$Configuration = 'Release'
+    [string]$Configuration = 'Release',
+    [ValidateSet('Smoke', 'Parameters', 'All')]
+    [string]$Suite = 'Smoke',
+    [ValidateSet('Structured', 'Tools', 'ToolChoice', 'Reasoning', 'Limits', 'Replay')]
+    [string]$Scenario
 )
 
 $ErrorActionPreference = 'Stop'
@@ -19,5 +23,12 @@ if ($IsWindows) {
     }
 }
 $project = Join-Path $repositoryRoot 'tests/Asgard.Loki.LLM.Volcengine.IntegrationTests/Asgard.Loki.LLM.Volcengine.IntegrationTests.csproj'
-& dotnet test --project $project -c $Configuration -p:UseSharedCompilation=false
+& dotnet build $project -c $Configuration -p:UseSharedCompilation=false -warnaserror
+if ($LASTEXITCODE -ne 0) { throw "Live test build failed (exit $LASTEXITCODE)." }
+$runnerArguments = @('-parallelMode', 'none', '-showLiveOutput')
+if ($Scenario) {
+    if ($Suite -eq 'Smoke') { throw '-Scenario requires -Suite Parameters or -Suite All.' }
+    $runnerArguments += @('-trait', "Scenario=$Scenario")
+} elseif ($Suite -ne 'All') { $runnerArguments += @('-trait', "Suite=$Suite") }
+& dotnet run --project $project -c $Configuration --no-build -- @runnerArguments
 if ($LASTEXITCODE -ne 0) { throw "Live test failed (exit $LASTEXITCODE)." }

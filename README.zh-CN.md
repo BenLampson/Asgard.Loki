@@ -26,4 +26,6 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 当前火山 LLM 真实联调只需要四个环境变量：启用开关、API Key、Chat 模型、Responses 模型，详见 [测试配置规范](docs/testing.md) 和 [.env.example](.env.example)。运行 `pwsh -File eng/Test-Live.ps1`；Windows 下支持读取本机当前用户变量，不自动加载 `.env`。
 
-标准方舟 API 的 `doubao-seed-evolving` 已通过五次真实请求验证：Chat 普通/流式、Responses 普通/流式及重建客户端后的响应链续接。该结果仅覆盖这组用例；其他供应商、其他能力和 Redis 跨进程联调仍需单独验证。普通单元测试和自动 CI 保持离线。
+离线测试 219 项通过，两种 LLM 供应商各 93 项。标准方舟 API 的 `doubao-seed-evolving` 已实测通过普通/流式调用、工具调用与结果回填、严格 JSON Schema、推理开关、输出截断、响应链续接及加密推理项原样回传。**两种协议的 `tool_choice=none` 严格测试仍失败**：最终请求参数正确，但上游仍返回工具调用。失败断言保留，详见 [参数与协议验证记录](docs/llm-parameter-verification.md)。OpenAI 当前只有离线验证。
+
+运行 `pwsh -File eng/Test-Live.ps1 -Suite Parameters` 或 `-Suite All` 执行扩展联调；增加 `-Scenario Structured`、`Tools`、`ToolChoice`、`Reasoning`、`Limits` 或 `Replay` 可单独选组。默认冒烟五次请求，参数套件计划 26 次，全部计划 31 次，单进程硬上限 32 次。上述工具禁用问题存在期间，参数及全部套件会返回失败。其他模型、供应商、能力和 Redis 跨进程联调仍需单独验证；普通单元测试和自动 CI 保持离线。

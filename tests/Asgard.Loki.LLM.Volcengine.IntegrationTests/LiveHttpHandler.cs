@@ -20,6 +20,7 @@ internal sealed class LiveHttpHandler(string apiKey) : DelegatingHandler(new Htt
         Assert.True(request.Headers.Authorization?.Parameter == apiKey, "The configured test credential was not used.");
         using var document = JsonDocument.Parse(await request.Content!.ReadAsStringAsync(cancellationToken));
         var body = document.RootElement.Clone();
+        LiveRequestBudget.Charge();
         var response = await base.SendAsync(request, cancellationToken);
         Requests.Add((request.RequestUri.AbsolutePath, body, (int)response.StatusCode));
         return response;
