@@ -1,0 +1,112 @@
+name: Publish NuGet
+run-name: NuGet ${{ inputs.mode }} by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Verify login only, or publish all packages
+        type: choice
+        options: [verify, publish]
+        default: verify
+        required: true
+      version:
+        description: For publish, enter the exact version in src/Directory.Build.props
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nuget-publishing
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Check release inputs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Require main and confirm version
+        id: version
+        shell: pwsh
+        env:
+          RELEASE_MODE: ${{ inputs.mode }}
+          EXPECTED_VERSION: ${{ inputs.version }}
+        run: |
+          if ($env:GITHUB_REF -ne 'refs/heads/main') { throw 'Run this workflow from main.' }
+          [xml]$properties = Get-Content src/Directory.Build.props -Raw
+          $version = [string]$properties.Project.PropertyGroup.Version
+          if ($env:RELEASE_MODE -eq 'publish' -and $env:EXPECTED_VERSION -cne $version) {
+            throw "Publication requires the exact package version: $version"
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+  validate:
+    name: Release validation
+    needs: preflight
+    uses: ./.github/workflows/ci.yml
+  release:
+    name: NuGet authentication and publication
+    needs: [preflight, validate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: nuget
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.x
+      - name: Download packages from this run
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nuget-packages
+          path: artifacts/packages
+      - name: Verify packages and release version
+        run: |
+          ./eng/Verify-PackageBoundaries.ps1
+          ./eng/Publish-Packages.ps1 -Version $env:RELEASE_VERSION
+      - name: Check NuGet username
+        env:
+          NUGET_USER: ${{ vars.NUGET_USER }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:NUGET_USER)) { throw 'Set NUGET_USER in the nuget environment.' }
+      - name: Authenticate to NuGet with OIDC
+        id: login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish packages
+        if: inputs.mode == 'publish'
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: ./eng/Publish-Packages.ps1 -Version $env:RELEASE_VERSION -Publish
+      - name: Summarize
+        env:
+          RELEASE_MODE: ${{ inputs.mode }}
+        run: |
+          "## NuGet trusted publishing" >> $env:GITHUB_STEP_SUMMARY
+          "OIDC login succeeded for version $env:RELEASE_VERSION." >> $env:GITHUB_STEP_SUMMARY
+          if ($env:RELEASE_MODE -eq 'publish') {
+            'The ten package push commands completed. NuGet indexing and symbol validation may finish later.' >> $env:GITHUB_STEP_SUMMARY
+          } else {
+            'Verification only: no packages were published.' >> $env:GITHUB_STEP_SUMMARY
+          }
