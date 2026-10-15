@@ -24,4 +24,6 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题请参阅 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
 
-真实联调统一使用 `ASGARD_LOKI_TEST_` 环境变量，按供应商、能力与可选目标配置组分别设置，详见 [测试配置规范](docs/testing.md) 和 [.env.example](.env.example)。普通单元测试无需配置密钥；真实联调入口及 `.env` 自动加载尚未实现，模板用于后续用例遵循同一约定。
+当前火山 LLM 真实联调只需要四个环境变量：启用开关、API Key、Chat 模型、Responses 模型，详见 [测试配置规范](docs/testing.md) 和 [.env.example](.env.example)。运行 `pwsh -File eng/Test-Live.ps1`；Windows 下支持读取本机当前用户变量，不自动加载 `.env`。
+
+标准方舟 API 的 `doubao-seed-evolving` 已通过五次真实请求验证：Chat 普通/流式、Responses 普通/流式及重建客户端后的响应链续接。该结果仅覆盖这组用例；其他供应商、其他能力和 Redis 跨进程联调仍需单独验证。普通单元测试和自动 CI 保持离线。

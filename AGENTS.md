@@ -11,8 +11,9 @@
 - Session 缓存依赖 `IDistributedCache`。首次绑定的并发协调必须使用显式协调契约，不得声称普通 Get/Set 是跨实例原子操作。
 - 单元测试使用 xUnit v3。缓存测试使用 `MemoryDistributedCache`，HTTP 测试使用替代处理器；不得依赖真实 Key、网络和 Redis。
 - 真实供应商联调单独执行，不可把本地协议测试描述成真实模型验证。不得读取或修改其他项目来获取凭据。
-- 真实联调的环境变量遵守 [docs/testing.md](docs/testing.md)，模板见 `.env.example`。统一使用 `ASGARD_LOKI_TEST_` 前缀，按供应商、能力和可选目标配置组区分；`ASGARD_LOKI_TEST_LIVE=true` 仅用于显式选定的联调入口，普通单元测试和自动 CI 始终离线。
-- 联调入口必须先验证选中场景的全部配置，缺项仅报告变量名；不隐式借用其他能力的 Key，不自动重试。遵守请求次数与超时限制，不记录凭据。真实联调入口尚未实现，不得把环境变量模板描述成已能运行的联调工具。
+- 真实联调遵守 [docs/testing.md](docs/testing.md)，模板见 `.env.example`。当前只使用四个变量：`ASGARD_LOKI_TEST_LIVE`、`ASGARD_LOKI_TEST_VOLCENGINE_LLM_API_KEY`、`ASGARD_LOKI_TEST_VOLCENGINE_LLM_CHAT_MODEL`、`ASGARD_LOKI_TEST_VOLCENGINE_LLM_RESPONSES_MODEL`。地址、请求参数、次数与超时放在测试代码，不增加环境变量；其他能力取得测试凭据后再扩展。
+- `eng/Test-Live.ps1` 是独立的真实联调入口，只有 `ASGARD_LOKI_TEST_LIVE=true` 才调用上游；普通单元测试和自动 CI 始终离线。联调项目命名为 `.IntegrationTests.csproj`，不加入普通解决方案，不匹配普通测试项目发现规则。
+- 联调入口必须先验证选中场景的全部配置，缺项仅报告变量名；不隐式借用其他能力的 Key，不自动重试。每次运行最多五次请求，每次完整调用限时 90 秒，不记录凭据。真实结果保存到忽略的 `artifacts/live/`，必须区分成功、跳过与失败；不能把参数已发送当成效果已证实。
 - 使用 .NET 10 / C# 14、UTF-8、CRLF、文件级命名空间、中文 XML 注释；每个文件一个类型，不超过 400 行。
 - 不提交密钥。供应商生成请求不自动重试或切换目标。借用的缓存、协调器和 HTTP 工厂不由能力模块释放。
 - README 以英文为主，中文使用 `README.zh-CN.md` 辅助。每个供应商包必须记录支持矩阵、初始化方式、限制和真实联调状态。

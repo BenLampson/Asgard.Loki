@@ -11,6 +11,6 @@ Create `VolcengineLlmProvider(IHttpClientFactory)` and register it in `LlmOption
 
 Uses the named client `Asgard.Loki.LLM.Volcengine`; disable generation POST retries/hedging in that client's configuration. Raw tools, reasoning, caching parameters, IDs, usage, errors and unknown events are retained. Response streams require an actual terminal event.
 
-No native Responses WebSocket, protocol-to-protocol conversion or hard-coded model catalog. Tests use local HTTP stubs; live Ark model permissions must be verified separately.
+No native Responses WebSocket, protocol-to-protocol conversion or hard-coded model catalog. Unit tests use local HTTP stubs. The separate Volcengine LLM integration suite has passed five real standard-Ark requests with `doubao-seed-evolving`: Chat JSON/SSE, Responses JSON/SSE and response continuation after rebuilding LokiClient. Other accounts, models and parameter combinations require their own verification; the fixture does not establish Redis cross-process correctness.
 
 Depends only on the LLM capability and standard Microsoft HTTP components. See the repository root README for a complete initialization example.

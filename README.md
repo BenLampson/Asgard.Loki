@@ -204,7 +204,9 @@ Tests use xUnit v3 / Microsoft.Testing.Platform, `MemoryDistributedCache`, an in
 
 Local protocol tests are not live-provider verification. Real account permissions, model availability and Redis cross-process coordination require separate integration checks. No real provider calls or package publication are performed by the unit tests.
 
-The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define `ASGARD_LOKI_TEST_` environment names for future live integration fixtures. The current unit tests need no credentials and do not read these settings; live fixtures and automatic `.env` loading are not implemented.
+The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
+
+Live smoke verification with `doubao-seed-evolving` on the standard Ark API has passed for Chat JSON/streaming, Responses JSON/streaming and cross-client response continuation: five actual HTTPS requests. This verifies the covered scenarios for the configured account/model, not every parameter or other providers. Session storage in this fixture uses `MemoryDistributedCache`; Redis cross-process verification remains separate.
 
 ## Contributing and releases
 
