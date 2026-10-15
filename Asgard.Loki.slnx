@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Asgard.Loki.Abstractions/Asgard.Loki.Abstractions.csproj" />
+    <Project Path="src/Asgard.Loki/Asgard.Loki.csproj" />
+    <Project Path="src/Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
+    <Project Path="src/Asgard.Loki.Audio/Asgard.Loki.Audio.csproj" />
+    <Project Path="src/Asgard.Loki.Video/Asgard.Loki.Video.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.Volcengine/Asgard.Loki.LLM.Volcengine.csproj" />
+    <Project Path="src/Asgard.Loki.Audio.Volcengine/Asgard.Loki.Audio.Volcengine.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
+    <Project Path="src/Asgard.Loki.Image/Asgard.Loki.Image.csproj" />
+    <Project Path="src/Asgard.Loki.Image.OpenAI/Asgard.Loki.Image.OpenAI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Asgard.Loki.Tests/Asgard.Loki.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Tests/Asgard.Loki.LLM.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Audio.Tests/Asgard.Loki.Audio.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.Tests/Asgard.Loki.Video.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Volcengine.Tests/Asgard.Loki.LLM.Volcengine.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Audio.Volcengine.Tests/Asgard.Loki.Audio.Volcengine.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.OpenAI.Tests/Asgard.Loki.LLM.OpenAI.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Image.OpenAI.Tests/Asgard.Loki.Image.OpenAI.Tests.csproj" />
+  </Folder>
+</Solution>

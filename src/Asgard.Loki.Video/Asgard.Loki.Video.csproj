@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Reserved video capability scaffold for Asgard.Loki.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Abstractions/Asgard.Loki.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

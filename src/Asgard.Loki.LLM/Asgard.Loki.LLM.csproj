@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>LLM contracts, model routing and shared Session bindings for Asgard.Loki.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.13" />
+    <ProjectReference Include="../Asgard.Loki.Abstractions/Asgard.Loki.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

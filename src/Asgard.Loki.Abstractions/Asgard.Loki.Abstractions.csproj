@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Generic client and module extension contracts for Asgard.Loki.</Description>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Audio.Volcengine/Asgard.Loki.Audio.Volcengine.csproj" />
+    <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
+    <Compile Include="../Shared/StubHttpClientFactory.cs" Link="StubHttpClientFactory.cs" />
+    <Compile Include="../Shared/FragmentedReadStream.cs" Link="FragmentedReadStream.cs" />
+  </ItemGroup>
+</Project>

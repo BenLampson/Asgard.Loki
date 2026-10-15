@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Audio/Asgard.Loki.Audio.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,32 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vs/
+.vscode/
+.agents/
+.codex/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Dotnet
+**/bin/
+**/obj/
+*.rsuser
+TestResults/
+artifacts/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pfx
+*.snk
+secrets.json
+
+# Tool caches
+.turbo/
+.cache/
+logs/

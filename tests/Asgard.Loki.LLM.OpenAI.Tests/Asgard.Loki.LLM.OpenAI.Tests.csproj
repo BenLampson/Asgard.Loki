@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
+    <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
+    <Compile Include="../Shared/StubHttpClientFactory.cs" Link="StubHttpClientFactory.cs" />
+    <Compile Include="../Shared/FragmentedReadStream.cs" Link="FragmentedReadStream.cs" />
+    <Compile Include="../Shared/HttpLlmProviderTests.cs" Link="HttpLlmProviderTests.cs" />
+  </ItemGroup>
+</Project>
