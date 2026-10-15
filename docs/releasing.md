@@ -11,10 +11,24 @@ All ten packages share the version in `src/Directory.Build.props`. The package I
 
 ## Publish
 
-Publishing is a separate maintainer action. This repository does not automatically publish on a push or tag. No NuGet credentials are stored in the repository or required for CI.
+Publishing is a separate maintainer action. This repository does not automatically publish on a push or tag. The manually dispatched [Publish NuGet workflow](../.github/workflows/publish.yml) defaults to `verify`, which authenticates without uploading packages. No long-lived NuGet API key is stored in the repository or required for CI.
 
-Before the first publication, the owner must configure a nuget.org account, reserve or verify access to the package IDs, and provide an appropriately scoped publishing credential or configure nuget.org trusted publishing. That account-side setup is not supplied by GitHub repository access.
+## Trusted publishing configuration
 
-Publish the validated CI packages as one version set. Publish abstractions first, then the entry and capability packages, then providers. Publish symbol packages alongside their matching packages. NuGet versions are immutable: fix a bad release with a new version and unlist an affected version when appropriate.
+The nuget.org policy must use repository owner `BenLampson`, repository `Asgard.Loki`, workflow filename `publish.yml`, and environment `nuget`. Select package owner `BenLampson`, allow new packages and new versions, and use glob `Asgard.Loki*` to include the entry package and extensions. The policy must be saved on nuget.org; GitHub settings cannot create it.
+
+GitHub environment `nuget` accepts deployments only from branch `main` and defines the non-secret variable `NUGET_USER=BenLampson`. The job has `id-token: write` and uses the pinned official `NuGet/login` action to obtain a temporary API key. The repository allows that specific action revision in addition to GitHub-owned actions. When Dependabot updates it, update the repository action allowlist to match before merging.
+
+Reference: [NuGet trusted publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing).
+
+## Verify or publish
+
+1. Open **Actions → Publish NuGet → Run workflow** and select branch `main`.
+2. Keep mode `verify` to run Windows/Linux validation, verify all ten package and symbol identities, and test OIDC login. This does not publish packages.
+3. To release, explicitly select mode `publish` and enter the exact version from `src/Directory.Build.props`. A mismatch fails before login or publication.
+
+The workflow reuses CI at the selected commit and downloads packages from that same run. Both platforms must pass before the environment job can authenticate. `eng/Publish-Packages.ps1` verifies the complete ten-package set and publishes abstractions first, then the entry and capabilities, then providers. `dotnet nuget push` also uploads the matching symbol packages. Existing versions are skipped to allow recovery from a partially completed publication; versions are immutable, so changed contents require a new version. NuGet indexing and symbol validation may complete after uploads finish.
+
+OIDC verification confirms identity and policy matching; it does not reserve package names or establish ownership of an existing package ID. Before the first publication, confirm the IDs are available or owned by the selected NuGet account. A successful local protocol test does not establish live-provider compatibility.
 
 Create an annotated `v{version}` tag and GitHub release only after deciding to release. Include package versions, supported capabilities, compatibility changes, validation and limitations. Do not describe a scaffold or local protocol test as a live upstream implementation.

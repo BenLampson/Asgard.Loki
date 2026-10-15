@@ -40,7 +40,7 @@ Native Responses WebSocket transport, image edits/variations, speech recognition
 
 The entry package depends only on abstractions. Capability packages do not reference each other. Each provider depends only on its capability and standard Microsoft components. Installing OpenAI images does not install LLM or audio providers.
 
-These are the package identities produced by this checkout. CI builds and verifies all ten packages and attaches them to the workflow run; it does not publish to a registry. Local preview packages can be created with `dotnet pack`.
+These are the package identities produced by this checkout. CI builds and verifies all ten packages and attaches them to the workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
 
 ## Initialize LLM
 
