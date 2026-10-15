@@ -204,6 +204,8 @@ Tests use xUnit v3 / Microsoft.Testing.Platform, `MemoryDistributedCache`, an in
 
 Local protocol tests are not live-provider verification. Real account permissions, model availability and Redis cross-process coordination require separate integration checks. No real provider calls or package publication are performed by the unit tests.
 
+The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define `ASGARD_LOKI_TEST_` environment names for future live integration fixtures. The current unit tests need no credentials and do not read these settings; live fixtures and automatic `.env` loading are not implemented.
+
 ## Contributing and releases
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SECURITY.md](SECURITY.md) for reporting vulnerabilities, and [docs/releasing.md](docs/releasing.md) for the package release checklist. CI runs on Windows and Linux, and Dependabot checks NuGet dependencies and GitHub Actions weekly.

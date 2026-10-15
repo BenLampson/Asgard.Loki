@@ -185,6 +185,7 @@ HTTP failures preserve status and original body in capability-specific exception
 - Test whole-target identity, concurrent first binding, cross-client continuation, configuration changes, foreign response IDs and unknown data preservation.
 - Verify audio byte order/completion and OpenAI image payloads, partial/final events, URLs and Base64 results.
 - Live provider calls, account permissions and Redis cross-process coordination are separate integration checks; never describe stubbed protocol tests as live verification.
+- The live-test environment contract is defined in [testing.md](testing.md), with the repository-root `.env.example` as a blank template. Variables use the `ASGARD_LOKI_TEST_` prefix and separate provider/capability/target identities. Credentials alone never enable network calls. Ordinary unit tests remain offline; future live fixtures require their own explicit entry point and opt-in. These variables are test-fixture configuration, not a library initialization API.
 - Pack each library independently. Inspect actual nuspec dependencies to prevent capability/provider leakage. Building or packing does not authorize publishing.
 - English README is primary; translations are auxiliary. Every provider README states supported APIs, initialization, limitations and verification status. Unsupported features must remain explicit.
 

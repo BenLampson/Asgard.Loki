@@ -16,11 +16,13 @@ pwsh -File eng/Verify-PackageBoundaries.ps1
 
 The test script requires tests in every test project except the reserved Video scaffold. Tests use xUnit v3, substitute HTTP handlers and `MemoryDistributedCache`. Unit tests must not require network, Redis or credentials. Report live-provider and Redis integration results separately.
 
+Live test environment names and fixture requirements are defined in [docs/testing.md](docs/testing.md), with a blank [.env.example](.env.example) template. Live fixtures are not implemented yet; ordinary tests do not consume these variables or load `.env` files. Future fixtures must require explicit opt-in, use separate integration entry points, validate only selected providers, and enforce the configured request budget and timeout.
+
 Capability packages must remain independent. Put a provider in `Asgard.Loki.{Capability}.{Provider}` and reference only its own capability. Update architecture UML, package documentation and the support matrix with behavior changes. Preserve complete upstream data and LLM Session target binding. Do not add automatic generation retries or failover.
 
 ## Pull requests
 
-Create a feature branch before editing code or documentation; maintainer branches use the `ben/` prefix. Submit a pull request into `main`. Direct pushes, force pushes and deletion of `main` are blocked, including for administrators. Both Windows and Linux CI checks must pass, the branch must be up to date, and review conversations must be resolved. No additional reviewer approval is currently required. Merge with squash.
+Use `dev` for day-to-day development; additional short-lived maintainer branches use the `ben/` prefix. Submit a pull request into `main`. Direct pushes, force pushes and deletion of `main` are blocked, including for administrators. Both Windows and Linux CI checks must pass, the branch must be up to date, and review conversations must be resolved. No additional reviewer approval is currently required. Merge with squash.
 
 Keep changes focused and explain the public behavior and validation. Never include secrets, private prompts or generated user media in examples, issues, tests or logs. Follow [SECURITY.md](SECURITY.md) when reporting a vulnerability.
 
