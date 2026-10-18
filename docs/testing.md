@@ -62,6 +62,18 @@ A delegating HTTP handler validates authentication without displaying credential
 
 The fixture saves a sanitized report under ignored `artifacts/live/volcengine-llm/`: pass/fail, completed scenarios, model names, response IDs, paths, HTTP status codes and bounded upstream error codes. It does not save credentials, authorization headers or full response bodies. A report can contain partial evidence from a failed attempt; require `passed: true` before reporting the full scenario as successful.
 
+## Native Claude/Gemini and explicit conversion (offline)
+
+`Asgard.Loki.LLM.Anthropic.Tests` and `Asgard.Loki.LLM.Google.Tests` use the real provider implementations through public SDK clients with substitute HTTP handlers, fragmented UTF-8 SSE, `MemoryDistributedCache` and test-only coordination. They check native message/part preservation (including signatures and encrypted/future data), final URI/authentication/model mapping, caller immutability, zero/false/null/empty values, reserved-field rejection, HTTP errors, cancellation, Session continuation and missing terminal events.
+
+`Asgard.Loki.LLM.Conversion.Tests` owns hand-maintained native request, response and stream fixtures for Chat Completions, Responses, Claude Messages and Gemini. All twelve directions have independent assertions on destination field paths, tool definitions/call IDs/results, inline images, output limits and base usage. Streaming assertions check actual text before completion, complete tool arguments, final payloads, item indices, event sequencing and termination. Twenty-four public SDK pipeline cases use real native HTTP adapters to cover both modes in every direction. Additional cases cover diagnostics, native identity copies, explicit loss policy, schema/effort mapping, orphan tools, truncation and invalidation of changed conversion configuration.
+
+These suites use no live credentials, network or Redis. Passing them establishes the tested conversion contracts, not complete losslessness or upstream model acceptance. No Claude, Gemini or converted live request is authorized by ordinary tests. The current live environment-variable contract remains the four Volcengine variables above.
+
+The conversion suite includes adversarial regression fixtures for known-but-unconsumed nested fields, malformed usage, repeated/orphan tool results, sequential same-name Gemini calls and generated/explicit ID collisions. Full valid Responses transcripts exercise every done event; corrupted copies check item IDs, indices, sequence numbers, text/argument snapshots, closed-block mutation and duplicate terminal rejection. Claude lifecycle omissions, pending-tool interleaving, incomplete item status and usage-only tails have separate assertions. Native Gemini tests also reject duplicate finishes and data after error/block terminals while preserving a valid usage-only tail. The current offline totals are 179 conversion tests, 22 Claude tests and 36 Gemini tests, with 456 tests across the solution.
+
+When a local sandbox prevents Microsoft.Testing.Platform's named-pipe connection, run the built xUnit executable directly, for example `dotnet tests/Asgard.Loki.LLM.Conversion.Tests/bin/Release/net10.0/Asgard.Loki.LLM.Conversion.Tests.dll -noLogo -parallelMode none`. CI continues using the ordinary `eng/Test.ps1` discovery and Windows/Linux matrix.
+
 ## Local setup and future expansion
 
 Use [.env.example](../.env.example) as a naming checklist. It contains only the four names and no credentials. A local `.env` is ignored by Git but is not loaded automatically. Prefer process or current-user environment variables; never execute a dotenv file as shell code or dump the complete environment for diagnostics.

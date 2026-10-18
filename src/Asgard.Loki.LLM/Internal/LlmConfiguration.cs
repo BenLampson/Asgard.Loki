@@ -32,6 +32,7 @@ internal sealed class LlmConfiguration
         {
             ArgumentNullException.ThrowIfNull(provider);
             ArgumentException.ThrowIfNullOrWhiteSpace(provider.Id);
+            ArgumentException.ThrowIfNullOrWhiteSpace(provider.BindingIdentity);
             if (!Providers.TryAdd(provider.Id, provider)) throw new ArgumentException("供应商实例标识重复。", nameof(options));
         }
 
@@ -68,7 +69,8 @@ internal sealed class LlmConfiguration
     /// <summary>对目标及凭据创建稳定指纹，缓存中不保存密钥本身。</summary>
     internal string Fingerprint(LlmTarget target)
         => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
-            JsonSerializer.Serialize(target) + "\n" + Credentials[target.CredentialId].ApiKey)));
+            JsonSerializer.Serialize(target) + "\n" + Credentials[target.CredentialId].ApiKey
+            + "\n" + Providers[target.ProviderId].BindingIdentity)));
 
     /// <summary>校验目标引用及已声明的协议能力。</summary>
     private LlmTarget ValidateTarget(LlmTarget target)
@@ -85,10 +87,13 @@ internal sealed class LlmConfiguration
             throw new ArgumentException("上游基础地址必须是没有凭据、查询参数和片段的 HTTP(S) 绝对地址。");
         if (!Providers.TryGetValue(target.ProviderId, out var provider)) throw new ArgumentException("目标引用了未注册的供应商。");
         if (!Credentials.ContainsKey(target.CredentialId)) throw new ArgumentException("目标引用了不存在的凭据。");
-        if (target.Protocols == LlmProtocol.None || (target.Protocols & ~(LlmProtocol.ChatCompletions | LlmProtocol.Responses)) != 0)
+        if (target.Protocols == LlmProtocol.None || (target.Protocols & ~(LlmProtocol.ChatCompletions | LlmProtocol.Responses
+            | LlmProtocol.ClaudeMessages | LlmProtocol.Gemini)) != 0)
             throw new ArgumentException("目标协议能力无效。");
         if (target.Protocols.HasFlag(LlmProtocol.ChatCompletions) && provider is not IChatCompletionsAdapter
-            || target.Protocols.HasFlag(LlmProtocol.Responses) && provider is not IResponsesAdapter)
+            || target.Protocols.HasFlag(LlmProtocol.Responses) && provider is not IResponsesAdapter
+            || target.Protocols.HasFlag(LlmProtocol.ClaudeMessages) && provider is not IClaudeMessagesAdapter
+            || target.Protocols.HasFlag(LlmProtocol.Gemini) && provider is not IGeminiAdapter)
             throw new ArgumentException("目标声明的协议没有对应适配实现。");
         return target;
     }

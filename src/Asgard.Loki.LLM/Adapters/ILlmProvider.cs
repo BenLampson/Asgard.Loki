@@ -5,4 +5,6 @@ public interface ILlmProvider
 {
     /// <summary>可被多个目标引用的实例标识。</summary>
     string Id { get; }
+    /// <summary>影响 Session 绑定的适配实现身份；实现及转换配置变化时必须变化。</summary>
+    string BindingIdentity => GetType().AssemblyQualifiedName ?? GetType().FullName!;
 }

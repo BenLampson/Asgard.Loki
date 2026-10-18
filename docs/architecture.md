@@ -17,6 +17,9 @@ class Image["Asgard.Loki.Image"]
 class Video["Asgard.Loki.Video"]
 class Ark["Asgard.Loki.LLM.Volcengine"]
 class OpenAILLM["Asgard.Loki.LLM.OpenAI"]
+class AnthropicLLM["Asgard.Loki.LLM.Anthropic"]
+class GoogleLLM["Asgard.Loki.LLM.Google"]
+class Conversion["Asgard.Loki.LLM.Conversion"]
 class Speech["Asgard.Loki.Audio.Volcengine"]
 class OpenAIImage["Asgard.Loki.Image.OpenAI"]
 Client ..> Abstractions
@@ -26,6 +29,9 @@ Image ..> Abstractions
 Video ..> Abstractions
 Ark ..> LLM
 OpenAILLM ..> LLM
+AnthropicLLM ..> LLM
+GoogleLLM ..> LLM
+Conversion ..> LLM
 Speech ..> Audio
 OpenAIImage ..> Image
 ```
@@ -61,17 +67,19 @@ The client disposes factory-created modules that implement disposal, once each. 
 
 ## 3. LLM contracts
 
-The public surface is `loki.LLM.ChatCompletions` and `loki.LLM.Responses`, each with complete and streamed calls. They are distinct protocols, not aliases for one text-only message format.
+The public surface is `loki.LLM.ChatCompletions`, `loki.LLM.Responses`, `loki.LLM.ClaudeMessages` and `loki.LLM.Gemini`, each with complete and streamed calls. Each owns native request/result/event contracts; they are distinct protocols, not aliases for one text-only message format. Claude has explicit `MaxTokens`. Gemini keeps its native `contents`, `systemInstruction`, `generationConfig` and tool structure; its actual model is encoded in the endpoint path, and method-selected streaming uses `:streamGenerateContent?alt=sse` rather than a body field.
 
 Requests have strongly named core fields and extension JSON parameters. Results own an independent JSON snapshot. Preserve unknown fields/events, input/output items, tools, reasoning, usage, cache controls, errors and original IDs. Only actual model mapping and the method-selected stream switch are changed. Extension parameters cannot override explicitly declared core fields.
 
-The currently implemented providers are Volcengine Ark and OpenAI, both over HTTP/JSON and SSE. Native Responses WebSocket is not implemented and must not be advertised as supported. There is no automatic Chat/Responses conversion.
+The currently implemented LLM providers are Volcengine Ark, OpenAI, Anthropic Claude Messages and Google Gemini Developer API over HTTP/JSON and SSE. Provider packages reference only LLM and standard HTTP dependencies. Native Responses WebSocket, Gemini Live and Bedrock/Vertex AI authentication are not implemented. There is no automatic protocol conversion in native providers. Claude streams require `message_stop` or an explicit error; Gemini streams require a terminal reason for every observed candidate or an explicit prompt block/error. Native unknown events, signed reasoning and media remain unchanged.
 
 ```mermaid
 classDiagram
 class LlmClient {
   +ChatCompletions : IChatCompletionsClient
   +Responses : IResponsesClient
+  +ClaudeMessages : IClaudeMessagesClient
+  +Gemini : IGeminiClient
 }
 class LlmRoute {
   +Model
@@ -103,14 +111,55 @@ LlmClient --> LlmRoute
 LlmRoute o-- "1..*" LlmTarget
 LlmClient --> IChatCompletionsAdapter
 LlmClient --> IResponsesAdapter
+LlmClient --> IClaudeMessagesAdapter
+LlmClient --> IGeminiAdapter
 LlmClient --> ILlmSessionStore
 IChatCompletionsAdapter --|> ILlmProvider
 IResponsesAdapter --|> ILlmProvider
+IClaudeMessagesAdapter --|> ILlmProvider
+IGeminiAdapter --|> ILlmProvider
 ```
 
 The scheduling unit is a complete target, not one model with a pool of interchangeable keys. One public model may map to different servers, actual models, credentials and providers. Explicit protocol flags limit candidate selection. Public and upstream model identities are separate result metadata; original provider JSON is not rewritten to disguise its identity.
 
 A new Session uses `ILlmTargetSelector`; an existing Session bypasses selection. A provider must use the target and credential already selected by the capability module.
+
+### Explicit conversion extension
+
+`Asgard.Loki.LLM.Conversion` is an optional LLM extension with a single project dependency on `Asgard.Loki.LLM`. It owns pure request/response conversion and single-call stream state. Its private conversion representation never replaces the four native contracts or crosses capability boundaries. This remains an embeddable SDK: no listener, HTTP relay endpoint, gateway administration, billing, tool executor or background orchestration is introduced.
+
+```mermaid
+classDiagram
+class ConvertingLlmProvider {
+  +Id
+  +BindingIdentity
+  -fixedUpstreamProtocol
+  -options
+}
+class LlmProtocolConverter {
+  +ConvertRequest()
+  +ConvertResponse()
+}
+class LlmProtocolStreamConverter {
+  +Push()
+  +Complete()
+}
+ConvertingLlmProvider ..|> IChatCompletionsAdapter
+ConvertingLlmProvider ..|> IResponsesAdapter
+ConvertingLlmProvider ..|> IClaudeMessagesAdapter
+ConvertingLlmProvider ..|> IGeminiAdapter
+ConvertingLlmProvider o-- ILlmProvider : borrowed native implementation
+ConvertingLlmProvider --> LlmProtocolConverter
+ConvertingLlmProvider --> LlmProtocolStreamConverter
+```
+
+The caller explicitly registers the decorator and chooses a fixed upstream protocol; `LlmTarget.Protocols` describes exposed caller protocols. The decorator invokes the supplied native adapter on the target already resolved by LLM. It cannot select another server/model/key, nest another converting provider, retry or reconstruct history. A same-protocol invocation transparently uses the native adapter and leaves `Metadata.Conversion` null.
+
+All twelve off-diagonal protocol directions support the documented common subset for requests, single-candidate responses and streams. [The conversion package matrix](../src/Asgard.Loki.LLM.Conversion/README.md) defines the exact fields and limits. Unknown or non-equivalent fields fail with field-level diagnostics by default. Only caller-selected `AllowLoss` permits diagnosed omissions; opaque reasoning/signatures, cross-protocol response-chain/storage semantics, invalid arguments and ambiguous tool links remain hard failures. Remote media is not downloaded or assigned an invented MIME type. The original request is never mutated.
+
+Converted complete results keep upstream JSON and request/response diagnostics in `LlmResultMetadata.Conversion`. Converted stream events keep the triggering source JSON and cumulative diagnostics; their generated event names/sequences are target-protocol metadata, not upstream SSE delivery identity. Text deltas are incremental. Tool argument fragments are accumulated and emitted only after complete JSON is available. Source transport failure, missing terminal, unsupported interleaving or inconsistent final output fails without emitting a successful terminal. Conversion does not resume streams or transfer native response IDs between incompatible stateful APIs.
+
+The internal call tracker separates all observed IDs from pending results: a result consumes exactly one pending call, and an ID-less Gemini result requires a unique pending name. Generated IDs reserve explicit IDs from the whole request. Source stream state validates block closure, stable item identities, monotonic event sequences and done/final snapshots; target state rejects text that would overtake an unfinished tool. Independent usage tails are allowed after candidate completion, while repeated terminal events and post-completion content are rejected. An explicit length/filter finish remains incomplete in Responses items. Missing token counts are not fabricated for protocols that require them.
 
 ## 4. LLM Session and cache
 
@@ -142,7 +191,7 @@ LLM->>Store: Record response ownership / refresh binding
 - `DistributedCacheLlmSessionStore` depends on `IDistributedCache`, not a concrete Redis client or the wider Asgard framework.
 - Plain cache Get/Set is not atomic. First binding requires `ILlmSessionLock` / `ILlmSessionLease`; a production multi-process implementation must use shared distributed coordination and signal lease loss. Operations observe the lease cancellation token.
 - This coordination contract is an integration point, not a bundled Redis-lock implementation. Unit tests use a test-only in-process coordinator with `MemoryDistributedCache`.
-- Bindings include public model, protocol, target ID and a fingerprint of connection/model/credential/provider/version identity. API Keys are never stored in bindings. Changing an existing target's semantics invalidates its old Sessions.
+- Bindings include public model, protocol, target ID and a fingerprint of connection/model/credential/provider/version identity. `ILlmProvider.BindingIdentity` includes the adapter implementation; the conversion decorator additionally includes wrapped identity, fixed upstream protocol, algorithm version and conversion options. API Keys are never stored in bindings. Changing an existing target's semantics invalidates its old Sessions. Existing bindings from before implementation identities were fingerprinted require new Sessions or caller-managed expiration/removal; they are never silently rebound.
 - All first-call competitors re-read under coordination and use the actual winner before invoking a model.
 - Preserve original response IDs and associate them with their Session. Unknown, expired or foreign `previous_response_id` values fail; they never trigger random new routing.
 - Multiple recorded response IDs may be used for branches. A Session is not limited to its latest response.

@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Explicit, diagnostic LLM protocol conversion for Asgard.Loki.</Description></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" /></ItemGroup>
+</Project>

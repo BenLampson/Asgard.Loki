@@ -15,11 +15,14 @@ The architecture contract, UML, dependency rules and provider extension requirem
 | --- | --- | --- | --- |
 | LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat Completions; Responses creation and continuation | SSE |
 | LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation and continuation | SSE |
+| LLM | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages | SSE |
+| LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
+| LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
 | Speech | `Asgard.Loki.Audio.Volcengine` | Volcengine V3 text-to-speech; API Key or legacy app/token authentication | HTTP chunked JSON to audio chunks |
 | Images | `Asgard.Loki.Image.OpenAI` | OpenAI Images Generations; Base64 and URL results | SSE partial/final image events |
 | Video | — | Project scaffold only | — |
 
-Requests preserve unknown JSON parameters. Results retain complete upstream JSON, including tools, reasoning, usage, errors and future events. Public model aliases and actual upstream models are exposed separately.
+Native requests preserve unknown JSON parameters. Native results retain complete upstream JSON, including tools, reasoning, usage, errors and future events. Public model aliases and actual upstream models are exposed separately. Optional conversion requires explicit registration, rejects unsupported fields by default, and retains upstream JSON and diagnostics separately from the converted result. See the [conversion support matrix](src/Asgard.Loki.LLM.Conversion/README.md).
 
 Native Responses WebSocket transport, image edits/variations, speech recognition, music generation, video generation, billing and automatic request replay are **not implemented**. Supported model names and account entitlements are configured by the caller and validated by the actual provider; there is no hard-coded model catalog.
 
@@ -29,18 +32,48 @@ Native Responses WebSocket transport, image edits/variations, speech recognition
 | --- | --- |
 | `Asgard.Loki.Abstractions` | Generic client and module builder contracts |
 | `Asgard.Loki` | Client implementation and module lifecycle |
-| `Asgard.Loki.LLM` | Chat/Responses contracts, routing, Session storage and registration |
+| `Asgard.Loki.LLM` | Four native text protocols, routing, Session storage and registration |
 | `Asgard.Loki.Audio` | Independent speech contracts, routing and audio aggregation |
 | `Asgard.Loki.Image` | Independent image contracts, routing and results |
 | `Asgard.Loki.Video` | Reserved video capability scaffold |
 | `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
 | `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider |
+| `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |
+| `Asgard.Loki.LLM.Google` | Native Gemini Developer API provider |
+| `Asgard.Loki.LLM.Conversion` | Optional explicit conversion; references only LLM |
 | `Asgard.Loki.Audio.Volcengine` | Volcengine speech provider |
 | `Asgard.Loki.Image.OpenAI` | OpenAI image provider |
 
 The entry package depends only on abstractions. Capability packages do not reference each other. Each provider depends only on its capability and standard Microsoft components. Installing OpenAI images does not install LLM or audio providers.
 
-These are the package identities produced by this checkout. CI builds and verifies all ten packages and attaches them to the workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
+These are the package identities produced by this checkout. CI builds and verifies all thirteen packages and attaches them to the workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
+
+## Native Claude, Gemini and explicit conversion
+
+Loki is an embeddable SDK. Applications supply credentials, HTTP factories and Session dependencies; this library exposes no forwarding server or administration/billing services.
+
+Use `loki.LLM.ClaudeMessages.CreateAsync/StreamAsync` with `ClaudeMessageRequest`, or `loki.LLM.Gemini.GenerateAsync/StreamAsync` with `GeminiContentRequest`. Configure the corresponding target's protocol explicitly:
+
+| Provider | API root | Target protocol | Native request |
+| --- | --- | --- | --- |
+| `AnthropicLlmProvider` | `https://api.anthropic.com/v1/` | `LlmProtocol.ClaudeMessages` | `Messages`, explicit `MaxTokens`, extension `system`/tools/thinking |
+| `GoogleLlmProvider` | `https://generativelanguage.googleapis.com/v1beta/` | `LlmProtocol.Gemini` | `Contents`, extension `systemInstruction`/tools/generationConfig |
+
+The original target default still enables Chat/Responses; set `Protocols` explicitly for Claude/Gemini. Gemini's upstream model is a bare ID, mapped into the URL; its native body has neither `model` nor `stream`. See the provider [Claude](src/Asgard.Loki.LLM.Anthropic/README.md) and [Gemini](src/Asgard.Loki.LLM.Google/README.md) READMEs for initialization and limits.
+
+To opt into conversion, register a `ConvertingLlmProvider(nativeProvider, upstreamProtocol, id, options)` from `Asgard.Loki.LLM.Conversion` and point the target at that ID. `LlmTarget.Protocols` then describes the caller-facing protocol; the decorator fixes the actual upstream protocol. The full target and conversion configuration are bound to the Session. Existing native calls never opt into conversion automatically.
+
+```csharp
+var converting = new ConvertingLlmProvider(
+    new AnthropicLlmProvider(httpFactory), LlmProtocol.ClaudeMessages,
+    "chat-via-claude", new LlmConversionOptions { DefaultMaxTokens = 512 });
+// Register converting, configure a Claude target with Protocols = ChatCompletions,
+// then use the ordinary loki.LLM.ChatCompletions interface with compatible history.
+```
+
+Add `using Asgard.Loki.LLM;`, `using Asgard.Loki.LLM.Anthropic;` and `using Asgard.Loki.LLM.Conversion;` for this example. The [conversion README](src/Asgard.Loki.LLM.Conversion/README.md) documents the twelve-direction common subset, diagnostics, pure data API and restrictions. Unsupported fields fail by default; signed/encrypted reasoning and cross-protocol response chains always require native APIs. Converted results expose original upstream JSON and diagnostics in `Metadata.Conversion`. Text streams incrementally; function arguments are emitted when complete. All new provider/conversion verification is offline, not live model validation.
+
+Session fingerprints now include `ILlmProvider.BindingIdentity`. Bindings created before this change will fail validation and require new Session IDs or caller-controlled expiration/removal. The SDK does not silently rebind them.
 
 ## Initialize LLM
 
@@ -206,7 +239,7 @@ Local protocol tests are not live-provider verification. Real account permission
 
 The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
 
-The offline suite passes 219 tests, including 93 per LLM provider. Standard-Ark live verification with `doubao-seed-evolving` covers Chat/Responses JSON and SSE, tool calls and result return, strict JSON Schema, thinking on/off, actual output truncation, response continuation and opaque reasoning replay. **Both strict `tool_choice=none` cases currently fail:** upstream emits a function call although the final request correctly contains `none`. These failures remain visible. See the [protocol and parameter verification record](docs/llm-parameter-verification.md) for evidence and limits; OpenAI has offline coverage only.
+The offline suite passes 456 tests: the original 219-test baseline plus 22 Claude, 36 Gemini and 179 explicit-conversion tests. Conversion regressions cover nested field loss, pending tool/result association, ID collisions, complete and truncated stream lifecycles, done/final snapshot consistency and cache/usage accounting. OpenAI and Ark each retain their 93-test offline suites. Standard-Ark live verification with `doubao-seed-evolving` covers Chat/Responses JSON and SSE, tool calls and result return, strict JSON Schema, thinking on/off, actual output truncation, response continuation and opaque reasoning replay. **Both strict `tool_choice=none` cases currently fail:** upstream emits a function call although the final request correctly contains `none`. These failures remain visible. See the [protocol and parameter verification record](docs/llm-parameter-verification.md) for evidence and limits; OpenAI, Claude, Gemini and explicit conversion have offline coverage only.
 
 Use `pwsh -File eng/Test-Live.ps1 -Suite Parameters` or `-Suite All` for expanded checks, or add `-Scenario Structured`, `Tools`, `ToolChoice`, `Reasoning`, `Limits` or `Replay` to select a group. Default smoke makes five calls; Parameters plans 26 and All 31, with a hard limit of 32 per process. The expanded suites exit nonzero while the known tool-choice failure persists. The fixture uses `MemoryDistributedCache`; Redis cross-process verification remains separate.
 

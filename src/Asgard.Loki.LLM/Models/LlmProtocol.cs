@@ -9,5 +9,9 @@ public enum LlmProtocol
     /// <summary>Chat Completions 协议。</summary>
     ChatCompletions = 1,
     /// <summary>Responses 协议。</summary>
-    Responses = 2
+    Responses = 2,
+    /// <summary>Anthropic Claude Messages 原生协议。</summary>
+    ClaudeMessages = 4,
+    /// <summary>Google Gemini generateContent 原生协议。</summary>
+    Gemini = 8
 }

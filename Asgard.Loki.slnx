@@ -8,6 +8,9 @@
     <Project Path="src/Asgard.Loki.LLM.Volcengine/Asgard.Loki.LLM.Volcengine.csproj" />
     <Project Path="src/Asgard.Loki.Audio.Volcengine/Asgard.Loki.Audio.Volcengine.csproj" />
     <Project Path="src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.Anthropic/Asgard.Loki.LLM.Anthropic.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.Google/Asgard.Loki.LLM.Google.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.Conversion/Asgard.Loki.LLM.Conversion.csproj" />
     <Project Path="src/Asgard.Loki.Image/Asgard.Loki.Image.csproj" />
     <Project Path="src/Asgard.Loki.Image.OpenAI/Asgard.Loki.Image.OpenAI.csproj" />
   </Folder>
@@ -19,6 +22,9 @@
     <Project Path="tests/Asgard.Loki.LLM.Volcengine.Tests/Asgard.Loki.LLM.Volcengine.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Audio.Volcengine.Tests/Asgard.Loki.Audio.Volcengine.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.OpenAI.Tests/Asgard.Loki.LLM.OpenAI.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Anthropic.Tests/Asgard.Loki.LLM.Anthropic.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Google.Tests/Asgard.Loki.LLM.Google.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Conversion.Tests/Asgard.Loki.LLM.Conversion.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.OpenAI.Tests/Asgard.Loki.Image.OpenAI.Tests.csproj" />
   </Folder>
 </Solution>

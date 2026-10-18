@@ -11,10 +11,16 @@ public sealed class LlmClient
         var invocation = new LlmInvocation(configuration);
         ChatCompletions = new ChatCompletionsClient(invocation);
         Responses = new ResponsesClient(invocation);
+        ClaudeMessages = new ClaudeMessagesClient(invocation);
+        Gemini = new GeminiClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
     public IChatCompletionsClient ChatCompletions { get; }
     /// <summary>访问 Responses 能力。</summary>
     public IResponsesClient Responses { get; }
+    /// <summary>访问 Claude Messages 原生能力。</summary>
+    public IClaudeMessagesClient ClaudeMessages { get; }
+    /// <summary>访问 Gemini 原生能力。</summary>
+    public IGeminiClient Gemini { get; }
 }
