@@ -10,5 +10,7 @@
     <Compile Include="../Shared/HttpLlmPayloadTests.cs" Link="HttpLlmPayloadTests.cs" />
     <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLock.cs" Link="TestSessionLock.cs" />
     <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLease.cs" Link="TestSessionLease.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestTargetSelector.cs" Link="TestTargetSelector.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/FailingDistributedCache.cs" Link="FailingDistributedCache.cs" />
   </ItemGroup>
 </Project>

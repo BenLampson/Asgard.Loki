@@ -100,7 +100,7 @@ internal static class RequestReader
                 message.Blocks.Add(new() { ["type"] = "result", ["id"] = Text(item["call_id"]), ["output"] = item["output"]?.DeepClone() });
                 doc.Messages.Add(message);
             }
-            else if (type == "reasoning") throw new LlmConversionException([new("opaque_state", "$.input[].reasoning", "不透明推理项必须通过原生协议回传。")]);
+            else if (type is "reasoning" or "compaction") throw new LlmConversionException([new("opaque_state", "$.input[]." + type, "不透明推理或压缩项必须通过原生协议回传。")]);
             else Loss(doc, "$.input[]." + type, "unsupported_item");
         }
     }

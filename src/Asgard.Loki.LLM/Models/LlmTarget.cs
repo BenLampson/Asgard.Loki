@@ -17,4 +17,7 @@ public sealed record LlmTarget
     public string Version { get; init; } = "1";
     /// <summary>由配置明确声明的协议能力。</summary>
     public LlmProtocol Protocols { get; init; } = LlmProtocol.ChatCompletions | LlmProtocol.Responses;
+    /// <summary>由配置明确启用的可选操作；默认省略以保持旧基础目标的指纹。</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public LlmTargetFeatures Features { get; init; }
 }

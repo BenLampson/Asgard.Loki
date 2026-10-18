@@ -8,7 +8,7 @@ using Asgard.Loki.Internal;
 namespace Asgard.Loki.LLM.OpenAI;
 
 /// <summary>实现OpenAI Chat Completions 和 Responses 的 HTTP/JSON 与 SSE 调用。</summary>
-public sealed class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapter
+public sealed class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _httpClientName;
@@ -35,6 +35,10 @@ public sealed class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapt
     /// <inheritdoc />
     public async Task<Response> CreateAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
         => new(await PostAsync("responses", request, context, cancellationToken).ConfigureAwait(false), context.Metadata);
+
+    /// <inheritdoc />
+    public async Task<ResponseCompaction> CompactAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
+        => new(await PostAsync("responses/compact", request, context, cancellationToken).ConfigureAwait(false), context.Metadata);
 
     /// <inheritdoc />
     public async IAsyncEnumerable<ChatCompletionEvent> StreamAsync(JsonObject request, LlmAdapterContext context,

@@ -93,6 +93,7 @@ class LlmTarget {
   +CredentialId
   +Version
   +Protocols
+  +Features : LlmTargetFeatures
 }
 class ILlmProvider {
   <<interface>>
@@ -104,6 +105,20 @@ class IChatCompletionsAdapter {
 class IResponsesAdapter {
   <<interface>>
 }
+class IResponsesCompactionAdapter {
+  <<interface>>
+  +CompactAsync()
+}
+class ResponseCompactionRequest {
+  +Model
+  +Input
+  +PreviousResponseId
+  +Parameters
+}
+class ResponseCompaction {
+  +Data
+  +Output
+}
 class ILlmSessionStore {
   <<interface>>
 }
@@ -111,11 +126,15 @@ LlmClient --> LlmRoute
 LlmRoute o-- "1..*" LlmTarget
 LlmClient --> IChatCompletionsAdapter
 LlmClient --> IResponsesAdapter
+LlmClient --> IResponsesCompactionAdapter
+IResponsesCompactionAdapter --> ResponseCompactionRequest
+IResponsesCompactionAdapter --> ResponseCompaction
 LlmClient --> IClaudeMessagesAdapter
 LlmClient --> IGeminiAdapter
 LlmClient --> ILlmSessionStore
 IChatCompletionsAdapter --|> ILlmProvider
 IResponsesAdapter --|> ILlmProvider
+IResponsesCompactionAdapter --|> ILlmProvider
 IClaudeMessagesAdapter --|> ILlmProvider
 IGeminiAdapter --|> ILlmProvider
 ```
@@ -123,6 +142,14 @@ IGeminiAdapter --|> ILlmProvider
 The scheduling unit is a complete target, not one model with a pool of interchangeable keys. One public model may map to different servers, actual models, credentials and providers. Explicit protocol flags limit candidate selection. Public and upstream model identities are separate result metadata; original provider JSON is not rewritten to disguise its identity.
 
 A new Session uses `ILlmTargetSelector`; an existing Session bypasses selection. A provider must use the target and credential already selected by the capability module.
+
+### Optional native Responses operations
+
+`IResponsesCompactionAdapter` is a separate optional provider contract. The OpenAI package implements it; Ark and the conversion decorator do not advertise it. `IResponsesClient.CompactAsync` has a default unsupported implementation for compatibility with older caller-defined clients. The built-in client requires both native Responses support and `LlmTarget.Features.ResponsesCompaction`; target registration rejects a feature without its protocol/adapter implementation. New-session selection filters the explicit feature; after coordinated creation the actual winning binding is checked again. A previously bound target without the feature fails rather than switching to a capable target.
+
+Compaction sends one native `/responses/compact` request, with model mapping and no stream switch. It accepts the native optional text/item input and optional `previous_response_id`; previous-response ownership, target identity, cache failures and cancellation use the same LLM-owned Session contract. The complete response/output window, encrypted state, retained items, tool links, usage and future fields stay unchanged. No automatic compaction, history retrieval/pruning, decryption or retry is introduced. A compaction result ID is not registered as a generated-response ID. The application chooses when and how to use the returned complete window in subsequent native calls.
+
+`Features.None` is omitted from target JSON so adding this optional contract does not change the default basic-target fingerprint representation. Non-default feature declarations are fingerprinted; changing them invalidates affected bindings. Source compaction items remain hard failures in cross-protocol conversion even with `AllowLoss`, while native requests and same-protocol copies retain them.
 
 ### Explicit conversion extension
 

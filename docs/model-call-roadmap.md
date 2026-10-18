@@ -8,9 +8,10 @@ This plan covers an embeddable .NET SDK: model requests, authentication, protoco
 
 - M1.1 implemented: embedded independently authored four-protocol source/golden fixtures, 36 request/response/stream comparisons, and explicit response-envelope metadata/echo retention.
 - M1.2 first slice implemented: qualitative effort across all directions, representable numeric/dynamic/off reasoning modes and output intent, JSON Schema wrappers copied without changing constraints, explicit name/budget/effort options, and OpenAI/Claude parallel-tool switches. Twenty-four additional public SDK/HTTP settings cases cover both call modes. Model acceptance is still separate from offline protocol verification.
-- Current validation after this slice: 582 offline tests passed, including 305 conversion tests; Release build has no warnings. The package set remains thirteen independently packaged libraries. Dual-platform CI is required on the committed result.
+- Current validation after the compaction slice: 632 offline tests passed, including 313 conversion tests; Release build has no warnings. The package set remains thirteen independently packaged libraries. Dual-platform CI is required on the committed result.
 - Remaining M1 work includes Gemini's separate `responseSchema` dialect, advanced tool/media/result mappings, representable multi-candidate/interleaved output and broader model-specific capability policies. Opaque signed/encrypted state remains native-only.
-- M2–M6 remain pending. This goal is not complete after the first M1 slice; subsequent work must preserve the full model-call parity scope and the SDK exclusions.
+- M2 compaction slice implemented: native OpenAI `Responses.CompactAsync`, explicit target feature and optional adapter contract, full opaque window preservation, previous-response ownership and feature-aware complete-target binding. Ordinary compatible Responses endpoints and conversion decorators do not implicitly gain this optional capability. No live compaction call was made.
+- Remaining M2 WebSocket and M3–M6 remain pending. The full model-call alignment goal is not complete after the initial slices; subsequent work must preserve its scope and SDK exclusions.
 
 ## Completed baseline
 
@@ -33,7 +34,7 @@ New API's [relay routes][n-routes], [protocol/task routes][n-task-protocols], [a
 | Broader conversion settings | [RelayKit][n-kit]: reasoning effort/budget/output intent, more tools and media | First M1 slice now supports four-protocol effort/JSON Schema wrappers and representable budget/output intent; advanced mappings remain | Continue bounded M1 extensions; do not change native calls |
 | Advanced tools | RelayKit encodes custom/namespaced tools and hosted web search, retaining request conversion state | Ordinary function tools only across protocols; native tools already pass through | M1 opt-in mappings with reversible identity and explicit semantic diagnostics |
 | File/media conversion | RelayKit media resolver and file/image blocks | Inline images supported; some image URLs map directly; other file/media conversion is limited | M1 caller-supplied media data/resolution; preserve provider-local IDs |
-| Responses compaction | [Dedicated compact handler][n-compact] and active route | No compact operation; ordinary Responses already preserves opaque input/output items | M2 native compact call, separate from generation and automatic history management |
+| Responses compaction | [Dedicated compact handler][n-compact] and active route | Native OpenAI operation implemented with explicit target feature and complete opaque output | Preserve native-only state; other suppliers require independent verification |
 | Responses WebSocket | [WebSocket implementation][n-responses-ws] with per-connection request state | HTTP/JSON/SSE only | M2 native duplex connection contract bound to one complete LLM target |
 | Embeddings | [Embedding handler][n-embedding]; Gemini adapter supports embedContent/batchEmbedContents | No public capability/provider | M3 independent Embedding capability, OpenAI first, Google next |
 | Rerank | [Rerank handler][n-rerank], Cohere/Jina adapters | No public capability/provider | M3 independent Rerank capability and explicit supplier dialects |
@@ -173,7 +174,7 @@ For every milestone:
 5. Keep live tests separate and explicitly opted in under [testing.md](testing.md). The existing four-variable Volcengine contract is unchanged; new provider credentials/scenarios require their own reviewed extension. Preserve the known Ark `tool_choice=none` failure and distinguish transmitted parameters from observed effects.
 6. Develop on `dev` or a `ben/` feature branch; require the existing dual-platform CI. No direct push/merge to `main`, protection bypass or package publication is authorized by this plan.
 
-The next native delivery slice after the initial M1 work is Responses compaction, followed by the WebSocket contract and independent Embedding/Rerank capabilities. Remaining M1 Schema-dialect/tool/media/interleaving work is delivered in separately bounded increments and need not block those native operations or new capabilities. Later milestones remain part of the SDK model-call alignment effort; gateway operations stay excluded.
+The next native delivery slice after compaction is the Responses WebSocket contract, followed by independent Embedding/Rerank capabilities. Remaining M1 Schema-dialect/tool/media/interleaving work is delivered in separately bounded increments and need not block those native operations or new capabilities. Later milestones remain part of the SDK model-call alignment effort; gateway operations stay excluded.
 
 [n-routes]: https://github.com/QuantumNous/new-api/blob/058c8231b68c51ee02abee15befcd720fee9f4a2/router/relay-router.go
 [n-task-protocols]: https://github.com/QuantumNous/new-api/blob/058c8231b68c51ee02abee15befcd720fee9f4a2/router/task-plugin-protocol-router.go

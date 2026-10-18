@@ -70,7 +70,7 @@ internal static class ResponseMapping
                         Check(item, doc, "$.output[]", "type", "id", "status", "call_id", "name", "arguments");
                         message.Blocks.Add(new() { ["type"] = "call", ["id"] = Text(item["call_id"]), ["name"] = Text(item["name"]), ["arguments"] = Text(item["arguments"]) });
                     }
-                    else if (type == "reasoning") throw new LlmConversionException([new("opaque_state", "$.output[].reasoning", "不透明推理项必须使用原生协议。")]);
+                    else if (type is "reasoning" or "compaction") throw new LlmConversionException([new("opaque_state", "$.output[]." + type, "不透明推理或压缩项必须使用原生协议。")]);
                     else Loss(doc, "$.output[]." + type, "unsupported_item");
                 }
                 if (doc.Finish == "stop" && message.Blocks.Any(b => Text(b["type"]) == "call")) doc.Finish = "tool_calls";

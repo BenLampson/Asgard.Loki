@@ -6,6 +6,22 @@ namespace Asgard.Loki.LLM;
 internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClient
 {
     /// <inheritdoc />
+    public async Task<ResponseCompaction> CompactAsync(ResponseCompactionRequest request, LlmCallOptions options, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        if (request.PreviousResponseId is not null) ArgumentException.ThrowIfNullOrWhiteSpace(request.PreviousResponseId);
+        if (request.Input is not null && request.Input is not JsonArray
+            && (request.Input is not JsonValue text || !text.TryGetValue<string>(out _)))
+            throw new ArgumentException("压缩输入必须为文本或原生输入项数组。", nameof(request));
+        LlmInvocation.ValidateParameters(request.Parameters, "model", "input", "previous_response_id", "stream");
+        var payload = JsonSerializer.SerializeToNode(request)!.AsObject();
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.Responses, options,
+            request.PreviousResponseId, cancellationToken, LlmTargetFeatures.ResponsesCompaction).ConfigureAwait(false);
+        payload["model"] = call.Context.Target.UpstreamModel;
+        return await ((IResponsesCompactionAdapter)call.Provider).CompactAsync(payload, call.Context, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
     public async Task<Response> CreateAsync(ResponseRequest request, LlmCallOptions options, CancellationToken cancellationToken = default)
     {
         Validate(request);

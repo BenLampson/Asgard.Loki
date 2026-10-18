@@ -8,7 +8,8 @@ internal sealed class LlmInvocation(LlmConfiguration configuration)
 
     /// <summary>恢复已有目标，首次调用才经过目标选择器。</summary>
     internal async ValueTask<(LlmAdapterContext Context, LlmSessionBinding Binding, ILlmProvider Provider)> ResolveAsync(
-        string model, LlmProtocol protocol, LlmCallOptions options, string? previousResponseId, CancellationToken cancellationToken)
+        string model, LlmProtocol protocol, LlmCallOptions options, string? previousResponseId, CancellationToken cancellationToken,
+        LlmTargetFeatures requiredFeatures = LlmTargetFeatures.None)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(model);
         ArgumentNullException.ThrowIfNull(options);
@@ -19,7 +20,7 @@ internal sealed class LlmInvocation(LlmConfiguration configuration)
         if (binding is null)
         {
             if (previousResponseId is not null) throw new InvalidOperationException("旧响应链的 Session 绑定不存在或已经过期。");
-            var candidates = route.Targets.Where(target => target.Protocols.HasFlag(protocol)).ToArray();
+            var candidates = route.Targets.Where(target => target.Protocols.HasFlag(protocol) && target.Features.HasFlag(requiredFeatures)).ToArray();
             if (candidates.Length == 0) throw new NotSupportedException("此路由没有支持请求协议的目标。");
             var candidate = configuration.Selector.Select(candidates);
             if (!candidates.Contains(candidate)) throw new InvalidOperationException("目标选择器返回了候选集之外的目标。");
@@ -33,6 +34,7 @@ internal sealed class LlmInvocation(LlmConfiguration configuration)
             ?? throw new InvalidOperationException("Session 原目标已移除，不允许自动切换。");
         if (!target.Protocols.HasFlag(protocol) || configuration.Fingerprint(target) != binding.Fingerprint)
             throw new InvalidOperationException("Session 原目标配置或凭据已改变，不允许自动切换。");
+        if (!target.Features.HasFlag(requiredFeatures)) throw new NotSupportedException("Session 原目标不支持请求的原生可选操作，不允许切换目标。");
         if (previousResponseId is not null
             && !await Sessions.OwnsResponseAsync(binding, previousResponseId, cancellationToken).ConfigureAwait(false))
             throw new InvalidOperationException("previous_response_id 不属于当前 Session 或记录已过期。");

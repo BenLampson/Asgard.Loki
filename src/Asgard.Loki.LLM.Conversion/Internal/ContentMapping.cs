@@ -59,7 +59,7 @@ internal static class ContentMapping
                     if (block["content"] is not JsonValue) { Loss(doc, "$content[].content", "unsupported_tool_result"); break; }
                     message.Blocks.Add(new() { ["type"] = "result", ["id"] = Text(block["tool_use_id"]), ["output"] = Text(block["content"]) });
                     break;
-                case "thinking": case "redacted_thinking": case "reasoning":
+                case "thinking": case "redacted_thinking": case "reasoning": case "compaction":
                     throw new LlmConversionException([new("opaque_state", "$content[]." + type, "签名和不透明推理项必须通过原生协议回传。")]);
                 default: Loss(doc, "$content[]." + type, "unsupported_content"); break;
             }

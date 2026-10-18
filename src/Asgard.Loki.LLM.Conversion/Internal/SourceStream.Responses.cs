@@ -70,7 +70,7 @@ internal sealed partial class SourceStream
                 Check(item, Document, "$event.item", "id", "type", "status", "role", "content");
                 if (Text(item["role"]) != "assistant" || Array(item["content"]).Count != 0) throw new InvalidDataException("Responses message 开始结构无效。");
             }
-            else if (itemType == "reasoning") throw new LlmConversionException([new("opaque_state", "$event.item.reasoning", "不透明推理项必须使用原生协议。")]);
+            else if (itemType is "reasoning" or "compaction") throw new LlmConversionException([new("opaque_state", "$event.item." + itemType, "不透明推理或压缩项必须使用原生协议。")]);
             else Loss(Document, "$event.item." + itemType, "unsupported_item");
             return;
         }
