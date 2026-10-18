@@ -30,6 +30,7 @@ internal sealed class BoundResponsesWebSocketConnection(LlmInvocation invocation
             if (snapshot["previous_response_id"] is not null) previous = RequiredText(snapshot, "previous_response_id");
             snapshot["model"] = Metadata.UpstreamModel;
         }
+        else if (type == "response.steer") previous = RequiredText(snapshot, "previous_response_id");
         else if (type == "response.cancel" && snapshot["response_id"] is not null)
             previous = RequiredText(snapshot, "response_id");
         return SendSnapshotAsync(snapshot, previous, cancellationToken);
