@@ -1,0 +1,26 @@
+{
+  "id": "r1",
+  "type": "message",
+  "role": "assistant",
+  "model": "model-a",
+  "content": [
+    {
+      "type": "text",
+      "text": "你好"
+    },
+    {
+      "type": "tool_use",
+      "id": "call_1",
+      "name": "lookup",
+      "input": {
+        "x": 0
+      }
+    }
+  ],
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 2
+  }
+}

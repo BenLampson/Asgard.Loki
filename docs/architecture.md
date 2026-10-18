@@ -144,6 +144,13 @@ class LlmProtocolStreamConverter {
   +Push()
   +Complete()
 }
+class LlmConversionOptions {
+  +AllowLoss
+  +DefaultMaxTokens
+  +DefaultSchemaName
+  +TargetReasoningEffort
+  +TargetThinkingBudgetTokens
+}
 ConvertingLlmProvider ..|> IChatCompletionsAdapter
 ConvertingLlmProvider ..|> IResponsesAdapter
 ConvertingLlmProvider ..|> IClaudeMessagesAdapter
@@ -151,6 +158,8 @@ ConvertingLlmProvider ..|> IGeminiAdapter
 ConvertingLlmProvider o-- ILlmProvider : borrowed native implementation
 ConvertingLlmProvider --> LlmProtocolConverter
 ConvertingLlmProvider --> LlmProtocolStreamConverter
+ConvertingLlmProvider --> LlmConversionOptions
+LlmProtocolConverter --> LlmConversionOptions
 ```
 
 The caller explicitly registers the decorator and chooses a fixed upstream protocol; `LlmTarget.Protocols` describes exposed caller protocols. The decorator invokes the supplied native adapter on the target already resolved by LLM. It cannot select another server/model/key, nest another converting provider, retry or reconstruct history. A same-protocol invocation transparently uses the native adapter and leaves `Metadata.Conversion` null.
@@ -160,6 +169,10 @@ All twelve off-diagonal protocol directions support the documented common subset
 Converted complete results keep upstream JSON and request/response diagnostics in `LlmResultMetadata.Conversion`. Converted stream events keep the triggering source JSON and cumulative diagnostics; their generated event names/sequences are target-protocol metadata, not upstream SSE delivery identity. Text deltas are incremental. Tool argument fragments are accumulated and emitted only after complete JSON is available. Source transport failure, missing terminal, unsupported interleaving or inconsistent final output fails without emitting a successful terminal. Conversion does not resume streams or transfer native response IDs between incompatible stateful APIs.
 
 The internal call tracker separates all observed IDs from pending results: a result consumes exactly one pending call, and an ID-less Gemini result requires a unique pending name. Generated IDs reserve explicit IDs from the whole request. Source stream state validates block closure, stable item identities, monotonic event sequences and done/final snapshots; target state rejects text that would overtake an unfinished tool. Independent usage tails are allowed after candidate completion, while repeated terminal events and post-completion content are rejected. An explicit length/filter finish remains incomplete in Responses items. Missing token counts are not fabricated for protocols that require them.
+
+Private reasoning conversion state separates effort, numeric budget, dynamic/off mode and requested summary/display. Qualitative levels map only where represented; numeric budget replacement requires an explicit target effort plus diagnosed loss consent. Caller-selected manual Claude budgets must fit the explicit output limit; model-specific support is not inferred from names. Private structured-output state carries the unchanged JSON Schema and wrapper metadata. OpenAI requires an explicit source/default schema name; unsupported metadata or enforcement changes remain diagnosed. Options belong to the conversion package, and the algorithm/options are fingerprinted into Session bindings.
+
+Known descriptive response envelope fields and executed-request echoes are retained in the original upstream JSON, separately from converted content. They never become a new target request or continuation authorization. This classification is explicit and response-only; unknown business fields and opaque reasoning still follow strict conversion rules.
 
 ## 4. LLM Session and cache
 
@@ -240,6 +253,8 @@ HTTP failures preserve status and original body in capability-specific exception
 - English README is primary; translations are auxiliary. Every provider README states supported APIs, initialization, limitations and verification status. Unsupported features must remain explicit.
 
 ## 9. Design references
+
+The [model-call gap assessment and roadmap](model-call-roadmap.md) records the pinned comparison, delivery order and proposed dependency UML for future capabilities. Its planned APIs/packages are not part of the implemented architecture until delivered; any implementation must update this specification and preserve the boundaries above.
 
 New API is a structural reference for separating channels, model mapping and supplier adapters. This is an independent .NET implementation; its web framework, administrative features and billing flow are outside this library.
 

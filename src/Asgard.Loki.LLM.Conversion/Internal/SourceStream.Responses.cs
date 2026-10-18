@@ -38,7 +38,7 @@ internal sealed partial class SourceStream
         if (type is "response.created" or "response.in_progress")
         {
             if (type == "response.created" && _responsesStarted) throw new InvalidDataException("Responses 重复开始。");
-            var response = Object(data["response"]);
+            var response = ResponseEnvelope.Content(Object(data["response"]), LlmProtocol.Responses, Document);
             Check(response, Document, "$event.response", "id", "object", "created_at", "model", "status", "output", "usage", "error", "incomplete_details");
             if (response["error"] is not null) throw new InvalidDataException("Responses 开始事件包含上游错误。");
             if (response["status"] is not null && Text(response["status"]) is not ("in_progress" or "queued"))

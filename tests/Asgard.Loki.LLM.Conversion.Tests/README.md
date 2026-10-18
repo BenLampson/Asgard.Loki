@@ -10,3 +10,5 @@ Offline xUnit v3 conversion acceptance tests use hand-maintained fixtures, not p
 - Usage cases verify Claude cache-read versus uncached input and Gemini candidate versus thinking output counts, as well as OpenAI detail/zero-value preservation.
 
 The tests use `MemoryDistributedCache` and explicit test coordination. They never read live credentials or contact models/Redis. Passing this suite establishes the [documented subset](../../src/Asgard.Loki.LLM.Conversion/README.md), not universal lossless conversion or model behavior.
+
+Embedded [source and golden fixtures](Fixtures/README.md) add 36 complete structure/event comparisons across the twelve directions. Generation settings have separate twelve-direction effort/Schema assertions, 24 public SDK/HTTP settings cases, and rejection tests for budget/effort/output-intent conflicts, unsupported metadata/enforcement, zero/false/null handling, parallel switches and changed Session options. Original schema constraints and source envelopes remain independently asserted.

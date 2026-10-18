@@ -53,8 +53,14 @@ internal static class ToolMapping
         if (selected is JsonValue) { doc.ToolChoice = selected.DeepClone(); return; }
         var selectedObject = Object(selected);
         var type = Text(selectedObject["type"]);
-        Check(selectedObject, doc, "$.tool_choice", type is "auto" or "none" or "any" ? ["type"]
-            : protocol == LlmProtocol.ChatCompletions ? ["type", "function"] : ["type", "name"]);
+        Check(selectedObject, doc, "$.tool_choice", protocol == LlmProtocol.ClaudeMessages
+            ? type == "tool" ? ["type", "name", "disable_parallel_tool_use"] : ["type", "disable_parallel_tool_use"]
+            : type is "auto" or "none" or "any" ? ["type"] : protocol == LlmProtocol.ChatCompletions ? ["type", "function"] : ["type", "name"]);
+        if (protocol == LlmProtocol.ClaudeMessages && selectedObject.ContainsKey("disable_parallel_tool_use"))
+        {
+            if (type == "none") throw new ArgumentException("Claude none 工具选择不接受并行控制。");
+            doc.Settings["parallel"] = !Boolean(selectedObject["disable_parallel_tool_use"]);
+        }
         if (type is "auto" or "none" or "any") doc.ToolChoice = JsonValue.Create(type == "any" ? "required" : type);
         else if (type is "function" or "tool")
         {

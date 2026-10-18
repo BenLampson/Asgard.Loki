@@ -17,6 +17,7 @@ internal static class ResponseMapping
         };
         var message = new ConversionMessage("assistant");
         if (source["error"] is not null) throw new LlmConversionException([new("upstream_error", "$.error", "错误响应不能转换为成功响应。")]);
+        source = ResponseEnvelope.Content(source, protocol, doc);
         switch (protocol)
         {
             case LlmProtocol.ChatCompletions:
@@ -24,8 +25,12 @@ internal static class ResponseMapping
                 var choices = Array(source["choices"]);
                 if (choices.Count != 1) throw new LlmConversionException([new("multiple_candidates", "$.choices", "响应转换只支持一个候选。")]);
                 var choice = Object(choices[0]);
-                Check(choice, doc, "$.choices[0]", "index", "message", "finish_reason");
+                Check(choice, doc, "$.choices[0]", "index", "message", "finish_reason", "logprobs");
+                if (choice["logprobs"] is not null) Loss(doc, "$.choices[0].logprobs");
                 var chat = Object(choice["message"]);
+                chat = chat.DeepClone().AsObject();
+                if (chat.ContainsKey("refusal") && chat["refusal"] is null) chat.Remove("refusal");
+                if (chat["annotations"] is JsonArray annotations && annotations.Count == 0) chat.Remove("annotations");
                 if (Text(chat["role"]) != "assistant") throw new ArgumentException("生成响应必须是 assistant 消息。");
                 var request = new JsonObject { ["model"] = doc.Model, ["messages"] = new JsonArray(chat.DeepClone()) };
                 var read = RequestReader.Read(request, protocol);

@@ -26,8 +26,7 @@ internal static class RequestWriter
             };
             if (key is null)
             {
-                if (setting.Key is "chatFormat" or "responsesFormat" or "effort") SpecialSetting(target, protocol, setting.Key, setting.Value, doc);
-                else Loss(doc, "$settings." + setting.Key);
+                if (setting.Key != "parallel") Loss(doc, "$settings." + setting.Key);
             }
             else config[key] = setting.Key == "stop" && protocol != LlmProtocol.ChatCompletions && setting.Value is JsonValue
                 ? new JsonArray(setting.Value.DeepClone()) : setting.Value?.DeepClone();
@@ -55,6 +54,9 @@ internal static class RequestWriter
             target[protocol == LlmProtocol.Gemini ? "systemInstruction" : "system"] = protocol == LlmProtocol.Gemini ? new JsonObject { ["parts"] = blocks } : blocks;
         }
         ToolMapping.Write(target, protocol, doc);
+        WriteParallel(target, protocol, doc);
+        ReasoningMapping.Write(target, protocol, doc, options);
+        StructuredOutputMapping.Write(target, protocol, doc, options);
         return target;
     }
 
@@ -156,36 +158,19 @@ internal static class RequestWriter
     /// <summary>拒绝无对应函数调用的结果。</summary>
     private static string RequireCall(ToolCallTracker calls, string id) => calls.Consume(id);
 
-    /// <summary>仅在语义明确的 OpenAI 两协议之间映射 Schema 与 effort。</summary>
-    private static void SpecialSetting(JsonObject target, LlmProtocol protocol, string key, JsonNode? value, ConversionDocument doc)
+    /// <summary>显式并行工具开关使用目标原生字段；Gemini 没有可等价表达的开关。</summary>
+    private static void WriteParallel(JsonObject target, LlmProtocol protocol, ConversionDocument doc)
     {
-        if (protocol is not (LlmProtocol.ChatCompletions or LlmProtocol.Responses)) { Loss(doc, "$settings." + key); return; }
-        if (key == "effort")
+        if (!doc.Settings.ContainsKey("parallel")) return;
+        var parallel = Boolean(doc.Settings["parallel"]);
+        if (protocol is LlmProtocol.ChatCompletions or LlmProtocol.Responses) target["parallel_tool_calls"] = parallel;
+        else if (protocol == LlmProtocol.ClaudeMessages)
         {
-            if (protocol == LlmProtocol.ChatCompletions) target["reasoning_effort"] = value?.DeepClone();
-            else target["reasoning"] = new JsonObject { ["effort"] = value?.DeepClone() };
-            return;
+            if (doc.Tools.Count == 0) { Loss(doc, "$settings.parallel", "parallel_tools_required"); return; }
+            if (target["tool_choice"] is not JsonObject) target["tool_choice"] = new JsonObject { ["type"] = "auto" };
+            if (target["tool_choice"]!["type"]?.GetValue<string>() == "none") { Loss(doc, "$settings.parallel", "parallel_tools_disabled"); return; }
+            target["tool_choice"]!["disable_parallel_tool_use"] = !parallel;
         }
-        var format = Object(value);
-        if (key == "chatFormat" && protocol == LlmProtocol.ChatCompletions) { target["response_format"] = format.DeepClone(); return; }
-        if (key == "responsesFormat" && protocol == LlmProtocol.Responses) { target["text"] = new JsonObject { ["format"] = format.DeepClone() }; return; }
-        var type = Text(format["type"]);
-        if (type is not ("text" or "json_object" or "json_schema")) { Loss(doc, "$format.type"); return; }
-        JsonObject converted;
-        if (key == "chatFormat")
-        {
-            Check(format, doc, "$.response_format", "type", "json_schema");
-            converted = type == "json_schema" ? Object(format["json_schema"]).DeepClone().AsObject() : new();
-            if (type == "json_schema") Check(converted, doc, "$.response_format.json_schema", "name", "description", "schema", "strict");
-            converted["type"] = type;
-            target["text"] = new JsonObject { ["format"] = converted };
-        }
-        else
-        {
-            Check(format, doc, "$.text.format", type == "json_schema" ? ["type", "name", "description", "schema", "strict"] : ["type"]);
-            converted = format.DeepClone().AsObject(); converted.Remove("type");
-            target["response_format"] = type == "json_schema" ? new JsonObject { ["type"] = type, ["json_schema"] = converted }
-                : new JsonObject { ["type"] = type };
-        }
+        else Loss(doc, "$settings.parallel", "unsupported_parallel_tools");
     }
 }

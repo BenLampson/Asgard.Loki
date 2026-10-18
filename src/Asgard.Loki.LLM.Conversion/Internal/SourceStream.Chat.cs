@@ -10,6 +10,7 @@ internal sealed partial class SourceStream
     /// <summary>Chat 允许结束块之后继续发送独立 usage 块。</summary>
     private void Chat(JsonObject data, List<StreamChange> changes)
     {
+        data = ResponseEnvelope.Content(data, protocol, Document);
         Check(data, Document, "$event", "id", "object", "created", "model", "choices", "usage");
         Identity(data, "id", "model");
         UsageMapping.Read(data["usage"], protocol, Document);
@@ -18,9 +19,12 @@ internal sealed partial class SourceStream
         foreach (var node in choices)
         {
             var choice = Object(node);
-            Check(choice, Document, "$event.choices[]", "index", "delta", "finish_reason");
+            Check(choice, Document, "$event.choices[]", "index", "delta", "finish_reason", "logprobs");
+            if (choice["logprobs"] is not null) Loss(Document, "$event.choices[].logprobs");
             if (choice["index"]?.GetValue<int>() != 0) throw new NotSupportedException("流式转换只支持一个候选。");
             var delta = Object(choice["delta"]);
+            delta = delta.DeepClone().AsObject();
+            if (delta.ContainsKey("refusal") && delta["refusal"] is null) delta.Remove("refusal");
             Check(delta, Document, "$event.delta", "role", "content", "tool_calls");
             if (delta["role"] is not null && Text(delta["role"]) != "assistant") throw new InvalidDataException("Chat 流角色必须为 assistant。");
             if (delta["content"] is not null) TextDelta("chat-text-" + _chatTextSegment, Text(delta["content"]), changes);

@@ -18,17 +18,19 @@ internal static class RequestReader
             case LlmProtocol.Gemini: Gemini(source, doc); break;
         }
         ToolMapping.Read(source, protocol, doc);
+        ReasoningMapping.Read(source, protocol, doc);
+        StructuredOutputMapping.Read(source, protocol, doc);
         return doc;
     }
 
     /// <summary>读取 Chat 消息与公共生成参数。</summary>
     private static void Chat(JsonObject source, ConversionDocument doc)
     {
-        Check(source, doc, "$", "model", "messages", "stream", "temperature", "top_p", "max_tokens", "max_completion_tokens", "stop", "tools", "tool_choice", "response_format", "reasoning_effort");
+        Check(source, doc, "$", "model", "messages", "stream", "temperature", "top_p", "max_tokens", "max_completion_tokens", "stop", "tools", "tool_choice", "response_format", "reasoning_effort", "parallel_tool_calls");
         if (source.ContainsKey("max_tokens") && source.ContainsKey("max_completion_tokens"))
             throw new ArgumentException("不能同时转换两个输出上限字段。");
         Settings(source, doc, ("temperature", "temperature"), ("top_p", "topP"), ("max_tokens", "maxTokens"),
-            ("max_completion_tokens", "maxTokens"), ("stop", "stop"), ("response_format", "chatFormat"), ("reasoning_effort", "effort"));
+            ("max_completion_tokens", "maxTokens"), ("stop", "stop"), ("parallel_tool_calls", "parallel"));
         foreach (var node in Array(source["messages"]))
         {
             var item = Object(node);
@@ -58,20 +60,8 @@ internal static class RequestReader
     /// <summary>保留 Responses 原生项的先后顺序，不把历史标识转成文本。</summary>
     private static void Responses(JsonObject source, ConversionDocument doc)
     {
-        Check(source, doc, "$", "model", "input", "instructions", "stream", "temperature", "top_p", "max_output_tokens", "tools", "tool_choice", "text", "reasoning");
-        Settings(source, doc, ("temperature", "temperature"), ("top_p", "topP"), ("max_output_tokens", "maxTokens"));
-        if (source["reasoning"] is JsonObject reasoning)
-        {
-            Check(reasoning, doc, "$.reasoning", "effort");
-            Copy(reasoning, "effort", doc.Settings, "effort");
-        }
-        else if (source.ContainsKey("reasoning")) Loss(doc, "$.reasoning");
-        if (source.ContainsKey("text"))
-        {
-            var text = Object(source["text"]);
-            Check(text, doc, "$.text", "format");
-            Copy(text, "format", doc.Settings, "responsesFormat");
-        }
+        Check(source, doc, "$", "model", "input", "instructions", "stream", "temperature", "top_p", "max_output_tokens", "tools", "tool_choice", "text", "reasoning", "parallel_tool_calls");
+        Settings(source, doc, ("temperature", "temperature"), ("top_p", "topP"), ("max_output_tokens", "maxTokens"), ("parallel_tool_calls", "parallel"));
         if (source["instructions"] is not null)
         {
             var system = new ConversionMessage("system");
@@ -118,7 +108,7 @@ internal static class RequestReader
     /// <summary>读取 Claude 系统块、消息及工具结果。</summary>
     private static void Claude(JsonObject source, ConversionDocument doc)
     {
-        Check(source, doc, "$", "model", "messages", "system", "max_tokens", "stream", "temperature", "top_p", "top_k", "stop_sequences", "tools", "tool_choice");
+        Check(source, doc, "$", "model", "messages", "system", "max_tokens", "stream", "temperature", "top_p", "top_k", "stop_sequences", "tools", "tool_choice", "thinking", "output_config");
         Settings(source, doc, ("temperature", "temperature"), ("top_p", "topP"), ("top_k", "topK"), ("max_tokens", "maxTokens"), ("stop_sequences", "stop"));
         if (source["system"] is not null)
         {
@@ -143,7 +133,7 @@ internal static class RequestReader
         if (source.ContainsKey("generationConfig"))
         {
             var config = Object(source["generationConfig"]);
-            Check(config, doc, "$.generationConfig", "temperature", "topP", "topK", "maxOutputTokens", "stopSequences");
+            Check(config, doc, "$.generationConfig", "temperature", "topP", "topK", "maxOutputTokens", "stopSequences", "thinkingConfig", "responseMimeType", "responseJsonSchema", "responseSchema");
             Settings(config, doc, ("temperature", "temperature"), ("topP", "topP"), ("topK", "topK"), ("maxOutputTokens", "maxTokens"), ("stopSequences", "stop"));
         }
         if (source.ContainsKey("systemInstruction"))

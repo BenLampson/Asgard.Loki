@@ -10,6 +10,8 @@ internal static class ConversionJson
     internal static string Text(JsonNode? node) => node?.GetValue<string>() ?? throw new ArgumentException("缺少必需的字符串字段。");
     /// <summary>按 JSON 数值而非 JsonValue 的 CLR 装箱类型读取整数。</summary>
     internal static long Number(JsonNode? node) => node is null ? 0 : JsonSerializer.SerializeToElement(node).GetInt64();
+    /// <summary>读取显式布尔字段，null 不是 false，也不能触发空引用异常。</summary>
+    internal static bool Boolean(JsonNode? node) => node?.GetValue<bool>() ?? throw new ArgumentException("协议字段必须是布尔值。");
     /// <summary>读取对象。</summary>
     internal static JsonObject Object(JsonNode? node) => node as JsonObject ?? throw new ArgumentException("协议字段必须是对象。");
     /// <summary>读取数组。</summary>

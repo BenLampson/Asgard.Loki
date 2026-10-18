@@ -120,7 +120,7 @@ public sealed class ConvertingProviderTests
     }
 
     /// <summary>调用者显式注册转换供应商；原生供应商不引用转换包。</summary>
-    private static ILokiClient Build(StubHttpHandler handler, LlmProtocol source, LlmProtocol upstream,
+    internal static ILokiClient Build(StubHttpHandler handler, LlmProtocol source, LlmProtocol upstream,
         ILlmSessionStore? store = null, LlmConversionOptions? options = null)
     {
         var factory = new StubHttpClientFactory(handler);
@@ -134,7 +134,7 @@ public sealed class ConvertingProviderTests
         }).Build();
     }
     /// <summary>从公共 SDK 的各原生入口发起完整调用。</summary>
-    private static async Task<LlmJsonResult> CompleteAsync(ILokiClient client, LlmProtocol source, JsonObject request)
+    internal static async Task<LlmJsonResult> CompleteAsync(ILokiClient client, LlmProtocol source, JsonObject request)
     {
         var call = new LlmCallOptions { SessionId = "wire-session" }; var token = TestContext.Current.CancellationToken;
         return source switch
@@ -146,7 +146,7 @@ public sealed class ConvertingProviderTests
         };
     }
     /// <summary>消费所有公共流事件，不绕过供应商终态检查。</summary>
-    private static async Task<List<LlmJsonEvent>> StreamAsync(ILokiClient client, LlmProtocol source, JsonObject request)
+    internal static async Task<List<LlmJsonEvent>> StreamAsync(ILokiClient client, LlmProtocol source, JsonObject request)
     {
         List<LlmJsonEvent> events = []; var call = new LlmCallOptions { SessionId = "wire-session" }; var token = TestContext.Current.CancellationToken;
         switch (source)

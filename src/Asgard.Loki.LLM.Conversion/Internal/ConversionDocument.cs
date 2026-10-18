@@ -15,6 +15,10 @@ internal sealed class ConversionDocument
     internal List<ConversionMessage> Messages { get; } = [];
     /// <summary>可直接映射的生成设置。</summary>
     internal JsonObject Settings { get; } = [];
+    /// <summary>推理模式、精确预算、定性强度和输出意图保持独立。</summary>
+    internal JsonObject Reasoning { get; } = [];
+    /// <summary>结构化输出规范，Schema 保留原始 JSON，不做降级简化。</summary>
+    internal JsonObject? OutputFormat { get; set; }
     /// <summary>规范化函数定义。</summary>
     internal JsonArray Tools { get; } = [];
     /// <summary>规范化工具选择。</summary>

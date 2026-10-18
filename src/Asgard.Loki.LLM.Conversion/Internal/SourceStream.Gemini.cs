@@ -9,6 +9,7 @@ internal sealed partial class SourceStream
     /// <summary>Gemini 函数调用已包含完整 args；文本 part 即时转换。</summary>
     private void Gemini(JsonObject data, List<StreamChange> changes)
     {
+        data = ResponseEnvelope.Content(data, protocol, Document);
         Check(data, Document, "$event", "responseId", "modelVersion", "candidates", "usageMetadata"); Identity(data, "responseId", "modelVersion");
         UsageMapping.Read(data["usageMetadata"], protocol, Document);
         if (data["candidates"] is not JsonArray candidates) return;

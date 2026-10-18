@@ -37,6 +37,12 @@ public static class LlmProtocolConverter
         ArgumentNullException.ThrowIfNull(value);
         ConversionJson.ValidateProtocol(from); ConversionJson.ValidateProtocol(to);
         if (options?.DefaultMaxTokens is <= 0) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options?.TargetThinkingBudgetTokens is < 1024) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options?.DefaultSchemaName is { } schemaName
+            && (schemaName.Length is < 1 or > 64 || schemaName.Any(c => !char.IsAsciiLetterOrDigit(c) && c is not ('_' or '-'))))
+            throw new ArgumentException("Schema 名称必须为 1 至 64 个 ASCII 字母、数字、下划线或连字符。", nameof(options));
+        if (options?.TargetReasoningEffort is { } effort && effort is not ("none" or "minimal" or "low" or "medium" or "high" or "xhigh" or "max"))
+            throw new ArgumentException("无效的目标推理强度。", nameof(options));
     }
     /// <summary>严格策略在发现损耗后拒绝输出，显式允许时完整返回诊断。</summary>
     internal static void Enforce(ConversionDocument doc, LlmConversionOptions? options)

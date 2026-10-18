@@ -1,0 +1,33 @@
+{
+  "responseId": "r1",
+  "modelVersion": "model-a",
+  "candidates": [
+    {
+      "index": 0,
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "text": "你好"
+          },
+          {
+            "functionCall": {
+              "id": "call_1",
+              "name": "lookup",
+              "args": {
+                "x": 0
+              }
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP"
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 3,
+    "candidatesTokenCount": 2,
+    "totalTokenCount": 5
+  },
+  "createTime": "2026-10-19T00:00:00Z"
+}

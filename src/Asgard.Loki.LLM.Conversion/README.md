@@ -19,7 +19,9 @@ Every off-diagonal direction has independent request, complete-response, streami
 | Functions | Definitions with JSON Schema, named/auto/required/none choice, original call IDs, arguments and associated results |
 | Gemini results | Must already be JSON object text; the SDK does not wrap arbitrary text in an invented result schema |
 | Parameters | Temperature, top-p, explicit output limits; top-k and stop where the destination supports them |
-| Structured output / reasoning effort | Native field mapping between Chat and Responses; other destinations diagnose unsupported settings |
+| Structured output | JSON Schema wrappers across all four protocols; schema copied unchanged. Gemini `responseJsonSchema` supported; its separate `responseSchema` dialect is diagnosed. Plain JSON mode maps between OpenAI and Gemini |
+| Reasoning settings | Qualitative effort, explicit Claude/Gemini budget or dynamic/off mode, and summary/display intent where representable; no model-name heuristics or calculated budgets |
+| Parallel functions | Chat/Responses `parallel_tool_calls` ↔ Claude `disable_parallel_tool_use`; Gemini has no equivalent switch and produces a diagnostic |
 | Responses | Creation in the common stateless subset; no cross-protocol `previous_response_id`, `store` or background semantics |
 | Responses output | Single candidate, ordinary text/function calls and supported finish reasons |
 | Usage | Base totals, cache reads and reasoning counts with native accounting conventions; OpenAI details transfer between Chat/Responses. Claude cache-write breakdown or unsupported nonzero details diagnose loss |
@@ -30,6 +32,30 @@ Every off-diagonal direction has independent request, complete-response, streami
 Streams are single-call state machines, not resumable event subscriptions. Missing terminal events, invalid/incomplete tool arguments, inconsistent final Responses output, unsupported interleaving or upstream errors fail explicitly. A late failure may occur after earlier deltas have been returned; callers must observe the full enumeration. No successful terminal is emitted for a truncated source stream. Direct same-protocol stream copies leave native transport validation to the provider.
 
 Tool results consume one pending call exactly once. Gemini results without IDs must match a unique pending function name; completed history is excluded, and generated IDs avoid explicit IDs throughout the request. Stream validation checks closed blocks, item identities, sequence numbers, done snapshots, duplicate terminals and mutations after completion. Text cannot overtake an earlier buffered tool. Explicit length/filter finishes retain incomplete Responses item status. Unknown nested fields are diagnosed even inside recognized events. Missing usage remains unknown; conversion to Claude requires final input/output counts rather than inventing them. Claude stream start usage excludes cached input from `input_tokens`.
+
+## Explicit generation settings
+
+`reasoning_effort`, Responses `reasoning.effort`, Claude `output_config.effort` and Gemini `thinkingConfig.thinkingLevel` map qualitative intent. Supported levels remain model-dependent; the SDK does not infer capabilities from model names or promise equal token use/quality between suppliers. Claude uses adaptive thinking for an effort-only request. `TargetThinkingBudgetTokens` explicitly selects manual Claude thinking instead; it must be at least 1024 and below the caller's output limit. Output limits are never raised automatically. Manual mode is only usable on models that support it.
+
+Exact numeric budgets transfer between Claude and Gemini; zero/off and dynamic (-1/adaptive) remain distinct. An OpenAI target cannot represent a numeric thinking budget. `TargetReasoningEffort` can explicitly replace it, but produces `reasoning_budget_replaced` and still requires `AllowLoss = true`. Supplying both budget and effort can also be unrepresentable in a destination. Explicit `false` and omitted/null settings are not treated as interchangeable.
+
+JSON Schema bodies are copied unchanged into OpenAI `response_format`/`text.format`, Claude `output_config.format`, or Gemini `responseMimeType` + `responseJsonSchema`. No constraints are deleted or translated into descriptions. Supported Schema keywords and combinations still depend on the actual upstream. For unnamed Claude/Gemini schemas, an OpenAI target requires caller-provided `DefaultSchemaName`. OpenAI wrapper name/description and non-strict enforcement cannot be represented exactly in Claude/Gemini: they produce field diagnostics and require explicit loss consent. Claude has no equivalent generic OpenAI JSON-object mode.
+
+```csharp
+var options = new LlmConversionOptions
+{
+    DefaultMaxTokens = 4096,
+    DefaultSchemaName = "result"
+};
+// Add AllowLoss = true only for reviewed metadata/enforcement differences.
+// Set TargetThinkingBudgetTokens only for a target supporting manual thinking.
+```
+
+Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings.
+
+Known descriptive response envelope fields and executed-request echoes (for example service tier, metadata and Responses sampling/tool configuration) stay in `OriginalData` / `Metadata.Conversion.UpstreamData`. They are not injected into the converted content or treated as a new request/continuation. Business output and future unclassified fields still undergo strict validation. This permits realistic native response envelopes without silently reusing upstream execution settings.
+
+Field references checked for this implementation: [OpenAI structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs), [OpenAI reasoning](https://developers.openai.com/api/docs/guides/reasoning), [Claude structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs), [Claude thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), and [Gemini generation configuration](https://ai.google.dev/api/generate-content#GenerationConfig).
 
 ## Register an explicit converting provider
 
