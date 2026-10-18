@@ -90,11 +90,14 @@ internal sealed class LlmConfiguration
         if (target.Protocols == LlmProtocol.None || (target.Protocols & ~(LlmProtocol.ChatCompletions | LlmProtocol.Responses
             | LlmProtocol.ClaudeMessages | LlmProtocol.Gemini)) != 0)
             throw new ArgumentException("目标协议能力无效。");
-        if ((target.Features & ~LlmTargetFeatures.ResponsesCompaction) != 0)
+        if ((target.Features & ~(LlmTargetFeatures.ResponsesCompaction | LlmTargetFeatures.ResponsesWebSocket)) != 0)
             throw new ArgumentException("目标可选操作无效。");
         if (target.Features.HasFlag(LlmTargetFeatures.ResponsesCompaction)
             && (!target.Protocols.HasFlag(LlmProtocol.Responses) || provider is not IResponsesCompactionAdapter))
             throw new ArgumentException("目标的 Responses 压缩能力缺少原生协议或适配实现。");
+        if (target.Features.HasFlag(LlmTargetFeatures.ResponsesWebSocket)
+            && (!target.Protocols.HasFlag(LlmProtocol.Responses) || provider is not IResponsesWebSocketAdapter))
+            throw new ArgumentException("目标的 Responses WebSocket 能力缺少原生协议或适配实现。");
         if (target.Protocols.HasFlag(LlmProtocol.ChatCompletions) && provider is not IChatCompletionsAdapter
             || target.Protocols.HasFlag(LlmProtocol.Responses) && provider is not IResponsesAdapter
             || target.Protocols.HasFlag(LlmProtocol.ClaudeMessages) && provider is not IClaudeMessagesAdapter

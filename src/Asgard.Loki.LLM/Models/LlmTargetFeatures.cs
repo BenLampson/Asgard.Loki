@@ -7,5 +7,7 @@ public enum LlmTargetFeatures
     /// <summary>只使用目标声明的基础协议。</summary>
     None = 0,
     /// <summary>原生 Responses 压缩窗口操作，不自动压缩或转换协议。</summary>
-    ResponsesCompaction = 1
+    ResponsesCompaction = 1,
+    /// <summary>在完整固定目标上使用原生 Responses 双工连接。</summary>
+    ResponsesWebSocket = 2
 }

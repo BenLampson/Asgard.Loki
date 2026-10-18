@@ -13,6 +13,7 @@ public sealed class CompactionConfigurationTests
     /// <summary>未知操作位、缺失协议或缺失可选实现都在注册阶段失败。</summary>
     [Theory]
     [InlineData(2, LlmProtocol.Responses)]
+    [InlineData(4, LlmProtocol.Responses)]
     [InlineData(-1, LlmProtocol.Responses)]
     [InlineData(1, LlmProtocol.ChatCompletions)]
     [InlineData(1, LlmProtocol.Responses)]

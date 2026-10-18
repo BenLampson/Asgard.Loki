@@ -6,6 +6,21 @@ internal sealed class LlmInvocation(LlmConfiguration configuration)
     /// <summary>暴露共享存储供协议客户端登记响应归属。</summary>
     internal ILlmSessionStore Sessions => configuration.Sessions;
 
+    /// <summary>连接已建立后只验证原绑定，不允许会话过期或被替换时重新创建绑定。</summary>
+    internal async ValueTask ValidateBoundAsync(LlmSessionBinding expected, string? previousResponseId, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var current = await Sessions.GetAsync(expected.SessionId, cancellationToken).ConfigureAwait(false);
+        if (current != expected) throw new InvalidOperationException("连接的原 Session 绑定不存在、已经过期或已被替换，不允许重新调度。");
+        var target = configuration.Routes[expected.Model].Targets.SingleOrDefault(item => item.Id == expected.TargetId);
+        if (target is null || !target.Protocols.HasFlag(expected.Protocol) || configuration.Fingerprint(target) != expected.Fingerprint)
+            throw new InvalidOperationException("连接的原目标配置或适配实现已改变，不允许继续使用。");
+        if (previousResponseId is not null
+            && !await Sessions.OwnsResponseAsync(expected, previousResponseId, cancellationToken).ConfigureAwait(false))
+            throw new InvalidOperationException("引用的响应 ID 不属于当前 Session 或记录已过期。");
+        await Sessions.RefreshAsync(expected.SessionId, cancellationToken).ConfigureAwait(false);
+    }
+
     /// <summary>恢复已有目标，首次调用才经过目标选择器。</summary>
     internal async ValueTask<(LlmAdapterContext Context, LlmSessionBinding Binding, ILlmProvider Provider)> ResolveAsync(
         string model, LlmProtocol protocol, LlmCallOptions options, string? previousResponseId, CancellationToken cancellationToken,

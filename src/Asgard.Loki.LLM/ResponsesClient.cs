@@ -6,6 +6,26 @@ namespace Asgard.Loki.LLM;
 internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClient
 {
     /// <inheritdoc />
+    public async Task<IResponsesWebSocketConnection> OpenWebSocketAsync(string model, LlmCallOptions options, CancellationToken cancellationToken = default)
+    {
+        var call = await invocation.ResolveAsync(model, LlmProtocol.Responses, options, null, cancellationToken,
+            LlmTargetFeatures.ResponsesWebSocket).ConfigureAwait(false);
+        var connection = await ((IResponsesWebSocketAdapter)call.Provider).OpenWebSocketAsync(call.Context, cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException("原生适配器未返回连接。");
+        try
+        {
+            await invocation.ValidateBoundAsync(call.Binding, null, cancellationToken).ConfigureAwait(false);
+            if (connection.Metadata != call.Context.Metadata) throw new InvalidOperationException("连接返回了不同目标的元数据。");
+            return new BoundResponsesWebSocketConnection(invocation, call.Binding, connection, call.Context.Metadata);
+        }
+        catch
+        {
+            await connection.DisposeAsync().ConfigureAwait(false);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
     public async Task<ResponseCompaction> CompactAsync(ResponseCompactionRequest request, LlmCallOptions options, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);

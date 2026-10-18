@@ -151,7 +151,9 @@ Compaction sends one native `/responses/compact` request, with model mapping and
 
 `Features.None` is omitted from target JSON so adding this optional contract does not change the default basic-target fingerprint representation. Non-default feature declarations are fingerprinted; changing them invalidates affected bindings. Source compaction items remain hard failures in cross-protocol conversion even with `AllowLoss`, while native requests and same-protocol copies retain them.
 
-The next small checkpoint introduces only the optional Responses WebSocket extension contracts. `IResponsesWebSocketAdapter` opens an `IResponsesWebSocketConnection` exposing metadata, raw JSON send, native `ResponseEvent` enumeration, explicit close and async disposal. `IResponsesClient.OpenWebSocketAsync` defaults to unsupported so existing custom clients remain valid. The built-in client and current providers still do not advertise or implement WebSocket transport at this checkpoint; connection/session enforcement and native transport follow separately. No new target feature is enabled yet.
+Responses WebSocket is an optional extension. `IResponsesWebSocketAdapter` opens an `IResponsesWebSocketConnection` exposing metadata, raw JSON send, native `ResponseEvent` enumeration, explicit close and async disposal. `IResponsesClient.OpenWebSocketAsync` defaults to unsupported so existing custom clients remain valid. The built-in client now resolves targets explicitly declaring `LlmTargetFeatures.ResponsesWebSocket`, validates the returned connection identity, and wraps the caller-supplied native adapter. Bundled providers still do not implement WebSocket transport at this checkpoint.
+
+The internal bound connection never invokes first-binding resolution after opening: each send verifies the original binding still exists and matches exactly. A missing/replaced Session fails rather than binding a live socket to a new target. The handshake is also checked after its await; invalidated or mismatched connections are disposed. Known response lifecycle IDs are registered under the original Session after revalidation; continuation and explicit cancellation response IDs must belong to it. The wrapper serializes writes, permits one active reader, preserves stream IDs and unknown/native JSON, and maps only the public alias on `response.create` to the fixed actual model. It rejects HTTP-only `stream`/`background` fields without silently removing them. Native transport adapters own framing, protocol terminal validation and socket resources; factories/stores remain borrowed. Socket lifetime is separate from logical Session lifetime, with no automatic reconnect, retry or event replay.
 
 ```mermaid
 classDiagram
@@ -170,6 +172,10 @@ class IResponsesWebSocketConnection {
 IResponsesWebSocketAdapter --|> ILlmProvider
 IResponsesWebSocketAdapter --> IResponsesWebSocketConnection
 IResponsesWebSocketConnection --> ResponseEvent
+ResponsesClient --> BoundResponsesWebSocketConnection
+BoundResponsesWebSocketConnection ..|> IResponsesWebSocketConnection
+BoundResponsesWebSocketConnection --> IResponsesWebSocketConnection : wraps native adapter
+BoundResponsesWebSocketConnection --> ILlmSessionStore : validate existing binding
 ```
 
 ### Explicit conversion extension
