@@ -47,6 +47,15 @@ public sealed class CompactionConfigurationTests
         await Assert.ThrowsAsync<NotSupportedException>(() => client.CompactAsync(new() { Model = "public" }, new() { SessionId = "legacy" }, TestContext.Current.CancellationToken));
     }
 
+    /// <summary>先加入双工扩展契约也不能让旧客户端或基础 HTTP 适配器隐式宣称可连接。</summary>
+    [Fact]
+    public async Task LegacyImplementation_ReportsWebSocketUnsupported()
+    {
+        IResponsesClient client = new LegacyResponsesClient();
+        await Assert.ThrowsAsync<NotSupportedException>(() => client.OpenWebSocketAsync("public", new() { SessionId = "legacy" }, TestContext.Current.CancellationToken));
+        Assert.False((ILlmProvider)new StubLlmProvider() is IResponsesWebSocketAdapter);
+    }
+
     /// <summary>纯基础目标，供应商故意只实现原有 Chat/Responses 接口。</summary>
     private static LlmTarget Target() => new()
     {

@@ -151,6 +151,27 @@ Compaction sends one native `/responses/compact` request, with model mapping and
 
 `Features.None` is omitted from target JSON so adding this optional contract does not change the default basic-target fingerprint representation. Non-default feature declarations are fingerprinted; changing them invalidates affected bindings. Source compaction items remain hard failures in cross-protocol conversion even with `AllowLoss`, while native requests and same-protocol copies retain them.
 
+The next small checkpoint introduces only the optional Responses WebSocket extension contracts. `IResponsesWebSocketAdapter` opens an `IResponsesWebSocketConnection` exposing metadata, raw JSON send, native `ResponseEvent` enumeration, explicit close and async disposal. `IResponsesClient.OpenWebSocketAsync` defaults to unsupported so existing custom clients remain valid. The built-in client and current providers still do not advertise or implement WebSocket transport at this checkpoint; connection/session enforcement and native transport follow separately. No new target feature is enabled yet.
+
+```mermaid
+classDiagram
+class IResponsesWebSocketAdapter {
+  <<interface>>
+  +OpenWebSocketAsync()
+}
+class IResponsesWebSocketConnection {
+  <<interface>>
+  +Metadata
+  +SendAsync()
+  +ReadEventsAsync()
+  +CloseAsync()
+  +DisposeAsync()
+}
+IResponsesWebSocketAdapter --|> ILlmProvider
+IResponsesWebSocketAdapter --> IResponsesWebSocketConnection
+IResponsesWebSocketConnection --> ResponseEvent
+```
+
 ### Explicit conversion extension
 
 `Asgard.Loki.LLM.Conversion` is an optional LLM extension with a single project dependency on `Asgard.Loki.LLM`. It owns pure request/response conversion and single-call stream state. Its private conversion representation never replaces the four native contracts or crosses capability boundaries. This remains an embeddable SDK: no listener, HTTP relay endpoint, gateway administration, billing, tool executor or background orchestration is introduced.
