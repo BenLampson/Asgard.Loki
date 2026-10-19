@@ -104,3 +104,17 @@ The AWS Nova native event `Data` remains the complete decoded chunk envelope (fo
 `ConvertingBedrockLlmProvider` in the optional [Conversion package](../Asgard.Loki.LLM.Conversion/README.md#explicit-nova--converse-complete-json) explicitly maps the complete native Nova/Converse pair using caller-selected envelope/layout settings. Core clients, protocol enum values, target/credential binding and native JSON/EventStream transport remain unchanged. No supplier or conversion dependency is introduced in this core.
 
 The optional [native-pair logical stream mapper](../Asgard.Loki.LLM.Conversion/README.md#public-sdk-native-stream-composition) composes the existing two Bedrock adapters without changing core contracts or adding references. Converted Nova data is a full inner envelope with explicit logical Type and no original outer EventName/frame; converted Converse data is the logical payload/event name. Native identity streams retain their exact event instances and supplier-owned frames.
+
+### Optional protocol support declaration
+
+`ILlmProtocolSupport.SupportsProtocol(LlmProtocol)` lets a caller-owned or composed adapter explicitly restrict its implemented protocol interfaces. Registration checks each single known protocol in every configured target, including unselected/backup targets. A false declaration fails before invocation; a true declaration still requires the matching adapter interface and independently validated optional operation features. None/unknown flags remain invalid under the existing configuration rules.
+
+```csharp
+// Optional on an adapter that actually implements the corresponding interfaces.
+public bool SupportsProtocol(LlmProtocol protocol) =>
+    protocol is LlmProtocol.ChatCompletions or LlmProtocol.Responses;
+```
+
+The callback is a deterministic in-memory configuration declaration. It must not inspect models over the network, obtain credentials, mutate routing or select another provider. Keep the provider/configuration immutable after registration and include behavior-affecting configuration in its existing BindingIdentity. This is protocol scope, not a promise that every field, operation or transport is implemented. Those remain documented/validated separately. Adapters that do not implement this optional contract retain exactly the previous interface-based behavior.
+
+No new protocol flags, target fields, fingerprint algorithm or package dependencies are introduced. The contract lives in LLM, not Abstractions or the entry package. Seventeen new offline core cases bring this suite to 208; valid legacy/declared complete and stream calls still run, disallowed targets fail eagerly, declarations cannot replace implementations, and invalid flags never reach the callback.

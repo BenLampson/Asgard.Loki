@@ -5,7 +5,7 @@ using Asgard.Loki.LLM.Conversion.Internal;
 namespace Asgard.Loki.LLM.Conversion;
 
 /// <summary>固定 Nova/Converse 上游的显式 JSON/逻辑事件装饰器，不冒充四协议供应商或生成二进制帧。</summary>
-public sealed partial class ConvertingBedrockLlmProvider : IBedrockConverseAdapter, IBedrockNovaAdapter, ILlmCredentialSupport
+public sealed partial class ConvertingBedrockLlmProvider : IBedrockConverseAdapter, IBedrockNovaAdapter, ILlmCredentialSupport, ILlmProtocolSupport
 {
     private readonly ILlmProvider _upstream;
     private readonly LlmProtocol _protocol;
@@ -20,12 +20,16 @@ public sealed partial class ConvertingBedrockLlmProvider : IBedrockConverseAdapt
         if (upstreamProtocol == LlmProtocol.BedrockNova && upstream is not IBedrockNovaAdapter
             || upstreamProtocol == LlmProtocol.BedrockConverse && upstream is not IBedrockConverseAdapter)
             throw new ArgumentException("供应商未实现明确选择的原生协议。", nameof(upstream));
+        if (upstream is ILlmProtocolSupport declaredProtocol && !declaredProtocol.SupportsProtocol(upstreamProtocol))
+            throw new ArgumentException("供应商未声明支持固定的上游协议。", nameof(upstream));
         _options = ConversionOptionsSnapshot.Capture(options); LlmProtocolConverter.Validate(new(), upstreamProtocol, upstreamProtocol, _options);
         _upstream = upstream; _protocol = upstreamProtocol; Id = id;
     }
 
     /// <inheritdoc />
     public string Id { get; }
+    /// <summary>原生装饰器仅声明已实现的协议入口，不隐式开放未完成的混合文本协议转换。</summary>
+    public bool SupportsProtocol(LlmProtocol protocol) => BedrockConversion.IsBedrock(protocol);
     /// <summary>绑定域独立于原有四协议 v25；格式/位置选项和完整原生上游均参与绑定。</summary>
     public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:bedrock-json-conversion-v1:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
     /// <summary>认证能力完全委托明确上游，不提供降级、身份获取或自动重试。</summary>

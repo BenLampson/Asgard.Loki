@@ -109,6 +109,10 @@ internal sealed class LlmConfiguration
         if (target.Protocols == LlmProtocol.None || (target.Protocols & ~(LlmProtocol.ChatCompletions | LlmProtocol.Responses
             | LlmProtocol.ClaudeMessages | LlmProtocol.Gemini | LlmProtocol.OllamaChat | LlmProtocol.OllamaGenerate | LlmProtocol.BedrockConverse | LlmProtocol.BedrockNova)) != 0)
             throw new ArgumentException("目标协议能力无效。");
+        if (provider is ILlmProtocolSupport protocolSupport)
+            foreach (var protocol in Enum.GetValues<LlmProtocol>())
+                if (protocol != LlmProtocol.None && target.Protocols.HasFlag(protocol) && !protocolSupport.SupportsProtocol(protocol))
+                    throw new ArgumentException("目标供应商未声明支持所选协议；不能按接口存在推断转换组合可用。");
         if ((target.Features & ~(LlmTargetFeatures.ResponsesCompaction | LlmTargetFeatures.ResponsesWebSocket)) != 0)
             throw new ArgumentException("目标可选操作无效。");
         if (target.Features.HasFlag(LlmTargetFeatures.ResponsesCompaction)

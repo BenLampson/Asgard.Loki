@@ -1433,3 +1433,19 @@ sequenceDiagram
 Converted Converse logical names and Nova explicit types identify target JSON without pretending a binary header/frame exists. Public conversion metadata retains original source JSON/diagnostics, while the direct result additionally keeps the source event name. Original binary attachments are kept only on original identity-stream event instances. The historical `bedrock-json-conversion-v1` default identity stays byte-compatible because new nullable resource policies are omitted by default; explicit policies change the full target fingerprint. AWS/core/four-protocol identities and package dependency directions stay unchanged.
 
 139 pure data cases, fourteen application-adapter ownership/cancellation cases and 58 AWS native HTTP/frame cases add 211 checks, for 6461 offline tests (2212 conversion, 722 AWS), 28 packages. Source tests explicitly include async-only iterator disposal failure; new native AWS tests preserve their existing actual source-disposal coverage rather than claiming every older native path was strengthened. No live/model/Linux/remote CI claim is added. Broader native stream blocks and mixed text-protocol mappings remain open.
+
+## Optional LLM protocol scope declaration
+
+`ILlmProtocolSupport` belongs to the LLM capability. Its optional SupportsProtocol callback accepts a single known protocol during configuration, after target flags are validated and before invocation. Every target must be allowed, including currently unselected targets. The positive declaration never replaces a physical adapter or optional-operation implementation. Legacy adapters without the contract retain interface inference. This is an immutable capability declaration, not model discovery, route selection or a cross-capability coordinator.
+
+```mermaid
+classDiagram
+    ILlmProtocolSupport <|.. ConvertingLlmProvider
+    ILlmProtocolSupport <|.. ConvertingBedrockLlmProvider
+    LlmConfiguration --> ILlmProtocolSupport : optional per-target scope restriction
+    LlmConfiguration --> ILlmProvider : physical adapters still required
+    ConvertingLlmProvider --> ILlmProtocolSupport : validate fixed upstream when declared
+    ConvertingBedrockLlmProvider --> ILlmProtocolSupport : validate fixed upstream when declared
+```
+
+The current four-protocol and Bedrock-pair matrix is unchanged. The new declaration will prevent future partially implemented mixed matrices from being accidentally enabled solely because a wrapper exposes an interface. No protocol enum values, target serialization, binding algorithms, credentials, native transports or package dependency directions change. The entry still references only Abstractions; providers do not gain references to Conversion. Seventeen core and five conversion regressions bring the local ordinary inventory to 6483 (208 core, 2217 conversion), 28 production packages. No live/provider/model or remote CI acceptance is implied.
