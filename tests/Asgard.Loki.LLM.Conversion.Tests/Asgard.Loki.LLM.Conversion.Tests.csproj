@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <EmbeddedResource Include="Fixtures/**/*.json" />
+    <EmbeddedResource Include="../Shared/Fixtures/nova-converse-conversion.json" LogicalName="BedrockConversion.Fixture" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
     <ProjectReference Include="../../src/Asgard.Loki.LLM.Conversion/Asgard.Loki.LLM.Conversion.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />

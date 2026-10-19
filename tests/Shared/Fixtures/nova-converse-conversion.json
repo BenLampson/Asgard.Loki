@@ -1,0 +1,1082 @@
+{
+  "provenance": "Independently authored complete native Nova/Converse JSON examples and target goldens. No SDK output capture or live model claim.",
+  "v1": {
+    "Nova": {
+      "model": "public",
+      "system": [
+        {
+          "text": "原生 é 🚀"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "查询"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            },
+            {
+              "video": {
+                "format": "mp4",
+                "source": {
+                  "s3Location": {
+                    "uri": "s3://caller-bucket/video.mp4",
+                    "bucketOwner": "123456789012"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "call-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "call-b",
+                "status": "error",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false,
+                      "nil": null
+                    }
+                  },
+                  {
+                    "text": "失败"
+                  }
+                ]
+              }
+            },
+            {
+              "text": "继续"
+            },
+            {
+              "toolResult": {
+                "toolUseId": "call-a",
+                "content": [
+                  {
+                    "json": null
+                  },
+                  {
+                    "text": ""
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "error": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "schemaVersion": "messages-v1",
+      "inferenceConfig": {
+        "maxTokens": 4096,
+        "temperature": 0,
+        "topP": 1,
+        "stopSequences": [
+          "END",
+          "结束"
+        ],
+        "topK": 0,
+        "reasoningConfig": {
+          "type": "enabled",
+          "maxReasoningEffort": "low"
+        }
+      }
+    },
+    "ConverseDirect": {
+      "model": "public",
+      "system": [
+        {
+          "text": "原生 é 🚀"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "查询"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            },
+            {
+              "video": {
+                "format": "mp4",
+                "source": {
+                  "s3Location": {
+                    "uri": "s3://caller-bucket/video.mp4",
+                    "bucketOwner": "123456789012"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "call-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "call-b",
+                "status": "error",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false,
+                      "nil": null
+                    }
+                  },
+                  {
+                    "text": "失败"
+                  }
+                ]
+              }
+            },
+            {
+              "text": "继续"
+            },
+            {
+              "toolResult": {
+                "toolUseId": "call-a",
+                "content": [
+                  {
+                    "json": null
+                  },
+                  {
+                    "text": ""
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "error": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 4096,
+        "temperature": 0,
+        "topP": 1,
+        "stopSequences": [
+          "END",
+          "结束"
+        ]
+      },
+      "additionalModelRequestFields": {
+        "topK": 0,
+        "reasoningConfig": {
+          "type": "enabled",
+          "maxReasoningEffort": "low"
+        }
+      }
+    },
+    "ConverseNested": {
+      "model": "public",
+      "system": [
+        {
+          "text": "原生 é 🚀"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "查询"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            },
+            {
+              "video": {
+                "format": "mp4",
+                "source": {
+                  "s3Location": {
+                    "uri": "s3://caller-bucket/video.mp4",
+                    "bucketOwner": "123456789012"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "call-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "call-b",
+                "status": "error",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false,
+                      "nil": null
+                    }
+                  },
+                  {
+                    "text": "失败"
+                  }
+                ]
+              }
+            },
+            {
+              "text": "继续"
+            },
+            {
+              "toolResult": {
+                "toolUseId": "call-a",
+                "content": [
+                  {
+                    "json": null
+                  },
+                  {
+                    "text": ""
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "error": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 4096,
+        "temperature": 0,
+        "topP": 1,
+        "stopSequences": [
+          "END",
+          "结束"
+        ]
+      },
+      "additionalModelRequestFields": {
+        "inferenceConfig": {
+          "topK": 0,
+          "reasoningConfig": {
+            "type": "enabled",
+            "maxReasoningEffort": "low"
+          }
+        }
+      }
+    },
+    "NovaResponse": {
+      "output": {
+        "message": {
+          "role": "assistant",
+          "content": [
+            {
+              "text": "查询结果 🚀"
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-next-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-next-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "stopReason": "tool_use",
+      "usage": {
+        "inputTokens": 17,
+        "outputTokens": 8,
+        "totalTokens": 25
+      },
+      "metrics": {
+        "latencyMs": 9
+      }
+    },
+    "ConverseResponse": {
+      "output": {
+        "message": {
+          "role": "assistant",
+          "content": [
+            {
+              "text": "查询结果 🚀"
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-next-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-next-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "stopReason": "tool_use",
+      "usage": {
+        "inputTokens": 17,
+        "outputTokens": 8,
+        "totalTokens": 25
+      },
+      "metrics": {
+        "latencyMs": 9
+      }
+    }
+  },
+  "v2": {
+    "Nova": {
+      "model": "public",
+      "system": [
+        {
+          "text": "原生 é 🚀"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "查询"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            },
+            {
+              "video": {
+                "format": "mp4",
+                "source": {
+                  "s3Location": {
+                    "uri": "s3://caller-bucket/video.mp4",
+                    "bucketOwner": "123456789012"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "call-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "call-b",
+                "status": "error",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false,
+                      "nil": null
+                    }
+                  },
+                  {
+                    "text": "失败"
+                  }
+                ]
+              }
+            },
+            {
+              "text": "继续"
+            },
+            {
+              "toolResult": {
+                "toolUseId": "call-a",
+                "content": [
+                  {
+                    "json": null
+                  },
+                  {
+                    "text": ""
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "error": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 8192,
+        "stopSequences": [
+          "END"
+        ],
+        "reasoningConfig": {
+          "type": "enabled",
+          "maxReasoningEffort": "high"
+        }
+      }
+    },
+    "ConverseDirect": {
+      "model": "public",
+      "system": [
+        {
+          "text": "原生 é 🚀"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "查询"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            },
+            {
+              "video": {
+                "format": "mp4",
+                "source": {
+                  "s3Location": {
+                    "uri": "s3://caller-bucket/video.mp4",
+                    "bucketOwner": "123456789012"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "call-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "call-b",
+                "status": "error",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false,
+                      "nil": null
+                    }
+                  },
+                  {
+                    "text": "失败"
+                  }
+                ]
+              }
+            },
+            {
+              "text": "继续"
+            },
+            {
+              "toolResult": {
+                "toolUseId": "call-a",
+                "content": [
+                  {
+                    "json": null
+                  },
+                  {
+                    "text": ""
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "error": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 8192,
+        "stopSequences": [
+          "END"
+        ]
+      },
+      "additionalModelRequestFields": {
+        "reasoningConfig": {
+          "type": "enabled",
+          "maxReasoningEffort": "high"
+        }
+      }
+    },
+    "ConverseNested": {
+      "model": "public",
+      "system": [
+        {
+          "text": "原生 é 🚀"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "查询"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            },
+            {
+              "video": {
+                "format": "mp4",
+                "source": {
+                  "s3Location": {
+                    "uri": "s3://caller-bucket/video.mp4",
+                    "bucketOwner": "123456789012"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "call-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "call-b",
+                "status": "error",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false,
+                      "nil": null
+                    }
+                  },
+                  {
+                    "text": "失败"
+                  }
+                ]
+              }
+            },
+            {
+              "text": "继续"
+            },
+            {
+              "toolResult": {
+                "toolUseId": "call-a",
+                "content": [
+                  {
+                    "json": null
+                  },
+                  {
+                    "text": ""
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "error": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 8192,
+        "stopSequences": [
+          "END"
+        ]
+      },
+      "additionalModelRequestFields": {
+        "inferenceConfig": {
+          "reasoningConfig": {
+            "type": "enabled",
+            "maxReasoningEffort": "high"
+          }
+        }
+      }
+    },
+    "NovaResponse": {
+      "output": {
+        "message": {
+          "role": "assistant",
+          "content": [
+            {
+              "text": "查询结果 🚀"
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-next-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-next-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "stopReason": "tool_use",
+      "usage": {
+        "inputTokens": 17,
+        "outputTokens": 8,
+        "totalTokens": 25
+      },
+      "metrics": {
+        "latencyMs": 9
+      }
+    },
+    "ConverseResponse": {
+      "output": {
+        "message": {
+          "role": "assistant",
+          "content": [
+            {
+              "text": "查询结果 🚀"
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-next-b",
+                "name": "lookup",
+                "input": {
+                  "n": 0
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call-next-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "stopReason": "tool_use",
+      "usage": {
+        "inputTokens": 17,
+        "outputTokens": 8,
+        "totalTokens": 25
+      },
+      "metrics": {
+        "latencyMs": 9
+      }
+    }
+  }
+}
