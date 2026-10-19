@@ -342,4 +342,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SE
 
 Licensed under the [Apache License, Version 2.0](LICENSE).
 
-The Conversion data API now supports the common complete-call subset of four text requests to native Converse and context-bound replies back, with independent full JSON goldens. Tool IDs, JSON/text result kinds and schema constraints are retained. SDK composition, inverse operations, mixed streams and model-specific reasoning remain separate work; see the [conversion contract](src/Asgard.Loki.LLM.Conversion/README.md#four-text-requests-to-native-converse-complete-data-conversion).
+The Conversion data API now supports the common complete-call subset of four text requests to native Converse and context-bound replies back, with independent full JSON goldens. Tool IDs, JSON/text result kinds and schema constraints are retained. Public SDK composition is available for fixed Converse; inverse operations, mixed streams and model-specific reasoning remain separate work; see the [conversion contract](src/Asgard.Loki.LLM.Conversion/README.md#four-text-requests-to-native-converse-complete-data-conversion).
+
+The existing Bedrock conversion decorator now composes those complete text calls through the public SDK when fixed to Converse. Fixed Nova stays limited to the native pair; mixed text streams fail before credential/HTTP acquisition. See [SDK initialization and limits](src/Asgard.Loki.LLM.Conversion/README.md#public-sdk-text-calls-over-native-converse).

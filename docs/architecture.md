@@ -1465,3 +1465,19 @@ flowchart LR
 ```
 
 Schemas retain constraints and exact numbers, with output schema serialized only at the native string boundary. Images use explicit inline Base64 without fetching. Tool results retain JSON versus text identity; only adjacent pure tool items coalesce. Converse has no response ID/model body fields, so IDs are synthetic non-resumable SDK labels and model labels come from the request context (empty without context). Required usage/latency validate without invention. Unknown ordinary fields are diagnosed; tool association, execution guarantees and opaque content cannot be bypassed with loss consent. Model-specific reasoning remains separate work. These are offline protocol claims, not real AWS acceptance.
+
+## Public text SDK composition over fixed Converse
+
+`ConvertingBedrockLlmProvider` additionally implements the existing four text adapters. Its optional `ILlmProtocolSupport` declares them only for fixed Converse; fixed Nova still declares just the native pair. Configuration requires both declaration and physical adapter, so incomplete operation matrices cannot be configured accidentally. Complete calls reuse the existing private conversion/context, invoke Converse once and convert its reply, preserving normal target metadata and original upstream JSON. Mixed text streams fail before native acquisition/HTTP. The original four-text decorator still rejects Bedrock fixed upstreams, and both decorators now reject nesting in either direction.
+
+```mermaid
+classDiagram
+    ILlmProtocolSupport <|.. ConvertingBedrockLlmProvider
+    IChatCompletionsAdapter <|.. ConvertingBedrockLlmProvider
+    IResponsesAdapter <|.. ConvertingBedrockLlmProvider
+    IClaudeMessagesAdapter <|.. ConvertingBedrockLlmProvider
+    IGeminiAdapter <|.. ConvertingBedrockLlmProvider
+    ConvertingBedrockLlmProvider --> IBedrockConverseAdapter : single fixed complete call
+```
+
+No core interface/enum, package edge or universal coordinator is added. Historical default wrapper binding bytes remain unchanged; existing route protocol flags, full upstream and options participate in session identity. Native Nova/Converse logical streams retain their own state machine. Four-text/Converse streams and inverse complete operations remain future work with independent goldens and failure/terminal checks.

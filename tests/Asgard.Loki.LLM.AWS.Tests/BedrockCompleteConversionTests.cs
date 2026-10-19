@@ -19,8 +19,8 @@ public sealed class BedrockCompleteConversionTests
         using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException("must not send"));
         var native = new AwsLlmProvider(new AwsHttpFactory(handler), new AwsLlmOptions { Region = "us-east-1" });
         var provider = new ConvertingBedrockLlmProvider(native, LlmProtocol.BedrockNova, "explicit", Options());
-        Assert.False((object)provider is IChatCompletionsAdapter); Assert.False((object)provider is IResponsesAdapter);
-        Assert.False((object)provider is IClaudeMessagesAdapter); Assert.False((object)provider is IGeminiAdapter);
+        foreach (var protocol in new[] { LlmProtocol.ChatCompletions, LlmProtocol.Responses, LlmProtocol.ClaudeMessages, LlmProtocol.Gemini })
+        { Assert.False(provider.SupportsProtocol(protocol)); Assert.Throws<ArgumentException>(() => Client(provider, protocol, true)); }
         Assert.Throws<ArgumentException>(() => new ConvertingBedrockLlmProvider(provider, LlmProtocol.BedrockNova, "nested"));
         Assert.Throws<ArgumentOutOfRangeException>(() => new ConvertingBedrockLlmProvider(native, LlmProtocol.ClaudeMessages, "wrong"));
         Assert.Throws<ArgumentException>(() => new ConvertingLlmProvider(native, LlmProtocol.BedrockNova, "wrong"));

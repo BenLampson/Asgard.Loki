@@ -4,8 +4,9 @@ using Asgard.Loki.LLM.Conversion.Internal;
 
 namespace Asgard.Loki.LLM.Conversion;
 
-/// <summary>固定 Nova/Converse 上游的显式 JSON/逻辑事件装饰器，不冒充四协议供应商或生成二进制帧。</summary>
-public sealed partial class ConvertingBedrockLlmProvider : IBedrockConverseAdapter, IBedrockNovaAdapter, ILlmCredentialSupport, ILlmProtocolSupport
+/// <summary>固定 Nova/Converse 上游的显式协议装饰器，按实际上游声明入口，不生成二进制帧。</summary>
+public sealed partial class ConvertingBedrockLlmProvider : IBedrockConverseAdapter, IBedrockNovaAdapter,
+    IChatCompletionsAdapter, IResponsesAdapter, IClaudeMessagesAdapter, IGeminiAdapter, ILlmCredentialSupport, ILlmProtocolSupport
 {
     private readonly ILlmProvider _upstream;
     private readonly LlmProtocol _protocol;
@@ -28,8 +29,9 @@ public sealed partial class ConvertingBedrockLlmProvider : IBedrockConverseAdapt
 
     /// <inheritdoc />
     public string Id { get; }
-    /// <summary>原生装饰器仅声明已实现的协议入口，不隐式开放未完成的混合文本协议转换。</summary>
-    public bool SupportsProtocol(LlmProtocol protocol) => BedrockConversion.IsBedrock(protocol);
+    /// <summary>固定 Converse 上游另支持四种文本完整调用；固定 Nova 上游仍仅声明原生协议对。</summary>
+    public bool SupportsProtocol(LlmProtocol protocol) => BedrockConversion.IsBedrock(protocol)
+        || _protocol == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(protocol);
     /// <summary>绑定域独立于原有四协议 v25；格式/位置选项和完整原生上游均参与绑定。</summary>
     public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:bedrock-json-conversion-v1:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
     /// <summary>认证能力完全委托明确上游，不提供降级、身份获取或自动重试。</summary>
@@ -52,7 +54,9 @@ public sealed partial class ConvertingBedrockLlmProvider : IBedrockConverseAdapt
     /// <summary>请求与响应分别映射，任何失败不发布已完成结果；不拥有或释放借入的供应商。</summary>
     private async Task<LlmJsonResult> Complete(JsonObject request, LlmProtocol source, LlmAdapterContext context, CancellationToken token)
     {
-        token.ThrowIfCancellationRequested(); var converted = LlmProtocolConverter.ConvertRequest(request, source, _protocol, _options);
+        token.ThrowIfCancellationRequested();
+        if (!SupportsProtocol(source)) throw new NotSupportedException("此固定上游尚不支持请求的公开协议。");
+        var converted = LlmProtocolConverter.ConvertRequest(request, source, _protocol, _options);
         var payload = Parse(converted.Data);
         LlmJsonResult raw = _protocol == LlmProtocol.BedrockNova
             ? await ((IBedrockNovaAdapter)_upstream).InvokeAsync(payload, context, token).ConfigureAwait(false)

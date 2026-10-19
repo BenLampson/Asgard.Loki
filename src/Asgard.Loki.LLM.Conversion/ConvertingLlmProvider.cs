@@ -20,7 +20,7 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
         options = ConversionOptionsSnapshot.Capture(options);
         LlmProtocolConverter.Validate(new(), upstreamProtocol, upstreamProtocol, options);
         if (BedrockConversion.IsBedrock(upstreamProtocol)) throw new ArgumentException("Bedrock 原生协议请使用 ConvertingBedrockLlmProvider。", nameof(upstreamProtocol));
-        if (upstream is ConvertingLlmProvider) throw new ArgumentException("不能嵌套转换供应商。", nameof(upstream));
+        if (upstream is ConvertingLlmProvider or ConvertingBedrockLlmProvider) throw new ArgumentException("不能嵌套转换供应商。", nameof(upstream));
         if (upstreamProtocol == LlmProtocol.ChatCompletions && upstream is not IChatCompletionsAdapter
             || upstreamProtocol == LlmProtocol.Responses && upstream is not IResponsesAdapter
             || upstreamProtocol == LlmProtocol.ClaudeMessages && upstream is not IClaudeMessagesAdapter

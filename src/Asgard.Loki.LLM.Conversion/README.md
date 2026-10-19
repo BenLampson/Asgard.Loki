@@ -538,6 +538,23 @@ This foundation allows future partial native/text conversion combinations to be 
 
 ### Four text requests to native Converse: complete data conversion
 
-`LlmProtocolConverter.ConvertRequest(request, publicProtocol, LlmProtocol.BedrockConverse)` now accepts the common complete-call subset of Chat, Responses, Claude and Gemini. Convert the reply with the returned immutable context. This checkpoint is the pure data API; the existing Bedrock decorator still exposes only its native pair until SDK composition is added. Ordinary function IDs and reverse-order results remain associated by ID. Gemini object results become native JSON, while JSON-looking text results remain text. Tool and output JSON Schema keep all constraints and exact numeric values. Native `outputConfig.textFormat.structure.jsonSchema.schema` is a JSON string; optional names are never invented ([AWS contract](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_JsonSchemaDefinition.html)).
+`LlmProtocolConverter.ConvertRequest(request, publicProtocol, LlmProtocol.BedrockConverse)` now accepts the common complete-call subset of Chat, Responses, Claude and Gemini. Convert the reply with the returned immutable context. The data-only checkpoint preceded the public SDK composition described below. Ordinary function IDs and reverse-order results remain associated by ID. Gemini object results become native JSON, while JSON-looking text results remain text. Tool and output JSON Schema keep all constraints and exact numeric values. Native `outputConfig.textFormat.structure.jsonSchema.schema` is a JSON string; optional names are never invented ([AWS contract](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_JsonSchemaDefinition.html)).
 
 Converse replies have no model/response ID fields. The context supplies the requested model label; `loki_` IDs are synthetic, non-resumable SDK labels. Without context, the model label is empty. Required original usage/metrics must exist; no counts or latency are invented. Unknown ordinary extensions require explicit loss consent and remain in OriginalData. Tool role/ID errors, hosted/custom tools, continuation, model-specific reasoning/topK, parallel guarantees, tool choice none, opaque content, nonzero cache accounting, mixed streams and the inverse request/response directions remain explicit boundaries. Target sampling ranges are checked without scaling. Native calls remain available for their full original payloads.
+
+### Public SDK text calls over native Converse
+
+The existing `ConvertingBedrockLlmProvider` now also implements the four text adapters. Fix its upstream to **BedrockConverse**, register the desired text protocol flags on the existing complete route target, and call the normal Chat/Responses/Claude/Gemini complete client. Initialization and credential/session handling remain the native supplier/core responsibilities:
+
+```csharp
+// native is an application-created AwsLlmProvider with its existing HTTP/auth configuration.
+var converted = new ConvertingBedrockLlmProvider(
+    native, LlmProtocol.BedrockConverse, "converse-text");
+// Register converted in LlmOptions.Providers and use converted.Id on the route target.
+// Set target.Protocols explicitly, e.g. ChatCompletions | Responses, plus its existing
+// UpstreamModel/CredentialId/server settings. Use the ordinary public SDK complete call.
+```
+
+Fixed Converse supports the four complete text entries plus the existing native pair. Fixed Nova declares only the native pair; text targets fail during configuration even though the class implements those interfaces. Mixed text streams throw before native credential acquisition/HTTP, without complete-call fallback. Neither decorator may wrap the other. Default binding serialization remains unchanged; protocol flags already belong to complete target/session identity. The supplier production package still has no Conversion dependency.
+
+The complete golden response model label is the routed actual request model, not a claim that Converse echoed a model ID. `Metadata.Conversion` retains the native response and diagnostics, while normal metadata retains the selected complete target. Native EOF/read/disposal/cancellation rules still guard delivery. Thirty-two new AWS tests cover eight complete native HTTP/auth paths, no-HTTP mixed streams and strict request losses, and read/disposal failures. Four additional constructor regressions prevent newly possible nested decorators. This is offline SDK protocol evidence; no real account/model/network or GitHub Actions was used. Mixed streams, inverse calls and model reasoning dialects remain pending.

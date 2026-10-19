@@ -213,3 +213,9 @@ Current local inventory is **6483 passing offline tests** across 27 ordinary pro
 ## Four-text to Converse complete data conversion
 
 Independent `converse-text-complete.json` was committed before implementation. Twelve full request/reply/original/context cases cover four text protocols, parallel same-name IDs, reverse results, JSON versus text kinds, Unicode and exact numbers/schema. Boundary cases cover loss diagnostics, execution controls, tool roles/associations, malformed arguments, historical ID reuse, native metrics/counters/stop reasons, target sampling ranges and mixed-stream guards. A discovered allow-loss tool-role bug now fails before canonicalization. The conversion project has 2272 passing offline tests. No real credential/model/network or GitHub Actions run is claimed; public SDK/HTTP composition is a separate checkpoint.
+
+## Public text SDK over Converse checkpoint
+
+Thirty-two new AWS regressions cover all four complete public SDK entries over both Runtime Bearer and SigV4, exact final native body and independent complete converted response, raw upstream metadata, target model routing, source immutability, stream/request rejection before credential/HTTP, and original read/disposal failures before result delivery. Four further conversion constructor cases prohibit nesting after the Bedrock wrapper gains physical text interfaces. Current affected suites are 2276 conversion and 754 AWS tests; all checks remain offline. Native protocol support and live model/account acceptance remain separate claims.
+
+Local Release solution validation for this checkpoint passed with zero warnings/errors, all **6574 offline cases** across 27 ordinary projects (Video remains reserved/empty), and freshly packed **28 production packages** with verified dependency boundaries and package/symbol metadata. Package verification requested no upload. No push, GitHub Actions, Linux run or live generation was performed.
