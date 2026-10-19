@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.GoogleVertex
 
-Native Vertex Gemini and Claude calls for the existing LLM capability. This independent supplier package references only `Asgard.Loki.LLM` and standard Microsoft HTTP components. It does not depend on the Gemini Developer API supplier, Anthropic supplier, Azure, Conversion, a cloud identity SDK or another capability.
+Native Vertex Gemini, Claude and MaaS Chat calls for the existing LLM capability. This independent supplier package references only `Asgard.Loki.LLM` and standard Microsoft HTTP components. It does not depend on the Gemini Developer API supplier, Anthropic supplier, Azure, Conversion, a cloud identity SDK or another capability.
 
 ## Support matrix
 
@@ -13,7 +13,8 @@ Native Vertex Gemini and Claude calls for the existing LLM capability. This inde
 | `streamGenerateContent` SSE | Native events with candidate/block lifecycle and delayed terminal tails |
 | Express Gemini JSON/SSE, API Key / short resource root | `GoogleVertexExpressLlmProvider`; explicit separate implementation in this package |
 | Claude Messages `rawPredict` JSON / `streamRawPredict` SSE | Implemented; explicit Anthropic resource/body version and native block lifecycle |
-| OpenAI-compatible MaaS | Not implemented |
+| MaaS Chat complete JSON | `GoogleVertexMaaSLlmProvider`; explicit project/location endpoint and publisher/model, borrowed External token source |
+| MaaS Chat SSE | Not implemented; fails before token acquisition/HTTP |
 | Live / Interactions / async batch / cloud resource management | Not implemented |
 
 For the standard provider, the target's `BaseAddress` is an explicit versioned API root, such as `https://us-central1-aiplatform.googleapis.com/v1/` or a caller-owned proxy root. `UpstreamModel` is the **complete raw resource name**, including project and location. Each component is escaped separately. The provider does not infer a region/hostname, normalize a model suffix, map marketing names or choose another native API based on publisher/model text. A configured resource must support the explicitly selected Gemini or Claude operation; resource syntax alone is not proof of model availability.
@@ -150,10 +151,46 @@ Complete JSON and HTTP/root errors retain the same strict UTF-8/JSON/length and 
 
 Sessions bind the Express implementation, API root/version, complete short resource, credential ID/Key and resource policy. Key/resource/server/configuration changes reject an old Session instead of reselecting a target. Results expose the configured resource separately from native modelVersion. Explicit cross-protocol conversion requires a converter fixed to upstream Gemini; API Key support is delegated without widening credential kinds. Complete/streamed text integration tests do not claim cross-protocol tool/schema equivalence or live Express acceptance.
 
+## Explicit MaaS Chat complete JSON
+
+Instantiate `GoogleVertexMaaSLlmProvider` in this same package, borrowing the existing `IGoogleVertexLlmTokenSource`. MaaS uses a distinct native Chat endpoint; neither the standard Gemini/Claude provider nor Express silently selects it based on a model suffix. Example initialization:
+
+```csharp
+var provider = new GoogleVertexMaaSLlmProvider(httpFactory, vertexTokenSource);
+await using var client = new LokiClientBuilder().AddLLM(new()
+{
+    Providers = [provider],
+    Credentials = [LlmCredential.External("vertex-principal", "stable-principal")],
+    SessionStore = sessionStore,
+    Routes = [new()
+    {
+        Model = "public-model",
+        Targets = [new()
+        {
+            Id = "vertex-maas-target", ProviderId = provider.Id,
+            CredentialId = "vertex-principal", Protocols = LlmProtocol.ChatCompletions,
+            BaseAddress = new Uri("https://aiplatform.googleapis.com/v1/projects/YOUR_PROJECT/locations/global/endpoints/openapi/"),
+            UpstreamModel = "deepseek-ai/YOUR_ENABLED_MODEL"
+        }]
+    }]
+}).Build();
+var result = await client.LLM.ChatCompletions.CompleteAsync(new()
+{
+    Model = "public-model",
+    Messages = new JsonArray(new JsonObject { ["role"] = "user", ["content"] = "Hello" })
+}, new() { SessionId = "maas-conversation" });
+```
+
+The configured base explicitly ends in `projects/{project}/locations/{location}/endpoints/openapi`; regional/global hosts and proxy prefixes are caller choices. `UpstreamModel` is the exact `publisher/model` body selector, without inferred `-maas` suffixes or a resource-path rewrite. The provider posts to `chat/completions`, replaces only routed `model` and method `stream=false`, and retains all other native fields. Returned native model and result fields stay unchanged, while metadata retains the configured target model. Preservation of thinking/tool/schema/extensions is a wire guarantee, not acceptance by every MaaS model.
+
+Only External credentials are accepted. Stable source identity, principal and full target/configuration bind Sessions; ordinary short-lived Bearer rotation does not change the binding. Acquisition is once per generation with source/principal/expiry checks and another expiry check before send. Selected Bearer/quota headers override same-kind defaults; unselected Key/project headers fail. No login, token discovery, refresh retry, regional failover, subscription or model management is implemented. The named client defaults to `Asgard.Loki.LLM.GoogleVertex.MaaS`. `GoogleVertexMaaSLlmOptions` snapshots a 32 MiB raw-byte limit and optional explicit quota-project header; changed policy invalidates previous MaaS Sessions.
+
+Complete JSON/root errors retain original status/body; strict UTF-8, duplicate keys, exact raw-byte/Content-Length, EOF, disposal and final cancellation guard successful publication. MaaS SSE is a separate pending checkpoint and explicitly fails before acquiring a token or HTTP client. No real MaaS account, login or model call was used. See the [official MaaS API contract](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/maas/call-open-model-apis).
+
 ## Verification status
 
-315 offline xUnit v3 cases (248 standard Vertex and 67 Express cases) compare independent full caller/wire/result fixtures and verify both resource forms, optional quota identity, token rotation and Session recovery, changed resource/principal/configuration rejection, cancellation/expiry, default-header isolation, strict byte/length/JSON boundaries, EOF/disposal failures and explicit complete/streamed text conversion integration. Independent raw SSE and full event-sequence goldens additionally verify native function IDs/arguments, thought signatures, grounding, unknown objects, exact integers, original event identity/retry and usage tails. Sparse/default indices, ProtoJSON numeric forms, native finish/block reasons, truncation, duplicates, late events/errors, limits, length/encoding, cancellation and read/disposal failures have explicit tests. They use substitute HTTP, a deterministic clock and `MemoryDistributedCache` with explicit coordination. Forty additional Claude JSON cases compare independent complete request/wire/result goldens and cover version agreement/conflict, explicit resource/header boundaries, preserved Gemini identity, refreshed-token Session recovery, changed principal/version/protocol rejection, text conversion and late transport failures. The additional 58 Claude SSE cases use independent raw SSE/full event-sequence goldens and cover message/block/tool association, thinking/signature and JSON deltas, cumulative usage/unknown tails, native error versus late errors, truncation/duplicates/changed reasons, limits, byte/length/encoding, cancellation/disposal, snapshots, Session recovery and explicit common-text conversion streams. The fixtures intentionally include opaque fields and caller-provided tool IDs to test preservation, not to claim live Vertex acceptance. No Google login, actual access-token refresh, real model call or new GitHub Actions run is claimed.
+389 offline xUnit v3 cases (248 standard Vertex, 67 Express and 74 MaaS JSON cases) compare independent full caller/wire/result fixtures and verify both resource forms, optional quota identity, token rotation and Session recovery, changed resource/principal/configuration rejection, cancellation/expiry, default-header isolation, strict byte/length/JSON boundaries, EOF/disposal failures and explicit complete/streamed text conversion integration. Independent raw SSE and full event-sequence goldens additionally verify native function IDs/arguments, thought signatures, grounding, unknown objects, exact integers, original event identity/retry and usage tails. Sparse/default indices, ProtoJSON numeric forms, native finish/block reasons, truncation, duplicates, late events/errors, limits, length/encoding, cancellation and read/disposal failures have explicit tests. They use substitute HTTP, a deterministic clock and `MemoryDistributedCache` with explicit coordination. Forty additional Claude JSON cases compare independent complete request/wire/result goldens and cover version agreement/conflict, explicit resource/header boundaries, preserved Gemini identity, refreshed-token Session recovery, changed principal/version/protocol rejection, text conversion and late transport failures. The additional 58 Claude SSE cases use independent raw SSE/full event-sequence goldens and cover message/block/tool association, thinking/signature and JSON deltas, cumulative usage/unknown tails, native error versus late errors, truncation/duplicates/changed reasons, limits, byte/length/encoding, cancellation/disposal, snapshots, Session recovery and explicit common-text conversion streams. The fixtures intentionally include opaque fields and caller-provided tool IDs to test preservation, not to claim live Vertex acceptance. No Google login, actual access-token refresh, real model call or new GitHub Actions run is claimed.
 
-Primary references: [Express API resource/authentication contract](https://docs.cloud.google.com/gemini-enterprise-agent-platform/reference/express-mode/api-reference), [Claude native SSE](https://platform.claude.com/docs/en/build-with-claude/streaming), [Claude on Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai), [generateContent resource contract](https://cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/projects.locations.publishers.models/generateContent), [native inference](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference), [response fields and native finish reasons](https://cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/GenerateContentResponse), [ProtoJSON numeric representations](https://protobuf.dev/programming-guides/json/). The roadmap separately tracks MaaS and other cloud dialects.
+Primary references: [Express API resource/authentication contract](https://docs.cloud.google.com/gemini-enterprise-agent-platform/reference/express-mode/api-reference), [Claude native SSE](https://platform.claude.com/docs/en/build-with-claude/streaming), [Claude on Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai), [generateContent resource contract](https://cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/projects.locations.publishers.models/generateContent), [native inference](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference), [response fields and native finish reasons](https://cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/GenerateContentResponse), [ProtoJSON numeric representations](https://protobuf.dev/programming-guides/json/). The roadmap separately tracks MaaS SSE and other cloud dialects.
 
 Express has 67 independent offline cases: three complete caller/wire/result fixtures plus shared native Gemini raw SSE/full-event goldens. They verify v1/v1beta1 roots, headers, snapshots, field retention, target/Key/configuration affinity, default-header isolation, bounds/faults/cancellation and explicit complete/streamed text conversion. Standard Vertex regressions remain separate; no real Express Key or model call was used.

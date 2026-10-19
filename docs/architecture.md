@@ -1078,6 +1078,22 @@ The supplier validates native `id/results` rather than inventing Jina model/usag
 
 Success requires complete strict UTF-8 JSON, valid native/business status and normal response/client disposal. Header-stage non-JSON success rejection, body/tail/disposal failure and cancellation through final disposal prevent successful return. Borrowed factories/handlers are never disposed. Six independent full native wire fixtures and 143 offline cases cover protocol, association, precision, metadata, errors and lifetime. No source download, media decoder, score-quality/live-account claim, RAG pipeline or billing implementation is added. See the [supplier guide](../src/Asgard.Loki.Rerank.SiliconFlow/README.md).
 
+### Vertex MaaS explicit Chat provider
+
+`GoogleVertexMaaSLlmProvider` adds native Chat complete JSON within the existing supplier package. The target base includes the complete project/location `endpoints/openapi` resource and its actual model is the exact `publisher/model` body selector. Authentication borrows the existing supplier token-source/token contracts. No core protocol, credential fingerprint, existing provider identity or package dependency changes.
+
+```mermaid
+classDiagram
+IChatCompletionsAdapter <|.. GoogleVertexMaaSLlmProvider
+ILlmCredentialSupport <|.. GoogleVertexMaaSLlmProvider
+GoogleVertexMaaSLlmProvider --> GoogleVertexMaaSLlmOptions : snapshots policy
+GoogleVertexMaaSLlmProvider --> IGoogleVertexLlmTokenSource : borrows
+GoogleVertexMaaSLlmProvider --> IHttpClientFactory : borrows
+GoogleVertexMaaSLlmProvider ..> VertexJson : private bounded strict JSON
+```
+
+MaaS has a separate explicit provider/Session identity. Stable principal/source and complete endpoint/model/policy bind a Session; refreshed short-lived tokens do not. The request only replaces routed model and method stream=false, retaining raw history, tools/IDs, reasoning/schema and unknown native data. HTTP/root errors remain native; EOF, lengths, strict encoding, disposal and final cancellation precede success. It does not infer suppliers from suffixes, acquire cloud credentials, retry/fail over, manage projects or execute tools. SSE is explicitly unsupported before acquisition until its independent native lifecycle checkpoint is delivered. Seventy-four offline cases and three complete request/wire/result fixtures bring Vertex coverage to 389; cloud identity and model acceptance remain unverified.
+
 ## 7. HTTP and errors
 
 Providers own address/authentication/protocol mapping. API roots include their version path. Do not hard-code model lists or rewrite model suffixes heuristically.
