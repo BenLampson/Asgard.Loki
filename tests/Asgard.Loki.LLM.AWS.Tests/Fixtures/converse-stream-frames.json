@@ -1,0 +1,673 @@
+[
+  {
+    "offset": 0,
+    "length": 271,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "messageStart"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      },
+      {
+        "name": "true",
+        "type": 0,
+        "value": true
+      },
+      {
+        "name": "false",
+        "type": 1,
+        "value": false
+      },
+      {
+        "name": "byte",
+        "type": 2,
+        "value": -1
+      },
+      {
+        "name": "short",
+        "type": 3,
+        "value": -123
+      },
+      {
+        "name": "int",
+        "type": 4,
+        "value": -1234
+      },
+      {
+        "name": "long",
+        "type": 5,
+        "value": 9223372036854775807
+      },
+      {
+        "name": "blob",
+        "type": 6,
+        "value": "AP8="
+      },
+      {
+        "name": "native-é",
+        "type": 7,
+        "value": "原生"
+      },
+      {
+        "name": "timestamp",
+        "type": 8,
+        "value": 1720000000123
+      },
+      {
+        "name": "uuid",
+        "type": 9,
+        "value": "00112233-4455-6677-8899-aabbccddeeff"
+      }
+    ],
+    "payloadBase64": "eyJyb2xlIjoiYXNzaXN0YW50IiwiZnV0dXJlIjpmYWxzZSwidHlwZSI6ImVycm9yIn0=",
+    "eventName": "messageStart"
+  },
+  {
+    "offset": 271,
+    "length": 146,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiJ9fQ==",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 417,
+    "length": 161,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6Im5hdGl2ZSBlzIEg8J+agCJ9fQ==",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 578,
+    "length": 150,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsiY2l0YXRpb24iOnt9fX0=",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 728,
+    "length": 125,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStop"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MH0=",
+    "eventName": "contentBlockStop"
+  },
+  {
+    "offset": 853,
+    "length": 183,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MiwiZGVsdGEiOnsicmVhc29uaW5nQ29udGVudCI6eyJ0ZXh0Ijoib3BhcXVlIHJlYXNvbmluZyJ9fX0=",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 1036,
+    "length": 190,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MiwiZGVsdGEiOnsicmVhc29uaW5nQ29udGVudCI6eyJzaWduYXR1cmUiOiJvcmlnaW5hbC1zaWduYXR1cmUifX19",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 1226,
+    "length": 125,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStop"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6Mn0=",
+    "eventName": "contentBlockStop"
+  },
+  {
+    "offset": 1351,
+    "length": 182,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MywiZGVsdGEiOnsicmVhc29uaW5nQ29udGVudCI6eyJyZWRhY3RlZENvbnRlbnQiOiJBUUlEIn19fQ==",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 1533,
+    "length": 125,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStop"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6M30=",
+    "eventName": "contentBlockStop"
+  },
+  {
+    "offset": 1658,
+    "length": 206,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStart"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6Nywic3RhcnQiOnsidG9vbFVzZSI6eyJ0b29sVXNlSWQiOiJ0b29sLXN0cmVhbS1hIiwibmFtZSI6Imxvb2t1cCIsImZ1dHVyZSI6bnVsbH19fQ==",
+    "eventName": "contentBlockStart"
+  },
+  {
+    "offset": 1864,
+    "length": 167,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6NywiZGVsdGEiOnsidG9vbFVzZSI6eyJpbnB1dCI6IntcImlkXCI6In19fQ==",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 2031,
+    "length": 176,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6NywiZGVsdGEiOnsidG9vbFVzZSI6eyJpbnB1dCI6IjkwMDcxOTkyNTQ3NDA5OTN9In19fQ==",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 2207,
+    "length": 125,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStop"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6N30=",
+    "eventName": "contentBlockStop"
+  },
+  {
+    "offset": 2332,
+    "length": 212,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStart"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6OCwic3RhcnQiOnsidG9vbFJlc3VsdCI6eyJ0b29sVXNlSWQiOiJ0b29sLXN0cmVhbS1hIiwic3RhdHVzIjoiZXJyb3IiLCJ0eXBlIjoic2VydmVyIn19fQ==",
+    "eventName": "contentBlockStart"
+  },
+  {
+    "offset": 2544,
+    "length": 232,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6OCwiZGVsdGEiOnsidG9vbFJlc3VsdCI6W3sianNvbiI6eyJ2YWx1ZSI6OTIyMzM3MjAzNjg1NDc3NTgwNywibmlsIjpudWxsfX0seyJ0ZXh0IjoibmF0aXZlIGVycm9yIHJlc3VsdCJ9XX19",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 2776,
+    "length": 125,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStop"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6OH0=",
+    "eventName": "contentBlockStop"
+  },
+  {
+    "offset": 2901,
+    "length": 162,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStart"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MTEsInN0YXJ0Ijp7ImltYWdlIjp7ImZvcm1hdCI6InBuZyJ9fX0=",
+    "eventName": "contentBlockStart"
+  },
+  {
+    "offset": 3063,
+    "length": 185,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MTEsImRlbHRhIjp7ImltYWdlIjp7InNvdXJjZSI6eyJieXRlcyI6IkFRSUQifSwiZnV0dXJlIjp7fX19fQ==",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 3248,
+    "length": 205,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MTEsImRlbHRhIjp7ImltYWdlIjp7ImVycm9yIjp7ImNvZGUiOiJmaXh0dXJlIiwibWVzc2FnZSI6Im5hdGl2ZSBpbWFnZSBlcnJvciJ9fX19",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 3453,
+    "length": 126,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStop"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MTF9",
+    "eventName": "contentBlockStop"
+  },
+  {
+    "offset": 3579,
+    "length": 164,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStart"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MjEsInN0YXJ0Ijp7ImZ1dHVyZVN0YXJ0Ijp7Im5pbCI6bnVsbH19fQ==",
+    "eventName": "contentBlockStart"
+  },
+  {
+    "offset": 3743,
+    "length": 194,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockDelta"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MjEsImRlbHRhIjp7ImZ1dHVyZURlbHRhIjp7ImludGVnZXIiOjkwMDcxOTkyNTQ3NDA5OTMsImZhbHNlIjpmYWxzZX19fQ==",
+    "eventName": "contentBlockDelta"
+  },
+  {
+    "offset": 3937,
+    "length": 126,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "contentBlockStop"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJjb250ZW50QmxvY2tJbmRleCI6MjF9",
+    "eventName": "contentBlockStop"
+  },
+  {
+    "offset": 4063,
+    "length": 217,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "messageStop"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJzdG9wUmVhc29uIjoidG9vbF91c2UiLCJhZGRpdGlvbmFsTW9kZWxSZXNwb25zZUZpZWxkcyI6eyJvcmlnaW5hbCI6Im9wYXF1ZSIsIm5pbCI6bnVsbCwiaW50ZWdlciI6OTIyMzM3MjAzNjg1NDc3NTgwN319",
+    "eventName": "messageStop"
+  },
+  {
+    "offset": 4280,
+    "length": 354,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "metadata"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJ1c2FnZSI6eyJpbnB1dFRva2VucyI6MTEsIm91dHB1dFRva2VucyI6NywidG90YWxUb2tlbnMiOjE4LCJjYWNoZVJlYWRJbnB1dFRva2VucyI6MCwiZnV0dXJlIjpmYWxzZX0sIm1ldHJpY3MiOnsibGF0ZW5jeU1zIjoxMjN9LCJwZXJmb3JtYW5jZUNvbmZpZyI6eyJsYXRlbmN5Ijoib3B0aW1pemVkIn0sInNlcnZpY2VUaWVyIjp7InR5cGUiOiJkZWZhdWx0In0sInRyYWNlIjp7Imd1YXJkcmFpbCI6eyJmdXR1cmUiOm51bGx9fSwidHlwZSI6ImVycm9yIn0=",
+    "eventName": "metadata"
+  },
+  {
+    "offset": 4634,
+    "length": 135,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "future_transport"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJuaWwiOm51bGwsInR5cGUiOiJtZXNzYWdlU3RvcCJ9",
+    "eventName": "future_transport"
+  }
+]

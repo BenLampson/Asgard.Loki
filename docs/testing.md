@@ -126,6 +126,12 @@ OpenAI's compaction tests use the real provider and public SDK with substitute H
 
 These are protocol tests only. No live OpenAI/Ark compaction credentials, account/model validation or remote Redis coordination are part of this suite.
 
+## Native Bedrock ConverseStream (offline)
+
+The AWS supplier has 300 offline cases, including 71 for native ConverseStream. An independently encoded 27-frame binary fixture, complete native event/typed-header/payload manifests and four independently calculated signature vectors cover eight direct/public HTTP paths. The native stream keeps tool/result IDs, exact indices/numbers, reasoning/signatures/redacted data, image/citation deltas and unknown fields/events. Converse transport names determine event Type; unknown payload type/error/bytes fields do not inherit Claude semantics.
+
+CRC-valid lifecycle negatives verify implicit text/reasoning starts, explicit tool/result/image starts, duplicate/missing/reopened associations and required messageStop/metadata. Late transport/service/CRC/length/read/disposal/cancellation failures cannot deliver held success. Source-await snapshots, exact preceding default binding bytes, explicit policy invalidation and JSON/stream credential rotation/Session recovery are separate regressions. Shared binary-reader CRC tests remain in the Claude EventStream suite. All tests use substitute HTTP, deterministic source/time and MemoryDistributedCache with explicit coordination; no AWS account, real key, network, Linux execution or new GitHub Actions result is claimed. The separate core event-type regression brings LLM core coverage to 179 and total ordinary offline coverage to 5435.
+
 ## Local setup and future expansion
 
 Use [.env.example](../.env.example) as a naming checklist. It contains only the four names and no credentials. A local `.env` is ignored by Git but is not loaded automatically. Prefer process or current-user environment variables; never execute a dotenv file as shell code or dump the complete environment for diagnostics.

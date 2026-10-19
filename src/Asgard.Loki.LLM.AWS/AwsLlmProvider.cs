@@ -6,7 +6,7 @@ using Asgard.Loki.LLM.AWS.Internal;
 
 namespace Asgard.Loki.LLM.AWS;
 
-/// <summary>Bedrock Claude 原生 JSON/EventStream，完整目标与 SigV4 认证属于本供应商。</summary>
+/// <summary>Bedrock Claude/Converse 原生 JSON/EventStream，完整目标与 SigV4 认证属于本供应商。</summary>
 public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, IBedrockConverseAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _factory;
@@ -24,6 +24,7 @@ public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, IBedrockCon
         ArgumentException.ThrowIfNullOrWhiteSpace(options.ClaudeAnthropicVersion); AwsJson.Text(options.ClaudeAnthropicVersion); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBodyBytes, 0); ArgumentNullException.ThrowIfNull(options.RequestHeaders);
         ArgumentOutOfRangeException.ThrowIfLessThan(options.MaximumEventStreamFrameBytes, 16); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBufferedTerminalEvents, 0); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumTrackedClaudeBlocks, 0);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumEventStreamHeaders, 0);
+        if (options.MaximumTrackedConverseBlocks is { } converseBlocks) ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(converseBlocks, 0);
         var headers = new SortedDictionary<string, string>(StringComparer.Ordinal);
         foreach (var header in options.RequestHeaders)
         {

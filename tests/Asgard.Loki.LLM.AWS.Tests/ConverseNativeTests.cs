@@ -29,10 +29,10 @@ public sealed class ConverseNativeTests
     {
         var clock = new AwsClock(); using var handler = new StubHttpHandler(async (request, token) => { Assert.True(JsonNode.DeepEquals(JsonNode.Parse("""{"stream":null,"anthropic_version":"caller-owned","messages":null}"""), JsonNode.Parse(await request.Content!.ReadAsStringAsync(token)))); return ConverseFixture.Reply(); }); await using var client = ConverseFixture.Client(new(new AwsHttpFactory(handler), new AwsCredentialSource(clock), new() { Region = "us-east-1", ClaudeAnthropicVersion = "unrelated-claude-setting" }, timeProvider: clock)); await client.LLM.BedrockConverse.ConverseAsync(JsonSerializer.Deserialize<BedrockConverseRequest>("""{"model":"public","stream":null,"anthropic_version":"caller-owned","messages":null}""")!, new() { SessionId = "native-unknown" }, TestContext.Current.CancellationToken); Assert.Equal(1, handler.Calls);
     }
-    /// <summary>ConverseStream 不借用 Claude 的内层事件处理或将完整 JSON 伪装为流。</summary>
+    /// <summary>ConverseStream 预取消不取得来源或 HTTP 客户端。</summary>
     [Fact]
-    public async Task ConverseStream_IsExplicitUnsupportedBoundary()
+    public async Task ConverseStream_PreCancelledAcquiresNoResources()
     {
-        var clock = new AwsClock(); var source = new AwsCredentialSource(clock); using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException()); var factory = new AwsHttpFactory(handler); await using var client = ConverseFixture.Client(new(factory, source, new() { Region = "us-east-1" })); async Task Consume() { await foreach (var _ in client.LLM.BedrockConverse.StreamAsync(ConverseFixture.Request().Deserialize<BedrockConverseRequest>()!, new() { SessionId = "converse-stream" }, TestContext.Current.CancellationToken)) { } } await Assert.ThrowsAsync<NotSupportedException>(Consume); Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients);
+        using var cancel = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken); cancel.Cancel(); var clock = new AwsClock(); var source = new AwsCredentialSource(clock); using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException()); var factory = new AwsHttpFactory(handler); await using var client = ConverseFixture.Client(new(factory, source, new() { Region = "us-east-1" })); async Task Consume() { await foreach (var _ in client.LLM.BedrockConverse.StreamAsync(ConverseFixture.Request().Deserialize<BedrockConverseRequest>()!, new() { SessionId = "converse-stream" }, cancel.Token)) { } } await Assert.ThrowsAnyAsync<OperationCanceledException>(Consume); Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients);
     }
 }

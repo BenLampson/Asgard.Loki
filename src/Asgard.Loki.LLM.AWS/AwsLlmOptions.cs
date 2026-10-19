@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Asgard.Loki.LLM.AWS;
 
 /// <summary>Bedrock 原生调用的区域和本地传输设置；不管理云资源。</summary>
@@ -19,4 +21,7 @@ public sealed record AwsLlmOptions
     public int MaximumBufferedTerminalEvents { get; init; } = 128;
     /// <summary>Claude 原始内容块关联数上限，不按稀疏索引分配数组。</summary>
     public int MaximumTrackedClaudeBlocks { get; init; } = 128;
+    /// <summary>Converse 内容块上限，省略时为 128；默认省略保留旧供应商绑定字节。</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaximumTrackedConverseBlocks { get; init; }
 }

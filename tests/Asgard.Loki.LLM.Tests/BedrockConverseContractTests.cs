@@ -11,6 +11,12 @@ namespace Asgard.Loki.LLM.Tests;
 /// <summary>新协议只增加原生契约和显式路由，不将供应商依赖带入核心。</summary>
 public sealed class BedrockConverseContractTests
 {
+    /// <summary>Converse 使用传输名，其他协议继续按原生 type 字段识别，未知字段不串用语义。</summary>
+    [Fact]
+    public void NativeConverseType_ComesFromTransportIncludingBaseView()
+    {
+        var data = JsonSerializer.SerializeToElement(new { type = "error", future = false }); var metadata = new LlmResultMetadata("public", "actual", "provider", "target"); LlmJsonEvent native = new BedrockConverseEvent(data, metadata, "metadata"); Assert.Equal("metadata", native.Type); Assert.Equal("error", native.Data.GetProperty("type").GetString()); Assert.Equal("error", new ClaudeMessageEvent(data, metadata, "chunk").Type);
+    }
     private static ControlledSessionStore Store() => new(new DistributedCacheLlmSessionStore(new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())), new TestSessionLock()));
     private static ILokiClient Client(ILlmProvider provider, ILlmSessionStore? store = null, LlmProtocol protocols = LlmProtocol.BedrockConverse) => new LokiClientBuilder().AddLLM(new() { Providers = [provider], Credentials = [new("credential", "fixture-key")], SessionStore = store ?? Store(), Routes = [new() { Model = "public", Targets = [new() { Id = "target", ProviderId = provider.Id, BaseAddress = new("https://first.invalid/runtime/"), UpstreamModel = "actual-model", CredentialId = "credential", Protocols = protocols }] }] }).Build();
     private static BedrockConverseRequest Request() => JsonSerializer.Deserialize<BedrockConverseRequest>("""{"model":"public","messages":null,"inferenceConfig":{"maxTokens":0,"temperature":0},"stream":"native-future","native":{"integer":9007199254740993,"false":false,"nil":null,"empty":[]}}""")!;
