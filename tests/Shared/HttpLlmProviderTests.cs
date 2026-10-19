@@ -45,7 +45,7 @@ public abstract class HttpLlmProviderTests
     {
         var body = ": keepalive\r\nevent: response.created\r\nid: e1\r\nretry: 1500\r\ndata: {\"type\":\"response.created\",\r\ndata: \"response\":{\"id\":\"r1\"}}\r\n\r\n"
             + "event: vendor.future\nid: e2\ndata: {\"type\":\"vendor.future\",\"value\":\"中文内容\"}\n\n"
-            + "data: {\"type\":\"response.completed\",\"response\":{\"id\":\"r1\",\"usage\":{\"cached_tokens\":12}}}\n\n";
+            + "data: {\"type\":\"response.completed\",\"response\":{\"id\":\"r1\",\"status\":\"completed\",\"usage\":{\"cached_tokens\":12}}}\n\n";
         using var handler = new StubHttpHandler((_, _) => Task.FromResult(Sse(body, mediaType)));
         var provider = CreateProvider(new StubHttpClientFactory(handler));
         var events = await CollectAsync(((IResponsesAdapter)provider).StreamAsync(new JsonObject(), Context(provider), TestContext.Current.CancellationToken));
@@ -84,7 +84,7 @@ public abstract class HttpLlmProviderTests
     [Fact]
     public async Task ResponsesStream_PreservesFailureEvent()
     {
-        using var handler = new StubHttpHandler((_, _) => Task.FromResult(Sse("data: {\"type\":\"response.failed\",\"response\":{\"id\":\"r\",\"error\":{\"code\":\"failed\",\"future\":1}}}\n\n")));
+        using var handler = new StubHttpHandler((_, _) => Task.FromResult(Sse("data: {\"type\":\"response.failed\",\"response\":{\"id\":\"r\",\"status\":\"failed\",\"error\":{\"code\":\"failed\",\"future\":1}}}\n\n")));
         var provider = CreateProvider(new StubHttpClientFactory(handler));
         var events = await CollectAsync(((IResponsesAdapter)provider).StreamAsync(new JsonObject(), Context(provider), TestContext.Current.CancellationToken));
         Assert.Equal("failed", Assert.Single(events).Data.GetProperty("response").GetProperty("error").GetProperty("code").GetString());

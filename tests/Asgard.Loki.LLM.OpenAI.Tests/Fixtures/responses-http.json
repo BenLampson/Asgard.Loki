@@ -1,0 +1,449 @@
+{
+  "provenance": "Hand-authored offline native contract; no SDK output or live-model capture.",
+  "request": {
+    "model": "actual-a",
+    "input": [
+      {
+        "type": "reasoning",
+        "id": "rs_prev",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "已有推理"
+          }
+        ],
+        "encrypted_content": "opaque+/==",
+        "future": 0
+      },
+      {
+        "type": "function_call",
+        "id": "fc_prev",
+        "call_id": "call_prev",
+        "name": "lookup",
+        "arguments": "{\"n\":9007199254740993}"
+      },
+      {
+        "type": "function_call_output",
+        "call_id": "call_prev",
+        "output": "{\"ok\":false}"
+      },
+      {
+        "type": "message",
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "继续中文"
+          },
+          {
+            "type": "input_image",
+            "image_url": "https://media.invalid/image",
+            "detail": "low"
+          }
+        ]
+      }
+    ],
+    "reasoning": {
+      "effort": "high",
+      "summary": "auto",
+      "future": false
+    },
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "answer",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ok"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "tools": [
+      {
+        "type": "function",
+        "name": "lookup",
+        "strict": true,
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      }
+    ],
+    "include": [
+      "reasoning.encrypted_content"
+    ],
+    "future": {
+      "integer": 9007199254740993,
+      "nil": null,
+      "disabled": false
+    }
+  },
+  "complete": {
+    "id": "r-native",
+    "object": "response",
+    "status": "completed",
+    "model": "actual-a",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "rs_new",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "先查询"
+          }
+        ],
+        "encrypted_content": "opaque-new+/==",
+        "future": false
+      },
+      {
+        "type": "function_call",
+        "id": "fc_new",
+        "call_id": "call_new",
+        "name": "lookup",
+        "arguments": "{\"n\":9007199254740993}",
+        "status": "completed",
+        "future": 0
+      },
+      {
+        "type": "message",
+        "id": "msg_new",
+        "role": "assistant",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "{\"ok\":false}",
+            "annotations": [],
+            "future": null
+          }
+        ]
+      }
+    ],
+    "usage": {
+      "input_tokens": 17,
+      "output_tokens": 8,
+      "total_tokens": 25,
+      "output_tokens_details": {
+        "reasoning_tokens": 4
+      }
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "nil": null
+    }
+  },
+  "events": [
+    {
+      "event": "response.created",
+      "id": "evt-0",
+      "retry": 1500,
+      "data": {
+        "type": "response.created",
+        "response": {
+          "id": "r-native",
+          "status": "in_progress",
+          "output": []
+        }
+      }
+    },
+    {
+      "event": "response.output_item.added",
+      "id": "evt-1",
+      "retry": 1500,
+      "data": {
+        "type": "response.output_item.added",
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "rs_new",
+          "summary": [],
+          "encrypted_content": "opaque-new+/==",
+          "future": false
+        }
+      }
+    },
+    {
+      "event": "response.output_item.done",
+      "id": "evt-2",
+      "retry": 1500,
+      "data": {
+        "type": "response.output_item.done",
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "rs_new",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "先查询"
+            }
+          ],
+          "encrypted_content": "opaque-new+/==",
+          "future": false
+        }
+      }
+    },
+    {
+      "event": "response.output_item.added",
+      "id": "evt-3",
+      "retry": 1500,
+      "data": {
+        "type": "response.output_item.added",
+        "output_index": 3,
+        "item": {
+          "type": "function_call",
+          "id": "fc_new",
+          "call_id": "call_new",
+          "name": "lookup",
+          "arguments": "",
+          "status": "in_progress",
+          "future": 0
+        }
+      }
+    },
+    {
+      "event": "response.function_call_arguments.delta",
+      "id": "evt-4",
+      "retry": 1500,
+      "data": {
+        "type": "response.function_call_arguments.delta",
+        "output_index": 3,
+        "item_id": "fc_new",
+        "delta": "{\"n\":"
+      }
+    },
+    {
+      "event": "response.function_call_arguments.delta",
+      "id": "evt-5",
+      "retry": 1500,
+      "data": {
+        "type": "response.function_call_arguments.delta",
+        "output_index": 3,
+        "item_id": "fc_new",
+        "delta": "9007199254740993}"
+      }
+    },
+    {
+      "event": "response.function_call_arguments.done",
+      "id": "evt-6",
+      "retry": 1500,
+      "data": {
+        "type": "response.function_call_arguments.done",
+        "output_index": 3,
+        "item_id": "fc_new",
+        "arguments": "{\"n\":9007199254740993}"
+      }
+    },
+    {
+      "event": "response.output_item.done",
+      "id": "evt-7",
+      "retry": 1500,
+      "data": {
+        "type": "response.output_item.done",
+        "output_index": 3,
+        "item": {
+          "type": "function_call",
+          "id": "fc_new",
+          "call_id": "call_new",
+          "name": "lookup",
+          "arguments": "{\"n\":9007199254740993}",
+          "status": "completed",
+          "future": 0
+        }
+      }
+    },
+    {
+      "event": "response.output_item.added",
+      "id": "evt-8",
+      "retry": 1500,
+      "data": {
+        "type": "response.output_item.added",
+        "output_index": 8,
+        "item": {
+          "type": "message",
+          "id": "msg_new",
+          "role": "assistant",
+          "status": "in_progress",
+          "content": []
+        }
+      }
+    },
+    {
+      "event": "response.content_part.added",
+      "id": "evt-9",
+      "retry": 1500,
+      "data": {
+        "type": "response.content_part.added",
+        "output_index": 8,
+        "item_id": "msg_new",
+        "content_index": 0,
+        "part": {
+          "type": "output_text",
+          "text": "",
+          "annotations": []
+        }
+      }
+    },
+    {
+      "event": "response.output_text.delta",
+      "id": "evt-10",
+      "retry": 1500,
+      "data": {
+        "type": "response.output_text.delta",
+        "output_index": 8,
+        "item_id": "msg_new",
+        "content_index": 0,
+        "delta": "{\"ok\":false}"
+      }
+    },
+    {
+      "event": "response.output_text.done",
+      "id": "evt-11",
+      "retry": 1500,
+      "data": {
+        "type": "response.output_text.done",
+        "output_index": 8,
+        "item_id": "msg_new",
+        "content_index": 0,
+        "text": "{\"ok\":false}"
+      }
+    },
+    {
+      "event": "response.content_part.done",
+      "id": "evt-12",
+      "retry": 1500,
+      "data": {
+        "type": "response.content_part.done",
+        "output_index": 8,
+        "item_id": "msg_new",
+        "content_index": 0,
+        "part": {
+          "type": "output_text",
+          "text": "{\"ok\":false}",
+          "annotations": [],
+          "future": null
+        }
+      }
+    },
+    {
+      "event": "response.output_item.done",
+      "id": "evt-13",
+      "retry": 1500,
+      "data": {
+        "type": "response.output_item.done",
+        "output_index": 8,
+        "item": {
+          "type": "message",
+          "id": "msg_new",
+          "role": "assistant",
+          "status": "completed",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "{\"ok\":false}",
+              "annotations": [],
+              "future": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "event": "response.completed",
+      "id": "evt-14",
+      "retry": 1500,
+      "data": {
+        "type": "response.completed",
+        "response": {
+          "id": "r-native",
+          "object": "response",
+          "status": "completed",
+          "model": "actual-a",
+          "output": [
+            {
+              "type": "reasoning",
+              "id": "rs_new",
+              "summary": [
+                {
+                  "type": "summary_text",
+                  "text": "先查询"
+                }
+              ],
+              "encrypted_content": "opaque-new+/==",
+              "future": false
+            },
+            {
+              "type": "function_call",
+              "id": "fc_new",
+              "call_id": "call_new",
+              "name": "lookup",
+              "arguments": "{\"n\":9007199254740993}",
+              "status": "completed",
+              "future": 0
+            },
+            {
+              "type": "message",
+              "id": "msg_new",
+              "role": "assistant",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "{\"ok\":false}",
+                  "annotations": [],
+                  "future": null
+                }
+              ]
+            }
+          ],
+          "usage": {
+            "input_tokens": 17,
+            "output_tokens": 8,
+            "total_tokens": 25,
+            "output_tokens_details": {
+              "reasoning_tokens": 4
+            }
+          },
+          "future": {
+            "integer": 9007199254740993,
+            "nil": null
+          }
+        }
+      }
+    },
+    {
+      "event": "vendor.future",
+      "id": "evt-15",
+      "retry": 1500,
+      "data": {
+        "type": "vendor.future",
+        "future": {
+          "integer": 9007199254740993,
+          "nil": null
+        },
+        "error": {
+          "business": true
+        }
+      }
+    }
+  ],
+  "wire": ": independently authored native fixture\r\nevent: response.created\r\nid: evt-0\r\nretry: 1500\r\ndata: {\"type\":\"response.created\",\r\ndata: \"response\":{\"id\":\"r-native\",\"status\":\"in_progress\",\"output\":[]}}\r\n\r\nevent: response.output_item.added\r\nid: evt-1\r\nretry: 1500\r\ndata: {\"type\":\"response.output_item.added\",\r\ndata: \"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"rs_new\",\"summary\":[],\"encrypted_content\":\"opaque-new+/==\",\"future\":false}}\r\n\r\nevent: response.output_item.done\r\nid: evt-2\r\nretry: 1500\r\ndata: {\"type\":\"response.output_item.done\",\r\ndata: \"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"rs_new\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"先查询\"}],\"encrypted_content\":\"opaque-new+/==\",\"future\":false}}\r\n\r\nevent: response.output_item.added\r\nid: evt-3\r\nretry: 1500\r\ndata: {\"type\":\"response.output_item.added\",\r\ndata: \"output_index\":3,\"item\":{\"type\":\"function_call\",\"id\":\"fc_new\",\"call_id\":\"call_new\",\"name\":\"lookup\",\"arguments\":\"\",\"status\":\"in_progress\",\"future\":0}}\r\n\r\nevent: response.function_call_arguments.delta\r\nid: evt-4\r\nretry: 1500\r\ndata: {\"type\":\"response.function_call_arguments.delta\",\r\ndata: \"output_index\":3,\"item_id\":\"fc_new\",\"delta\":\"{\\\"n\\\":\"}\r\n\r\nevent: response.function_call_arguments.delta\r\nid: evt-5\r\nretry: 1500\r\ndata: {\"type\":\"response.function_call_arguments.delta\",\r\ndata: \"output_index\":3,\"item_id\":\"fc_new\",\"delta\":\"9007199254740993}\"}\r\n\r\nevent: response.function_call_arguments.done\r\nid: evt-6\r\nretry: 1500\r\ndata: {\"type\":\"response.function_call_arguments.done\",\r\ndata: \"output_index\":3,\"item_id\":\"fc_new\",\"arguments\":\"{\\\"n\\\":9007199254740993}\"}\r\n\r\nevent: response.output_item.done\r\nid: evt-7\r\nretry: 1500\r\ndata: {\"type\":\"response.output_item.done\",\r\ndata: \"output_index\":3,\"item\":{\"type\":\"function_call\",\"id\":\"fc_new\",\"call_id\":\"call_new\",\"name\":\"lookup\",\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"status\":\"completed\",\"future\":0}}\r\n\r\nevent: response.output_item.added\r\nid: evt-8\r\nretry: 1500\r\ndata: {\"type\":\"response.output_item.added\",\r\ndata: \"output_index\":8,\"item\":{\"type\":\"message\",\"id\":\"msg_new\",\"role\":\"assistant\",\"status\":\"in_progress\",\"content\":[]}}\r\n\r\nevent: response.content_part.added\r\nid: evt-9\r\nretry: 1500\r\ndata: {\"type\":\"response.content_part.added\",\r\ndata: \"output_index\":8,\"item_id\":\"msg_new\",\"content_index\":0,\"part\":{\"type\":\"output_text\",\"text\":\"\",\"annotations\":[]}}\r\n\r\nevent: response.output_text.delta\r\nid: evt-10\r\nretry: 1500\r\ndata: {\"type\":\"response.output_text.delta\",\r\ndata: \"output_index\":8,\"item_id\":\"msg_new\",\"content_index\":0,\"delta\":\"{\\\"ok\\\":false}\"}\r\n\r\nevent: response.output_text.done\r\nid: evt-11\r\nretry: 1500\r\ndata: {\"type\":\"response.output_text.done\",\r\ndata: \"output_index\":8,\"item_id\":\"msg_new\",\"content_index\":0,\"text\":\"{\\\"ok\\\":false}\"}\r\n\r\nevent: response.content_part.done\r\nid: evt-12\r\nretry: 1500\r\ndata: {\"type\":\"response.content_part.done\",\r\ndata: \"output_index\":8,\"item_id\":\"msg_new\",\"content_index\":0,\"part\":{\"type\":\"output_text\",\"text\":\"{\\\"ok\\\":false}\",\"annotations\":[],\"future\":null}}\r\n\r\nevent: response.output_item.done\r\nid: evt-13\r\nretry: 1500\r\ndata: {\"type\":\"response.output_item.done\",\r\ndata: \"output_index\":8,\"item\":{\"type\":\"message\",\"id\":\"msg_new\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"ok\\\":false}\",\"annotations\":[],\"future\":null}]}}\r\n\r\nevent: response.completed\r\nid: evt-14\r\nretry: 1500\r\ndata: {\"type\":\"response.completed\",\r\ndata: \"response\":{\"id\":\"r-native\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"actual-a\",\"output\":[{\"type\":\"reasoning\",\"id\":\"rs_new\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"先查询\"}],\"encrypted_content\":\"opaque-new+/==\",\"future\":false},{\"type\":\"function_call\",\"id\":\"fc_new\",\"call_id\":\"call_new\",\"name\":\"lookup\",\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"status\":\"completed\",\"future\":0},{\"type\":\"message\",\"id\":\"msg_new\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"ok\\\":false}\",\"annotations\":[],\"future\":null}]}],\"usage\":{\"input_tokens\":17,\"output_tokens\":8,\"total_tokens\":25,\"output_tokens_details\":{\"reasoning_tokens\":4}},\"future\":{\"integer\":9007199254740993,\"nil\":null}}}\r\n\r\nevent: vendor.future\r\nid: evt-15\r\nretry: 1500\r\ndata: {\"type\":\"vendor.future\",\r\ndata: \"future\":{\"integer\":9007199254740993,\"nil\":null},\"error\":{\"business\":true}}\r\n\r\n: end comment read before success\r\n\r\n"
+}

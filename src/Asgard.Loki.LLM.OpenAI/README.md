@@ -32,7 +32,7 @@ var target = new LlmTarget
 
 Register the target in an `LlmRoute` with the provider, caller-supplied credential, HTTP factory and existing Session dependencies. The [root example](../../README.md#native-responses-compaction) shows explicit compact/next-create calls. `ResponseCompactionRequest` preserves text/item-array input, optional owned `PreviousResponseId`, and instructions/cache/future parameters. Only the logical-to-upstream model mapping changes; there is no injected `stream`, automatic history retrieval or resubmission.
 
-`ResponseCompaction.Data` contains the complete native result, including usage and unknown fields. `Output` exposes the full returned array, including retained messages, tool IDs and opaque encrypted compaction items. Do not extract only the encrypted item or discard retained items. An ordinary response, missing output array or explicit error is rejected as an invalid compaction result. Its ID is not automatically bound as a generated response for future `previous_response_id` use.
+`ResponseCompaction.Data` contains the complete native result, including usage and unknown fields. `Output` exposes the full returned array, including retained messages, tool IDs and opaque encrypted compaction items. Do not extract only the encrypted item or discard retained items. An ordinary response or missing output array is rejected as an invalid compaction result. A native root error is an `LlmUpstreamException` retaining the original HTTP status (including 200) and body. Its ID is not automatically bound as a generated response for future `previous_response_id` use.
 
 First binding filters targets by the explicit feature; an existing Session always uses its original target and fails if it lacks compaction. Feature changes invalidate existing bindings. Enabling a feature is the caller's declaration that the configured upstream/model supports it, not a live entitlement check. OpenAI-compatible third-party endpoints may not implement this native operation. There is no compaction protocol conversion, streaming, auto-trigger or retry. [Official compaction behavior](https://developers.openai.com/api/docs/guides/compaction) and [endpoint fields](https://developers.openai.com/api/reference/resources/responses/methods/compact) were checked for this implementation.
 
@@ -82,3 +82,25 @@ Limits are client memory policies, not upstream model capabilities. Messages are
 Offline in-memory WebSocket tests cover handshake address/authentication, public SDK Session ownership, multi-lane/FIFO transcripts, steering acceptance/rejection/automatic successors/required-input continuation, failure and truncated terminals, identity/sequence/status corruption, resource limits, byte fragmentation (including split Unicode), strict UTF-8, input snapshots, cancellation, close interruption and socket ownership. A cancelled or failed operation that has entered socket IO makes the connection unusable; queued cancellation is not replayed. No live OpenAI WebSocket, compaction or account-entitlement check has been performed. References: [WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode), [native event schemas](https://developers.openai.com/api/reference/resources/responses/websocket-events), [steering lifecycle](https://developers.openai.com/api/docs/guides/steering). Automatic history reconstruction and durable replay are not implemented.
 
 For OpenAI Images Generations, install the independent `Asgard.Loki.Image.OpenAI` package. This LLM provider does not pull in image or audio dependencies.
+
+## HTTP resource policy and terminal fidelity
+
+The existing constructor signatures remain available. Optional HTTP policy is explicit:
+
+```csharp
+var provider = new OpenAiLlmProvider(httpClientFactory, new OpenAiHttpOptions
+{
+    MaximumBodyBytes = 32 * 1024 * 1024,
+    MaximumBufferedTerminalEvents = 128
+});
+```
+
+Both positive limits are per call. A combined overload accepts HTTP options, WebSocket options and an optional borrowed WebSocket factory. These are local resource limits, not model capability settings. The adapter preserves the explicit root prefix, actual model and caller-owned native fields; no model-name routing, endpoint fallback or cloud credential discovery is added.
+
+Complete JSON and raw SSE bytes have strict UTF-8, duplicate-property and declared-length checks. Original HTTP/root errors retain status and body. Chat finish candidates and Responses completed/incomplete/failed/error terminals plus subsequent metadata wait for normal source EOF, content length, response/client disposal and final cancellation. `[DONE]` is consumed but does not stop reading; duplicate DONE, appended events, truncated frames and late errors fail. Incremental content before a terminal candidate remains incremental. Responses requires a native terminal with matching nonempty response ID/status; Chat requires DONE unless a native error terminates it. Failure/incomplete events remain native rather than becoming synthetic success.
+
+Unknown fields and typed future metadata remain raw, including root business `error` fields on unknown typed events. This is a transport boundary, not a full Chat choice/tool-argument accumulator or a tool executor. Sparse choice/tool/item indices, call IDs and argument fragments are never renumbered or assembled. Endpoints must implement the declared protocol; wire preservation does not certify their model-specific reasoning/schema behavior. AWS Runtime/Mantle compatible variants remain a separate pending fixture milestone.
+
+**Session migration:** the new `openai-http-v2` binding domain includes HTTP limits and named client. All predecessor OpenAI bindings, including WebSocket Sessions owned by this provider, require a new Session ID or expiry. Default and explicitly default HTTP options bind identically; changing policy/client invalidates an existing Session before HTTP. WebSocket framing policy and conversion-v25 algorithms are unchanged; a converter wrapping this provider incorporates its new native identity normally.
+
+Sixty-four new offline cases bring this supplier to 275 tests and the repository to 5681 (28 packages). Two independently authored complete native manifests cover public SDK JSON/SSE request/response/frame snapshots, tools, reasoning/encrypted data, strict schema parameters, exact large integers and unknown fields. Fault cases cover EOF, length/byte limits, duplicate/invalid JSON, late native errors, disposal, final cancellation, early exit and cross-client target binding. No live OpenAI/model acceptance, Linux or remote Actions result is claimed.

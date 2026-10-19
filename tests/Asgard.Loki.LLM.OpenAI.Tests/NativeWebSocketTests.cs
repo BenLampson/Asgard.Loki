@@ -69,13 +69,15 @@ public sealed class NativeWebSocketTests
         Assert.Equal("b.invalid", Assert.Single(factory.Calls).Address.Host); Assert.Empty(factory.Sockets);
     }
 
-    /// <summary>默认构造函数保持二进制签名和既有基础目标的指纹身份。</summary>
+    /// <summary>旧构造二进制签名保留，HTTP 终态新域明确使旧实现身份失效。</summary>
     [Fact]
     public void DefaultBindingIdentity_PreservesLegacyConstructor()
     {
         using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException());
         ILlmProvider provider = new OpenAiLlmProvider(new StubHttpClientFactory(handler));
-        Assert.Equal(provider.GetType().AssemblyQualifiedName, provider.BindingIdentity);
+        Assert.Contains("openai-http-v2", provider.BindingIdentity);
+        Assert.NotEqual(provider.GetType().AssemblyQualifiedName, provider.BindingIdentity);
+        Assert.Equal(provider.BindingIdentity, new OpenAiLlmProvider(new StubHttpClientFactory(handler), new OpenAiResponsesWebSocketOptions()).BindingIdentity);
         Assert.NotNull(typeof(OpenAiLlmProvider).GetConstructor([typeof(IHttpClientFactory), typeof(string), typeof(string)]));
     }
 }

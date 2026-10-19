@@ -1205,6 +1205,24 @@ Bearer mode sends one opaque selected Authorization value and actual Host, emits
 
 Eighty-one new offline cases bring current totals to 5617 (381 AWS; 1899 conversion), 28 packages. Eight authored HTTP manifests and existing full native/signature/binary/frame fixtures cover all four methods and actual models/ARNs through direct/public paths, default isolation, snapshots, secret-free bindings, key/config/auth changes, recovery and late native/transport failures. Separate public common-text conversion tests prove authentication delegation without a production Conversion reference. Runtime compatible Messages/Chat/Responses variants, Mantle, native Nova InvokeModel and real authentication/model acceptance remain pending. See the [supplier initialization](../src/Asgard.Loki.LLM.AWS/README.md#explicit-bedrock-runtime-api-key-authentication).
 
+### OpenAI HTTP boundary and binding migration
+
+`LLM.OpenAI` retains its existing constructor signatures and adds immutable `OpenAiHttpOptions` (32 MiB raw body, 128 buffered terminal/tail events by default) and a combined HTTP/WebSocket overload. Only supplier-local JSON/byte/terminal helpers and the existing independently compiled SSE parser are used. There is no provider-to-provider reference or new capability/business coordinator.
+
+```mermaid
+classDiagram
+    OpenAiLlmProvider --> OpenAiHttpOptions : snapshots limits
+    OpenAiLlmProvider --> IHttpClientFactory : borrows
+    OpenAiLlmProvider --> OpenAiHttpJson : strict JSON and complete bytes
+    OpenAiLlmProvider --> OpenAiHttpReadStream : bounded raw SSE bytes
+    OpenAiLlmProvider --> OpenAiHttpStreamState : native HTTP terminal state
+    OpenAiLlmProvider --> SseReader : compiles existing transport parser
+```
+
+Complete results and terminal candidates are published after real EOF, declared-length checks, owned response/client disposal and final cancellation. DONE is not an early return; append/truncation/late failures invalidate held success. Initial deltas remain incremental. Responses known lifecycle IDs/status/terminal closure are checked; Chat keeps original sparse choices/tools and requires native DONE or error. The adapter does not aggregate arguments, execute tools or certify every choice/tool schema. Unknown native objects/events remain raw. Error/incomplete states are preserved rather than converted into successful completion.
+
+`openai-http-v2` includes HTTP limits and named client in supplier identity. All predecessor OpenAI Sessions (including its WebSocket bindings) need new IDs/expiry; core fingerprint algorithms, other supplier identities and conversion-v25 remain unchanged. Sixty-four new offline cases bring this supplier to 275 and total coverage to 5681, with 28 packages. Full native HTTP/JSON/SSE manifests and public SDK snapshots test reasoning/schema transmission, tools/IDs, precision, unknown fields, cancellation and resource failures. Native cloud-compatible endpoint coverage and live model behavior are separate pending evidence.
+
 ## 7. HTTP and errors
 
 Providers own address/authentication/protocol mapping. API roots include their version path. Do not hard-code model lists or rewrite model suffixes heuristically.

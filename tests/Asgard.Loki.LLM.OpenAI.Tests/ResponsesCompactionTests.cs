@@ -78,15 +78,20 @@ public sealed class ResponsesCompactionTests
 
     /// <summary>普通响应、缺失窗口及带错误的 JSON 不能被包装为成功压缩结果。</summary>
     [Theory]
-    [InlineData("{\"id\":\"r1\",\"object\":\"response\",\"output\":[]}")]
-    [InlineData("{\"object\":\"response.compaction\"}")]
-    [InlineData("{\"object\":\"response.compaction\",\"output\":{}}")]
-    [InlineData("{\"object\":\"response.compaction\",\"output\":[],\"error\":{\"message\":\"failed\"}}")]
-    public async Task InvalidResult_IsRejected(string body)
+    [InlineData("{\"id\":\"r1\",\"object\":\"response\",\"output\":[]}", false)]
+    [InlineData("{\"object\":\"response.compaction\"}", false)]
+    [InlineData("{\"object\":\"response.compaction\",\"output\":{}}", false)]
+    [InlineData("{\"object\":\"response.compaction\",\"output\":[],\"error\":{\"message\":\"failed\"}}", true)]
+    public async Task InvalidResult_IsRejected(string body, bool nativeError)
     {
         using var handler = new StubHttpHandler((_, _) => Task.FromResult(Json(body)));
         await using var client = Build(handler);
-        await Assert.ThrowsAsync<InvalidDataException>(() => client.LLM.Responses.CompactAsync(new() { Model = "public" }, Call(), TestContext.Current.CancellationToken));
+        if (nativeError)
+        {
+            var error = await Assert.ThrowsAsync<LlmUpstreamException>(() => client.LLM.Responses.CompactAsync(new() { Model = "public" }, Call(), TestContext.Current.CancellationToken));
+            Assert.Equal(HttpStatusCode.OK, error.StatusCode); Assert.Equal(body, error.ResponseBody);
+        }
+        else await Assert.ThrowsAsync<InvalidDataException>(() => client.LLM.Responses.CompactAsync(new() { Model = "public" }, Call(), TestContext.Current.CancellationToken));
         Assert.Equal(1, handler.Calls);
     }
 

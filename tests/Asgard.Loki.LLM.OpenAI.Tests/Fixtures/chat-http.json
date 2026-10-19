@@ -1,0 +1,250 @@
+{
+  "provenance": "Hand-authored offline native contract; no SDK output or live-model capture.",
+  "request": {
+    "model": "actual-a",
+    "messages": [
+      {
+        "role": "system",
+        "content": "精确保留"
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "reasoning_content": "先查工具",
+        "tool_calls": [
+          {
+            "id": "call_prev",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"n\":9007199254740993}"
+            },
+            "future": false
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_prev",
+        "content": "{\"ok\":false}"
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "继续中文"
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "https://media.invalid/image",
+              "detail": "low"
+            },
+            "future": 0
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "description": "查找",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "n"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "reasoning_effort": "high",
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "answer",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ok"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "zero": 0,
+      "disabled": false,
+      "nil": null
+    }
+  },
+  "complete": {
+    "id": "chat-native",
+    "object": "chat.completion",
+    "model": "actual-a",
+    "created": 1700000000,
+    "choices": [
+      {
+        "index": 2,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "查询完成",
+          "tool_calls": [
+            {
+              "id": "call_new",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"n\":9007199254740993}"
+              },
+              "future": {
+                "error": "business"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls",
+        "logprobs": null
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 17,
+      "completion_tokens": 8,
+      "total_tokens": 25,
+      "completion_tokens_details": {
+        "reasoning_tokens": 4
+      },
+      "future": 0
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "nil": null
+    }
+  },
+  "events": [
+    {
+      "event": "message",
+      "id": "evt-0",
+      "retry": 1500,
+      "data": {
+        "id": "chat-native",
+        "object": "chat.completion.chunk",
+        "model": "actual-a",
+        "choices": [
+          {
+            "index": 2,
+            "delta": {
+              "role": "assistant",
+              "reasoning_content": "先查",
+              "tool_calls": [
+                {
+                  "index": 7,
+                  "id": "call_new",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup",
+                    "arguments": "{\"n\":"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ],
+        "future": false
+      }
+    },
+    {
+      "event": "message",
+      "id": "evt-1",
+      "retry": 1500,
+      "data": {
+        "id": "chat-native",
+        "choices": [
+          {
+            "index": 2,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 7,
+                  "function": {
+                    "arguments": "9007199254740993}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "event": "message",
+      "id": "evt-2",
+      "retry": 1500,
+      "data": {
+        "id": "chat-native",
+        "choices": [
+          {
+            "index": 2,
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ],
+        "future": 0
+      }
+    },
+    {
+      "event": "message",
+      "id": "evt-3",
+      "retry": 1500,
+      "data": {
+        "id": "chat-native",
+        "choices": [],
+        "usage": {
+          "prompt_tokens": 17,
+          "completion_tokens": 8,
+          "total_tokens": 25,
+          "completion_tokens_details": {
+            "reasoning_tokens": 4
+          }
+        }
+      }
+    },
+    {
+      "event": "vendor.future",
+      "id": "evt-4",
+      "retry": 1500,
+      "data": {
+        "type": "vendor.future",
+        "error": {
+          "business": true
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "nil": null
+        }
+      }
+    }
+  ],
+  "wire": ": independently authored native fixture\r\nevent: message\r\nid: evt-0\r\nretry: 1500\r\ndata: {\"id\":\"chat-native\",\r\ndata: \"object\":\"chat.completion.chunk\",\"model\":\"actual-a\",\"choices\":[{\"index\":2,\"delta\":{\"role\":\"assistant\",\"reasoning_content\":\"先查\",\"tool_calls\":[{\"index\":7,\"id\":\"call_new\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"n\\\":\"}}]},\"finish_reason\":null}],\"future\":false}\r\n\r\nevent: message\r\nid: evt-1\r\nretry: 1500\r\ndata: {\"id\":\"chat-native\",\r\ndata: \"choices\":[{\"index\":2,\"delta\":{\"tool_calls\":[{\"index\":7,\"function\":{\"arguments\":\"9007199254740993}\"}}]},\"finish_reason\":null}]}\r\n\r\nevent: message\r\nid: evt-2\r\nretry: 1500\r\ndata: {\"id\":\"chat-native\",\r\ndata: \"choices\":[{\"index\":2,\"delta\":{},\"finish_reason\":\"tool_calls\"}],\"future\":0}\r\n\r\nevent: message\r\nid: evt-3\r\nretry: 1500\r\ndata: {\"id\":\"chat-native\",\r\ndata: \"choices\":[],\"usage\":{\"prompt_tokens\":17,\"completion_tokens\":8,\"total_tokens\":25,\"completion_tokens_details\":{\"reasoning_tokens\":4}}}\r\n\r\nevent: vendor.future\r\nid: evt-4\r\nretry: 1500\r\ndata: {\"type\":\"vendor.future\",\r\ndata: \"error\":{\"business\":true},\"future\":{\"integer\":9007199254740993,\"nil\":null}}\r\n\r\ndata: [DONE]\r\n\r\n: end comment read before success\r\n\r\n"
+}
