@@ -38,7 +38,9 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 初始化、调用、支持矩阵及验证命令请参阅 [英文 README](README.md)。CI 在 Windows/Linux 上执行构建、测试及十三个 NuGet 包的依赖与元数据检查，打包产物作为运行附件保存。独立的 `Publish NuGet` 工作流使用 OIDC 可信发布，默认仅验证登录；正式发布需手动选择 `publish` 并填写准确版本，步骤见 [发布说明](docs/releasing.md)。
 
-已于 2026-10-19 再次对照 New API，最新提交仍为 `058c8231`；以本库 `4be4511` 及其通过的 Windows/Linux CI 为对照锚点更新[模型调用补齐计划](docs/model-call-roadmap.md)。原生 Claude/Gemini、推理与 Schema 设置、custom/namespace 工具身份、OpenAI compaction 和原生 Responses WebSocket 已按各自范围实现。托管搜索已补显式请求配置及诊断，新增 Chat ↔ Responses/Claude 四方向保留必需搜索语义，嵌套位置和上下文大小按原生结构转换；本轮另补完整 Chat/Responses URL 引用双向转换，保留来源、标题、顺序和原始索引，仅在 ASCII 前缀下平移引用。显式声明端点索引单位后，现已支持精确 Unicode 偏移及完整 Gemini Web grounding → Chat/Responses 引用；引用流/历史、完整搜索执行/结果和剩余控制继续待补。用户内联 PDF 输入已补齐四协议转换，文本数组及 Responses/Claude 图片/PDF 工具结果历史也已补齐，并覆盖 custom/namespace 关联、错误边界及 Chat 工具轮次；其他文档/媒体、Gemini 富结果、复杂输出继续待补；独立 [Embedding 核心](src/Asgard.Loki.Embedding/README.md) 及 [OpenAI](src/Asgard.Loki.Embedding.OpenAI/README.md)、[Google](src/Asgard.Loki.Embedding.Google/README.md) 原生供应商已实现，[Rerank 核心](src/Asgard.Loki.Rerank/README.md) 已支持自定义适配器，Cohere/Jina 供应商继续待补，再补图片编辑、音频、云供应商、Realtime 和 Video。每步单独提交，附逐协议样本、公共 SDK 测试和文档；原生传递、显式转换、真实模型验证分别验收。后台、计费、工具执行和任务托管不纳入 SDK。
+已于 2026-10-19 再次对照 New API `058c8231`，按本库 `5403f1d` 更新[模型调用补齐计划](docs/model-call-roadmap.md#remaining-sdk-work-at-the-current-checkpoint)。原生 Claude/Gemini、已声明范围的四协议转换、OpenAI compaction/Responses WebSocket、OpenAI/Google Embedding 和独立 Rerank 核心已实现。下一步先补 Cohere Rerank，再补 Jina；转换继续收口搜索执行/结果、引用流、文档媒体、工具结果/错误及复杂输出。Ollama 原生 Embedding、Jina 约束和 DashScope 等 Rerank 方言列为剩余供应商差距，不能因已有 OpenAI/Google 包就算全部覆盖。
+
+后续依次补图片编辑、OpenAI 音频、云认证及其他原生供应商、Realtime 和 Video；旧式 completion、moderation、原生模型发现和可独立调用的搜索/fetch 保留为低优先级清单。每个小检查点附独立协议样本、公共 SDK 测试、分包/架构文档及 Windows/Linux CI，只推送 dev。原生传递、显式转换、真实模型验证分别验收；后台、计费、代理服务、工具执行和任务托管不纳入 SDK。
 
 本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题请参阅 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
 
