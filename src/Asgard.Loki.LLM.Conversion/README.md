@@ -19,7 +19,7 @@ Every off-diagonal direction has independent request, complete-response, streami
 | Functions | Definitions with JSON Schema, named/auto/required/none choice, original call IDs, arguments and associated results |
 | Gemini results | Must already be JSON object text; the SDK does not wrap arbitrary text in an invented result schema |
 | Parameters | Temperature, top-p, explicit output limits; top-k and stop where the destination supports them |
-| Structured output | JSON Schema wrappers across all four protocols; schema copied unchanged. Gemini `responseJsonSchema` supported; its separate `responseSchema` dialect is diagnosed. Plain JSON mode maps between OpenAI and Gemini |
+| Structured output | JSON Schema wrappers across all four protocols; schema copied unchanged. Gemini `responseJsonSchema` and modern `responseFormat.text` supported; its separate typed `responseSchema` dialect is still diagnosed. Plain JSON/text modes map between OpenAI and Gemini |
 | Reasoning settings | Qualitative effort, explicit Claude/Gemini budget or dynamic/off mode, and summary/display intent where representable; no model-name heuristics or calculated budgets |
 | Parallel functions | Chat/Responses `parallel_tool_calls` ↔ Claude `disable_parallel_tool_use`; Gemini has no equivalent switch and produces a diagnostic |
 | Responses | Creation in the common stateless subset; no cross-protocol `previous_response_id`, `store` or background semantics |
@@ -41,19 +41,24 @@ Tool results consume one pending call exactly once. Gemini results without IDs m
 
 Exact numeric budgets transfer between Claude and Gemini; zero/off and dynamic (-1/adaptive) remain distinct. An OpenAI target cannot represent a numeric thinking budget. `TargetReasoningEffort` can explicitly replace it, but produces `reasoning_budget_replaced` and still requires `AllowLoss = true`. Supplying both budget and effort can also be unrepresentable in a destination. Explicit `false` and omitted/null settings are not treated as interchangeable.
 
-JSON Schema bodies are copied unchanged into OpenAI `response_format`/`text.format`, Claude `output_config.format`, or Gemini `responseMimeType` + `responseJsonSchema`. No constraints are deleted or translated into descriptions. Supported Schema keywords and combinations still depend on the actual upstream. For unnamed Claude/Gemini schemas, an OpenAI target requires caller-provided `DefaultSchemaName`. OpenAI wrapper name/description and non-strict enforcement cannot be represented exactly in Claude/Gemini: they produce field diagnostics and require explicit loss consent. Claude has no equivalent generic OpenAI JSON-object mode.
+JSON Schema bodies are copied unchanged into OpenAI `response_format`/`text.format`, Claude `output_config.format`, or Gemini's selected text-format envelope. The default `GeminiOutputFormat.LegacyJsonSchema` retains `responseMimeType` + `responseJsonSchema`; explicitly choose `GeminiOutputFormat.ResponseFormat` for `generationConfig.responseFormat.text` with `APPLICATION_JSON` / `TEXT_PLAIN` and optional `schema`. Both source envelopes are recognized without model-name heuristics. Native Gemini calls and same-protocol copies remain unchanged, including future fields.
+
+Modern and legacy text envelopes cannot be combined: the converter rejects ambiguous text settings even with `AllowLoss`. Unsupported audio/image format settings and unknown fields inside the modern envelope retain precise diagnostics; an omitted text format does not invent JSON/plain intent. A schema requires the JSON MIME and an object root in this common subset. The legacy typed `responseSchema` dialect is a separate pending mapping, not an alias for JSON Schema. Current Google references mark that old field deprecated; support/selection still depends on the configured upstream.
+
+No JSON Schema constraints are deleted or translated into descriptions, including nested references, zero/false/null values and extension keywords. Supported keywords/combinations still depend on the actual upstream. For unnamed Claude/Gemini schemas, an OpenAI target requires caller-provided `DefaultSchemaName`. OpenAI wrapper name/description and non-strict enforcement cannot be represented exactly in Claude/Gemini: they produce field diagnostics and require explicit loss consent. Claude has no equivalent generic OpenAI JSON-object mode.
 
 ```csharp
 var options = new LlmConversionOptions
 {
     DefaultMaxTokens = 4096,
-    DefaultSchemaName = "result"
+    DefaultSchemaName = "result",
+    GeminiOutputFormat = GeminiOutputFormat.ResponseFormat // explicit target choice
 };
 // Add AllowLoss = true only for reviewed metadata/enforcement differences.
 // Set TargetThinkingBudgetTokens only for a target supporting manual thinking.
 ```
 
-Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings.
+Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v4`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
 
 Known descriptive response envelope fields and executed-request echoes (for example service tier, metadata and Responses sampling/tool configuration) stay in `OriginalData` / `Metadata.Conversion.UpstreamData`. They are not injected into the converted content or treated as a new request/continuation. Business output and future unclassified fields still undergo strict validation. This permits realistic native response envelopes without silently reusing upstream execution settings.
 

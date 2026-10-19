@@ -133,7 +133,7 @@ internal static class RequestReader
         if (source.ContainsKey("generationConfig"))
         {
             var config = Object(source["generationConfig"]);
-            Check(config, doc, "$.generationConfig", "temperature", "topP", "topK", "maxOutputTokens", "stopSequences", "thinkingConfig", "responseMimeType", "responseJsonSchema", "responseSchema");
+            Check(config, doc, "$.generationConfig", "temperature", "topP", "topK", "maxOutputTokens", "stopSequences", "thinkingConfig", "responseMimeType", "responseJsonSchema", "responseSchema", "responseFormat");
             Settings(config, doc, ("temperature", "temperature"), ("topP", "topP"), ("topK", "topK"), ("maxOutputTokens", "maxTokens"), ("stopSequences", "stop"));
         }
         if (source.ContainsKey("systemInstruction"))

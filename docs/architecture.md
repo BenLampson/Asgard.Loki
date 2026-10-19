@@ -203,6 +203,16 @@ ResponsesWebSocketState --> OpenAiResponsesWebSocketOptions
 
 `Asgard.Loki.LLM.Conversion` is an optional LLM extension with a single project dependency on `Asgard.Loki.LLM`. It owns pure request/response conversion and single-call stream state. Its private conversion representation never replaces the four native contracts or crosses capability boundaries. This remains an embeddable SDK: no listener, HTTP relay endpoint, gateway administration, billing, tool executor or background orchestration is introduced.
 
+`LlmConversionOptions.GeminiOutputFormat` explicitly selects the Gemini target envelope: `LegacyJsonSchema` preserves the current default wire body, while `ResponseFormat` writes modern `generationConfig.responseFormat.text` with native MIME enums. Source modern text and legacy JSON Schema envelopes are recognized independently; conflicting text settings are rejected and unrepresentable media/unknown fields remain diagnosed. JSON Schema bodies are copied unchanged; this does not implement the legacy typed `responseSchema` dialect. Options and the `conversion-v4` algorithm identity enter Session fingerprints, so old conversion Sessions fail validation instead of being silently rebound. Native providers do not reference or inherit this policy.
+
+```mermaid
+classDiagram
+LlmConversionOptions --> GeminiOutputFormat
+ConvertingLlmProvider --> LlmConversionOptions : immutable snapshot
+GeminiOutputMapping --> GeminiOutputFormat : explicit target envelope
+GeminiOutputMapping --> ConversionDocument : private per-call data
+```
+
 ```mermaid
 classDiagram
 class ConvertingLlmProvider {

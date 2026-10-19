@@ -33,20 +33,7 @@ internal static class StructuredOutputMapping
             }
         }
         else if (protocol == LlmProtocol.Gemini && source["generationConfig"] is JsonObject config)
-        {
-            if (config.ContainsKey("responseSchema") && config.ContainsKey("responseJsonSchema"))
-                throw new ArgumentException("Gemini 不能同时指定两种 Schema 方言。");
-            if (config.ContainsKey("responseSchema")) { _ = Object(config["responseSchema"]); Loss(doc, "$.generationConfig.responseSchema", "unsupported_schema_dialect"); }
-            if (config.ContainsKey("responseJsonSchema") && config["responseMimeType"]?.GetValue<string>() != "application/json")
-                throw new ArgumentException("Gemini responseJsonSchema 必须使用 application/json。");
-            if (config.ContainsKey("responseMimeType"))
-            {
-                var mime = Text(config["responseMimeType"]);
-                if (mime is not ("application/json" or "text/plain")) { Loss(doc, "$.generationConfig.responseMimeType"); return; }
-                format = new() { ["type"] = mime == "text/plain" ? "text" : "json_object" };
-                if (config.ContainsKey("responseJsonSchema")) { format["type"] = "json_schema"; format["schema"] = Object(config["responseJsonSchema"]).DeepClone(); format["strict"] = true; }
-            }
-        }
+            format = GeminiOutputMapping.Read(config, doc);
         if (format is null) return;
         var kind = Text(format["type"]);
         Check(format, doc, "$format", kind == "json_schema" ? ["type", "name", "description", "schema", "strict"] : ["type"]);
@@ -86,10 +73,7 @@ internal static class StructuredOutputMapping
             if (format["strict"]?.GetValue<bool>() != true) Loss(doc, "$format.strict", "schema_enforcement_changed");
         }
         if (protocol == LlmProtocol.Gemini)
-        {
-            var config = Ensure(target, "generationConfig"); config["responseMimeType"] = type == "text" ? "text/plain" : "application/json";
-            if (type == "json_schema") config["responseJsonSchema"] = format["schema"]!.DeepClone();
-        }
+            GeminiOutputMapping.Write(Ensure(target, "generationConfig"), format, options);
         else if (type == "json_schema") Ensure(target, "output_config")["format"] = new JsonObject { ["type"] = type, ["schema"] = format["schema"]!.DeepClone() };
         else if (type != "text") Loss(doc, "$format", "unsupported_output_format");
     }

@@ -13,4 +13,6 @@ public sealed record LlmConversionOptions
     public string? TargetReasoningEffort { get; init; }
     /// <summary>目标 Claude 手动 thinking 模式使用的显式预算；不按 effort 比例推算。</summary>
     public int? TargetThinkingBudgetTokens { get; init; }
+    /// <summary>Gemini 目标的文本输出外壳；默认保持原有报文，模型支持由调用者确认。</summary>
+    public GeminiOutputFormat GeminiOutputFormat { get; init; }
 }
