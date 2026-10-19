@@ -1392,3 +1392,18 @@ Every native-pair request explicitly chooses MessagesV1 versus Nova2 envelope po
 New `bedrock-json-conversion-v1` fingerprints include full fixed upstream identity and explicit options. Default-omitted enum fields preserve original conversion-v25 option bytes and all prior four-protocol Sessions. Native AWS/core interfaces, enums and identities remain unchanged. Conversion still depends only on LLM; test-only shared JSON is embedded in the two acceptance assemblies. Independent six-request/four-response full goldens, 88 new conversion cases replacing two blanket Nova exclusions, and 39 AWS cases bring current totals to 6250 (2059 conversion, 664 AWS), 28 packages. The broader roadmap, mixed text pairs, streams and live supplier acceptance remain open.
 
 The native request context also snapshots validated historical tool IDs. Contextual response conversion rejects reuse by a new call even with AllowLoss; it never changes a provider ID or infers association by function name. Two pure-context cases were observed failing before the guard was added; two public HTTP cases cover both native directions. Request/response-only static APIs remain stateless beyond any context explicitly supplied by the caller.
+
+## Bedrock logical stream data conversion
+
+The Conversion package adds a separate `BedrockProtocolStreamConverter` because Converse source names live outside JSON while Nova uses a complete inner union envelope. The four-protocol stream converter keeps its existing discriminator contract and rejects native cross-stream use; no public universal message/transport coordinator is introduced.
+
+```mermaid
+classDiagram
+    BedrockProtocolStreamConverter --> BedrockStreamState : per-call native lifecycle
+    BedrockProtocolStreamConverter --> BedrockStreamFields : bounded loss diagnostics
+    BedrockProtocolStreamConverter --> BedrockStreamConversionResult : independent source and target JSON
+    BedrockStreamState --> BedrockStreamToolArguments : original index and finite UTF-8 argument buffer
+    BedrockProtocolStreamConverter --> LlmConversionContext : optional immutable request history
+```
+
+Only common text/ordinary-tool native events map. Original indices/IDs/fragments/ordering remain native; malformed arguments, duplicate properties, historical-ID reuse, invalid source state and native-only opaque/execution blocks fail even with loss consent. Terminal candidates wait for a caller-confirmed normal source end and disposal; EOF never invents a stop. Resource/diagnostic state is finite and default-omitted nullable policies preserve preceding serialized options. The result exposes logical EventType, source event name and complete original JSON without a fabricated binary frame. This data-layer API does not acquire HTTP/credentials or perform SDK-native transport composition. Its 139 pure regressions and independent 15-event source/target declarations are distinct from supplier/live acceptance.

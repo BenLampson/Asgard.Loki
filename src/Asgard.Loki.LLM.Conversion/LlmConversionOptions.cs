@@ -9,6 +9,18 @@ public sealed record LlmConversionOptions
     /// <summary>Nova 专有设置的明确 Converse 包装，不推断模型能力或静默迁移其他位置。</summary>
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
     public BedrockConverseInferenceFormat BedrockConverseInferenceFormat { get; init; }
+    /// <summary>原生 Bedrock 转换流全程内容块数上限，缺省有效值 128；不限制原生透传。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxBedrockStreamBlocks { get; init; }
+    /// <summary>每个普通工具聚合参数的 UTF-8 字节上限，缺省 1 MiB，不截断参数。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxBedrockStreamToolArgumentBytes { get; init; }
+    /// <summary>等待源成功结束的终态源/目标 JSON 总字节上限，缺省 1 MiB。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxBedrockStreamTailBytes { get; init; }
+    /// <summary>原生 Bedrock 转换流累计损耗诊断条数上限，缺省 1024；超限失败而非丢弃诊断。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxBedrockStreamDiagnostics { get; init; }
     /// <summary>默认拒绝任何损耗；仅显式开启后允许省略并返回诊断。</summary>
     public bool AllowLoss { get; init; }
     /// <summary>目标为 Claude 而来源没有输出上限时使用；不隐式猜测上限。</summary>

@@ -69,6 +69,8 @@ public static class LlmProtocolConverter
             throw new NotSupportedException("Bedrock 原生转换当前只支持 Nova 与 Converse 之间的完整 JSON。");
         if (options is not null && (!Enum.IsDefined(options.BedrockNovaRequestFormat) || !Enum.IsDefined(options.BedrockConverseInferenceFormat)))
             throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is { MaxBedrockStreamBlocks: <= 0 } or { MaxBedrockStreamToolArgumentBytes: <= 0 }
+            or { MaxBedrockStreamTailBytes: <= 0 } or { MaxBedrockStreamDiagnostics: <= 0 }) throw new ArgumentOutOfRangeException(nameof(options));
         if (options?.DefaultMaxTokens is <= 0) throw new ArgumentOutOfRangeException(nameof(options));
         if (options?.TargetThinkingBudgetTokens is < 1024) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiOutputFormat)) throw new ArgumentOutOfRangeException(nameof(options));
