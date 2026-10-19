@@ -1,0 +1,42 @@
+{
+  "id": "msg_mantle",
+  "type": "message",
+  "role": "assistant",
+  "model": "native-returned-model",
+  "content": [
+    {
+      "type": "thinking",
+      "thinking": "继续推理",
+      "signature": "signature-output"
+    },
+    {
+      "type": "redacted_thinking",
+      "data": "opaque-output"
+    },
+    {
+      "type": "text",
+      "text": "已查询"
+    },
+    {
+      "type": "tool_use",
+      "id": "call_new",
+      "name": "lookup",
+      "input": {
+        "n": 9007199254740993
+      }
+    }
+  ],
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 17,
+    "output_tokens": 8,
+    "cache_read_input_tokens": 5,
+    "cache_creation_input_tokens": 3,
+    "future": 0
+  },
+  "future": {
+    "integer": 9007199254740993,
+    "nil": null
+  }
+}

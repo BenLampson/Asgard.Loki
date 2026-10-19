@@ -17,7 +17,8 @@ Native Bedrock Claude `InvokeModel` JSON/EventStream and explicit Converse JSON/
 | ConverseStream | Native direct-JSON EventStream, original block/tool association and delayed terminal publication |
 | Nova/other native InvokeModel payloads | Not implemented; Converse-compatible models may use the explicit Converse API |
 | Bedrock Runtime API Key/Bearer | Explicit constructor without a SigV4 source; all four documented native methods |
-| Mantle endpoint dialects, SigV4a, presigning | Not implemented by this provider |
+| Mantle Messages SigV4 JSON/SSE | Separate `AwsMantleLlmProvider` in this package |
+| SigV4a, presigning | Not implemented |
 | Credential discovery/login/role assumption, resource management, retries | Application-owned or unsupported |
 
 ## Initialization
@@ -195,4 +196,42 @@ Primary references: [Bedrock API Key use](https://docs.aws.amazon.com/bedrock/la
 
 ## Separate Anthropic-native endpoint reuse
 
-The [Anthropic provider](../Asgard.Loki.LLM.Anthropic/README.md#bedrock-messages-endpoint-reuse) now has independent Runtime/Mantle `/anthropic/v1/messages` JSON/SSE fixtures with explicit `x-api-key` mode and a caller-selected root/model. Those operations belong to the existing native Messages supplier and do not introduce a dependency from this AWS package. They are separate from this package's InvokeModel/Converse JSON/EventStream. Mantle SigV4, Nova InvokeModel and cloud OpenAI-compatible endpoints remain pending; the fixture checkpoint does not establish live cloud access or optional Bearer acceptance.
+The [Anthropic provider](../Asgard.Loki.LLM.Anthropic/README.md#bedrock-messages-endpoint-reuse) now has independent Runtime/Mantle `/anthropic/v1/messages` JSON/SSE fixtures with explicit `x-api-key` mode and a caller-selected root/model. Those operations belong to the existing native Messages supplier and do not introduce a dependency from this AWS package. They are separate from this package's InvokeModel/Converse JSON/EventStream. Mantle SigV4 is implemented by the separate provider below; Nova InvokeModel and cloud OpenAI-compatible endpoints remain pending. The fixture checkpoint does not establish live cloud access or optional Bearer acceptance.
+
+## Explicit Mantle SigV4 Messages
+
+`AwsMantleLlmProvider` implements the existing `IClaudeMessagesAdapter` and supports only `LlmCredential.External`. It is separate from `AwsLlmProvider`: Mantle uses native Messages JSON/SSE and the fixed signing service **`bedrock-mantle`**. Runtime InvokeModel/Converse continue using `bedrock` with their existing request shapes, identities and signatures. Neither provider switches API by model name or failure.
+
+```csharp
+var mantle = new AwsMantleLlmProvider(httpFactory, credentialSource,
+    new AwsMantleLlmOptions
+    {
+        Region = "us-east-1",
+        RequestHeaders = new Dictionary<string, string>
+        {
+            ["anthropic-beta"] = selectedBeta,
+            ["anthropic-workspace-id"] = existingWorkspaceId
+        }
+    });
+var target = new LlmTarget
+{
+    Id = "mantle-primary", ProviderId = mantle.Id,
+    BaseAddress = new Uri("https://bedrock-mantle.us-east-1.api.aws/anthropic/v1/"),
+    UpstreamModel = actualMantleModel, CredentialId = "mantle-principal",
+    Protocols = LlmProtocol.ClaudeMessages
+};
+// Credentials = [LlmCredential.External("mantle-principal", stablePrincipalIdentity)]
+// Register provider, target, Session cache/coordinator and caller-owned source as usual.
+```
+
+`IAwsLlmCredentialSource` supplies one `AwsLlmSigningCredentials` per complete call. Source identity and returned principal must stay consistent; credentials must be unexpired both after acquisition and before signing after client creation. The application owns login, role assumption and refresh. The SDK does not inspect profiles/environment, split gateway credential strings, cache derived keys, retry or switch targets. Ordinary API Key/anonymous identities fail before acquisition. Native Key-mode Mantle Messages can separately reuse the [Anthropic supplier](../Asgard.Loki.LLM.Anthropic/README.md#bedrock-messages-endpoint-reuse); this SigV4 adapter does not borrow that package or a default Bearer value.
+
+The caller supplies the exact root prefix/model. Only `messages` is appended; only model and method stream flag are fixed in the native body. There is no automatic `anthropic.` prefix, region/model rewrite, InvokeModel version injection, or deletion of caller fields. Explicit caller extensions remain raw, including fields a specific endpoint may reject. The default header version is `2023-06-01`. Optional `anthropic-*` (except the separately configured version) and `x-amzn-bedrock-*` headers are independently snapshotted, signed and bound. Host and selected signature headers override matching client defaults; unselected authentication, AWS signing or native-control defaults fail before send. Configure any relevant native header explicitly in options; the SDK does not manage workspaces/projects.
+
+Local limits default to 32 MiB raw response bytes, 128 tracked content blocks and 128 pending terminal/tail events. Complete JSON and SSE have strict UTF-8/duplicate-property/declared-length checks. Native sparse association keys, tool IDs and known delta kinds are validated without assembling tool arguments or altering signatures/encrypted items. Stop-reason candidates, native stop/error and unknown metadata wait for real EOF, async source disposal, response/client disposal and final cancellation. Initial content remains incremental. Late errors discard held success, preserving original status/body; early exit releases this call's resources. SSE has no AWS binary frame attachment or automatic reconnect. These transport checks do not certify every native Claude schema or model capability.
+
+The new `aws-mantle-messages-sigv4-v1` binding includes explicit signing region/service, version, native headers, limits, named client and stable source. Short-lived Key/Session Token rotation for the same principal/source does not rebind the Session. Changing stable source/config/principal or the complete target requires a new binding. Existing Runtime/AWS and other supplier identities, core fingerprints and conversion-v25 algorithms remain unchanged. Optional explicit conversion is still composed separately by the application.
+
+Four independent full native resources and sixteen Python SHA256/HMAC final HTTP vectors verify paths (including encoded proxy prefixes/ports), exact body bytes/property order, selected model/auth/native headers, permanent/temporary credentials, JSON/SSE and direct/public SDK paths. 107 new offline cases cover snapshots, source/cancellation/expiry/default isolation, full-target recovery/rotation and original/late faults, plus explicit conversion delegation. Current AWS total is **488**, repository **5918**, still 28 packages. No live AWS account/model, Linux or remote Actions run is claimed. Native Nova, remaining cloud-compatible operations and broader roadmap items remain pending.
+
+References: [AWS native Messages contract](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-messages-api.html), [SigV4 request construction](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html). The pinned New API Mantle source signs service `bedrock-mantle`; its gateway root/model/credential normalization is deliberately caller configuration here.

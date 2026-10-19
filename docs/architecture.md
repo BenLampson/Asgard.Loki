@@ -1250,6 +1250,29 @@ Three full independent manifests and 104 additional offline cases verify standar
 
 The separate conversion test composition fixes the existing decorator to ClaudeMessages and the existing Anthropic transport, keeping production dependencies unchanged. Sixteen new public SDK tests compare independent complete final requests for high/off thinking and Schema constraints under explicit Key/Bearer modes. Schema naming loss still requires explicit consent and a diagnostic; budgets cannot override an off source, and late native errors cannot release converted finish. No algorithm/option/contract change is introduced. Full native fixtures align block indices with final array positions; an extra raw sparse-index passthrough test is kept separate from two strict conversion rejection cases. Current totals: 5811 offline cases (127 Anthropic, 1915 conversion), 28 packages.
 
+### Explicit Mantle SigV4 native Messages
+
+`LLM.AWS` adds `AwsMantleLlmProvider` and `AwsMantleLlmOptions` inside the existing supplier package. The provider implements the existing Claude adapter and External-credential declaration; it does not advertise Converse, Chat, Responses or other operations. It borrows the existing AWS source/factory and reuses only AWS-private JSON/signing/Claude association helpers. SSE transport parsing is independently compiled from the existing shared non-business parser. There is no reference to Anthropic/Conversion/another capability and no common cross-capability coordinator.
+
+```mermaid
+classDiagram
+    IClaudeMessagesAdapter <|.. AwsMantleLlmProvider
+    AwsMantleLlmProvider --> AwsMantleLlmOptions : snapshots
+    AwsMantleLlmProvider --> IAwsLlmCredentialSource : borrows stable principal source
+    AwsMantleLlmProvider --> IHttpClientFactory : borrows
+    AwsMantleLlmProvider --> AwsSigV4 : service bedrock-mantle
+    AwsLlmProvider --> AwsSigV4 : service bedrock unchanged
+    AwsMantleLlmProvider --> AwsClaudeStreamState : native block and terminal association
+    AwsMantleLlmProvider --> AwsSseReadStream : bounded raw SSE
+    AwsMantleLlmProvider --> SseReader : compiled transport parser
+```
+
+Mantle selects a native `/messages` operation under the explicitly supplied prefix, keeps model in the body and fixes only actual model/method stream. Version is an explicit header, not an injected InvokeModel body field. Unknown fields and tool/reasoning/signature/encrypted content remain native. Optional selected native headers are snapshotted/signed/bound; unselected auth/signing/native defaults cannot leak into a complete target. Source/principal/expiry checks bracket acquisition and client creation; there is one signed call without retry, target switch, identity discovery or resource management.
+
+JSON/SSE reads validate raw limits, encoding, duplicate JSON and declared lengths. Claude association stays finite; native terminal candidates/tails wait for real EOF, async/sync disposal and final cancellation, while initial deltas remain incremental. Late native errors retain status/body and invalidate held success. Native SSE does not expose a fabricated AWS EventStream binary frame. New `aws-mantle-messages-sigv4-v1` identity binds fixed service, region/version/header/policy/client/source; temporary key/token rotation for the same source/principal remains stable. Runtime/AWS identities and exact default signatures, core fingerprint algorithms and conversion-v25 are unchanged.
+
+Four independent native resources and sixteen Python signature vectors cover final byte order, encoded roots/ports, complete/stream, direct/public paths and temporary credentials. 107 additional offline cases include auth/default isolation, snapshots, source/expiry failures, stable full-target recovery, state/transport faults and separate explicit converter delegation. Totals: 5918 offline tests (488 AWS), 28 packages. Native Nova, other cloud-compatible operations and remaining roadmap work are still pending; no actual account/model or remote/Linux execution is claimed.
+
 ## 7. HTTP and errors
 
 Providers own address/authentication/protocol mapping. API roots include their version path. Do not hard-code model lists or rewrite model suffixes heuristically.

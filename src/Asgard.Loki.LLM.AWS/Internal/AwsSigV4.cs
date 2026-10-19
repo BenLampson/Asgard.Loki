@@ -10,6 +10,9 @@ internal static class AwsSigV4
 {
     /// <summary>以实际原始正文和已选头签名；模型路径在上网编码之后按非 S3 SigV4 再编码。</summary>
     internal static void Sign(HttpRequestMessage message, byte[] body, AwsLlmSigningCredentials credentials, string region, DateTimeOffset now)
+        => Sign(message, body, credentials, region, now, "bedrock");
+    /// <summary>同供应商内显式选择签名服务；Mantle 不复用 Runtime 的服务作用域。</summary>
+    internal static void Sign(HttpRequestMessage message, byte[] body, AwsLlmSigningCredentials credentials, string region, DateTimeOffset now, string service)
     {
         var uri = message.RequestUri!; var host = uri.HostNameType == UriHostNameType.IPv6 ? "[" + uri.IdnHost.Trim('[', ']') + "]" : uri.IdnHost;
         if (!uri.IsDefaultPort) host += ":" + uri.Port.ToString(CultureInfo.InvariantCulture); message.Headers.Host = host;
@@ -19,7 +22,7 @@ internal static class AwsSigV4
         foreach (var header in message.Headers) headers.Add(header.Key.ToLowerInvariant(), Normalize(string.Join(',', header.Value)));
         headers.Add("content-type", Normalize(message.Content!.Headers.ContentType!.ToString()));
         var names = string.Join(';', headers.Keys); var canonical = message.Method.Method + "\n" + CanonicalPath(uri) + "\n\n" + string.Concat(headers.Select(header => header.Key + ":" + header.Value + "\n")) + "\n" + names + "\n" + Hash(body);
-        message.Headers.TryAddWithoutValidation("Authorization", Authorization(canonical, names, credentials, region, "bedrock", now));
+        message.Headers.TryAddWithoutValidation("Authorization", Authorization(canonical, names, credentials, region, service, now));
     }
     /// <summary>标准非 S3 路径规范化与二次编码，百分号本身也编码；不把 ARN 的斜杠变成路由段。</summary>
     internal static string CanonicalPath(Uri uri) => "/" + string.Join('/', uri.AbsolutePath.Split('/').Where(segment => segment.Length != 0).Select(Uri.EscapeDataString));
