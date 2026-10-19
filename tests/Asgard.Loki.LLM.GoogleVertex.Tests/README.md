@@ -1,0 +1,5 @@
+# Vertex offline protocol tests
+
+Three full JSON fixtures are authored independently of the provider/converter: caller input, final native wire body and complete upstream result. Tests compare entire trees, preserving tool associations, opaque signatures, media/file and cache references, generation/schema/thinking settings, safety/grounding/usage, unknown null/false values and exact integers. These are forwarding fixtures; they do not establish that a live Vertex model accepts every field, particularly Developer API function IDs.
+
+80 xUnit v3 cases exercise public SDK and direct-adapter boundaries with substitute HTTP, deterministic time, borrowed token/factory ownership and `MemoryDistributedCache` with an explicit coordinator. Response bytes are fragmented and EOF/disposal/cancellation failures are injected. The suite does not require keys, a Google account, network or Redis. SSE is pending and is not claimed by complete JSON tests. Conversion integration covers an explicitly representable text subset only.

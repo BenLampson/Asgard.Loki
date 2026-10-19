@@ -42,6 +42,8 @@ External fingerprints use a separate domain with structured target/principal/pro
 
 This prerequisite has 38 new offline cases (28 core, four conversion and six direct OpenAI boundaries). It is usable by caller-owned adapters and the independent [Azure provider](../Asgard.Loki.LLM.Azure/README.md), whose native complete JSON endpoint/token transport has 86 additional offline cases and whose separate SSE checkpoint adds 69 cases. Azure native Chat/Responses SSE preserves delayed annotations and terminal boundaries; compact/WebSocket remain pending. No cloud login, actual token refresh or live model call is claimed.
 
+The independent [Vertex provider](../Asgard.Loki.LLM.GoogleVertex/README.md) additionally uses External identities for standard Gemini complete JSON. Its target model is the full project/location/publisher-model or tuned-endpoint resource, so existing complete-target Sessions bind that identity without new core protocols. Authentication refresh remains source-owned; SSE and other Vertex dialects remain pending. 80 offline cases verify native wire, identity and lifecycle, not cloud login or live acceptance.
+
 ## Native Ollama operations
 
 `loki.LLM.OllamaChat.CompleteAsync` / `StreamAsync` use `OllamaChatRequest`, `OllamaChatResponse` and `OllamaChatEvent` through optional `IOllamaChatAdapter`. Targets explicitly declare `LlmProtocol.OllamaChat`; existing default target flags remain unchanged. Messages and native extension JSON are snapshotted before awaited Session resolution. Only actual model and method stream mode change. Native tool IDs/history, images, thinking, `format` schema, `options`, unknown values and counters remain intact; there is no conversion to an OpenAI envelope.
@@ -70,7 +72,7 @@ Native `.OllamaGenerate.GenerateAsync` / `StreamAsync` are separate from Chat, u
 - Native `.ClaudeMessages`, `.Gemini`, `.OllamaChat` and `.OllamaGenerate` clients, each with independent request/result/event contracts.
 - `ILlmProvider.BindingIdentity` participates in target fingerprints; old bindings created without it require a new Session or caller-managed expiration.
 
-Register providers separately, currently `Asgard.Loki.LLM.Volcengine`, `Asgard.Loki.LLM.OpenAI`, `Asgard.Loki.LLM.Anthropic`, `Asgard.Loki.LLM.Google`, `Asgard.Loki.LLM.Ollama` or `Asgard.Loki.LLM.Azure`. This package does not reference any provider, the client implementation, or another capability.
+Register providers separately, currently `Asgard.Loki.LLM.Volcengine`, `Asgard.Loki.LLM.OpenAI`, `Asgard.Loki.LLM.Anthropic`, `Asgard.Loki.LLM.Google`, `Asgard.Loki.LLM.Ollama`, `Asgard.Loki.LLM.Azure` or `Asgard.Loki.LLM.GoogleVertex`. This package does not reference any provider, the client implementation, or another capability.
 
 First binding must be coordinated across processes. Plain cache Get/Set is not atomic. Missing/changed bindings fail; generation is not silently retried or rerouted. Cache/coordinator ownership remains with the caller.
 

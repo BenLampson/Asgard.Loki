@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Native Vertex Gemini calls with explicit resource identity and borrowed authentication.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>

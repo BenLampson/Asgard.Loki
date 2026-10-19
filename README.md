@@ -19,6 +19,7 @@ The architecture contract, UML, dependency rules and provider extension requirem
 | LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
 | LLM | `Asgard.Loki.LLM.Ollama` | Native Chat/generate JSON/NDJSON, native thinking/schema/tool history and prompt/context; explicit anonymous or Bearer identity | — |
 | LLM | `Asgard.Loki.LLM.Azure` | Native v1/dated Chat and Responses JSON; api-key or borrowed external token authentication | Native SSE; delayed filter/usage tails |
+| LLM | `Asgard.Loki.LLM.GoogleVertex` | Standard Vertex Gemini complete JSON; explicit project/location resource and borrowed external token source | SSE pending |
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
 | Speech | `Asgard.Loki.Audio.Volcengine` | Volcengine V3 text-to-speech; API Key or legacy app/token authentication | HTTP chunked JSON to audio chunks |
 | Speech | `Asgard.Loki.Audio.OpenAI` | Native Speech binary/SSE responses; custom voice objects and complete native JSON settings | Incremental binary bytes or native delta/done events |
@@ -48,6 +49,8 @@ LLM additionally exposes an explicit [external authentication identity](src/Asga
 
 The independent [Azure LLM provider](src/Asgard.Loki.LLM.Azure/README.md) now implements complete native Chat/Responses JSON and SSE with explicit v1/dated routing and API Key or borrowed external token authentication. Stable principal Sessions survive token rotation; configuration/principal changes fail. Native SSE preserves delayed filter/usage tails and holds terminal events through EOF/disposal; compaction and WebSocket remain pending; no live Azure authentication or model validation is claimed.
 
+The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md) implements standard Gemini complete JSON with explicit full project/location/model resources and borrowed external authentication. It preserves native fields and fixed-target Sessions through token rotation. SSE, Claude rawPredict, Express API Key and MaaS remain pending; wire fixtures do not establish live acceptance of Developer API-only fields.
+
 ## Packages and dependencies
 
 | Package | Responsibility |
@@ -74,6 +77,7 @@ The independent [Azure LLM provider](src/Asgard.Loki.LLM.Azure/README.md) now im
 | Asgard.Loki.LLM.Google | Native Gemini Developer API provider |
 | Asgard.Loki.LLM.Ollama | Native Ollama Chat/generate JSON/NDJSON; explicit anonymous or Bearer authentication |
 | `Asgard.Loki.LLM.Azure` | Native Azure endpoints and provider-owned external token source |
+| `Asgard.Loki.LLM.GoogleVertex` | Native Vertex Gemini resource identity and external authentication |
 | `Asgard.Loki.LLM.Conversion` | Optional explicit conversion; references only LLM |
 | `Asgard.Loki.Audio.Volcengine` | Volcengine speech provider |
 | `Asgard.Loki.Audio.OpenAI` | Native OpenAI speech and multipart transcription/translation; independent Audio state |
@@ -81,7 +85,7 @@ The independent [Azure LLM provider](src/Asgard.Loki.LLM.Azure/README.md) now im
 
 The entry package depends only on abstractions. Capability packages do not reference each other. Each provider depends only on its capability and standard Microsoft components. Installing OpenAI images does not install LLM or audio providers.
 
-These are the package identities produced by this checkout. The PR/release CI configuration builds and verifies all twenty-six packages when invoked and attaches them to that workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
+These are the package identities produced by this checkout. The PR/release CI configuration builds and verifies all twenty-seven packages when invoked and attaches them to that workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
 
 ## Native Claude, Gemini and explicit conversion
 
@@ -310,7 +314,7 @@ Local protocol tests are not live-provider verification. Real account permission
 
 The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
 
-The offline suite passes 4672 tests, including 155 native Azure JSON/SSE, 167 native Ollama Chat/generate, 143 SiliconFlow Rerank, 350 OpenAI Image, 96 Image core, 378 OpenAI Audio, 122 Audio core, 134 Jina Embedding, 124 Ali Rerank, 125 Ollama Embedding, 133 Jina Rerank, 120 Cohere Rerank, 34 Rerank core, 34 Embedding core, 106 OpenAI Embedding, 114 Google Embedding, 1798 conversion, 211 OpenAI provider, 93 Ark provider, 22 Claude, 36 Gemini and 167 LLM core tests. Complete Chat/Responses URL citations and Gemini Web grounding map in both directions with declared endpoint index units. Conversion regressions cover nested field loss, pending tool/result association, ID collisions, complete and truncated stream lifecycles, done/final snapshot consistency and cache/usage accounting. The original OpenAI/Ark protocol suites remain covered alongside native compaction and feature-binding tests. Standard-Ark live verification with `doubao-seed-evolving` covers Chat/Responses JSON and SSE, tool calls and result return, strict JSON Schema, thinking on/off, actual output truncation, response continuation and opaque reasoning replay. **Both strict `tool_choice=none` cases currently fail:** upstream emits a function call although the final request correctly contains `none`. These failures remain visible. See the [protocol and parameter verification record](docs/llm-parameter-verification.md) for evidence and limits; OpenAI, Claude, Gemini, Embedding/Rerank suppliers and explicit conversion have offline coverage only.
+The offline suite passes 4752 tests, including 80 native Vertex JSON, 155 native Azure JSON/SSE, 167 native Ollama Chat/generate, 143 SiliconFlow Rerank, 350 OpenAI Image, 96 Image core, 378 OpenAI Audio, 122 Audio core, 134 Jina Embedding, 124 Ali Rerank, 125 Ollama Embedding, 133 Jina Rerank, 120 Cohere Rerank, 34 Rerank core, 34 Embedding core, 106 OpenAI Embedding, 114 Google Embedding, 1798 conversion, 211 OpenAI provider, 93 Ark provider, 22 Claude, 36 Gemini and 167 LLM core tests. Complete Chat/Responses URL citations and Gemini Web grounding map in both directions with declared endpoint index units. Conversion regressions cover nested field loss, pending tool/result association, ID collisions, complete and truncated stream lifecycles, done/final snapshot consistency and cache/usage accounting. The original OpenAI/Ark protocol suites remain covered alongside native compaction and feature-binding tests. Standard-Ark live verification with `doubao-seed-evolving` covers Chat/Responses JSON and SSE, tool calls and result return, strict JSON Schema, thinking on/off, actual output truncation, response continuation and opaque reasoning replay. **Both strict `tool_choice=none` cases currently fail:** upstream emits a function call although the final request correctly contains `none`. These failures remain visible. See the [protocol and parameter verification record](docs/llm-parameter-verification.md) for evidence and limits; OpenAI, Claude, Gemini, Embedding/Rerank suppliers and explicit conversion have offline coverage only.
 
 Use `pwsh -File eng/Test-Live.ps1 -Suite Parameters` or `-Suite All` for expanded checks, or add `-Scenario Structured`, `Tools`, `ToolChoice`, `Reasoning`, `Limits` or `Replay` to select a group. Default smoke makes five calls; Parameters plans 26 and All 31, with a hard limit of 32 per process. The expanded suites exit nonzero while the known tool-choice failure persists. The fixture uses `MemoryDistributedCache`; Redis cross-process verification remains separate.
 

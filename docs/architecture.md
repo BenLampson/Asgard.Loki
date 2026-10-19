@@ -31,6 +31,7 @@ class AnthropicLLM["Asgard.Loki.LLM.Anthropic"]
 class GoogleLLM["Asgard.Loki.LLM.Google"]
 class OllamaLLM["Asgard.Loki.LLM.Ollama"]
 class AzureLLM["Asgard.Loki.LLM.Azure"]
+class VertexLLM["Asgard.Loki.LLM.GoogleVertex"]
 class Conversion["Asgard.Loki.LLM.Conversion"]
 class Speech["Asgard.Loki.Audio.Volcengine"]
 class OpenAISpeech["Asgard.Loki.Audio.OpenAI"]
@@ -56,6 +57,7 @@ AnthropicLLM ..> LLM
 GoogleLLM ..> LLM
 OllamaLLM ..> LLM
 AzureLLM ..> LLM
+VertexLLM ..> LLM
 Conversion ..> LLM
 Speech ..> Audio
 OpenAISpeech ..> Audio
@@ -91,6 +93,28 @@ External authentication is provider-owned. The borrowed source has a captured st
 Requests are snapshotted before awaiting token acquisition. Conflicting unselected authentication defaults fail before send. Complete results wait for normal bounded UTF-8 body EOF, declared-length checks, response/client disposal and cancellation. `MaximumBodyBytes` bounds raw JSON/error bodies. Duplicate properties, malformed strings/encoding, truncated JSON and unexpected SSE media fail; root native errors preserve original body and HTTP status. The factory, token source and clock remain application-owned. Conversion is an explicit separate decorator with its existing strict loss rules; native Azure filter retention does not grant automatic cross-protocol equivalence.
 
 155 independent offline cases cover native JSON/SSE, authentication, continuation/Session identity and transport/resource boundaries. Chat retains empty-identity annotations, unknown native metadata and per-choice original indices; the first possible finish starts a bounded tail buffer through filter/usage records, DONE, normal EOF and disposal. Responses preserves unknown events and holds completed/incomplete/failed/error without changing native status; missing/repeated/late terminals or changed response identity fail. Raw bytes are bounded before SSE line parsing; pending tail records and tracked choice indices have separate explicit limits. Tool/item/call IDs remain native, with no tool execution or argument aggregation. The new SSE binding identity/resource policies require fresh Sessions for the earlier JSON-only checkpoint rather than silently rebinding. Core legacy fingerprints and conversion-v24 are unchanged. Cloud login, actual token refresh, live model verification and optional compact/WebSocket/Realtime operations are not claimed.
+
+## Vertex standard Gemini provider
+
+`LLM.GoogleVertex` owns the standard Vertex complete Gemini JSON transport through the existing `IGeminiAdapter` and `ILlmCredentialSupport`. It references only LLM and standard HTTP, with no dependency on `LLM.Google`, Azure, Conversion, a cloud identity SDK or another capability. It adds no new core protocol or canonical message model. SSE and other Vertex dialects remain separate pending work.
+
+```mermaid
+classDiagram
+IGeminiAdapter <|.. GoogleVertexLlmProvider
+ILlmCredentialSupport <|.. GoogleVertexLlmProvider
+GoogleVertexLlmProvider --> GoogleVertexLlmOptions : snapshots local policy and optional quota project
+GoogleVertexLlmProvider --> IGoogleVertexLlmTokenSource : borrows
+IGoogleVertexLlmTokenSource --> GoogleVertexLlmAccessToken : principal/token/expiry assertion
+GoogleVertexLlmProvider --> LlmAdapterContext : complete bound resource target
+```
+
+The caller supplies the versioned HTTP root and the full `UpstreamModel` resource: publisher form `projects/{project}/locations/{location}/publishers/{publisher}/models/{model}`, or tuned `projects/{project}/locations/{location}/endpoints/{endpoint}`. Components are validated/escaped individually. Resource project/location and native method are not inferred from hostnames/model suffixes or credential files. The existing complete-target fingerprint therefore includes project/location/resource identity without introducing a universal cloud coordinator or a loose model-plus-key pool. No resource management endpoint is added.
+
+Only External credentials are supported. The application owns source login/scopes/refresh and the truth of its principal assertion. The provider captures stable source configuration, invokes it once per operation, verifies principal/source/expiry before send and never stores a short-lived token in Session. Optional quota-project header is explicit and fingerprinted; inherited unselected Key/project headers fail. Rotating tokens keep a Session; changing project/location/model/server/version/principal/provider settings rejects it. Factories, sources and clocks remain borrowed.
+
+Native request snapshots precede token acquisition; only routed model and method stream flags are removed from Gemini's body. Tools/IDs, thought signatures, media, schema/thinking settings, safety, cached-content references and unknown fields remain native. This does not promise that a selected Vertex model accepts Developer API-only fields; the SDK never silently strips IDs or weakens schemas. Complete JSON uses strict bounded UTF-8, duplicate/escape/length checks and waits for EOF, disposal and cancellation. Original native errors and prompt blocks remain distinguishable from answer success. No generation retry, rerouting, file fetching, tool execution or implicit history replay is introduced.
+
+80 independent offline cases cover complete wire/results, both resource forms, stable identity recovery, authentication and resource faults. Conversion remains a separate explicit decorator with existing strict loss rules; common text integration does not establish Vertex-specific tool/schema equivalence. Live cloud authentication/model verification, SSE, Claude rawPredict, Express API Key, MaaS Chat and Live/Interactions remain unimplemented or unverified. See the [provider matrix](../src/Asgard.Loki.LLM.GoogleVertex/README.md).
 
 ## 2. Registration and lifecycle
 
