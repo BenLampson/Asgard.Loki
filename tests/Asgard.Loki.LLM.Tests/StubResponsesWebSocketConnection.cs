@@ -20,6 +20,8 @@ internal sealed class StubResponsesWebSocketConnection(LlmResultMetadata metadat
     internal int CloseCount { get; private set; }
     /// <summary>释放次数。</summary>
     internal int DisposeCount { get; private set; }
+    /// <summary>原生读取枚举开始次数。</summary>
+    internal int ReaderStarts { get; private set; }
     /// <summary>注入完整事件。</summary>
     internal void Emit(string json) => _events.Writer.TryWrite(new(JsonSerializer.Deserialize<JsonElement>(json), Metadata));
     /// <summary>结束本次读取。</summary>
@@ -34,6 +36,7 @@ internal sealed class StubResponsesWebSocketConnection(LlmResultMetadata metadat
     /// <inheritdoc />
     public async IAsyncEnumerable<ResponseEvent> ReadEventsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        ReaderStarts++;
         await foreach (var item in _events.Reader.ReadAllAsync(cancellationToken)) yield return item;
     }
     /// <inheritdoc />

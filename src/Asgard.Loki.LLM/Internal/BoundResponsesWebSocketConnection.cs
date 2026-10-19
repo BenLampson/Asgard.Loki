@@ -44,6 +44,7 @@ internal sealed class BoundResponsesWebSocketConnection(LlmInvocation invocation
         {
             ThrowIfClosed();
             await invocation.ValidateBoundAsync(binding, previous, cancellationToken).ConfigureAwait(false);
+            ThrowIfClosed();
             await connection.SendAsync(snapshot, cancellationToken).ConfigureAwait(false);
         }
         finally { _send.Release(); }
@@ -57,6 +58,7 @@ internal sealed class BoundResponsesWebSocketConnection(LlmInvocation invocation
         try
         {
             await invocation.ValidateBoundAsync(binding, null, cancellationToken).ConfigureAwait(false);
+            ThrowIfClosed();
             await foreach (var item in connection.ReadEventsAsync(cancellationToken).ConfigureAwait(false))
             {
                 if (item.Type is "response.created" or "response.in_progress" or "response.completed" or "response.failed" or "response.incomplete")

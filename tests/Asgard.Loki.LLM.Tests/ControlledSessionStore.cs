@@ -6,11 +6,14 @@ internal sealed class ControlledSessionStore(ILlmSessionStore inner) : ILlmSessi
     private int _getOrCreateCalls;
     /// <summary>可控的读取结果，不通过真实时钟制造过期竞态。</summary>
     internal Func<LlmSessionBinding?, LlmSessionBinding?>? ReadBinding { get; set; }
+    /// <summary>在缓存读取等待处建立确定性的关闭/释放竞态，不使用真实时钟。</summary>
+    internal Func<CancellationToken, Task>? BeforeRead { get; set; }
     /// <summary>首次绑定协调次数。</summary>
     internal int GetOrCreateCalls => Volatile.Read(ref _getOrCreateCalls);
     /// <inheritdoc />
     public async ValueTask<LlmSessionBinding?> GetAsync(string sessionId, CancellationToken cancellationToken = default)
     {
+        if (BeforeRead is not null) await BeforeRead(cancellationToken);
         var result = await inner.GetAsync(sessionId, cancellationToken);
         return ReadBinding is null ? result : ReadBinding(result);
     }
