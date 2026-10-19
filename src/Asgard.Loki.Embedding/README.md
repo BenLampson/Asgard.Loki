@@ -12,7 +12,7 @@ Independent embedding module for the Asgard.Loki .NET SDK. It references only `A
 | Request | Public `Model` plus native JSON `Parameters`; only root `model` is reserved |
 | Result | Complete independently owned native `Data` and public/upstream/provider metadata |
 | Errors/cancellation | Propagated from the selected adapter, without retries or target failover |
-| Bundled providers | [Embedding.OpenAI](../Asgard.Loki.Embedding.OpenAI/README.md) and [Embedding.Google](../Asgard.Loki.Embedding.Google/README.md) implement their own native HTTP operations and vector views |
+| Bundled providers | [Embedding.OpenAI](../Asgard.Loki.Embedding.OpenAI/README.md), [Embedding.Google](../Asgard.Loki.Embedding.Google/README.md) and [Embedding.Ollama](../Asgard.Loki.Embedding.Ollama/README.md) implement their own native HTTP operations and vector views |
 
 ```csharp
 using Asgard.Loki;

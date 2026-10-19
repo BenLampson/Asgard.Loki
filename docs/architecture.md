@@ -18,6 +18,7 @@ class Embedding["Asgard.Loki.Embedding"]
 class Rerank["Asgard.Loki.Rerank"]
 class OpenAIEmbedding["Asgard.Loki.Embedding.OpenAI"]
 class GoogleEmbedding["Asgard.Loki.Embedding.Google"]
+class OllamaEmbedding["Asgard.Loki.Embedding.Ollama"]
 class CohereRerank["Asgard.Loki.Rerank.Cohere"]
 class JinaRerank["Asgard.Loki.Rerank.Jina"]
 class Video["Asgard.Loki.Video"]
@@ -36,6 +37,7 @@ Embedding ..> Abstractions
 Rerank ..> Abstractions
 OpenAIEmbedding ..> Embedding
 GoogleEmbedding ..> Embedding
+OllamaEmbedding ..> Embedding
 CohereRerank ..> Rerank
 JinaRerank ..> Rerank
 Video ..> Abstractions
@@ -570,6 +572,26 @@ Single bodies retain their native Content/configuration without a root model ali
 Native single/batch response shapes remain separate. Vectors require nonempty finite numerical values; count and each declared dimension match the original request position. Different batch items may request different dimensions, so no uniform-width rule from OpenAI is reused. Numeric ProtoJSON strings retain their original JSON. Google does not provide native input indices here: `GoogleEmbeddingVector` and `EmbeddingResult.GoogleEmbeddings` preserve array order without adding an index. Unknown shape/statistics/usage fields are retained, missing usage stays unknown, and first-party shape-only tensors are not silently converted into public vectors. Metadata records the configured complete target; no conversational Session is introduced.
 
 The adapter rejects invalid/error/duplicate/incomplete JSON and unexpected SSE; the latter is rejected at headers before reading. HTTP/business errors preserve actual status/body. Cancellation, borrowed factory/adapter ownership and per-call request/response disposal follow the Embedding contract. No retries, automatic batch splitting, media upload/download, tokenizer, vector store, RAG or billing are added. Six complete request fixtures and public SDK/lifecycle tests are offline transport evidence, not live media/model acceptance or vector-quality verification. Async batch jobs and Vertex identity are separate operations/providers.
+
+### Native Ollama Embeddings
+
+`Asgard.Loki.Embedding.Ollama` references only Embedding and standard HTTP dependencies. `OllamaEmbeddingOptions` binds a complete native API root, actual model, optional explicit Bearer Key and named borrowed factory. `OllamaEmbeddingAdapter` appends `embed` to the root (default `http://localhost:11434/api/`), preserving tenant prefixes. Model namespace/tag/digest text remains unchanged. A null Key adds no authentication; no environment lookup, login, process launch or model installation is performed.
+
+```mermaid
+classDiagram
+IEmbeddingAdapter <|.. OllamaEmbeddingAdapter
+OllamaEmbeddingAdapter --> OllamaEmbeddingOptions : complete fixed target
+OllamaEmbeddingAdapter --> OllamaEmbeddingPayload : native input snapshot
+OllamaEmbeddingAdapter --> OllamaEmbeddingResponse : ordered native arrays
+OllamaEmbeddingExtensions --> OllamaEmbeddingVector : provider owned view
+OllamaEmbeddingExtensions --> EmbeddingResult : complete native JSON
+```
+
+The private payload reader snapshots native parameters and counts scalar text, media objects and mixed batches without changing their shape. Current `text`/`image`/`audio` objects retain caller-provided standard Base64 and all original fields; known types/encoding are checked without file decoding or download. Current video inputs are explicitly rejected; unknown fields remain forwarded rather than establishing future acceptance. Missing/null/empty scalar/empty array input expects zero vectors, while each batch empty string remains one input. Only caller-issued requests can exercise that native empty-input behavior; no automatic warm-up or lifecycle coordinator is added.
+
+Positive native integer dimensions require exact returned lengths; zero/negative/null dimensions retain native no-reduction/unset semantics. Nullable `truncate`, `keep_alive` and runtime options keep their native values. The SDK neither parses duration strings nor infers model-specific settings. The response reader validates the required returned model and `embeddings` array, exact input count, nonempty finite vectors, batch dimension consistency and optional nonnegative Int64 durations/token count. It does not inject absent counters, normalize vectors, rewrite a returned canonical model or create OpenAI indices/usage. Provider-owned `OllamaEmbeddingVector` retains the original array and exposes numeric values in native order. Count/order checks cannot establish embedding quality or a server's actual input association.
+
+One complete JSON HTTP call is made; status/body and 200 business errors are preserved. SSE/NDJSON, duplicate properties, truncated/multiple JSON values and inconsistent counts/dimensions fail. Cancellation reaches send/body reads, response resources are disposed and the factory/handler remain borrowed. No LLM, conversion, Session, cache or other capability dependency is introduced. Deprecated native `embeddings` and OpenAI-compatible `v1/embeddings` are distinct contracts with no automatic fallback. Six independent complete wire fixtures and 125 offline cases verify transport/shape/lifecycle, not live models or renderable media.
 
 ## 6b. Reranking
 
