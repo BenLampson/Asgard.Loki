@@ -15,7 +15,7 @@ public sealed partial class AwsLlmProvider
         using (var message = prepared.Request)
         using (var client = _factory.CreateClient(_clientName))
         {
-            SignBeforeSend(client, message, prepared.Body, prepared.Credentials, cancellationToken); using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false); var source = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            AuthenticateBeforeSend(client, message, prepared.Body, prepared.Credentials, cancellationToken); using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false); var source = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
                 var bytes = await AwsJson.ReadAsync(source, _options.MaximumBodyBytes, response.Content.Headers.ContentLength, cancellationToken).ConfigureAwait(false); throw new LlmUpstreamException("Bedrock 原生流式调用失败。", response.StatusCode, AwsJson.Decode(bytes));

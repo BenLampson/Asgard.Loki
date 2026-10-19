@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.AWS
 
-Native Bedrock Claude `InvokeModel` JSON/EventStream and explicit Converse JSON/EventStream for the existing LLM capability. This supplier package depends only on `Asgard.Loki.LLM` and standard Microsoft HTTP components. It does not reference another supplier, Conversion, an AWS identity SDK or another capability.
+Native Bedrock Claude `InvokeModel` JSON/EventStream and explicit Converse JSON/EventStream with borrowed SigV4 or explicit Bedrock API Key/Bearer authentication for the existing LLM capability. This supplier package depends only on `Asgard.Loki.LLM` and standard Microsoft HTTP components. It does not reference another supplier, Conversion, an AWS identity SDK or another capability.
 
 ## Support matrix
 
@@ -16,12 +16,13 @@ Native Bedrock Claude `InvokeModel` JSON/EventStream and explicit Converse JSON/
 | Converse complete JSON | Explicit native `BedrockConverse` protocol/client; same borrowed SigV4 source |
 | ConverseStream | Native direct-JSON EventStream, original block/tool association and delayed terminal publication |
 | Nova/other native InvokeModel payloads | Not implemented; Converse-compatible models may use the explicit Converse API |
-| Bedrock/Mantle Bearer API Keys, SigV4a, presigning | Not implemented |
+| Bedrock Runtime API Key/Bearer | Explicit constructor without a SigV4 source; all four documented native methods |
+| Mantle endpoint dialects, SigV4a, presigning | Not implemented by this provider |
 | Credential discovery/login/role assumption, resource management, retries | Application-owned or unsupported |
 
 ## Initialization
 
-The caller supplies an `IHttpClientFactory`, an explicit Session store/coordinator and an `IAwsLlmCredentialSource`. Use `LlmCredential.External` with a stable principal assertion; ordinary `ApiKey` and anonymous credentials are rejected. A plain Key is never parsed as an access-key/secret pair.
+For SigV4, the caller supplies an `IHttpClientFactory`, an explicit Session store/coordinator and an `IAwsLlmCredentialSource`. The source-taking constructor requires `LlmCredential.External` with a stable principal assertion; ordinary `ApiKey` and anonymous credentials are rejected by that mode. The separate API Key constructor is documented below. A plain Key is never parsed as an access-key/secret pair.
 
 ```csharp
 var provider = new AwsLlmProvider(httpFactory, credentialSource,
@@ -144,10 +145,50 @@ The first messageStop and every following event are held until metadata with nat
 
 The 71 new provider cases use an independently encoded 27-frame (4769-byte) binary fixture with complete native event/header/raw-payload manifests and four final signature vectors exercised through eight public/direct HTTP paths. They cover implicit and explicit starts, tool/result/image associations, native unknown type isolation, original errors, snapshots, JSON/stream Session recovery, resource policies and late failures. One additional core case checks transport-name precedence through the base event view. No live Converse/Nova acceptance, cloud login or remote CI is claimed.
 
+## Explicit Bedrock Runtime API Key authentication
+
+Construct `new AwsLlmProvider(httpFactory, options)` **without** a signing source to select native Bedrock API Key/Bearer authentication. The existing source-taking constructor still selects SigV4. Each instance supports exactly one credential kind; there is no fallback or credential-format guessing. Use the existing `new LlmCredential(id, apiKey)` for Key mode. Anonymous and External credentials are rejected by that mode before HTTP; the SigV4 constructor continues to reject ordinary API Keys.
+
+```csharp
+var keyProvider = new AwsLlmProvider(httpFactory,
+    new AwsLlmOptions { Region = "us-east-1" });
+await using var keyClient = new LokiClientBuilder().AddLLM(new()
+{
+    Providers = [keyProvider],
+    Credentials = [new("bedrock-key", "YOUR_BEDROCK_API_KEY")],
+    SessionStore = sessionStore,
+    Routes = [new()
+    {
+        Model = "public-model",
+        Targets = [new()
+        {
+            Id = "bedrock-key-target", ProviderId = keyProvider.Id,
+            CredentialId = "bedrock-key", Protocols = LlmProtocol.BedrockConverse,
+            BaseAddress = new Uri("https://bedrock-runtime.us-east-1.amazonaws.com/"),
+            UpstreamModel = "YOUR_ENABLED_CONVERSE_MODEL_OR_PROFILE_ID"
+        }]
+    }]
+}).Build();
+var keyRequest = JsonSerializer.Deserialize<BedrockConverseRequest>(
+    """{"model":"public-model","messages":[{"role":"user","content":[{"text":"Hello"}]}]}""")!;
+var keyResult = await keyClient.LLM.BedrockConverse.ConverseAsync(keyRequest,
+    new() { SessionId = "key-conversation" });
+```
+
+The explicit target root/proxy and actual model ID/profile/ARN still select the request. Region remains required provider configuration and participates in binding; Key mode does not use it to rewrite the endpoint or parse a combined Key/region string. The opaque Key becomes one `Authorization: Bearer` value; whitespace/control/non-ASCII header values fail without trimming, decoding or secret echo. No environment variable, AWS profile, login, token source, key issuance, principal lookup or automatic refresh is used. Use the source-taking SigV4 mode when the application needs its existing stable-principal temporary-credential contract.
+
+Key mode shares the same documented Claude InvokeModel JSON/EventStream and independent Converse JSON/EventStream methods, original bodies/results, tool IDs, reasoning/schema/unknown fields, CRC/typed headers, bounds and delayed terminals. It emits no SigV4 date, payload hash, Session Token or signature. Selected Authorization/actual Host override same-kind client defaults. Unselected other-Key, `x-amz-*` and native Bedrock control defaults fail before HTTP. Explicit native options/method headers keep their selected values. The HTTP factory stays borrowed; per-call resources are released normally and generation never retries or falls back to signing.
+
+Key mode has a separate non-secret provider binding domain. Existing SigV4 default binding bytes and all core/conversion identities are unchanged. Complete-target/API-Key fingerprints follow the existing core contract: changing the Key, credential kind, server/model, region, policy or named client rejects an old Session. An unchanged Key/configuration supports cross-client JSON/stream recovery to the same selected target. The SDK cannot assert a stable principal or expiry from an opaque Key; application-directed Key renewal requires the normal new binding rather than silently continuing an old Session.
+
+The 81 new offline cases include eight independently authored HTTP manifests exercised through sixteen public/direct, model/ARN and operation combinations, reusing the independent full native JSON/binary/event/frame fixtures. They verify exact paths/headers/bodies/results and raw frames, pre-factory snapshots, auth-kind/default-header isolation, Host/IPv6/IDN selection, secret-free credentials/cache, key/config/mode binding changes, cross-mode target recovery, original HTTP/frame errors, late read/disposal/cancellation and early exit. Three public Chat-through-Claude cases verify the existing explicit common-text converter with Bearer, including late-failure completion rejection. Tests do not prove real API Key authentication, model entitlement or field acceptance.
+
+This checkpoint covers Bedrock Runtime native operations. Mantle, Runtime OpenAI-compatible/Anthropic-native Messages endpoint variants, native Nova InvokeModel, SigV4a, presigning and bidirectional invocation are separate contracts or unimplemented operations. AWS documents API Key restrictions separately, including bidirectional invocation; no account/service-management operation or gateway is implemented here.
+
 ## Verification status
 
-300 offline xUnit v3 cases (91 Claude JSON/signing, 97 Claude EventStream, 41 Converse JSON and 71 ConverseStream cases) cover independent caller/wire/result JSON, eight full signature vectors (public SDK/direct adapter, model ID/ARN, long-lived/temporary credentials), the published AWS IAM signature, exact path escaping and header normalization, snapshots before acquisition, Key/Token rotation/fixed-target Session recovery, changed identities/configuration, default-header isolation, source/cancellation/expiry failures, raw bounds/encoding/EOF/disposal and explicit common-text conversion. Tests use substitute HTTP, deterministic time and `MemoryDistributedCache` with an explicit coordinator. The signature goldens were calculated independently using Python `hashlib`/HMAC against authored wire bodies, including explicitly declared public DTO property order; they are not captured provider output.
+381 offline xUnit v3 cases (91 Claude JSON/signing, 97 Claude EventStream, 41 Converse JSON, 71 ConverseStream and 81 Bedrock API Key cases) cover independent caller/wire/result JSON, eight full signature vectors (public SDK/direct adapter, model ID/ARN, long-lived/temporary credentials), the published AWS IAM signature, exact path escaping and header normalization, snapshots before acquisition, Key/Token rotation/fixed-target Session recovery, changed identities/configuration, default-header isolation, source/cancellation/expiry failures, raw bounds/encoding/EOF/disposal and explicit common-text conversion. Tests use substitute HTTP, deterministic time and `MemoryDistributedCache` with an explicit coordinator. The signature goldens were calculated independently using Python `hashlib`/HMAC against authored wire bodies, including explicitly declared public DTO property order; they are not captured provider output.
 
 The 97 additional cases use a 16-frame independent Python struct/zlib binary fixture, full expected native/outer header/payload manifests and eight independent stream signature vectors. They cover every header type, CRC/length/encoding/Base64, original block/tool associations and unknown fields, snapshots, cross-mode credential rotation/Session recovery, source disposal/cancellation, strict local limits, original inner/outer errors and explicit converted text streams with late-failure finish rejection. No AWS login, real Key, role refresh, model entitlement, live call, Linux execution or new GitHub Actions run is claimed. The existing Volcengine live-test environment contract is unchanged. Model-specific field acceptance and response quality remain separate live integration work.
 
-Primary references: [ConverseStream API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html), [native stream order](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html), [Converse API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html), [native JSON schema definition](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_JsonSchemaDefinition.html), [InvokeModelWithResponseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html), [Amazon EventStream specification](https://smithy.io/2.0/aws/amazon-eventstream.html), [InvokeModel path and headers](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html), [Bedrock Claude native request/response](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-messages-request-response.html), [SigV4 signing](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html), [AWS SDK canonicalization](https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Core/Amazon.Runtime/Internal/Auth/AWS4Signer.cs), [published IAM signing example](https://aws.amazon.com/ko/blogs/korea/aws-api-call-1/).
+Primary references: [Bedrock API Key use](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys-use.html), [Runtime and Mantle endpoints](https://docs.aws.amazon.com/bedrock/latest/userguide/endpoints.html), [ConverseStream API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html), [native stream order](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html), [Converse API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html), [native JSON schema definition](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_JsonSchemaDefinition.html), [InvokeModelWithResponseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html), [Amazon EventStream specification](https://smithy.io/2.0/aws/amazon-eventstream.html), [InvokeModel path and headers](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html), [Bedrock Claude native request/response](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-messages-request-response.html), [SigV4 signing](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html), [AWS SDK canonicalization](https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Core/Amazon.Runtime/Internal/Auth/AWS4Signer.cs), [published IAM signing example](https://aws.amazon.com/ko/blogs/korea/aws-api-call-1/).

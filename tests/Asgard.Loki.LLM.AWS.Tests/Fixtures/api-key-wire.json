@@ -1,0 +1,164 @@
+[
+  {
+    "converse": false,
+    "stream": false,
+    "arn": false,
+    "model": "anthropic.configured-model-v1:0",
+    "method": "POST",
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke",
+    "headers": {
+      "Authorization": "Bearer fixture-bedrock-api-key",
+      "Host": "first.invalid",
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "x-amzn-bedrock-trace": "ENABLED",
+      "x-amzn-bedrock-future-option": "  first   second  "
+    },
+    "wireFixture": "wire",
+    "responseFixture": "response",
+    "eventsFixture": "stream-events",
+    "framesFixture": "stream-frames"
+  },
+  {
+    "converse": false,
+    "stream": false,
+    "arn": true,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/profile:0",
+    "method": "POST",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke",
+    "headers": {
+      "Authorization": "Bearer fixture-bedrock-api-key",
+      "Host": "first.invalid",
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "x-amzn-bedrock-trace": "ENABLED",
+      "x-amzn-bedrock-future-option": "  first   second  "
+    },
+    "wireFixture": "wire",
+    "responseFixture": "response",
+    "eventsFixture": "stream-events",
+    "framesFixture": "stream-frames"
+  },
+  {
+    "converse": false,
+    "stream": true,
+    "arn": false,
+    "model": "anthropic.configured-model-v1:0",
+    "method": "POST",
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke-with-response-stream",
+    "headers": {
+      "Authorization": "Bearer fixture-bedrock-api-key",
+      "Host": "first.invalid",
+      "Accept": "application/vnd.amazon.eventstream",
+      "Content-Type": "application/json",
+      "x-amzn-bedrock-trace": "ENABLED",
+      "x-amzn-bedrock-future-option": "  first   second  ",
+      "x-amzn-bedrock-accept": "application/json"
+    },
+    "wireFixture": "wire",
+    "responseFixture": "response",
+    "eventsFixture": "stream-events",
+    "framesFixture": "stream-frames"
+  },
+  {
+    "converse": false,
+    "stream": true,
+    "arn": true,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/profile:0",
+    "method": "POST",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke-with-response-stream",
+    "headers": {
+      "Authorization": "Bearer fixture-bedrock-api-key",
+      "Host": "first.invalid",
+      "Accept": "application/vnd.amazon.eventstream",
+      "Content-Type": "application/json",
+      "x-amzn-bedrock-trace": "ENABLED",
+      "x-amzn-bedrock-future-option": "  first   second  ",
+      "x-amzn-bedrock-accept": "application/json"
+    },
+    "wireFixture": "wire",
+    "responseFixture": "response",
+    "eventsFixture": "stream-events",
+    "framesFixture": "stream-frames"
+  },
+  {
+    "converse": true,
+    "stream": false,
+    "arn": false,
+    "model": "amazon.configured-converse-v1:0",
+    "method": "POST",
+    "uri": "https://first.invalid/proxy/model/amazon.configured-converse-v1%3A0/converse",
+    "headers": {
+      "Authorization": "Bearer fixture-bedrock-api-key",
+      "Host": "first.invalid",
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "x-amzn-bedrock-trace": "ENABLED",
+      "x-amzn-bedrock-future-option": "  first   second  "
+    },
+    "wireFixture": "converse-wire",
+    "responseFixture": "converse-response",
+    "eventsFixture": "converse-stream-events",
+    "framesFixture": "converse-stream-frames"
+  },
+  {
+    "converse": true,
+    "stream": false,
+    "arn": true,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/profile:0",
+    "method": "POST",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/converse",
+    "headers": {
+      "Authorization": "Bearer fixture-bedrock-api-key",
+      "Host": "first.invalid",
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "x-amzn-bedrock-trace": "ENABLED",
+      "x-amzn-bedrock-future-option": "  first   second  "
+    },
+    "wireFixture": "converse-wire",
+    "responseFixture": "converse-response",
+    "eventsFixture": "converse-stream-events",
+    "framesFixture": "converse-stream-frames"
+  },
+  {
+    "converse": true,
+    "stream": true,
+    "arn": false,
+    "model": "amazon.configured-converse-v1:0",
+    "method": "POST",
+    "uri": "https://first.invalid/proxy/model/amazon.configured-converse-v1%3A0/converse-stream",
+    "headers": {
+      "Authorization": "Bearer fixture-bedrock-api-key",
+      "Host": "first.invalid",
+      "Accept": "application/vnd.amazon.eventstream",
+      "Content-Type": "application/json",
+      "x-amzn-bedrock-trace": "ENABLED",
+      "x-amzn-bedrock-future-option": "  first   second  "
+    },
+    "wireFixture": "converse-wire",
+    "responseFixture": "converse-response",
+    "eventsFixture": "converse-stream-events",
+    "framesFixture": "converse-stream-frames"
+  },
+  {
+    "converse": true,
+    "stream": true,
+    "arn": true,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/profile:0",
+    "method": "POST",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/converse-stream",
+    "headers": {
+      "Authorization": "Bearer fixture-bedrock-api-key",
+      "Host": "first.invalid",
+      "Accept": "application/vnd.amazon.eventstream",
+      "Content-Type": "application/json",
+      "x-amzn-bedrock-trace": "ENABLED",
+      "x-amzn-bedrock-future-option": "  first   second  "
+    },
+    "wireFixture": "converse-wire",
+    "responseFixture": "converse-response",
+    "eventsFixture": "converse-stream-events",
+    "framesFixture": "converse-stream-frames"
+  }
+]
