@@ -15,7 +15,7 @@ Every off-diagonal direction has independent request, complete-response, streami
 
 | Concern | Conversion contract |
 | --- | --- |
-| Content | Ordered user/assistant text, system instructions, inline Base64 images |
+| Content | Ordered user/assistant text, system instructions, inline Base64 images; user PDF inputs across all twelve directions |
 | Functions | JSON Schema or Gemini typed `parameters` input; explicit typed target parameters; named/auto/required/none choice, original call IDs, arguments and associated results |
 | Custom tools | Opt-in Responses free-text custom → Chat/Claude/Gemini functions, complete/stream restoration and history replay |
 | Namespace tools | Separate opt-in flattens Responses namespace functions/custom tools; restores namespace/name/kind through complete calls, streams and replay; group descriptions require diagnosed loss consent |
@@ -37,6 +37,25 @@ Encrypted Responses `compaction` items are also a hard native-only boundary in r
 Streams are single-call state machines, not resumable event subscriptions. Missing terminal events, invalid/incomplete tool arguments, inconsistent final Responses output, unsupported interleaving or upstream errors fail explicitly. A late failure may occur after earlier deltas have been returned; callers must observe the full enumeration. No successful terminal is emitted for a truncated source stream. Direct same-protocol stream copies leave native transport validation to the provider.
 
 Tool results consume one pending call exactly once. Gemini results without IDs must match a unique pending function name; completed history is excluded, and generated IDs avoid explicit IDs throughout the request. Stream validation checks closed blocks, item identities, sequence numbers, done snapshots, duplicate terminals and mutations after completion. Text cannot overtake an earlier buffered tool. Explicit length/filter finishes retain incomplete Responses item status. Unknown nested fields are diagnosed even inside recognized events. Missing usage remains unknown; conversion to Claude requires final input/output counts rather than inventing them. Claude stream start usage excludes cached input from `input_tokens`.
+
+## Explicit PDF inputs
+
+User-supplied inline PDFs now convert between all four request protocols, including requests whose **reply** is consumed over SSE. Ordered text/file blocks, multiple files, unchanged Base64 payloads and existing tool-history associations are preserved. No new package, public file model, resolver, upload operation or SDK file store is added.
+
+| Native protocol | Supported input shape |
+| --- | --- |
+| Chat Completions | `{"type":"file","file":{"file_data":"data:application/pdf;base64,...","filename":"optional.pdf"}}` |
+| Responses | `{"type":"input_file","file_data":"data:application/pdf;base64,...","filename":"optional.pdf"}` |
+| Claude Messages | `{"type":"document","source":{"type":"base64","media_type":"application/pdf","data":"..."}}` |
+| Gemini generateContent | `{"inlineData":{"mimeType":"application/pdf","data":"..."}}` |
+
+OpenAI `filename` transfers between Chat and Responses. Claude/Gemini have no verified equivalent filename field in these structures: `file_name_not_representable` requires explicit `AllowLoss` before omission, with the original retained. Claude document titles/context/citation/cache controls and Responses rendering detail remain diagnosed; a filename never becomes a title or extra instruction. Unknown nested fields, including null/false values, follow the same strict policy.
+
+OpenAI cross-protocol `file_data` requires the explicit data-URL MIME; a bare Base64 value or `.pdf` filename does not provide that declaration. Only PDF is mapped in this slice. Invalid/empty Base64, incompatible MIME, conflicting sources and non-user file roles fail rather than being repaired or moved. Base64 syntax is checked without allocating a full decoded PDF buffer. The SDK does not validate PDF structure, decrypt files, render pages or certify model/account acceptance. Native calls preserve their complete original JSON and supplier-supported file formats.
+
+Claude's native URL-PDF source can map directly to Responses `file_url`, retaining the exact HTTP(S) reference and making no separate SDK download. Generic Responses URLs lack a verified file-type declaration for the peer; other target URL mappings require caller-provided data or a future explicit resolver. Provider `file_id` and Gemini `fileData` references are not assumed portable across configured targets, even with ordinary loss consent (`provider_file_reference`). Same-protocol copies preserve references unchanged. No automatic file upload, target rewrite, content fetch or retry occurs.
+
+This is **request input support**, not generated-file or rich tool-result support. Independent full request goldens cover twelve directions and history roundtrips; 42 public SDK HTTP/SSE cases cover final native requests, references failing before HTTP, metadata consent and a URL sent only with the model request. The byte samples are opaque protocol fixtures, not renderable PDFs; substitute text replies do not verify upstream document parsing. Non-PDF documents/media, explicit resolution, generated files and rich results remain separate checkpoints. Contracts checked: [OpenAI file inputs](https://developers.openai.com/api/docs/guides/file-inputs), [Claude PDF inputs](https://platform.claude.com/docs/en/build-with-claude/pdf-support), and [Gemini generateContent documents](https://ai.google.dev/gemini-api/docs/generate-content/document-processing). No live file call was made.
 
 ## Explicit generation settings
 
@@ -74,7 +93,7 @@ var options = new LlmConversionOptions
 // Set TargetThinkingBudgetTokens only for a target supporting manual thinking.
 ```
 
-Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v14`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
+Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v15`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
 
 ## Explicit free-text custom tools
 

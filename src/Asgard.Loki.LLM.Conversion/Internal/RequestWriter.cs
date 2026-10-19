@@ -87,6 +87,7 @@ internal static class RequestWriter
                     var type = Text(block["type"]);
                     if (type == "text") content.Add(new JsonObject { ["type"] = role == "assistant" ? "output_text" : "input_text", ["text"] = Text(block["text"]) });
                     else if (type == "image") content.Add(ContentMapping.Image(block, protocol, doc));
+                    else if (type == "file") content.Add(InputFileMapping.Write(block, protocol, doc));
                     else
                     {
                         Flush();
@@ -109,6 +110,7 @@ internal static class RequestWriter
                         : new JsonObject { ["type"] = "text", ["text"] = Text(block["text"]) });
                 }
                 else if (type == "image") parts.Add(ContentMapping.Image(block, protocol, doc));
+                else if (type == "file") parts.Add(InputFileMapping.Write(block, protocol, doc));
                 else if (type == "call")
                 {
                     Register(calls, block);

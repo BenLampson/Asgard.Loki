@@ -59,6 +59,8 @@ internal static class ContentMapping
                     message.Blocks.Add(new() { ["type"] = "image", ["url"] = sourceType == "url" ? Text(source["url"])
                         : "data:" + Text(source["media_type"]) + ";base64," + Text(source["data"]) });
                     break;
+                case "file": case "input_file": case "document":
+                    InputFileMapping.Read(block, protocol, message, doc); break;
                 case "tool_use":
                     Check(block, doc, "$content[]", "type", "id", "name", "input");
                     message.Blocks.Add(new() { ["type"] = "call", ["id"] = Text(block["id"]), ["name"] = Text(block["name"]), ["arguments"] = Object(block["input"]).ToJsonString() });
@@ -86,11 +88,12 @@ internal static class ContentMapping
         if (block.ContainsKey("text")) message.Blocks.Add(new() { ["type"] = "text", ["text"] = Text(block["text"]) });
         else if (block["inlineData"] is JsonObject inline)
         {
+            if (InputFileMapping.ReadGemini(inline, message, doc)) return;
             Check(inline, doc, "$parts[].inlineData", "mimeType", "data");
             if (!Text(inline["mimeType"]).StartsWith("image/", StringComparison.Ordinal)) { Loss(doc, "$parts[].inlineData", "unsupported_media"); return; }
             message.Blocks.Add(new() { ["type"] = "image", ["url"] = "data:" + Text(inline["mimeType"]) + ";base64," + Text(inline["data"]) });
         }
-        else if (block.ContainsKey("fileData")) Loss(doc, "$parts[].fileData", "unsupported_media");
+        else if (block.ContainsKey("fileData")) InputFileMapping.Reference();
         else if (block["functionCall"] is JsonObject call)
         {
             Check(call, doc, "$parts[].functionCall", "id", "name", "args");
