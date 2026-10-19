@@ -7,7 +7,8 @@
       "https://docs.aws.amazon.com/nova/latest/nova2-userguide/core-inference.html",
       "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_JsonSchemaDefinition.html"
     ],
-    "boundaries": "Model support remains caller-declared. Native reasoning/signature response/history mapping, mixed streaming and inverse operations need separate fixtures and acceptance. Budget replacement is explicit and lossy, never a numeric estimate."
+    "boundaries": "Model support remains caller-declared. Native reasoning/signature response/history mapping, mixed streaming and inverse operations need separate fixtures and acceptance. Budget replacement is explicit and lossy, never a numeric estimate.",
+    "replyAuthorship": "Full plain structured-text native reply and four independent response projections added before public SDK tests. This does not represent a native thinking/signature reply or certify model schema enforcement."
   },
   "cases": [
     {
@@ -676,5 +677,117 @@
         }
       ]
     }
-  ]
+  ],
+  "nativeResponse": {
+    "output": {
+      "message": {
+        "role": "assistant",
+        "content": [
+          {
+            "text": "{\"n\":9007199254740993,\"ok\":false}"
+          }
+        ]
+      }
+    },
+    "stopReason": "end_turn",
+    "usage": {
+      "inputTokens": 17,
+      "outputTokens": 8,
+      "totalTokens": 25
+    },
+    "metrics": {
+      "latencyMs": 9
+    }
+  },
+  "responses": {
+    "ChatCompletions": {
+      "id": "__ID__",
+      "object": "chat.completion",
+      "created": 0,
+      "model": "public",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"n\":9007199254740993,\"ok\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 17,
+        "completion_tokens": 8,
+        "total_tokens": 25
+      }
+    },
+    "Responses": {
+      "id": "__ID__",
+      "object": "response",
+      "created_at": 0,
+      "model": "public",
+      "status": "completed",
+      "output": [
+        {
+          "type": "message",
+          "id": "msg___ID___0",
+          "role": "assistant",
+          "status": "completed",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "{\"n\":9007199254740993,\"ok\":false}",
+              "annotations": []
+            }
+          ]
+        }
+      ],
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 8,
+        "total_tokens": 25
+      }
+    },
+    "ClaudeMessages": {
+      "id": "__ID__",
+      "type": "message",
+      "role": "assistant",
+      "model": "public",
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"n\":9007199254740993,\"ok\":false}"
+        }
+      ],
+      "stop_reason": "end_turn",
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 8
+      }
+    },
+    "Gemini": {
+      "responseId": "__ID__",
+      "modelVersion": "public",
+      "candidates": [
+        {
+          "index": 0,
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "{\"n\":9007199254740993,\"ok\":false}"
+              }
+            ]
+          },
+          "finishReason": "STOP"
+        }
+      ],
+      "usageMetadata": {
+        "promptTokenCount": 17,
+        "candidatesTokenCount": 8,
+        "totalTokenCount": 25
+      }
+    }
+  }
 }
