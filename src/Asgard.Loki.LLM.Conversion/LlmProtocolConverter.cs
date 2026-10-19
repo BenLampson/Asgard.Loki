@@ -34,7 +34,7 @@ public static class LlmProtocolConverter
         var captured = ConversionOptionsSnapshot.Capture(options);
         Validate(response, from, to, captured);
         if (from == to) return new(response, response, []);
-        var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from);
+        var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from, mapUrlCitations: true);
         var doc = ResponseMapping.Read(response, from);
         doc.Diagnostics.AddRange(searchOutputDiagnostics);
         var target = ResponseMapping.Write(doc, to);

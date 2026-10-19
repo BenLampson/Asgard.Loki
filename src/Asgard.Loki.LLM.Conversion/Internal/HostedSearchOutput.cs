@@ -6,7 +6,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class HostedSearchOutput
 {
     /// <summary>只检查原生协议的内容位置，不扫描用户文本、函数参数或 JSON Schema 的任意键。</summary>
-    internal static IReadOnlyList<LlmConversionDiagnostic> Inspect(JsonObject value, LlmProtocol protocol)
+    internal static IReadOnlyList<LlmConversionDiagnostic> Inspect(JsonObject value, LlmProtocol protocol, bool mapUrlCitations = false)
     {
         var diagnostics = new List<LlmConversionDiagnostic>();
         if (protocol == LlmProtocol.ClaudeMessages)
@@ -76,7 +76,7 @@ internal static class HostedSearchOutput
         }
         void Annotations(JsonNode? node, string path)
         {
-            if (node is JsonArray list && list.OfType<JsonObject>().Any(a => a["type"]?.GetValue<string>() == "url_citation")) Add("search_citations_not_representable", path);
+            if (!mapUrlCitations && node is JsonArray list && list.OfType<JsonObject>().Any(a => a["type"]?.GetValue<string>() == "url_citation")) Add("search_citations_not_representable", path);
         }
         void Add(string code, string path) => diagnostics.Add(new(code, path, "搜索执行、来源或引用尚不能在目标结构中保真表达。"));
     }

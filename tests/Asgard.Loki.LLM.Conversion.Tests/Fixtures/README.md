@@ -1,5 +1,7 @@
 # Protocol acceptance fixtures
 
+`citations/url-citations.json` independently specifies complete native Chat/Responses replies and both complete target goldens, including Unicode text/titles, unchanged ranges, repeated-order assertions and URL query/fragment strings. It is authored from native structures, not converter output. Separate tests exercise multi-block ASCII offset rebasing, unknown Unicode-prefix rejection, tool identity, malformed fields and original-data retention. `UrlCitationFixtures.Stream` independently authors a nine-event Responses citation transcript to assert the native-copy and explicit cross-protocol strict/consented-loss boundaries; it does not claim converted citation streaming support or live search.
+
 `source/` contains independently authored native request, complete-response and full stream transcripts for the four protocols. They include Unicode text, tool definitions, a stable original call ID, arguments/results, zero/false/null values, complete done events, usage and representative response envelopes. These are offline protocol examples, not captured live calls.
 
 `golden/` contains separately specified target wire structures for the same semantic case. Expected JSON was authored from the protocol shapes, without invoking the production converter. Snapshots compare all object values and array/event ordering; object property order is insignificant. IDs, tool arguments and terminal events are not normalized away. Tests never rewrite fixtures automatically.

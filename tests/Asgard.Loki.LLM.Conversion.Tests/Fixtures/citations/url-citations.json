@@ -1,0 +1,34 @@
+{
+  "ChatCompletions": {
+    "id": "cite_reply", "object": "chat.completion", "created": 1730000000, "model": "model-a",
+    "choices": [{ "index": 0, "message": { "role": "assistant", "content": "报告😀 see source.", "annotations": [
+      { "type": "url_citation", "url_citation": { "url": "https://source.invalid/report?a=1&b=二#part", "title": "报告 😀", "start_index": 0, "end_index": 2 } },
+      { "type": "url_citation", "url_citation": { "url": "https://other.invalid/", "title": "Other", "start_index": 5, "end_index": 8 } }
+    ] }, "finish_reason": "stop" }], "usage": { "prompt_tokens": 2, "completion_tokens": 3, "total_tokens": 5 }
+  },
+  "Responses": {
+    "id": "cite_reply", "object": "response", "created_at": 1730000000, "model": "model-a", "status": "completed",
+    "output": [{ "type": "message", "id": "native_message", "role": "assistant", "status": "completed", "content": [
+      { "type": "output_text", "text": "报告😀 see source.", "annotations": [
+        { "type": "url_citation", "url": "https://source.invalid/report?a=1&b=二#part", "title": "报告 😀", "start_index": 0, "end_index": 2 },
+        { "type": "url_citation", "url": "https://other.invalid/", "title": "Other", "start_index": 5, "end_index": 8 }
+      ] }
+    ] }], "usage": { "input_tokens": 2, "output_tokens": 3, "total_tokens": 5 }
+  },
+  "ExpectedResponses": {
+    "id": "cite_reply", "object": "response", "created_at": 1730000000, "model": "model-a", "status": "completed",
+    "output": [{ "type": "message", "id": "msg_cite_reply_0", "role": "assistant", "status": "completed", "content": [
+      { "type": "output_text", "text": "报告😀 see source.", "annotations": [
+        { "type": "url_citation", "url": "https://source.invalid/report?a=1&b=二#part", "title": "报告 😀", "start_index": 0, "end_index": 2 },
+        { "type": "url_citation", "url": "https://other.invalid/", "title": "Other", "start_index": 5, "end_index": 8 }
+      ] }
+    ] }], "usage": { "input_tokens": 2, "output_tokens": 3, "total_tokens": 5 }
+  },
+  "ExpectedChatCompletions": {
+    "id": "cite_reply", "object": "chat.completion", "created": 1730000000, "model": "model-a",
+    "choices": [{ "index": 0, "message": { "role": "assistant", "content": "报告😀 see source.", "annotations": [
+      { "type": "url_citation", "url_citation": { "url": "https://source.invalid/report?a=1&b=二#part", "title": "报告 😀", "start_index": 0, "end_index": 2 } },
+      { "type": "url_citation", "url_citation": { "url": "https://other.invalid/", "title": "Other", "start_index": 5, "end_index": 8 } }
+    ] }, "finish_reason": "stop" }], "usage": { "prompt_tokens": 2, "completion_tokens": 3, "total_tokens": 5 }
+  }
+}

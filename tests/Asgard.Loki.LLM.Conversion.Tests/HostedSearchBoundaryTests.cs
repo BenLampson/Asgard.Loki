@@ -71,9 +71,12 @@ public sealed class HostedSearchBoundaryTests
     {
         var source = HostedSearchFixtures.TextResponse(sourceProtocol); var citation = CustomToolFixtures.Parse("""{"type":"url_citation","url":"https://source.invalid","title":"source","start_index":0,"end_index":4}""");
         if (sourceProtocol == LlmProtocol.Responses) source["output"]![0]!["content"]![0]!["annotations"]!.AsArray().Add(citation);
-        else if (sourceProtocol == LlmProtocol.ChatCompletions) source["choices"]![0]!["message"]!["annotations"] = new JsonArray(new JsonObject { ["type"] = "url_citation", ["url_citation"] = citation });
+        else if (sourceProtocol == LlmProtocol.ChatCompletions)
+        {
+            citation.Remove("type"); source["choices"]![0]!["message"]!["annotations"] = new JsonArray(new JsonObject { ["type"] = "url_citation", ["url_citation"] = citation });
+        }
         else source["candidates"]![0]!["groundingMetadata"] = CustomToolFixtures.Parse("""{"webSearchQueries":["q"],"groundingChunks":[{"web":{"uri":"https://source.invalid","title":"source"}}]}""");
-        var target = sourceProtocol == LlmProtocol.Responses ? LlmProtocol.ChatCompletions : LlmProtocol.Responses;
+        var target = sourceProtocol == LlmProtocol.Gemini ? LlmProtocol.Responses : LlmProtocol.ClaudeMessages;
         var code = sourceProtocol == LlmProtocol.Gemini ? "grounding_metadata_not_representable" : "search_citations_not_representable";
         var failure = Assert.Throws<LlmConversionException>(() => LlmProtocolConverter.ConvertResponse(source, sourceProtocol, target)); Assert.Contains(failure.Diagnostics, d => d.Code == code);
         var result = LlmProtocolConverter.ConvertResponse(source, sourceProtocol, target, new() { AllowLoss = true }); Assert.Contains(result.Diagnostics, d => d.Code == code);

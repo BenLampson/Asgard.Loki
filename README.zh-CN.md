@@ -35,12 +35,12 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 初始化、调用、支持矩阵及验证命令请参阅 [英文 README](README.md)。CI 在 Windows/Linux 上执行构建、测试及十三个 NuGet 包的依赖与元数据检查，打包产物作为运行附件保存。独立的 `Publish NuGet` 工作流使用 OIDC 可信发布，默认仅验证登录；正式发布需手动选择 `publish` 并填写准确版本，步骤见 [发布说明](docs/releasing.md)。
 
-已于 2026-10-19 再次对照 New API，最新提交仍为 `058c8231`；以本库当前 `4be4511` 及其通过的 Windows/Linux CI 更新[模型调用补齐计划](docs/model-call-roadmap.md)。原生 Claude/Gemini、推理与 Schema 设置、custom/namespace 工具身份、OpenAI compaction 和原生 Responses WebSocket 已按各自范围实现。托管搜索目前仅完成显式请求配置及诊断，完整搜索结果和引用仍待补齐。下一步拆成引用范围与来源身份、引用流事件与最终快照、剩余搜索控制，再补文件/媒体、富工具结果及错误语义、可表达的复杂输出；之后依次新增独立 Embedding/Rerank，再补图片编辑、音频、云供应商、Realtime 和 Video。每步单独提交，附逐协议样本、公共 SDK 测试和文档；原生传递、显式转换、真实模型验证分别验收。后台、计费、工具执行和任务托管不纳入 SDK。
+已于 2026-10-19 再次对照 New API，最新提交仍为 `058c8231`；以本库 `4be4511` 及其通过的 Windows/Linux CI 为对照锚点更新[模型调用补齐计划](docs/model-call-roadmap.md)。原生 Claude/Gemini、推理与 Schema 设置、custom/namespace 工具身份、OpenAI compaction 和原生 Responses WebSocket 已按各自范围实现。托管搜索已补显式请求配置及诊断；本轮另补完整 Chat/Responses URL 引用双向转换，保留来源、标题、顺序和原始索引，仅在 ASCII 前缀下平移引用。Unicode 偏移单位不明及引用流/历史仍明确诊断，完整搜索结果、grounding 和剩余控制继续待补。之后补文件/媒体、富工具结果、复杂输出、独立 Embedding/Rerank，再补图片编辑、音频、云供应商、Realtime 和 Video。每步单独提交，附逐协议样本、公共 SDK 测试和文档；原生传递、显式转换、真实模型验证分别验收。后台、计费、工具执行和任务托管不纳入 SDK。
 
 本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题请参阅 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
 
 当前火山 LLM 真实联调只需要四个环境变量：启用开关、API Key、Chat 模型、Responses 模型，详见 [测试配置规范](docs/testing.md) 和 [.env.example](.env.example)。运行 `pwsh -File eng/Test-Live.ps1`；Windows 下支持读取本机当前用户变量，不自动加载 `.env`。
 
-离线测试共 1361 项通过：显式转换 928 项、OpenAI 199 项、火山 93 项、Claude 22 项、Gemini 36 项、LLM 核心 65 项及其他 18 项；转换回归覆盖嵌套字段损耗、待回填工具关联、ID 冲突、完整及截断流生命周期、done 与最终快照一致性，以及缓存和用量口径。原有 OpenAI/火山协议用例继续保留，并增加原生压缩与功能绑定验证。标准方舟 API 的 `doubao-seed-evolving` 已实测通过普通/流式调用、工具调用与结果回填、严格 JSON Schema、推理开关、输出截断、响应链续接及加密推理项原样回传。**两种协议的 `tool_choice=none` 严格测试仍失败**：最终请求参数正确，但上游仍返回工具调用。失败断言保留，详见 [参数与协议验证记录](docs/llm-parameter-verification.md)。OpenAI、Claude、Gemini 和显式转换当前只有离线验证。
+离线测试共 1425 项通过：显式转换 992 项、OpenAI 199 项、火山 93 项、Claude 22 项、Gemini 36 项、LLM 核心 65 项及其他 18 项；转换回归覆盖嵌套字段损耗、待回填工具关联、ID 冲突、完整及截断流生命周期、done 与最终快照一致性，以及缓存和用量口径。原有 OpenAI/火山协议用例继续保留，并增加原生压缩与功能绑定验证。标准方舟 API 的 `doubao-seed-evolving` 已实测通过普通/流式调用、工具调用与结果回填、严格 JSON Schema、推理开关、输出截断、响应链续接及加密推理项原样回传。**两种协议的 `tool_choice=none` 严格测试仍失败**：最终请求参数正确，但上游仍返回工具调用。失败断言保留，详见 [参数与协议验证记录](docs/llm-parameter-verification.md)。OpenAI、Claude、Gemini 和显式转换当前只有离线验证。
 
 运行 `pwsh -File eng/Test-Live.ps1 -Suite Parameters` 或 `-Suite All` 执行扩展联调；增加 `-Scenario Structured`、`Tools`、`ToolChoice`、`Reasoning`、`Limits` 或 `Replay` 可单独选组。默认冒烟五次请求，参数套件计划 26 次，全部计划 31 次，单进程硬上限 32 次。上述工具禁用问题存在期间，参数及全部套件会返回失败。其他模型、供应商、能力和 Redis 跨进程联调仍需单独验证；普通单元测试和自动 CI 保持离线。

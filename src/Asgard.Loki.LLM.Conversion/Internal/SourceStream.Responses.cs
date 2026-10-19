@@ -130,7 +130,7 @@ internal sealed partial class SourceStream
     {
         if (Text(item["id"]) != _responseItemIds[index] || Text(item["type"]) != _responseItemTypes[index])
             throw new InvalidDataException("Responses 输出项完成时改变身份或类型。");
-        var read = ResponseMapping.Read(new() { ["id"] = Document.Id, ["model"] = Document.Model, ["status"] = "completed", ["output"] = new JsonArray(item.DeepClone()) }, LlmProtocol.Responses);
+        var read = ResponseMapping.Read(new() { ["id"] = Document.Id, ["model"] = Document.Model, ["status"] = "completed", ["output"] = new JsonArray(item.DeepClone()) }, LlmProtocol.Responses, mapCitations: false);
         Document.Diagnostics.AddRange(read.Diagnostics);
         var prefix = "responses-" + index;
         var actual = _indices.Where(p => p.Key == prefix || p.Key.StartsWith(prefix + "-text-", StringComparison.Ordinal)).OrderBy(p => p.Value).Select(p => _message.Blocks[p.Value]).ToArray();
@@ -150,7 +150,7 @@ internal sealed partial class SourceStream
         if (output.Count != _responseItemIds.Count) throw new InvalidDataException("Responses 最终输出项目数量不一致。");
         for (var i = 0; i < output.Count; i++)
             if (!_responseItemIds.TryGetValue(i, out var id) || Text(Object(output[i])["id"]) != id) throw new InvalidDataException("Responses 最终项目 ID 或索引不一致。");
-        var complete = ResponseMapping.Read(response, LlmProtocol.Responses); Document.Diagnostics.AddRange(complete.Diagnostics);
+        var complete = ResponseMapping.Read(response, LlmProtocol.Responses, mapCitations: false); Document.Diagnostics.AddRange(complete.Diagnostics);
         if (!JsonNode.DeepEquals(System.Text.Json.JsonSerializer.SerializeToNode(complete.Messages[0].Blocks), System.Text.Json.JsonSerializer.SerializeToNode(_message.Blocks)))
             throw new InvalidDataException("Responses 最终输出与已转换的增量不一致。");
         Document.Finish = complete.Finish;

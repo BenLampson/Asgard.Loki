@@ -7,7 +7,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class ContentMapping
 {
     /// <summary>按原生协议读取文本、图片、函数调用与结果。</summary>
-    internal static void Read(JsonNode? content, LlmProtocol protocol, ConversionMessage message, ConversionDocument doc)
+    internal static void Read(JsonNode? content, LlmProtocol protocol, ConversionMessage message, ConversionDocument doc, bool mapCitations = false)
     {
         if (content is null) return;
         if (content is JsonValue value)
@@ -26,8 +26,17 @@ internal static class ContentMapping
             {
                 case "text": case "input_text": case "output_text":
                     Check(block, doc, "$content[]", "type", "text", "annotations");
-                    if (block.ContainsKey("annotations") && Array(block["annotations"]).Count != 0) Loss(doc, "$content[].annotations");
-                    message.Blocks.Add(new() { ["type"] = "text", ["text"] = Text(block["text"]) });
+                    var textBlock = new JsonObject { ["type"] = "text", ["text"] = Text(block["text"]) };
+                    if (block.ContainsKey("annotations"))
+                    {
+                        if (mapCitations && protocol == LlmProtocol.Responses)
+                        {
+                            var citations = ResponseCitations.Read(block["annotations"], Text(block["text"]), protocol, doc, "$content[].annotations");
+                            if (citations.Count != 0) textBlock["citations"] = citations;
+                        }
+                        else if (Array(block["annotations"]).Count != 0) Loss(doc, "$content[].annotations");
+                    }
+                    message.Blocks.Add(textBlock);
                     break;
                 case "image_url": case "input_image":
                     Check(block, doc, "$content[]", block["image_url"] is JsonObject ? ["type", "image_url"] : ["type", "image_url", "detail"]);

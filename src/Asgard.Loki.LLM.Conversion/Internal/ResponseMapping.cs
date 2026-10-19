@@ -7,7 +7,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class ResponseMapping
 {
     /// <summary>读取完整响应，不把失败响应转换为正常完成。</summary>
-    internal static ConversionDocument Read(JsonObject source, LlmProtocol protocol)
+    internal static ConversionDocument Read(JsonObject source, LlmProtocol protocol, bool mapCitations = true)
     {
         var doc = new ConversionDocument
         {
@@ -30,11 +30,18 @@ internal static class ResponseMapping
                 var chat = Object(choice["message"]);
                 chat = chat.DeepClone().AsObject();
                 if (chat.ContainsKey("refusal") && chat["refusal"] is null) chat.Remove("refusal");
-                if (chat["annotations"] is JsonArray annotations && annotations.Count == 0) chat.Remove("annotations");
+                JsonArray? chatCitations = null;
+                if (chat["annotations"] is JsonArray { Count: 0 }) chat.Remove("annotations");
+                else if (chat.ContainsKey("annotations") && mapCitations)
+                {
+                    chatCitations = ResponseCitations.Read(chat["annotations"], Text(chat["content"]), protocol, doc, "$.choices[0].message.annotations");
+                    chat.Remove("annotations");
+                }
                 if (Text(chat["role"]) != "assistant") throw new ArgumentException("生成响应必须是 assistant 消息。");
                 var request = new JsonObject { ["model"] = doc.Model, ["messages"] = new JsonArray(chat.DeepClone()) };
                 var read = RequestReader.Read(request, protocol);
                 message.Blocks.AddRange(read.Messages.Single().Blocks);
+                if (chatCitations is { Count: > 0 }) message.Blocks.First(b => Text(b["type"]) == "text")["citations"] = chatCitations;
                 doc.Diagnostics.AddRange(read.Diagnostics);
                 doc.Finish = Finish(Text(choice["finish_reason"]), protocol);
                 UsageMapping.Read(source["usage"], protocol, doc);
@@ -63,7 +70,7 @@ internal static class ResponseMapping
                     {
                         Check(item, doc, "$.output[]", "type", "id", "status", "role", "content");
                         if (Text(item["role"]) != "assistant") throw new ArgumentException("生成响应必须是 assistant 消息。");
-                        ContentMapping.Read(item["content"], protocol, message, doc);
+                        ContentMapping.Read(item["content"], protocol, message, doc, mapCitations);
                     }
                     else if (type == "function_call")
                     {
@@ -120,12 +127,16 @@ internal static class ResponseMapping
         foreach (var block in message.Blocks)
         {
             var type = Text(block["type"]);
-            if (type == "text") blocks.Add(protocol switch
+            if (type == "text")
             {
-                LlmProtocol.Gemini => new JsonObject { ["text"] = Text(block["text"]) },
-                LlmProtocol.Responses => new JsonObject { ["type"] = "output_text", ["text"] = Text(block["text"]), ["annotations"] = new JsonArray() },
-                _ => new JsonObject { ["type"] = "text", ["text"] = Text(block["text"]) }
-            });
+                ResponseCitations.CheckTarget(block, protocol, doc);
+                blocks.Add(protocol switch
+                {
+                    LlmProtocol.Gemini => new JsonObject { ["text"] = Text(block["text"]) },
+                    LlmProtocol.Responses => new JsonObject { ["type"] = "output_text", ["text"] = Text(block["text"]), ["annotations"] = block["citations"]?.DeepClone() ?? new JsonArray() },
+                    _ => new JsonObject { ["type"] = "text", ["text"] = Text(block["text"]) }
+                });
+            }
             else if (type == "call")
             {
                 var id = Text(block["id"]); var name = Text(block["name"]); var arguments = Text(block["arguments"]);
@@ -144,6 +155,8 @@ internal static class ResponseMapping
         {
             if (message.Blocks.SkipWhile(b => Text(b["type"]) != "call").Any(b => Text(b["type"]) == "text")) Loss(doc, "$response.content", "block_order_changed");
             var chat = new JsonObject { ["role"] = "assistant", ["content"] = string.Concat(blocks.Select(b => Text(b!["text"]))) };
+            var citations = ResponseCitations.Chat(message, doc);
+            if (citations.Count != 0) chat["annotations"] = citations;
             if (calls.Count != 0) chat["tool_calls"] = calls;
             return new() { ["id"] = doc.Id, ["object"] = "chat.completion", ["created"] = doc.Created, ["model"] = doc.Model,
                 ["choices"] = new JsonArray(new JsonObject { ["index"] = 0, ["message"] = chat, ["finish_reason"] = doc.Finish }), ["usage"] = usageValue };
