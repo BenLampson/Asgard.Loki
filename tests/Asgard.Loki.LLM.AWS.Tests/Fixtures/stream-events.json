@@ -1,0 +1,18 @@
+[
+  {"type":"message_start","message":{"id":"native-bedrock-stream","type":"message","role":"assistant","model":"native-model","content":[],"stop_reason":null,"usage":{"input_tokens":2,"output_tokens":0},"future":false}},
+  {"type":"content_block_start","index":2,"content_block":{"type":"thinking","thinking":""}},
+  {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":"native é 🚀"}},
+  {"type":"content_block_delta","index":2,"delta":{"type":"signature_delta","signature":"original-signature"}},
+  {"type":"content_block_stop","index":2},
+  {"type":"content_block_start","index":7,"content_block":{"type":"tool_use","id":"tool-stream-a","name":"lookup","input":{},"future":null}},
+  {"type":"content_block_delta","index":7,"delta":{"type":"input_json_delta","partial_json":"{\"id\":"}},
+  {"type":"content_block_delta","index":7,"delta":{"type":"input_json_delta","partial_json":"9007199254740993}"}},
+  {"type":"content_block_stop","index":7},
+  {"type":"content_block_start","index":11,"content_block":{"type":"redacted_thinking","data":"original-opaque"}},
+  {"type":"content_block_stop","index":11},
+  {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":7,"future":null}},
+  {"type":"future_native","integer":9223372036854775807,"false":false,"nil":null,"empty":[]},
+  {"type":"message_stop","amazon-bedrock-invocationMetrics":{"inputTokenCount":2,"outputTokenCount":7,"invocationLatency":123,"firstByteLatency":4,"future":false}},
+  {"future_transport":{"integer":9007199254740993,"nil":null}},
+  {"type":"ping","future":[]}
+]

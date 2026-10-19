@@ -28,10 +28,10 @@ public sealed class NativeTests
     {
         var clock = new AwsClock(); var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var source = new AwsCredentialSource(clock) { Resolve = async (principal, token) => { entered.SetResult(); await release.Task.WaitAsync(token); return new(principal, AwsCredentialSource.KeyId, AwsCredentialSource.Secret, clock.Now.AddHours(1)); } }; var input = AwsFixture.Request(); var before = input.ToJsonString(); using var handler = new StubHttpHandler(async (request, token) => { Assert.True(JsonNode.DeepEquals(JsonNode.Parse(AwsFixture.Text("wire")), JsonNode.Parse(await request.Content!.ReadAsStringAsync(token)))); return AwsFixture.Reply(); }); var factory = new AwsHttpFactory(handler); var call = new AwsLlmProvider(factory, source, new() { Region = "us-east-1" }, timeProvider: clock).CreateAsync(input, AwsFixture.Context(), TestContext.Current.CancellationToken); await entered.Task.WaitAsync(TestContext.Current.CancellationToken); Assert.Equal(before, input.ToJsonString()); input["messages"] = new JsonArray(); release.SetResult(); await call; Assert.Equal(1, handler.Calls);
     }
-    /// <summary>未交付的二进制流操作在取得来源/HTTP 前明确失败。</summary>
+    /// <summary>二进制流预取消在取得来源/HTTP 前明确失败。</summary>
     [Fact]
-    public void BinaryEventStream_IsExplicitBoundary()
+    public async Task BinaryEventStream_PreCancelledAcquiresNothing()
     {
-        var clock = new AwsClock(); var source = new AwsCredentialSource(clock); using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException()); var factory = new AwsHttpFactory(handler); Assert.Throws<NotSupportedException>(() => new AwsLlmProvider(factory, source, new() { Region = "us-east-1" }).StreamAsync(AwsFixture.Request(), AwsFixture.Context(), TestContext.Current.CancellationToken)); Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients);
+        using var cancel = new CancellationTokenSource(); cancel.Cancel(); var clock = new AwsClock(); var source = new AwsCredentialSource(clock); using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException()); var factory = new AwsHttpFactory(handler); await Assert.ThrowsAnyAsync<OperationCanceledException>(() => StreamFixture.Consume(new(factory, source, new() { Region = "us-east-1" }), cancel.Token)); Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients);
     }
 }

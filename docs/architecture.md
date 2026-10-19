@@ -1100,7 +1100,7 @@ SSE retains original choice/tool indices, IDs, name/argument fragments, reasonin
 
 ### AWS Bedrock native Claude provider
 
-`Asgard.Loki.LLM.AWS` references only the LLM capability and standard HTTP. Its `AwsLlmProvider` implements the existing ClaudeMessages adapter for complete InvokeModel JSON; it does not reference another supplier or Conversion. The Runtime root/proxy and actual model ID/profile/ARN are explicit target fields. Region, body version, byte policy, named client and independently snapshotted native request headers are explicit provider configuration.
+`Asgard.Loki.LLM.AWS` references only the LLM capability and standard HTTP. Its `AwsLlmProvider` implements the existing ClaudeMessages adapter for InvokeModel JSON and native binary InvokeModelWithResponseStream; it does not reference another supplier or Conversion. The Runtime root/proxy and actual model ID/profile/ARN are explicit target fields. Region, body version, byte policy, named client and independently snapshotted native request headers are explicit provider configuration.
 
 ```mermaid
 classDiagram
@@ -1112,11 +1112,16 @@ IAwsLlmCredentialSource --> AwsLlmSigningCredentials : immutable principal and e
 AwsLlmProvider --> IHttpClientFactory : borrows
 AwsLlmProvider ..> AwsSigV4 : private HMAC signing
 AwsLlmProvider ..> AwsJson : private strict bounded JSON
+AwsLlmProvider ..> AwsEventStreamReader : bounded CRC and typed headers
+AwsLlmProvider ..> AwsClaudeStreamState : private native block lifecycle
+AwsEventStreamExtensions --> AwsEventStreamFrame : immutable supplier frame view
 ```
 
 The existing External principal contract binds stable source/role identity and complete target/configuration; refreshed access keys/tokens do not invalidate Sessions. Credentials are acquired once, with assertion/source/expiry checks and another check immediately before signing/sending. Signing uses the actual host/body/native headers, optional Session Token, explicit region and service bedrock. Model slashes stay within an escaped path parameter; canonical non-S3 SigV4 double encoding is independent of wire escaping. Default authentication/request settings cannot inject an unselected token or native control. Derived signing keys are cleared, not cached. No cloud login, default credential discovery, role assumption, clock-skew retry or model failover is implemented.
 
-Only routed model/stream and selected anthropic_version change in the body; native tool/results IDs, reasoning/signatures, schemas/cache/usage and unknown values remain raw. Strict encoding/duplicate JSON, exact raw lengths, EOF/disposal and final cancellation guard success; native errors preserve status/body. Binary EventStream, Converse/Nova and Bearer/Mantle are separate pending operations, not inferred from a model name. Ninety-one offline cases verify independent full native and signing vectors, public SDK wire, stable Sessions/source faults, transport boundaries and explicit text conversion. No real AWS identity or model acceptance is claimed. See the [supplier initialization and limits](../src/Asgard.Loki.LLM.AWS/README.md).
+Only routed model/stream and selected anthropic_version change in the body; native tool/results IDs, reasoning/signatures, schemas/cache/usage and unknown values remain raw. Strict encoding/duplicate JSON, exact raw lengths, EOF/disposal and final cancellation guard success; native errors preserve status/body. Converse/Nova and Bearer/Mantle remain separate pending operations, not inferred from a model name. Ninety-one offline cases verify independent full native and signing vectors, public SDK wire, stable Sessions/source faults, transport boundaries and explicit text conversion. No real AWS identity or model acceptance is claimed. See the [supplier initialization and limits](../src/Asgard.Loki.LLM.AWS/README.md).
+
+Native binary framing validates lengths/prelude CRC/message CRC before publication. Exact typed headers and raw outer payload/wire remain in an immutable AWS-owned frame view attached weakly to original native events or frame-specific exceptions; the core result API is unchanged. Claude JSON is decoded only from chunk bytes without injected fields. Unknown outer JSON and native metadata remain in order; unknown binary payloads fail explicitly with raw frames available. Block/tool association and native terminal state stay provider-local, with finite frame/header/block/tail policies and raw total bytes. First finish/failure plus all tails wait for complete source EOF/length/disposal and final cancellation; no native success escapes late errors. A new AWS binding domain requires fresh JSON-only predecessor Sessions. Ninety-seven additional cases bring AWS coverage to 188 and total offline coverage to 5311; the 28-package dependency graph is unchanged. Native frame extensions are scoped to original events/exceptions, not newly constructed cross-protocol events. No task hosting, shared business coordinator or cloud identity discovery is added.
 
 ## 7. HTTP and errors
 

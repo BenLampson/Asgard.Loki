@@ -6,8 +6,8 @@ using Asgard.Loki.LLM.AWS.Internal;
 
 namespace Asgard.Loki.LLM.AWS;
 
-/// <summary>Bedrock Claude 原生 InvokeModel JSON，完整目标与 SigV4 认证属于本供应商。</summary>
-public sealed class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredentialSupport
+/// <summary>Bedrock Claude 原生 JSON/EventStream，完整目标与 SigV4 认证属于本供应商。</summary>
+public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _factory;
     private readonly IAwsLlmCredentialSource _source;
@@ -22,6 +22,8 @@ public sealed class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredentialSuppo
         ArgumentNullException.ThrowIfNull(httpClientFactory); ArgumentNullException.ThrowIfNull(credentialSource); ArgumentNullException.ThrowIfNull(options); ArgumentException.ThrowIfNullOrWhiteSpace(id); ArgumentException.ThrowIfNullOrWhiteSpace(httpClientName);
         ArgumentException.ThrowIfNullOrWhiteSpace(options.Region); if (options.Region.Any(character => !char.IsAsciiLetterLower(character) && !char.IsAsciiDigit(character) && character != '-')) throw new ArgumentException("AWS 区域必须是显式 ASCII 小写字母/数字/连字符。");
         ArgumentException.ThrowIfNullOrWhiteSpace(options.ClaudeAnthropicVersion); AwsJson.Text(options.ClaudeAnthropicVersion); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBodyBytes, 0); ArgumentNullException.ThrowIfNull(options.RequestHeaders);
+        ArgumentOutOfRangeException.ThrowIfLessThan(options.MaximumEventStreamFrameBytes, 16); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBufferedTerminalEvents, 0); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumTrackedClaudeBlocks, 0);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumEventStreamHeaders, 0);
         var headers = new SortedDictionary<string, string>(StringComparer.Ordinal);
         foreach (var header in options.RequestHeaders)
         {
@@ -34,13 +36,13 @@ public sealed class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredentialSuppo
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => GetType().AssemblyQualifiedName + ":aws-claude-json-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity });
+    public string BindingIdentity => GetType().AssemblyQualifiedName + ":aws-claude-eventstream-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity });
     /// <inheritdoc />
     public bool SupportsCredential(LlmCredentialKind kind) => kind == LlmCredentialKind.External;
     /// <summary>完整原生结果通过 EOF、长度、释放和最终取消检查后返回。</summary>
     public async Task<ClaudeMessage> CreateAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
     {
-        JsonElement result; var prepared = await PrepareAsync(request, context, cancellationToken).ConfigureAwait(false);
+        JsonElement result; var prepared = await PrepareAsync(request, context, false, cancellationToken).ConfigureAwait(false);
         using (var message = prepared.Request)
         using (var client = _factory.CreateClient(_clientName))
         {
@@ -54,13 +56,8 @@ public sealed class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredentialSuppo
         }
         cancellationToken.ThrowIfCancellationRequested(); return new(result, context.Metadata);
     }
-    /// <summary>Bedrock 二进制 EventStream 待独立实现；不将 JSON 或普通 SSE 冒充原生流。</summary>
-    public IAsyncEnumerable<ClaudeMessageEvent> StreamAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested(); throw new NotSupportedException("Bedrock InvokeModelWithResponseStream 尚未实现。");
-    }
     /// <summary>首次来源等待前复制原生正文，只移除路由字段并选择 Bedrock 正文版本。</summary>
-    private async Task<(HttpRequestMessage Request, byte[] Body, AwsLlmSigningCredentials Credentials)> PrepareAsync(JsonObject payload, LlmAdapterContext context, CancellationToken token)
+    private async Task<(HttpRequestMessage Request, byte[] Body, AwsLlmSigningCredentials Credentials)> PrepareAsync(JsonObject payload, LlmAdapterContext context, bool stream, CancellationToken token)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(payload); ArgumentNullException.ThrowIfNull(context); ArgumentNullException.ThrowIfNull(context.Credential);
         if (!SupportsCredential(context.Credential.Kind)) throw new ArgumentException("Bedrock SigV4 要求显式 External 主体凭据。");
@@ -69,10 +66,12 @@ public sealed class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredentialSuppo
         var model = context.Target.UpstreamModel; ArgumentException.ThrowIfNullOrWhiteSpace(model); AwsJson.Text(model); if (model is "." or "..") throw new ArgumentException("Bedrock 模型 ID 不能是相对路径段。");
         AwsJson.Input(payload); var body = payload.DeepClone().AsObject(); body.Remove("model"); body.Remove("stream");
         if (body.TryGetPropertyValue("anthropic_version", out var supplied) && (supplied is not JsonValue scalar || !scalar.TryGetValue<string>(out var version) || version != _options.ClaudeAnthropicVersion)) throw new ArgumentException("Claude 正文版本与所选 Bedrock 版本冲突。"); body["anthropic_version"] = _options.ClaudeAnthropicVersion;
-        var bytes = Encoding.UTF8.GetBytes(body.ToJsonString()); var message = new HttpRequestMessage(HttpMethod.Post, new Uri(new Uri(root.AbsoluteUri.TrimEnd('/') + "/"), "model/" + Uri.EscapeDataString(model) + "/invoke"));
+        if (stream && _options.RequestHeaders.TryGetValue("x-amzn-bedrock-accept", out var selected) && !JsonMedia(selected)) throw new ArgumentException("Claude EventStream 的模型内容类型必须选择 application/json。");
+        var bytes = Encoding.UTF8.GetBytes(body.ToJsonString()); var message = new HttpRequestMessage(HttpMethod.Post, new Uri(new Uri(root.AbsoluteUri.TrimEnd('/') + "/"), "model/" + Uri.EscapeDataString(model) + (stream ? "/invoke-with-response-stream" : "/invoke")));
         try
         {
-            message.Content = new ByteArrayContent(bytes); message.Content.Headers.ContentType = new("application/json"); message.Headers.Accept.Add(new("application/json")); foreach (var header in _options.RequestHeaders) message.Headers.Add(header.Key, header.Value);
+            message.Content = new ByteArrayContent(bytes); message.Content.Headers.ContentType = new("application/json"); message.Headers.Accept.Add(new(stream ? "application/vnd.amazon.eventstream" : "application/json")); foreach (var header in _options.RequestHeaders) message.Headers.Add(header.Key, header.Value);
+            if (stream && !message.Headers.Contains("x-amzn-bedrock-accept")) message.Headers.Add("x-amzn-bedrock-accept", "application/json");
             SourceUnchanged(); var credentials = await _source.GetCredentialsAsync(context.Credential.PrincipalIdentity, token).ConfigureAwait(false) ?? throw new InvalidOperationException("AWS 来源没有返回签名凭据。"); token.ThrowIfCancellationRequested(); SourceUnchanged();
             ValidateCredentials(credentials, context.Credential.PrincipalIdentity); return (message, bytes, credentials);
         }
@@ -85,7 +84,7 @@ public sealed class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredentialSuppo
         foreach (var header in client.DefaultRequestHeaders)
         {
             var name = header.Key.ToLowerInvariant();
-            if (name is "api-key" or "x-api-key" or "x-goog-api-key" || name.StartsWith("x-amzn-bedrock-", StringComparison.Ordinal) && !_options.RequestHeaders.ContainsKey(name) || name.StartsWith("x-amz-", StringComparison.Ordinal) && name is not ("x-amz-date" or "x-amz-content-sha256") && !(name == "x-amz-security-token" && credentials.SessionToken is not null)) throw new InvalidOperationException("Bedrock 默认头包含未选择的认证或原生请求配置。");
+            if (name is "api-key" or "x-api-key" or "x-goog-api-key" || name.StartsWith("x-amzn-bedrock-", StringComparison.Ordinal) && !message.Headers.Contains(name) || name.StartsWith("x-amz-", StringComparison.Ordinal) && name is not ("x-amz-date" or "x-amz-content-sha256") && !(name == "x-amz-security-token" && credentials.SessionToken is not null)) throw new InvalidOperationException("Bedrock 默认头包含未选择的认证或原生请求配置。");
         }
         AwsSigV4.Sign(message, body, credentials, _options.Region, now); token.ThrowIfCancellationRequested();
     }
