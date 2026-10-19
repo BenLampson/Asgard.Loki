@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.Conversion
 
-The matrix below covers Chat Completions, Responses, Claude Messages and Gemini. Native Ollama Chat/generate have separate protocols/clients and are outside this conversion matrix; neither implicitly becomes OpenAI Chat. Native Ollama tool/history, thinking, schema and prompt/context settings can be passed through their own clients without invoking this package. Four regression cases cover both native protocols with/without loss consent across every supported peer, both directions, same-protocol copies and request/response/stream entry points; enum expansion cannot enable unimplemented conversion.
+The matrix below covers Chat Completions, Responses, Claude Messages and Gemini. The separate [Nova ↔ Converse complete JSON pair](#explicit-nova--converse-complete-json) uses its own Bedrock decorator and does not expand this four-protocol matrix. Native Ollama Chat/generate have separate protocols/clients and are outside this conversion matrix; neither implicitly becomes OpenAI Chat. Native Ollama tool/history, thinking, schema and prompt/context settings can be passed through their own clients without invoking this package. Four regression cases cover both native protocols with/without loss consent across every supported peer, both directions, same-protocol copies and request/response/stream entry points; enum expansion cannot enable unimplemented conversion.
 
 Optional, explicit protocol conversion for the Asgard.Loki .NET SDK. This package references **only `Asgard.Loki.LLM`**. Native provider packages never reference it or one another. It contains no HTTP server, model execution loop, tool executor or gateway services.
 
@@ -456,3 +456,41 @@ A non-error typed event containing a root `error` extension still goes through f
 When an event produces target deltas, their `OriginalData` (or public conversion metadata) retains the whole independently copied source event. Metadata-only unknown events may produce no target delta; diagnostics accumulate, but the converter does not promise to attach every skipped source frame to a later result. Use the native stream when every original event is required. Same-protocol copies remain complete copies.
 
 `typed-stream-errors.json` independently authors full Claude/Responses source streams and one complete Chat target sequence, including split original tool arguments, error-shaped business data, null/false and exact 9007199254740993. Fifty-six offline regressions cover strict/consented extensions, source immutability, exact tool IDs/parameters/usage, mismatched association, invalid argument snapshots, missing terminals and public SDK/fragmented-SSE read/dispose/cancel/late-error failures. No target success is emitted before normal source EOF/disposal. Request/result mappings, conversion-v25 binding identity and supplier/package boundaries are unchanged. These checks are not live model acceptance or new Nova/Converse conversion support.
+
+### Explicit Nova ↔ Converse complete JSON
+
+`LlmProtocolConverter.ConvertRequest` / `ConvertResponse` additionally support `BedrockNova` ↔ `BedrockConverse`. This is a separate native pair: conversions between either Bedrock protocol and Chat/Responses/Claude/Gemini remain unsupported, even with `AllowLoss`. Ollama stays outside both matrices. Same-protocol request/response/event copies preserve complete JSON without requiring a cross-protocol format declaration.
+
+| Field or operation | Supported mapping / boundary |
+| --- | --- |
+| Complete requests | Ordered user/assistant messages and system text; Base64 images and Base64/caller-owned S3 video containers; ordinary tool definitions, selection, calls and text/JSON results |
+| Association / Schema | Exact original IDs, parallel same-name calls and reverse-order result replay; explicit status versus absence; unchanged tool JSON Schema, null/false and exact integers |
+| Common generation | Explicit maxTokens, temperature, topP and stopSequences; omission stays omitted |
+| Nova settings | Explicit topK and reasoningConfig enabled/disabled plus low/medium/high; selected Converse additionalModelRequestFields layout; no effort/budget heuristic or sampling/token adjustment |
+| Complete responses | Ordered text/ordinary tool output, original stopReason, required native input/output/total counters and latencyMs; no ID/stop/count synthesis |
+| Native-only boundaries | Document input, reasoning/signatures, cache/guard/citation/audio/search blocks, outputConfig, guardrailConfig, promptVariables and strict tool constraints reject even with loss consent |
+| Unknown extensions | Strict rejection by default; explicit loss consent returns source JSON and exact diagnostics while copying only the proved subset |
+| Streams | Cross-protocol streams reject before credential/HTTP acquisition. Native identity streams keep their original event objects and supplier binary-frame attachments |
+
+Every cross-protocol request requires `BedrockNovaRequestFormat.MessagesV1` (write/require `schemaVersion: messages-v1`) or `Nova2` (omit/require absence of that field). This chooses a wire envelope, not model support or entitlement. When topK/reasoningConfig appears, also choose `BedrockConverseInferenceFormat.Direct` or `NestedInferenceConfig`. [Nova v1 Converse](https://docs.aws.amazon.com/nova/latest/userguide/using-converse-api.html), [Nova 2 schema](https://docs.aws.amazon.com/nova/latest/nova2-userguide/request-response-schema.html) and [Nova 2 core inference](https://docs.aws.amazon.com/nova/latest/nova2-userguide/core-inference.html) show differing wrapper placements. Loki neither guesses which a selected endpoint accepts nor merges/migrates conflicting locations. Wrong/duplicate locations fail even with loss consent. Native clients remain the unfiltered route for supplier-specific payloads.
+
+```csharp
+var options = new LlmConversionOptions
+{
+    BedrockNovaRequestFormat = BedrockNovaRequestFormat.MessagesV1,
+    BedrockConverseInferenceFormat = BedrockConverseInferenceFormat.NestedInferenceConfig
+};
+var converted = new ConvertingBedrockLlmProvider(
+    native, LlmProtocol.BedrockNova, "explicit-nova", options);
+// native is an application-supplied IBedrockNovaAdapter, e.g. AwsLlmProvider.
+// Register converted in LlmOptions.Providers and select its Id on a complete target.
+// A public Converse target declares Protocols = LlmProtocol.BedrockConverse;
+// client.LLM.BedrockConverse.ConverseAsync(...) then explicitly invokes Nova.
+// Preserve the ordinary caller-owned SessionStore, coordinator and credential setup.
+```
+
+The fixed upstream must implement the selected native adapter. `ConvertingBedrockLlmProvider` declares only the two Bedrock interfaces; existing `ConvertingLlmProvider` retains only its four original protocol interfaces. Neither decorator can wrap another converter. The immutable native request context records original historical tool IDs; a new response reusing one fails instead of being renamed or ambiguously associated. Direct response-only conversion cannot assert request-history uniqueness without that context. The new `bedrock-json-conversion-v1` identity includes fixed upstream/credential support, native format and layout; changed format/layout rejects old Sessions before acquisition. Default-omitted new enum options preserve exact existing conversion-v25 option bytes. AWS/core native identities and production package references are unchanged: Conversion depends only on LLM, AWS only on LLM plus HTTP dependencies.
+
+Unknown fields never grant permission to drop signed state, tool associations or execution/format guarantees. Native reasoning blocks remain native-only even though request reasoning settings map. Text outputConfig and strict tool enforcement are distinct from copying a tool's JSON Schema. The four-protocol `TargetSettings` contract is rejected for this native pair rather than silently ignored. Malformed required counts, role/union/ID/result errors and high-effort sampling conflicts fail without rewriting the caller's request. Complete results remain contingent on the upstream adapter's normal EOF/disposal/cancellation contract. No network media resolution, tool execution, retries or nonstream fallback is added.
+
+The shared independent test artifact has six full native request goldens and four response goldens. Eighty-eight new conversion cases replace two obsolete blanket Nova rejection cases, and 39 AWS cases exercise declaration boundaries, sixteen complete public HTTP/auth/body paths, no-HTTP failures, Session policy changes, native JSON faults and original binary attachments. Current local inventory: 6250 offline tests (2059 conversion, 664 AWS), 28 packages. No live model/account acceptance, universal wrapper-layout support, Linux or remote CI result is claimed. Explicit cross-protocol streams and Bedrock ↔ four-protocol mappings remain subsequent checkpoints.

@@ -12,6 +12,7 @@ public static class LlmProtocolConverter
         var captured = ConversionOptionsSnapshot.Capture(options);
         Validate(request, from, to, captured);
         if (from == to) return new(request, request, [], new(from, to, captured));
+        if (BedrockConversion.IsBedrock(from)) return BedrockConversion.Request(request, from, to, captured);
         if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
             throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
         var searchOutputDiagnostics = HostedSearchOutput.Inspect(request, from);
@@ -34,6 +35,7 @@ public static class LlmProtocolConverter
         var captured = ConversionOptionsSnapshot.Capture(options);
         Validate(response, from, to, captured);
         if (from == to) return new(response, response, []);
+        if (BedrockConversion.IsBedrock(from)) return BedrockConversion.Response(response, captured);
         var mapGrounding = from == LlmProtocol.Gemini && to is LlmProtocol.ChatCompletions or LlmProtocol.Responses
             && captured.OpenAiCitationIndexUnit != LlmCitationIndexUnit.Unspecified;
         var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from, mapUrlCitations: true, mapGeminiGrounding: mapGrounding);
@@ -51,7 +53,10 @@ public static class LlmProtocolConverter
     {
         ArgumentNullException.ThrowIfNull(context);
         var result = ConvertResponse(response, context.TargetProtocol, context.SourceProtocol, context.Options);
-        var data = context.Restore(JsonNode.Parse(result.Data.GetRawText())!.AsObject());
+        var data = JsonNode.Parse(result.Data.GetRawText())!.AsObject();
+        if (BedrockConversion.IsBedrock(context.SourceProtocol) && context.SourceProtocol != context.TargetProtocol)
+            BedrockConversion.ValidateContext(data, context);
+        data = context.Restore(data);
         return new(data, response, result.Diagnostics, context);
     }
 
@@ -60,6 +65,10 @@ public static class LlmProtocolConverter
     {
         ArgumentNullException.ThrowIfNull(value);
         ConversionJson.ValidateProtocol(from); ConversionJson.ValidateProtocol(to);
+        if (BedrockConversion.IsBedrock(from) != BedrockConversion.IsBedrock(to))
+            throw new NotSupportedException("Bedrock 原生转换当前只支持 Nova 与 Converse 之间的完整 JSON。");
+        if (options is not null && (!Enum.IsDefined(options.BedrockNovaRequestFormat) || !Enum.IsDefined(options.BedrockConverseInferenceFormat)))
+            throw new ArgumentOutOfRangeException(nameof(options));
         if (options?.DefaultMaxTokens is <= 0) throw new ArgumentOutOfRangeException(nameof(options));
         if (options?.TargetThinkingBudgetTokens is < 1024) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiOutputFormat)) throw new ArgumentOutOfRangeException(nameof(options));

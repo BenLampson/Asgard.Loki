@@ -33,7 +33,8 @@ internal static class ConversionJson
     /// <summary>仅允许明确的单一原生协议值。</summary>
     internal static void ValidateProtocol(LlmProtocol protocol)
     {
-        if (protocol is not (LlmProtocol.ChatCompletions or LlmProtocol.Responses or LlmProtocol.ClaudeMessages or LlmProtocol.Gemini))
+        if (protocol is not (LlmProtocol.ChatCompletions or LlmProtocol.Responses or LlmProtocol.ClaudeMessages or LlmProtocol.Gemini
+            or LlmProtocol.BedrockConverse or LlmProtocol.BedrockNova))
             throw new ArgumentOutOfRangeException(nameof(protocol));
     }
 }

@@ -1366,3 +1366,29 @@ sequenceDiagram
 ```
 
 Metadata-only unknown events may emit no converted result. When a source event emits target deltas, their independently copied original JSON stays available; diagnostics accumulate without claiming every skipped frame is retained in final metadata. Original tool IDs, item association, final argument snapshots and required source terminals still validate under loss consent. Existing conversion-v25 binding identity/request/result semantics, native identities and package dependency directions are unchanged. The independent full fixtures and 56 regressions bring current totals to 6125 (1973 conversion), 28 packages. Nova/Converse explicit mappings and remaining roadmap families are still unfinished.
+
+## Explicit Bedrock native complete JSON conversion
+
+The existing Conversion package owns `BedrockConversion`, `BedrockContentConversion` and `BedrockGenerationConversion`. Static `LlmProtocolConverter` now recognizes a separate Nova/Converse complete JSON pair plus same-protocol native copies. Mixed pairs with the four text protocols fail explicitly; cross-protocol `LlmProtocolStreamConverter` rejects Bedrock streams before processing. No provider references another provider or Conversion.
+
+```mermaid
+classDiagram
+    IBedrockNovaAdapter <|.. ConvertingBedrockLlmProvider
+    IBedrockConverseAdapter <|.. ConvertingBedrockLlmProvider
+    ILlmCredentialSupport <|.. ConvertingBedrockLlmProvider
+    ConvertingBedrockLlmProvider --> ILlmProvider : borrowed fixed native upstream
+    ConvertingBedrockLlmProvider --> LlmProtocolConverter : explicit request and response
+    LlmProtocolConverter --> BedrockConversion : native JSON pair
+    BedrockConversion --> BedrockContentConversion : containers and original tool IDs
+    BedrockConversion --> BedrockGenerationConversion : explicit format and layout
+    LlmConversionOptions --> BedrockNovaRequestFormat
+    LlmConversionOptions --> BedrockConverseInferenceFormat
+```
+
+`ConvertingBedrockLlmProvider` declares only the two Bedrock adapters and delegates credential support to its fixed native supplier. Existing `ConvertingLlmProvider` still declares only the original four adapters; its configuration rejection for a Converse route remains intact. Converters cannot nest. Same-protocol native streams yield original event instances, preserving supplier-owned weak frame attachments; a cross-protocol stream fails before credential/HTTP acquisition. Neither wrapper owns the supplier, credential source, cache or HTTP factory.
+
+Every native-pair request explicitly chooses MessagesV1 versus Nova2 envelope policy. Model-specific topK/reasoningConfig additionally requires a Direct versus NestedInferenceConfig Converse layout; conflicting or wrong locations fail rather than merge or lose fields. The original schema, IDs, result status, media containers and known counters remain JSON; no universal message model or business coordinator is introduced. Signed/reasoning, documents, policy/cache/hosted blocks, text outputConfig and strict tool guarantees remain native-only. Unknown supported-container extensions are diagnosed and require explicit loss consent; required counts/association/source structure cannot be bypassed by that consent. No source fields are recursively scanned inside business JSON/Schema.
+
+New `bedrock-json-conversion-v1` fingerprints include full fixed upstream identity and explicit options. Default-omitted enum fields preserve original conversion-v25 option bytes and all prior four-protocol Sessions. Native AWS/core interfaces, enums and identities remain unchanged. Conversion still depends only on LLM; test-only shared JSON is embedded in the two acceptance assemblies. Independent six-request/four-response full goldens, 88 new conversion cases replacing two blanket Nova exclusions, and 39 AWS cases bring current totals to 6250 (2059 conversion, 664 AWS), 28 packages. The broader roadmap, mixed text pairs, streams and live supplier acceptance remain open.
+
+The native request context also snapshots validated historical tool IDs. Contextual response conversion rejects reuse by a new call even with AllowLoss; it never changes a provider ID or infers association by function name. Two pure-context cases were observed failing before the guard was added; two public HTTP cases cover both native directions. Request/response-only static APIs remain stateless beyond any context explicitly supplied by the caller.

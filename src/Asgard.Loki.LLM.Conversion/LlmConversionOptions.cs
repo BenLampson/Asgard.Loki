@@ -3,6 +3,12 @@ namespace Asgard.Loki.LLM.Conversion;
 /// <summary>由调用者明确选择的转换损耗策略与必需默认值。</summary>
 public sealed record LlmConversionOptions
 {
+    /// <summary>Nova/Converse 跨协议请求的显式 Nova 外壳；缺省不影响已有四协议绑定字节。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+    public BedrockNovaRequestFormat BedrockNovaRequestFormat { get; init; }
+    /// <summary>Nova 专有设置的明确 Converse 包装，不推断模型能力或静默迁移其他位置。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+    public BedrockConverseInferenceFormat BedrockConverseInferenceFormat { get; init; }
     /// <summary>默认拒绝任何损耗；仅显式开启后允许省略并返回诊断。</summary>
     public bool AllowLoss { get; init; }
     /// <summary>目标为 Claude 而来源没有输出上限时使用；不隐式猜测上限。</summary>
