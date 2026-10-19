@@ -13,7 +13,7 @@ internal sealed class SpeechReadStream(byte[] bytes) : Stream
     internal bool Disposed { get; private set; }
     internal int Reads { get; private set; }
     internal bool Eof { get; private set; }
-    public override bool CanRead => true;
+    public override bool CanRead => !Disposed;
     public override bool CanSeek => false;
     public override bool CanWrite => false;
     public override long Length => throw new NotSupportedException();

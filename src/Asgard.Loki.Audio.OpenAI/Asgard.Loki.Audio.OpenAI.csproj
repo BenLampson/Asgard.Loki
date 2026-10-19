@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Native OpenAI binary and SSE speech provider for Asgard.Loki.</Description>
+    <Description>Native OpenAI speech, file transcription and translation provider for Asgard.Loki.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Asgard.Loki.Audio/Asgard.Loki.Audio.csproj" />

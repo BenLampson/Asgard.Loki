@@ -1,0 +1,4 @@
+[
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=model"],"text":"file-upstream-fixture"},
+  {"headers":["Content-Disposition: form-data; name=file; filename=fixture.wav; filename*=utf-8''fixture.wav"],"base64":"AP+ADQoq"}
+]

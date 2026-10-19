@@ -1,6 +1,6 @@
 # Asgard.Loki.Audio.OpenAI
 
-Native OpenAI Speech binary and SSE transport for the independent Audio capability. Depends only on `Asgard.Loki.Audio` and `Microsoft.Extensions.Http`; no LLM, image, web server or background service.
+Native OpenAI Speech binary/SSE and file transcription/translation transport for the independent Audio capability. Depends only on `Asgard.Loki.Audio` and `Microsoft.Extensions.Http`; no LLM, image, web server or background service.
 
 ## Support matrix
 
@@ -13,7 +13,9 @@ Native OpenAI Speech binary and SSE transport for the independent Audio capabili
 | Convenience `SpeechRequest` | Text/Voice/Format map to input/voice/response_format; Parameters retained; conflicting root fields rejected |
 | Explicit `stream_format: "sse"` | Native speech.audio.delta Base64 audio and speech.audio.done usage; incremental consumption or aggregation |
 | Unknown SSE events/fields | Complete JSON and raw data text retained; unknown events emit metadata, never guessed audio/completion |
-| Transcription, translation | Pending; separate operations |
+| File transcription | Native multipart; JSON/verbose/diarized objects and text/subtitle bytes retained |
+| File translation | Native multipart; native JSON/verbose/text/subtitle results retained |
+| File transcription SSE | Pending; explicit stream=true and optional streaming-interface calls fail before upload |
 | Voice creation/consent uploads, playback, decoding, resampling | Outside this implementation |
 | Real-provider verification | Not performed; offline HTTP tests only |
 
@@ -70,4 +72,40 @@ Use `StreamNativeAsync` to consume `SpeechChunk.Audio` incrementally, or `Genera
 
 ## Verification
 
-173 xUnit v3 offline tests (103 binary/request cases plus 70 SSE cases) use independent complete native/convenience/SSE request goldens, full SSE events and terminal envelope snapshots, opaque bytes (including zero/invalid UTF-8 values) and substitute HTTP handlers/fragmented streams. They cover all six binary formats, unknown/null fields, custom voice objects, snapshots, raw errors, headers, lengths, framing/encoding, audio-event association, native usage, partial/complete results, cancellation and early/error disposal. Byte fixtures are not valid media files and do not establish speech quality, model acceptance or container validity. Aggregation retains full raw events and audio in memory; use streaming and discard processed chunks for large outputs. No real key, network, Redis or GitHub Actions is used by these tests.
+272 xUnit v3 offline tests comprise 103 speech binary/request cases, 70 speech SSE cases and 99 file-operation cases. Speech tests use independent complete native/convenience/SSE request goldens, full SSE events and terminal envelope snapshots, opaque bytes (including zero/invalid UTF-8 values) and substitute HTTP handlers/fragmented streams. They cover all six binary formats, unknown/null fields, custom voice objects, snapshots, raw errors, headers, lengths, framing/encoding, audio-event association, native usage, partial/complete results, cancellation and early/error disposal. Byte fixtures are not valid media files and do not establish speech quality, model acceptance or container validity. Aggregation retains full raw events and audio in memory; use streaming and discard processed chunks for large outputs. No real key, network, Redis or GitHub Actions is used by these tests.
+
+## File transcription and translation
+
+`OpenAiAudioFileAdapter` implements `IAudioTranscriptionAdapter` and `IAudioTranslationAdapter` using `POST audio/transcriptions` / `audio/translations`. Configure its own `OpenAiAudioFileOptions` with a fixed native model, API root, credential, Id and optional organization/project/named client. Use different targets when the operations require different models or identities. The SDK does not choose models or credentials based on the operation. References: [file transcription/translation guide](https://developers.openai.com/api/docs/guides/speech-to-text), [transcription API](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create), [translation API](https://developers.openai.com/api/reference/resources/audio/subresources/translations/methods/create).
+
+```csharp
+using Asgard.Loki;
+using Asgard.Loki.Audio;
+using Asgard.Loki.Audio.OpenAI;
+
+var fileTarget = new OpenAiAudioFileAdapter(httpClientFactory, new OpenAiAudioFileOptions
+{
+    Id = "file-one", Model = transcriptionModel, ApiKey = fileApiKey
+});
+await using var files = new LokiClientBuilder().AddAudio(new AudioOptions
+{
+    TranscriptionRoutes = [new() { Model = "recording", Targets = [fileTarget] }]
+}).Build();
+await using var input = File.OpenRead(audioPath); // Application owns file access/lifetime.
+var transcript = await files.Audio.Transcriptions.CreateAsync(new AudioFileRequest
+{
+    Model = "recording", File = new() { Content = input, FileName = "recording.wav", ContentType = "audio/wav" },
+    Fields = [new("response_format", "verbose_json"), new("timestamp_granularities[]", "word")]
+}, cancellationToken);
+// transcript.Body and ContentType are the complete native result, not a normalized transcript.
+```
+
+Register TranslationRoutes and call `.Audio.Translations.CreateAsync` for the translation operation with its caller-selected target. Native text names/values, repeated array names, nested bracket syntax, speaker-reference data URLs, empty fields and unknown fields are sent unchanged and in order. Only the public alias is replaced by the actual model part; model/file overrides and duplicate response_format/stream controls fail. No response_format, stream, temperature or language defaults are inserted. In the absence of response_format, validation follows the native JSON default without adding a part. No JSON-to-form expansion, media fetch, speaker-reference decoding, file extension inference or model-specific field deletion is performed.
+
+Uploads are read once from the caller's current position, including nonseekable streams. No length query, rewind, input buffering or filename opening occurs. A private HttpContent leaves the source open when the request/client is disposed and rejects a second serialization, including a resend requested by an external handler. Native form text uses strict UTF-8; unpaired UTF-16 surrogates in models, field names/values or filenames fail before HTTP rather than being replaced. The caller owns upload lifetime and supplies fresh content for a new invocation. The SDK does not add retries/failover, upload splitting or the upstream's model-specific size/language/quality policy.
+
+The adapter reads the complete nonstream response and returns only after stream/response/client disposal succeeds. Known JSON formats require an unambiguous UTF-8 object with string text; native error envelopes, incomplete JSON, duplicate success members, format/media contradictions, transport faults and length mismatches fail explicitly. Segments/words/speakers/logprobs/languages/usage and future fields are retained byte-for-byte, without semantic normalization, range repair, counter arithmetic or recognition/language-quality claims. Native text/subtitles are not decoded/re-encoded; actual content type/charset is retained. Empty text and JSON BOM bytes remain unchanged. HTTP and native business errors expose actual status, content type and full raw Body through capability-owned AudioFileUpstreamException, including binary/unknown-encoding error bodies.
+
+Only synchronous file results are implemented at this checkpoint. The adapter does not implement IStreamingAudioTranscriptionAdapter; stream=true is rejected before HTTP, while a supplied false part is retained. Unexpected SSE/non-result media on a successful response fail before reading. JSON/text output is buffered in memory without a configured response-size cap. No headers/result views beyond the declared raw-body/content-type/target contract or semantic timestamp/speaker validation are claimed.
+
+File tests compare five independently authored complete multipart goldens against actual serialized bytes (normalizing only the random boundary), plus complete JSON/diarization/subtitle bodies. They cover native settings and unknown fields, default omission, Unicode filenames/current position, direct snapshots, all declared format families, raw errors, upload/download/read/disposal/cancellation failures, no replay/failover and borrowed ownership. They do not contact OpenAI or certify a model/account, audio container or transcription/translation accuracy.

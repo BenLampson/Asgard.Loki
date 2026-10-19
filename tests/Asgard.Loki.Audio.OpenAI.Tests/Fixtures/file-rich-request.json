@@ -1,0 +1,18 @@
+[
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=model"],"text":"file-upstream-fixture"},
+  {"headers":["Content-Type: audio/wav","Content-Disposition: form-data; name=file; filename=fixture.wav; filename*=utf-8''fixture.wav"],"base64":"AP+ADQoq"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=response_format"],"text":"verbose_json"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=stream"],"text":"false"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=language"],"text":"zh"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=temperature"],"text":"0.125"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=prompt"],"text":"你好\nfixture"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"timestamp_granularities[]\""],"text":"word"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"timestamp_granularities[]\""],"text":"segment"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"include[]\""],"text":"logprobs"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"chunking_strategy[type]\""],"text":"server_vad"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"chunking_strategy[threshold]\""],"text":"0.25"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"future[]\""],"text":"null"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"future[]\""],"text":"false"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=future"],"text":"{\"enabled\":false,\"value\":null}"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=empty"],"text":""}
+]
