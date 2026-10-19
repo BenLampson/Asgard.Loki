@@ -116,7 +116,7 @@ public sealed class CustomToolConversionTests
         Assert.Throws<LlmConversionException>(() => Convert(source, options: CustomToolFixtures.Options with { AllowLoss = true }));
     }
 
-    /// <summary>跨种类结果、孤儿结果、重复 ID 和未完成历史均必须拒绝。</summary>
+    /// <summary>跨种类结果、孤儿结果、重复 ID、未完成历史和未知富内容均必须拒绝。</summary>
     [Theory]
     [InlineData(0)] [InlineData(1)] [InlineData(2)] [InlineData(3)] [InlineData(4)] [InlineData(5)]
     public void InvalidHistory_Fails(int mutation)
@@ -129,7 +129,7 @@ public sealed class CustomToolConversionTests
             case 2: input.Add(input[1]!.DeepClone()); break;
             case 3: input[1]!["status"] = "in_progress"; break;
             case 4: input[1]!["namespace"] = "ns"; break;
-            default: input[2]!["output"] = new JsonArray(); break;
+            default: input[2]!["output"] = new JsonArray(CustomToolFixtures.Parse("""{"type":"future","text":"unmapped"}""")); break;
         }
         Assert.Throws<LlmConversionException>(() => Convert(source, options: CustomToolFixtures.Options with { AllowLoss = true }));
     }

@@ -38,7 +38,7 @@ internal static class RequestReader
             Check(item, doc, "$.messages[]", message.Role == "tool" ? ["role", "content", "tool_call_id"]
                 : message.Role == "assistant" ? ["role", "content", "tool_calls"] : ["role", "content"]);
             if (message.Role == "tool")
-                message.Blocks.Add(new() { ["type"] = "result", ["id"] = Text(item["tool_call_id"]), ["output"] = item["content"]?.DeepClone() });
+                message.Blocks.Add(ToolResultMapping.Read(Text(item["tool_call_id"]), item["content"], LlmProtocol.ChatCompletions, doc));
             else
             {
                 ContentMapping.Read(item["content"], LlmProtocol.ChatCompletions, message, doc);
@@ -97,7 +97,7 @@ internal static class RequestReader
             {
                 Check(item, doc, "$.input[]", "type", "call_id", "output");
                 var message = new ConversionMessage("tool");
-                message.Blocks.Add(new() { ["type"] = "result", ["id"] = Text(item["call_id"]), ["output"] = item["output"]?.DeepClone() });
+                message.Blocks.Add(ToolResultMapping.Read(Text(item["call_id"]), item["output"], LlmProtocol.Responses, doc));
                 doc.Messages.Add(message);
             }
             else if (type is "reasoning" or "compaction") throw new LlmConversionException([new("opaque_state", "$.input[]." + type, "不透明推理或压缩项必须通过原生协议回传。")]);

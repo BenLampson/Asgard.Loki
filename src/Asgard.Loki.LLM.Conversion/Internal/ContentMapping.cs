@@ -66,9 +66,9 @@ internal static class ContentMapping
                     message.Blocks.Add(new() { ["type"] = "call", ["id"] = Text(block["id"]), ["name"] = Text(block["name"]), ["arguments"] = Object(block["input"]).ToJsonString() });
                     break;
                 case "tool_result":
-                    Check(block, doc, "$content[]", "type", "tool_use_id", "content");
-                    if (block["content"] is not JsonValue) { Loss(doc, "$content[].content", "unsupported_tool_result"); break; }
-                    message.Blocks.Add(new() { ["type"] = "result", ["id"] = Text(block["tool_use_id"]), ["output"] = Text(block["content"]) });
+                    Check(block, doc, "$content[]", "type", "tool_use_id", "content", "is_error");
+                    ToolResultMapping.ClaudeError(block);
+                    message.Blocks.Add(ToolResultMapping.Read(Text(block["tool_use_id"]), block["content"], protocol, doc));
                     break;
                 case "thinking": case "redacted_thinking": case "reasoning": case "compaction":
                     throw new LlmConversionException([new("opaque_state", "$content[]." + type, "签名和不透明推理项必须通过原生协议回传。")]);

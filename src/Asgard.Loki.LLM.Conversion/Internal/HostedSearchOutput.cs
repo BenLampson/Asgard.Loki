@@ -61,6 +61,10 @@ internal static class HostedSearchOutput
             }
             if (type == "text" && block["citations"] is JsonArray citations)
                 for (var i = 0; i < citations.Count; i++) Citation(citations[i], path + ".citations[" + i + "]");
+            if (type == "tool_result" && block["content"] is JsonArray toolContent)
+                for (var i = 0; i < toolContent.Count; i++)
+                    if (toolContent[i] is JsonObject text && text["type"]?.GetValue<string>() == "text" && text["citations"] is JsonArray toolCitations)
+                        for (var j = 0; j < toolCitations.Count; j++) Citation(toolCitations[j], path + ".content[" + i + "].citations[" + j + "]");
         }
         void Citation(JsonNode? node, string path)
         {

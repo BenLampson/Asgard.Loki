@@ -43,9 +43,17 @@ internal static class ToolConversionHistory
                 item.Remove("name"); item.Remove("namespace");
                 if (custom)
                 {
-                    if (item["output"] is not JsonValue value || !value.TryGetValue<string>(out _)) Reject("$.input[].output", "custom_tool_result_content_not_supported");
-                    var text = Text(item["output"]); CustomToolTextCodec.Validate(text, options.MaxCustomToolInputBytes);
-                    if (target == LlmProtocol.Gemini) item["output"] = new JsonObject { ["output"] = text }.ToJsonString();
+                    if (item["output"] is JsonArray content)
+                    {
+                        if (target == LlmProtocol.Gemini) Reject("$.input[].output", "custom_tool_result_content_not_supported");
+                        CustomToolTextCodec.ValidateJson(content, options.MaxCustomToolInputBytes);
+                    }
+                    else
+                    {
+                        if (item["output"] is not JsonValue value || !value.TryGetValue<string>(out _)) Reject("$.input[].output", "custom_tool_result_content_not_supported");
+                        var text = Text(item["output"]); CustomToolTextCodec.Validate(text, options.MaxCustomToolInputBytes);
+                        if (target == LlmProtocol.Gemini) item["output"] = new JsonObject { ["output"] = text }.ToJsonString();
+                    }
                     item["type"] = "function_call_output";
                 }
             }

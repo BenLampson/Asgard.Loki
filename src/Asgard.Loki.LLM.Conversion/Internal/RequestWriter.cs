@@ -74,6 +74,9 @@ internal static class RequestWriter
                 throw new ArgumentException("工具调用或结果所在的消息角色无效。");
             if (message.Role is "system" or "developer" && protocol is LlmProtocol.ClaudeMessages or LlmProtocol.Gemini) continue;
             var role = protocol == LlmProtocol.Gemini && message.Role == "assistant" ? "model" : message.Role;
+            if (protocol == LlmProtocol.ChatCompletions && role == "assistant" && calls.HasPending
+                && (message.Blocks.Any(b => Text(b["type"]) != "call") || result.LastOrDefault() is not JsonObject prior || prior["tool_calls"] is not JsonArray))
+                RejectChatToolOrder();
             if (protocol == LlmProtocol.Responses)
             {
                 JsonArray content = [];
@@ -93,7 +96,7 @@ internal static class RequestWriter
                         Flush();
                         var id = Text(block["id"]);
                         if (type == "call") { Register(calls, block); result.Add(new JsonObject { ["type"] = "function_call", ["call_id"] = id, ["name"] = Text(block["name"]), ["arguments"] = Text(block["arguments"]) }); }
-                        else { RequireCall(calls, id); result.Add(new JsonObject { ["type"] = "function_call_output", ["call_id"] = id, ["output"] = Text(block["output"]) }); }
+                        else { RequireCall(calls, id); result.Add(new JsonObject { ["type"] = "function_call_output", ["call_id"] = id, ["output"] = ToolResultMapping.Write(block, protocol, doc) }); }
                     }
                 }
                 Flush();
@@ -103,6 +106,7 @@ internal static class RequestWriter
             foreach (var block in message.Blocks)
             {
                 var type = Text(block["type"]);
+                if (protocol == LlmProtocol.ChatCompletions && role != "assistant" && calls.HasPending && type != "result") RejectChatToolOrder();
                 if (type == "text")
                 {
                     if (protocol == LlmProtocol.ChatCompletions && toolCalls.Count != 0) Loss(doc, "$messages[].content", "block_order_changed");
@@ -125,7 +129,7 @@ internal static class RequestWriter
                 }
                 else
                 {
-                    var id = Text(block["id"]); var output = Text(block["output"]); var name = RequireCall(calls, id);
+                    var id = Text(block["id"]); var name = RequireCall(calls, id); var output = ToolResultMapping.Write(block, protocol, doc);
                     if (protocol == LlmProtocol.ChatCompletions)
                     {
                         if (parts.Count != 0) { result.Add(new JsonObject { ["role"] = role, ["content"] = parts }); parts = []; }
@@ -133,7 +137,7 @@ internal static class RequestWriter
                     }
                     else if (protocol == LlmProtocol.Gemini)
                     {
-                        var response = JsonNode.Parse(output) as JsonObject;
+                        var response = JsonNode.Parse(Text(output)) as JsonObject;
                         if (response is null) throw new LlmConversionException([new("tool_result_object_required", "$tool_result", "Gemini 工具结果必须是 JSON 对象，SDK 不隐式包装文本。")]);
                         parts.Add(new JsonObject { ["functionResponse"] = new JsonObject { ["id"] = id, ["name"] = name, ["response"] = response } });
                     }
@@ -142,12 +146,22 @@ internal static class RequestWriter
                 }
             }
             if (parts.Count == 0 && toolCalls.Count == 0) continue;
+            if (protocol == LlmProtocol.ChatCompletions && role == "assistant" && parts.Count == 0 && toolCalls.Count != 0
+                && result.LastOrDefault() is JsonObject previous && previous["role"]?.GetValue<string>() == "assistant" && previous["tool_calls"] is JsonArray previousCalls)
+            {
+                // 连续 Responses function_call 属于同一并行工具轮次，Chat 必须先完整声明再逐 ID 回填结果。
+                foreach (var call in toolCalls) previousCalls.Add(call!.DeepClone());
+                continue;
+            }
             var item = new JsonObject { ["role"] = role == "tool" ? "user" : role, [protocol == LlmProtocol.Gemini ? "parts" : "content"] = parts };
             if (toolCalls.Count != 0) item["tool_calls"] = toolCalls;
             result.Add(item);
         }
         return result;
     }
+
+    /// <summary>不能通过重排、丢弃消息或拆开未回填的工具轮次制造一个表面合法的 Chat 请求。</summary>
+    private static void RejectChatToolOrder() => throw new LlmConversionException([new("tool_turn_order_not_representable", "$messages", "Chat 工具轮次尚未完整回填，不能插入其他消息或提前开始下一轮调用。")]);
 
     /// <summary>拒绝重复调用 ID，避免错误关联。</summary>
     private static void Register(ToolCallTracker calls, JsonObject block)

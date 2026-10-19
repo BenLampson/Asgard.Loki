@@ -30,4 +30,26 @@ internal static class CustomToolTextCodec
     {
         if (Utf8.GetByteCount(input) > maximumBytes) ToolRequestCodec.Reject("$custom.input", "custom_tool_input_limit");
     }
+
+    /// <summary>先校验原始字符串和大小下界，再按完整 JSON 精确计数，避免替换非法 Unicode 或先展开明显超限的文本。</summary>
+    internal static void ValidateJson(JsonNode value, int maximumBytes)
+    {
+        var pending = new Stack<JsonNode?>(); pending.Push(value); long minimum = 0;
+        while (pending.TryPop(out var node))
+        {
+            if (node is JsonObject obj)
+            {
+                minimum += 2;
+                foreach (var field in obj) { minimum += 3L + Utf8.GetByteCount(field.Key); pending.Push(field.Value); }
+            }
+            else if (node is JsonArray array)
+            {
+                minimum += 2; foreach (var child in array) pending.Push(child);
+            }
+            else if (node is JsonValue scalar && scalar.TryGetValue<string>(out var text)) minimum += 2L + Utf8.GetByteCount(text);
+            else minimum++;
+            if (minimum > maximumBytes) ToolRequestCodec.Reject("$custom.input", "custom_tool_input_limit");
+        }
+        Validate(value.ToJsonString(), maximumBytes);
+    }
 }

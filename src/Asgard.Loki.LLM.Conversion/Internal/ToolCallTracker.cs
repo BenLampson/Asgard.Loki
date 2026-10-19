@@ -6,6 +6,9 @@ internal sealed class ToolCallTracker
     private readonly HashSet<string> _all = new(StringComparer.Ordinal);
     private readonly Dictionary<string, string> _pending = new(StringComparer.Ordinal);
 
+    /// <summary>尚有结果未回填，目标协议不能提前开始下一轮普通消息。</summary>
+    internal bool HasPending => _pending.Count != 0;
+
     /// <summary>登记唯一的原始调用身份和函数名称。</summary>
     internal void Register(string id, string name)
     {

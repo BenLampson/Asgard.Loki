@@ -33,6 +33,6 @@ public sealed record LlmConversionOptions
     public int MaxToolConversionHistoryCalls { get; init; } = 4096;
     /// <summary>启用可逆工具编码时，一次完整响应或流允许的 custom/普通调用总数。</summary>
     public int MaxToolConversionOutputCalls { get; init; } = 128;
-    /// <summary>custom 输入和字符串结果的最大 UTF-8 字节数；不截断内容。</summary>
+    /// <summary>custom 输入、字符串结果及富结果数组 JSON 的最大 UTF-8 字节数；不截断内容。</summary>
     public int MaxCustomToolInputBytes { get; init; } = 1024 * 1024;
 }
