@@ -1,0 +1,62 @@
+{
+  "GeminiResponseObject": {
+    "ClaudeMessages": {
+      "model":"model-a","max_tokens":128,"temperature":0,
+      "system":[{"type":"text","text":"rules"}],
+      "messages":[
+        {"role":"user","content":[{"type":"text","text":"inspect"}]},
+        {"role":"assistant","content":[{"type":"tool_use","id":"call_a","name":"inspect","input":{"n":0}},{"type":"tool_use","id":"call_b","name":"inspect","input":{"n":1}}]},
+        {"role":"user","content":[
+          {"type":"tool_result","tool_use_id":"call_b","content":"{\"error\":{\"code\":\"BAD\",\"details\":[null,false,9007199254740993]},\"output\":null,\"future\":false}","is_error":true},
+          {"type":"tool_result","tool_use_id":"call_a","content":"{\"output\":{\"ok\":false,\"nested\":{\"error\":\"business\"}}}"}
+        ]}
+      ],
+      "tools":[{"name":"inspect","description":"fixture","input_schema":{"type":"object","properties":{"n":{"type":"integer"}}}}],
+      "tool_choice":{"type":"auto"}
+    },
+    "Gemini": {
+      "model":"model-a","generationConfig":{"maxOutputTokens":128,"temperature":0},
+      "systemInstruction":{"parts":[{"text":"rules"}]},
+      "contents":[
+        {"role":"user","parts":[{"text":"inspect"}]},
+        {"role":"model","parts":[{"functionCall":{"id":"call_a","name":"inspect","args":{"n":0}}},{"functionCall":{"id":"call_b","name":"inspect","args":{"n":1}}}]},
+        {"role":"user","parts":[
+          {"functionResponse":{"id":"call_b","name":"inspect","response":{"error":{"code":"BAD","details":[null,false,9007199254740993]},"output":null,"future":false}}},
+          {"functionResponse":{"id":"call_a","name":"inspect","response":{"output":{"ok":false,"nested":{"error":"business"}}}}}
+        ]}
+      ],
+      "tools":[{"functionDeclarations":[{"name":"inspect","description":"fixture","parametersJsonSchema":{"type":"object","properties":{"n":{"type":"integer"}}}}]}],
+      "toolConfig":{"functionCallingConfig":{"mode":"AUTO"}}
+    }
+  },
+  "GeminiErrorText": {
+    "ClaudeMessages": {
+      "model":"model-a","max_tokens":128,"temperature":0,
+      "system":[{"type":"text","text":"rules"}],
+      "messages":[
+        {"role":"user","content":[{"type":"text","text":"inspect"}]},
+        {"role":"assistant","content":[{"type":"tool_use","id":"call_a","name":"inspect","input":{"n":0}},{"type":"tool_use","id":"call_b","name":"inspect","input":{"n":1}}]},
+        {"role":"user","content":[
+          {"type":"tool_result","tool_use_id":"call_b","content":"失败 🌏\r\n{\"looks\":\"json\"}\u0000","is_error":true},
+          {"type":"tool_result","tool_use_id":"call_a","content":"{\"output\":{\"ok\":false,\"nested\":{\"error\":\"business\"}}}"}
+        ]}
+      ],
+      "tools":[{"name":"inspect","description":"fixture","input_schema":{"type":"object","properties":{"n":{"type":"integer"}}}}],
+      "tool_choice":{"type":"auto"}
+    },
+    "Gemini": {
+      "model":"model-a","generationConfig":{"maxOutputTokens":128,"temperature":0},
+      "systemInstruction":{"parts":[{"text":"rules"}]},
+      "contents":[
+        {"role":"user","parts":[{"text":"inspect"}]},
+        {"role":"model","parts":[{"functionCall":{"id":"call_a","name":"inspect","args":{"n":0}}},{"functionCall":{"id":"call_b","name":"inspect","args":{"n":1}}}]},
+        {"role":"user","parts":[
+          {"functionResponse":{"id":"call_b","name":"inspect","response":{"error":"失败 🌏\r\n{\"looks\":\"json\"}\u0000"}}},
+          {"functionResponse":{"id":"call_a","name":"inspect","response":{"output":{"ok":false,"nested":{"error":"business"}}}}}
+        ]}
+      ],
+      "tools":[{"functionDeclarations":[{"name":"inspect","description":"fixture","parametersJsonSchema":{"type":"object","properties":{"n":{"type":"integer"}}}}]}],
+      "toolConfig":{"functionCallingConfig":{"mode":"AUTO"}}
+    }
+  }
+}

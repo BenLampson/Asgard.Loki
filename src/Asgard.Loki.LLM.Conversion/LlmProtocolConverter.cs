@@ -68,9 +68,10 @@ public static class LlmProtocolConverter
         if (options is not null && !Enum.IsDefined(options.OpenAiCitationIndexUnit)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiGroundingStreamMode)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.TextFileEncoding)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.ToolErrorFormat)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is { MaxToolConversionMappings: <= 0 } or { MaxToolConversionHistoryCalls: <= 0 }
             or { MaxToolConversionOutputCalls: <= 0 } or { MaxCustomToolInputBytes: <= 0 }
-            or { MaxStreamAnnotations: <= 0 } or { MaxStreamAnnotationBytes: <= 0 } or { MaxTextFileBytes: <= 0 })
+            or { MaxStreamAnnotations: <= 0 } or { MaxStreamAnnotationBytes: <= 0 } or { MaxTextFileBytes: <= 0 } or { MaxToolErrorBytes: <= 0 })
             throw new ArgumentOutOfRangeException(nameof(options));
         TargetSettingsValidator.ValidateConfiguration(options?.TargetSettings);
         if (options?.DefaultSchemaName is { } schemaName

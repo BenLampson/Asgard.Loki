@@ -10,7 +10,8 @@ internal static class RequestReader
     internal static ConversionDocument Read(JsonObject source, LlmProtocol protocol, LlmProtocol target = LlmProtocol.None, LlmConversionOptions? options = null)
     {
         var doc = new ConversionDocument { Model = Text(source["model"]), TextFileEncoding = options?.TextFileEncoding ?? LlmTextFileEncoding.Unspecified,
-            MaxTextFileBytes = options?.MaxTextFileBytes ?? 1024 * 1024 };
+            MaxTextFileBytes = options?.MaxTextFileBytes ?? 1024 * 1024, ToolErrorFormat = options?.ToolErrorFormat ?? LlmToolErrorFormat.NativeOnly,
+            MaxToolErrorBytes = options?.MaxToolErrorBytes ?? 1024 * 1024 };
         switch (protocol)
         {
             case LlmProtocol.ChatCompletions: Chat(source, doc); break;

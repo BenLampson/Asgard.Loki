@@ -137,11 +137,15 @@ internal static class RequestWriter
                     }
                     else if (protocol == LlmProtocol.Gemini)
                     {
-                        var response = JsonNode.Parse(Text(output)) as JsonObject;
-                        if (response is null) throw new LlmConversionException([new("tool_result_object_required", "$tool_result", "Gemini 工具结果必须是 JSON 对象，SDK 不隐式包装文本。")]);
+                        var response = ToolErrorMapping.GeminiResponse(block, output, doc);
                         parts.Add(new JsonObject { ["functionResponse"] = new JsonObject { ["id"] = id, ["name"] = name, ["response"] = response } });
                     }
-                    else parts.Add(new JsonObject { ["type"] = "tool_result", ["tool_use_id"] = id, ["content"] = output });
+                    else
+                    {
+                        var toolResult = new JsonObject { ["type"] = "tool_result", ["tool_use_id"] = id, ["content"] = output };
+                        if (ToolErrorMapping.IsError(block)) toolResult["is_error"] = true;
+                        parts.Add(toolResult);
+                    }
                     role = "user";
                 }
             }

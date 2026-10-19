@@ -67,8 +67,7 @@ internal static class ContentMapping
                     break;
                 case "tool_result":
                     Check(block, doc, "$content[]", "type", "tool_use_id", "content", "is_error");
-                    ToolResultMapping.ClaudeError(block);
-                    message.Blocks.Add(ToolResultMapping.Read(Text(block["tool_use_id"]), block["content"], protocol, doc));
+                    message.Blocks.Add(ToolErrorMapping.ReadClaude(block, doc));
                     break;
                 case "thinking": case "redacted_thinking": case "reasoning": case "compaction":
                     throw new LlmConversionException([new("opaque_state", "$content[]." + type, "签名和不透明推理项必须通过原生协议回传。")]);
@@ -111,7 +110,7 @@ internal static class ContentMapping
             Check(result, doc, "$parts[].functionResponse", "id", "name", "response");
             var name = Text(result["name"]);
             var id = doc.GeminiCalls.Resolve(result["id"]?.GetValue<string>(), name);
-            message.Blocks.Add(new() { ["type"] = "result", ["id"] = id, ["name"] = name, ["output"] = Object(result["response"]).ToJsonString() });
+            message.Blocks.Add(ToolErrorMapping.ReadGemini(id, name, result, doc));
         }
         else Loss(doc, "$parts[]", "unsupported_content");
     }

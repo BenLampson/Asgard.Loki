@@ -23,6 +23,10 @@ public sealed record LlmConversionOptions
     public bool EnableCustomToolConversion { get; init; }
     /// <summary>显式展开 Responses namespace 工具并使用请求上下文还原其原始身份。</summary>
     public bool EnableNamespacedToolConversion { get; init; }
+    /// <summary>显式 Claude/Gemini 工具错误格式；不为 Chat/Responses 发明错误标志，也不启用工具执行。</summary>
+    public LlmToolErrorFormat ToolErrorFormat { get; init; }
+    /// <summary>显式错误格式的原始文本或完整紧凑 JSON 的 UTF-8 字节上限；超限失败，不截断。</summary>
+    public int MaxToolErrorBytes { get; init; } = 1024 * 1024;
     /// <summary>明确声明固定转换目标的原生搜索类型；默认禁用，不执行 SDK 侧搜索。</summary>
     public LlmHostedSearchTarget HostedSearchTarget { get; init; }
     /// <summary>调用者声明该目标支持原生搜索与函数工具同时使用；不自动猜测模型能力。</summary>

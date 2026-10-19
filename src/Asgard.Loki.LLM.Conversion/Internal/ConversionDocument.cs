@@ -15,6 +15,10 @@ internal sealed class ConversionDocument
     internal LlmCitationIndexUnit CitationIndexUnit { get; set; }
     /// <summary>本次请求的纯文本文件编码声明，仅由显式选项传入。</summary>
     internal LlmTextFileEncoding TextFileEncoding { get; init; }
+    /// <summary>本次请求使用的显式工具错误格式，始终与实际业务内容分离。</summary>
+    internal LlmToolErrorFormat ToolErrorFormat { get; init; }
+    /// <summary>本次明确转换的工具错误内容上限。</summary>
+    internal int MaxToolErrorBytes { get; init; } = 1024 * 1024;
     /// <summary>单个纯文本文件的实际 UTF-8 字节上限。</summary>
     internal int MaxTextFileBytes { get; init; } = 1024 * 1024;
     /// <summary>有序原始语义消息。</summary>

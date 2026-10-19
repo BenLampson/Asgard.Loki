@@ -43,16 +43,10 @@ internal static class ToolResultMapping
         return result;
     }
 
-    /// <summary>显式错误不能删掉标记后变为普通成功结果；false 与原生默认一致。</summary>
-    internal static void ClaudeError(JsonObject block)
-    {
-        if (block.ContainsKey("is_error") && Boolean(block["is_error"]))
-            Reject("tool_result_error_not_representable", "$tool_result.is_error");
-    }
-
     /// <summary>目标数组内容逐块转换；不拼接字符串、不 JSON 序列化内容数组以假装业务结果。</summary>
     internal static JsonNode Write(JsonObject result, LlmProtocol protocol, ConversionDocument doc)
     {
+        ToolErrorMapping.ValidateTarget(result, protocol, doc);
         if (result["parts"] is not JsonArray parts) return JsonValue.Create(Text(result["output"]))!;
         if (protocol == LlmProtocol.Gemini) Reject("rich_tool_result_not_representable", "$tool_result.content");
         var output = new JsonArray();
