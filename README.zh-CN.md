@@ -35,7 +35,7 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 初始化、调用、支持矩阵及验证命令请参阅 [英文 README](README.md)。CI 在 Windows/Linux 上执行构建、测试及十三个 NuGet 包的依赖与元数据检查，打包产物作为运行附件保存。独立的 `Publish NuGet` 工作流使用 OIDC 可信发布，默认仅验证登录；正式发布需手动选择 `publish` 并填写准确版本，步骤见 [发布说明](docs/releasing.md)。
 
-已于 2026-10-19 再次对照 New API `058c8231`，以本库 `1ecbc6c` 及其通过的 Windows/Linux CI 为当前实现基线，更新[模型调用补齐计划](docs/model-call-roadmap.md)。原生 Claude/Gemini、首轮推理与 JSON Schema 转换、Gemini 现代文本格式外壳、OpenAI compaction 和原生 Responses WebSocket 已完成。Gemini typed 输出与函数参数 Schema 输入、彼此独立的 typed 输出及函数目标现已补齐；目标设置支持的显式声明也已补齐；自由文本 custom 与 namespace 工具身份的显式完整及流式转换、历史重放已补齐，组描述损耗与选择器限制明确记录；托管搜索原生请求配置和结果诊断已补首轮，完整搜索结果及引用映射仍待实现；下一步补搜索结果/引用、文件与富工具结果和可表达的复杂流；随后新增独立 Embedding/Rerank，再补图片编辑、音频、云供应商、Realtime 和 Video。计划明确具体代码缺口、逐协议限制和分开提交的验收点，每步附离线测试与文档。后台、计费、工具执行和任务托管不纳入 SDK。
+已于 2026-10-19 再次对照 New API，最新提交仍为 `058c8231`；以本库当前 `4be4511` 及其通过的 Windows/Linux CI 更新[模型调用补齐计划](docs/model-call-roadmap.md)。原生 Claude/Gemini、推理与 Schema 设置、custom/namespace 工具身份、OpenAI compaction 和原生 Responses WebSocket 已按各自范围实现。托管搜索目前仅完成显式请求配置及诊断，完整搜索结果和引用仍待补齐。下一步拆成引用范围与来源身份、引用流事件与最终快照、剩余搜索控制，再补文件/媒体、富工具结果及错误语义、可表达的复杂输出；之后依次新增独立 Embedding/Rerank，再补图片编辑、音频、云供应商、Realtime 和 Video。每步单独提交，附逐协议样本、公共 SDK 测试和文档；原生传递、显式转换、真实模型验证分别验收。后台、计费、工具执行和任务托管不纳入 SDK。
 
 本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题请参阅 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
 
