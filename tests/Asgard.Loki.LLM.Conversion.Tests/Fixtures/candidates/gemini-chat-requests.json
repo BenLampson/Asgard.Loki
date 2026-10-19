@@ -55,7 +55,12 @@
         "messages": [
           {
             "role": "user",
-            "content": "structured é 😀"
+            "content": [
+              {
+                "type": "text",
+                "text": "structured é 😀"
+              }
+            ]
           }
         ],
         "max_completion_tokens": 64,
@@ -90,6 +95,70 @@
           }
         },
         "n": 2
+      },
+      "reply": {
+        "id": "count-reply",
+        "object": "chat.completion",
+        "created": 0,
+        "model": "model-a",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\"ok\":true,\"n\":9007199254740993}"
+            },
+            "finish_reason": "stop"
+          },
+          {
+            "index": 1,
+            "message": {
+              "role": "assistant",
+              "content": "{\"ok\":false,\"n\":null}"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 11,
+          "completion_tokens": 6,
+          "total_tokens": 17
+        }
+      },
+      "result": {
+        "responseId": "count-reply",
+        "modelVersion": "model-a",
+        "candidates": [
+          {
+            "index": 0,
+            "content": {
+              "role": "model",
+              "parts": [
+                {
+                  "text": "{\"ok\":true,\"n\":9007199254740993}"
+                }
+              ]
+            },
+            "finishReason": "STOP"
+          },
+          {
+            "index": 1,
+            "content": {
+              "role": "model",
+              "parts": [
+                {
+                  "text": "{\"ok\":false,\"n\":null}"
+                }
+              ]
+            },
+            "finishReason": "STOP"
+          }
+        ],
+        "usageMetadata": {
+          "promptTokenCount": 11,
+          "candidatesTokenCount": 6,
+          "totalTokenCount": 17
+        }
       }
     },
     {
@@ -116,11 +185,60 @@
         "messages": [
           {
             "role": "user",
-            "content": "one"
+            "content": [
+              {
+                "type": "text",
+                "text": "one"
+              }
+            ]
           }
         ],
         "max_completion_tokens": 32,
         "n": 1
+      },
+      "reply": {
+        "id": "one-reply",
+        "object": "chat.completion",
+        "created": 0,
+        "model": "model-a",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "one"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 1,
+          "completion_tokens": 1,
+          "total_tokens": 2
+        }
+      },
+      "result": {
+        "responseId": "one-reply",
+        "modelVersion": "model-a",
+        "candidates": [
+          {
+            "index": 0,
+            "content": {
+              "role": "model",
+              "parts": [
+                {
+                  "text": "one"
+                }
+              ]
+            },
+            "finishReason": "STOP"
+          }
+        ],
+        "usageMetadata": {
+          "promptTokenCount": 1,
+          "candidatesTokenCount": 1,
+          "totalTokenCount": 2
+        }
       }
     }
   ]
