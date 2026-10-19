@@ -65,11 +65,11 @@ internal static class ConverseAnthropicReasoning
     {
         var text = Text(node); _ = StrictUtf8.GetByteCount(text); return text;
     }
-    /// <summary>标准 Base64 只验证语法及非空字节，不解码、重新编码或解释加密内容。</summary>
+    /// <summary>标准 Base64 只验证语法，不解码、重新编码或解释加密内容；空字节容器保持为空。</summary>
     private static string Redacted(JsonNode? node)
     {
         var text = Value(node);
-        if (!Base64.IsValid(text.AsSpan(), out var length) || length == 0) throw new ArgumentException("加密推理块必须提供非空原生 Base64。");
+        if (!Base64.IsValid(text.AsSpan(), out _)) throw new ArgumentException("加密推理块必须提供原生 Base64。");
         return text;
     }
     /// <summary>不透明签名结构的未知/缺失/混合字段不能因普通损耗许可而被静默移除。</summary>

@@ -7,6 +7,22 @@ namespace Asgard.Loki.LLM.Conversion.Tests;
 /// <summary>完整独立金样证明签名、加密字节和块顺序不损坏，不验证真实签名或跨模型可移植性。</summary>
 public sealed class ConverseAnthropicReasoningTests
 {
+    /// <summary>空签名字符串和空 Base64 容器不被伪造、移除或当成可验证的密码学证明。</summary>
+    [Theory] [InlineData("signed")] [InlineData("redacted")]
+    public void EmptyOpaqueValues_RemainExplicitAndUnchanged(string name)
+    {
+        var sample = Sample(name); var field = name == "signed" ? "signature" : "data";
+        sample["sourceRequest"]!["messages"]![1]!["content"]![0]![field] = "";
+        var expectedNative = sample["nativeRequest"]!.AsObject(); var requestReasoning = expectedNative["messages"]![1]!["content"]![0]!["reasoningContent"]!;
+        var source = sample["nativeResponse"]!.AsObject(); var responseReasoning = source["output"]!["message"]!["content"]![0]!["reasoningContent"]!;
+        if (name == "signed") { requestReasoning["reasoningText"]!["signature"] = ""; responseReasoning["reasoningText"]!["signature"] = ""; }
+        else { requestReasoning["redactedContent"] = ""; responseReasoning["redactedContent"] = ""; }
+        var request = Convert(sample["sourceRequest"]!.AsObject()); Equal(expectedNative, request.Data);
+        sample["claudeResponse"]!["content"]![0]![field] = "";
+        var result = LlmProtocolConverter.ConvertResponse(source, request.Context!);
+        Assert.True(JsonNode.DeepEquals(sample["claudeResponse"], ConverseTextFixtures.NormalizeResponse(result.Data, LlmProtocol.ClaudeMessages)));
+        Assert.Empty(result.Diagnostics);
+    }
     /// <summary>即使允许普通损耗，携带签名的整段对话也不能丢失已诊断的字段。</summary>
     [Theory] [InlineData(false)] [InlineData(true)]
     public void SignedConversation_RejectsOrdinaryLossEvenWithConsent(bool response)
