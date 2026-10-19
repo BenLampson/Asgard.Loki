@@ -13,7 +13,7 @@ public static class LlmProtocolConverter
         if (from == to) return new(request, request, []);
         if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
             throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
-        var doc = RequestReader.Read(request, from);
+        var doc = RequestReader.Read(request, from, to);
         var target = RequestWriter.Write(doc, to, options ?? new());
         ConversionJson.Copy(request, "stream", target, "stream");
         Enforce(doc, options);

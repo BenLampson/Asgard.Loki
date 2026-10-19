@@ -26,7 +26,7 @@ public sealed class GenerationSafetyTests
     /// <summary>已知配置对象的未知字段也形成诊断，显式损耗不能伪称无损。</summary>
     [Theory]
     [InlineData(LlmProtocol.Gemini, """{"thinkingConfig":{"thinkingLevel":"LOW","future":false}}""")]
-    [InlineData(LlmProtocol.Gemini, """{"responseMimeType":"application/json","responseSchema":{"type":"OBJECT"}}""")]
+    [InlineData(LlmProtocol.Gemini, """{"responseMimeType":"application/json","future":false}""")]
     [InlineData(LlmProtocol.ClaudeMessages, """{"effort":"low","future":null}""")]
     public void UnsupportedSettings_AreDiagnosed(LlmProtocol from, string settings)
     {

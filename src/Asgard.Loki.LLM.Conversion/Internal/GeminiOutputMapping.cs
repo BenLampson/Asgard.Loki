@@ -7,7 +7,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class GeminiOutputMapping
 {
     /// <summary>读取明确指定的文本格式；未指定文本时不创造默认输出意图。</summary>
-    internal static JsonObject? Read(JsonObject config, ConversionDocument doc)
+    internal static JsonObject? Read(JsonObject config, ConversionDocument doc, LlmProtocol target)
     {
         if (config.ContainsKey("responseFormat"))
         {
@@ -21,7 +21,8 @@ internal static class GeminiOutputMapping
         }
         if (config.ContainsKey("responseSchema") && config.ContainsKey("responseJsonSchema"))
             throw new ArgumentException("Gemini 不能同时指定两种 Schema 方言。");
-        if (config.ContainsKey("responseSchema")) { _ = Object(config["responseSchema"]); Loss(doc, "$.generationConfig.responseSchema", "unsupported_schema_dialect"); }
+        if (config.ContainsKey("responseSchema") && config["responseMimeType"]?.GetValue<string>() != "application/json")
+            throw new ArgumentException("Gemini responseSchema 必须使用 application/json。");
         if (config.ContainsKey("responseJsonSchema") && config["responseMimeType"]?.GetValue<string>() != "application/json")
             throw new ArgumentException("Gemini responseJsonSchema 必须使用 application/json。");
         if (!config.ContainsKey("responseMimeType")) return null;
@@ -31,6 +32,11 @@ internal static class GeminiOutputMapping
         if (config.ContainsKey("responseJsonSchema"))
         {
             format["type"] = "json_schema"; format["schema"] = Object(config["responseJsonSchema"]).DeepClone(); format["strict"] = true;
+        }
+        if (config.ContainsKey("responseSchema"))
+        {
+            format["type"] = "json_schema"; format["strict"] = true;
+            format["schema"] = GeminiSchemaMapping.Read(Object(config["responseSchema"]), doc, "$.generationConfig.responseSchema", target);
         }
         return format;
     }

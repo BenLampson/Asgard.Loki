@@ -7,7 +7,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class StructuredOutputMapping
 {
     /// <summary>按原生字段读取格式；区分 JSON Schema 与 Gemini 的另一种 Schema 方言。</summary>
-    internal static void Read(JsonObject source, LlmProtocol protocol, ConversionDocument doc)
+    internal static void Read(JsonObject source, LlmProtocol protocol, ConversionDocument doc, LlmProtocol target)
     {
         JsonObject? format = null;
         if (protocol == LlmProtocol.ChatCompletions && source.ContainsKey("response_format"))
@@ -33,7 +33,7 @@ internal static class StructuredOutputMapping
             }
         }
         else if (protocol == LlmProtocol.Gemini && source["generationConfig"] is JsonObject config)
-            format = GeminiOutputMapping.Read(config, doc);
+            format = GeminiOutputMapping.Read(config, doc, target);
         if (format is null) return;
         var kind = Text(format["type"]);
         Check(format, doc, "$format", kind == "json_schema" ? ["type", "name", "description", "schema", "strict"] : ["type"]);

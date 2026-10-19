@@ -7,7 +7,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class RequestReader
 {
     /// <summary>转换为单次调用内的有序内容，输入对象不被修改。</summary>
-    internal static ConversionDocument Read(JsonObject source, LlmProtocol protocol)
+    internal static ConversionDocument Read(JsonObject source, LlmProtocol protocol, LlmProtocol target = LlmProtocol.None)
     {
         var doc = new ConversionDocument { Model = Text(source["model"]) };
         switch (protocol)
@@ -19,7 +19,7 @@ internal static class RequestReader
         }
         ToolMapping.Read(source, protocol, doc);
         ReasoningMapping.Read(source, protocol, doc);
-        StructuredOutputMapping.Read(source, protocol, doc);
+        StructuredOutputMapping.Read(source, protocol, doc, target);
         return doc;
     }
 
