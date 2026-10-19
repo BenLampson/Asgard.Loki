@@ -96,6 +96,7 @@ internal static class CustomToolRequestCodec
         foreach (var node in history)
         {
             var item = Object(node); var type = item["type"]?.GetValue<string>();
+            if (type is null or "message") { HistoryMetadata(item); continue; }
             if (type is not ("function_call" or "function_call_output" or "custom_tool_call" or "custom_tool_call_output")) continue;
             var custom = type.StartsWith("custom_", StringComparison.Ordinal); var call = type.EndsWith("_call", StringComparison.Ordinal);
             var id = Name(item["call_id"]);

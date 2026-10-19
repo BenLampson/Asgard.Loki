@@ -16,6 +16,7 @@ public sealed class SettingsBindingTests
     [Theory]
     [InlineData(0)] [InlineData(1)] [InlineData(2)] [InlineData(3)] [InlineData(4)] [InlineData(5)] [InlineData(6)]
     [InlineData(7)] [InlineData(8)] [InlineData(9)] [InlineData(10)]
+    [InlineData(11)]
     public async Task ConfigurationChange_InvalidatesExistingSession(int option)
     {
         var store = new DistributedCacheLlmSessionStore(new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())), new TestSessionLock());
@@ -33,7 +34,8 @@ public sealed class SettingsBindingTests
             7 => new LlmConversionOptions { EnableCustomToolConversion = true },
             8 => new LlmConversionOptions { MaxToolConversionMappings = 256 },
             9 => new LlmConversionOptions { MaxToolConversionHistoryCalls = 8192 },
-            _ => new LlmConversionOptions { MaxCustomToolInputBytes = 2097152 }
+            10 => new LlmConversionOptions { MaxCustomToolInputBytes = 2097152 },
+            _ => new LlmConversionOptions { MaxToolConversionOutputCalls = 256 }
         };
         await using var first = ConvertingProviderTests.Build(handler, LlmProtocol.ClaudeMessages, LlmProtocol.ChatCompletions, store);
         await using var second = ConvertingProviderTests.Build(handler, LlmProtocol.ClaudeMessages, LlmProtocol.ChatCompletions, store, changed);

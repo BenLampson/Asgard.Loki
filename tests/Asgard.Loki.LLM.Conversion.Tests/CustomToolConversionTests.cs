@@ -223,12 +223,12 @@ public sealed class CustomToolConversionTests
         Assert.Equal(1, converted.Context!.CustomToolCount);
     }
 
-    /// <summary>默认不开启编码；第一检查点的流式路径在 HTTP 之前明确失败。</summary>
+    /// <summary>默认不开启编码；显式上下文支持流请求，同协议仍完整保留原生结构。</summary>
     [Fact]
     public void OptInAndStreamBoundary_AreExplicit()
     {
         var source = CustomToolFixtures.Request(); Assert.Throws<LlmConversionException>(() => Convert(source, options: new()));
-        source["stream"] = true; Assert.Throws<LlmConversionException>(() => Convert(source));
+        source["stream"] = true; Assert.True(Read(Convert(source))["stream"]!.GetValue<bool>());
         source["tools"]![0]!["format"] = CustomToolFixtures.Parse("""{"type":"grammar","syntax":"lark","definition":"start: /.+/"}""");
         source["future"] = null;
         Equal(source, Read(LlmProtocolConverter.ConvertRequest(source, LlmProtocol.Responses, LlmProtocol.Responses, CustomToolFixtures.Options)));

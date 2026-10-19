@@ -10,15 +10,33 @@ public sealed class LlmProtocolStreamConverter
     private readonly TargetStream _target;
     private readonly LlmConversionOptions _options;
     private readonly bool _identity;
+    private readonly LlmConversionContext? _context;
     private bool _complete;
     private JsonObject _last = new();
 
     /// <summary>每次调用创建独立转换器，不跨会话共享流状态。</summary>
     public LlmProtocolStreamConverter(LlmProtocol from, LlmProtocol to, LlmConversionOptions? options = null)
+        : this(from, to, options, null) { }
+
+    /// <summary>反向转换原请求对应的上游流；上下文不可变，流状态仍由每个转换器独立持有。</summary>
+    public LlmProtocolStreamConverter(LlmConversionContext context)
+        : this(RequireContext(context).TargetProtocol, context.SourceProtocol, context.Options, context) { }
+
+    /// <summary>构造器链也统一采用标准空参数验证，不改变上下文或创建替代映射。</summary>
+    private static LlmConversionContext RequireContext(LlmConversionContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context); return context;
+    }
+
+    /// <summary>统一建立本次流的协议状态，只有显式工具上下文才增加映射专用资源限制。</summary>
+    private LlmProtocolStreamConverter(LlmProtocol from, LlmProtocol to, LlmConversionOptions? options, LlmConversionContext? context)
     {
         options = ConversionOptionsSnapshot.Capture(options);
         LlmProtocolConverter.Validate(new(), from, to, options);
-        _source = new(from); _target = new(to); _options = options ?? new(); _identity = from == to;
+        var custom = context?.CustomToolCount > 0;
+        _source = new(from, custom ? 6L * context!.Options.MaxCustomToolInputBytes + 64 : null,
+            custom ? context!.Options.MaxToolConversionOutputCalls : null);
+        _target = new(to, custom ? context : null); _options = options; _identity = from == to; _context = context;
     }
 
     /// <summary>转换中已发现的累计损耗诊断快照。</summary>
@@ -30,14 +48,14 @@ public sealed class LlmProtocolStreamConverter
         ArgumentNullException.ThrowIfNull(sourceEvent);
         if (_complete) throw new InvalidOperationException("流转换已结束。");
         _last = sourceEvent.DeepClone().AsObject();
-        if (_identity) return [new(sourceEvent, sourceEvent, [])];
+        if (_identity) return [new(sourceEvent, sourceEvent, [], _context)];
         try
         {
             var changes = _source.Push(sourceEvent);
             LlmProtocolConverter.Enforce(_source.Document, _options);
             var events = _target.Push(_source.Document, changes);
             LlmProtocolConverter.Enforce(_source.Document, _options);
-            return events.Select(item => new LlmConversionResult(item, sourceEvent, Diagnostics)).ToArray();
+            return events.Select(item => new LlmConversionResult(item, sourceEvent, Diagnostics, _context)).ToArray();
         }
         catch { _complete = true; throw; }
     }
@@ -52,6 +70,6 @@ public sealed class LlmProtocolStreamConverter
         var events = _target.Push(_source.Document, changes);
         events.AddRange(_target.Complete(_source.Document));
         LlmProtocolConverter.Enforce(_source.Document, _options);
-        return events.Select(item => new LlmConversionResult(item, _last, Diagnostics)).ToArray();
+        return events.Select(item => new LlmConversionResult(item, _last, Diagnostics, _context)).ToArray();
     }
 }

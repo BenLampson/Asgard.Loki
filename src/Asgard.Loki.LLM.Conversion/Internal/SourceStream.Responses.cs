@@ -62,8 +62,9 @@ internal sealed partial class SourceStream
             if (itemType == "function_call")
             {
                 Check(item, Document, "$event.item", "id", "type", "status", "call_id", "name", "arguments");
-                var block = _message.Blocks[Block(key, "call")];
-                block["id"] = Text(item["call_id"]); block["name"] = Text(item["name"]); block["arguments"] = item["arguments"]?.GetValue<string>() ?? "";
+                var blockIndex = Block(key, "call"); var block = _message.Blocks[blockIndex];
+                block["id"] = Text(item["call_id"]); block["name"] = Text(item["name"]);
+                SetArguments(blockIndex, item["arguments"]?.GetValue<string>() ?? "");
             }
             else if (itemType == "message")
             {

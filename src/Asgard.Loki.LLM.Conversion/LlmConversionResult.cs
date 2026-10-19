@@ -20,6 +20,6 @@ public sealed class LlmConversionResult
     public JsonElement OriginalData { get; }
     /// <summary>非等价字段的完整诊断。</summary>
     public IReadOnlyList<LlmConversionDiagnostic> Diagnostics { get; }
-    /// <summary>请求及使用其上下文还原的响应携带的不可变状态；独立响应/事件转换为 null。</summary>
+    /// <summary>请求及使用其上下文还原的响应/事件携带的不可变状态；独立响应/事件转换为 null。</summary>
     public LlmConversionContext? Context { get; }
 }

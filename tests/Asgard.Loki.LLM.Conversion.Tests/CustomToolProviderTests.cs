@@ -75,7 +75,7 @@ public sealed class CustomToolProviderTests
         Assert.Equal(["first", "second"], await Task.WhenAll(Call("first"), Call("second"))); Assert.Equal(2, handler.Calls);
     }
 
-    /// <summary>未实现的 custom 流式和 grammar 在原生适配器发出任何请求前失败。</summary>
+    /// <summary>未实现的 grammar 在完整和流式入口发出任何 HTTP 请求前失败。</summary>
     [Theory]
     [InlineData(LlmProtocol.ChatCompletions, false)] [InlineData(LlmProtocol.ClaudeMessages, false)] [InlineData(LlmProtocol.Gemini, false)]
     [InlineData(LlmProtocol.ChatCompletions, true)] [InlineData(LlmProtocol.ClaudeMessages, true)] [InlineData(LlmProtocol.Gemini, true)]
@@ -84,9 +84,9 @@ public sealed class CustomToolProviderTests
         using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException());
         await using var client = ConvertingProviderTests.Build(handler, LlmProtocol.Responses, target, options: CustomToolFixtures.Options with { AllowLoss = true });
         var source = CustomToolFixtures.Request(); source["model"] = "public";
+        source["tools"]![0]!["format"] = CustomToolFixtures.Parse("""{"type":"grammar","syntax":"regex","definition":".*"}""");
         if (grammar)
         {
-            source["tools"]![0]!["format"] = CustomToolFixtures.Parse("""{"type":"grammar","syntax":"regex","definition":".*"}""");
             await Assert.ThrowsAsync<LlmConversionException>(() => ConvertingProviderTests.CompleteAsync(client, LlmProtocol.Responses, source));
         }
         else await Assert.ThrowsAsync<LlmConversionException>(() => ConvertingProviderTests.StreamAsync(client, LlmProtocol.Responses, source));

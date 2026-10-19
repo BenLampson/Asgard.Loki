@@ -4,7 +4,7 @@ using static Asgard.Loki.LLM.Conversion.Internal.ConversionJson;
 namespace Asgard.Loki.LLM.Conversion.Internal;
 
 /// <summary>聚合单条原生流的文本、函数参数与终态，不恢复或重试网络连接。</summary>
-internal sealed partial class SourceStream(LlmProtocol protocol)
+internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumArgumentBytes = null, int? maximumToolCalls = null)
 {
     private readonly Dictionary<string, int> _indices = new(StringComparer.Ordinal);
     private readonly HashSet<int> _emittedTools = [];
@@ -12,6 +12,9 @@ internal sealed partial class SourceStream(LlmProtocol protocol)
     private bool _started;
     private bool _terminal;
     private readonly ToolCallTracker _toolIds = new();
+    private readonly Dictionary<int, long> _argumentSizes = [];
+    private int _toolCount;
+    private static readonly System.Text.UTF8Encoding StrictUtf8 = new(false, true);
 
     /// <summary>跨事件维护的单次转换文档。</summary>
     internal ConversionDocument Document { get; } = new();
@@ -87,6 +90,8 @@ internal sealed partial class SourceStream(LlmProtocol protocol)
             if (Text(_message.Blocks[index]["type"]) != type) throw new InvalidDataException("内容块在流中改变类型。");
             return index;
         }
+        if (type == "call" && maximumToolCalls is { } maximum && ++_toolCount > maximum)
+            CustomToolRequestCodec.Reject("$event.tool_calls", "custom_tool_output_limit");
         index = _message.Blocks.Count; _indices.Add(key, index);
         _message.Blocks.Add(new() { ["type"] = type, [type == "text" ? "text" : "arguments"] = "" });
         return index;
@@ -112,7 +117,21 @@ internal sealed partial class SourceStream(LlmProtocol protocol)
     private void AppendArguments(int index, JsonNode? value)
     {
         if (_emittedTools.Contains(index)) throw new InvalidDataException("已完成的工具参数不能继续追加。");
+        if (value is not null) CheckArgumentSize(index, Text(value), append: true);
         Append(_message.Blocks[index], "arguments", value);
+    }
+    /// <summary>完整原生参数和后续增量使用同一个上限，超限前不写入聚合文档。</summary>
+    private void SetArguments(int index, string value)
+    {
+        CheckArgumentSize(index, value, append: false); _message.Blocks[index]["arguments"] = value;
+    }
+    /// <summary>按实际 UTF-8 字节计数；只在请求上下文明确启用工具映射时限制所有调用。</summary>
+    private void CheckArgumentSize(int index, string value, bool append)
+    {
+        if (maximumArgumentBytes is not { } maximum) return;
+        var bytes = StrictUtf8.GetByteCount(value) + (append ? _argumentSizes.GetValueOrDefault(index) : 0L);
+        if (bytes > maximum) CustomToolRequestCodec.Reject("$event.arguments", "custom_tool_input_limit");
+        _argumentSizes[index] = bytes;
     }
     /// <summary>拼接字符串增量。</summary>
     private static void Append(JsonObject block, string name, JsonNode? delta)

@@ -31,7 +31,9 @@ internal sealed partial class SourceStream
                         if (Text(block["type"]) == "text") { TextDelta("gemini-text-" + _emittedTools.Count, Text(block["text"]), changes); continue; }
                         if (Text(block["type"]) != "call") { Loss(Document, "$event.parts[]", "unsupported_content"); continue; }
                         var i = Block("gemini-tool-" + _emittedTools.Count, "call");
-                        foreach (var field in block) _message.Blocks[i][field.Key] = field.Value?.DeepClone();
+                        foreach (var field in block)
+                            if (field.Key != "arguments") _message.Blocks[i][field.Key] = field.Value?.DeepClone();
+                        SetArguments(i, Text(block["arguments"]));
                         CompleteTool(i, changes);
                     }
                 }

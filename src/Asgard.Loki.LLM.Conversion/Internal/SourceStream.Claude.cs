@@ -47,7 +47,7 @@ internal sealed partial class SourceStream
                     Check(content, Document, "$event.content_block", "type", "id", "name", "input");
                     var index = Block(key, "call"); var block = _message.Blocks[index];
                     block["id"] = Text(content["id"]); block["name"] = Text(content["name"]);
-                    if (Object(content["input"]).Count != 0) block["arguments"] = content["input"]!.ToJsonString();
+                    if (Object(content["input"]).Count != 0) SetArguments(index, content["input"]!.ToJsonString());
                 }
                 else if (blockType is "thinking" or "redacted_thinking")
                     throw new LlmConversionException([new("opaque_state", "$event.content_block", "推理签名必须使用 Claude 原生协议。")]);

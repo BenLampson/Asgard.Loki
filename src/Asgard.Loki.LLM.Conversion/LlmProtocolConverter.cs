@@ -15,8 +15,6 @@ public static class LlmProtocolConverter
         if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
             throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
         var context = CustomToolRequestCodec.Prepare(request, from, to, captured, out var prepared);
-        if (context.CustomToolCount != 0 && request["stream"]?.GetValue<bool>() == true)
-            CustomToolRequestCodec.Reject("$.stream", "custom_tool_stream_not_supported");
         var doc = RequestReader.Read(prepared, from, to);
         var target = RequestWriter.Write(doc, to, captured);
         ConversionJson.Copy(request, "stream", target, "stream");
@@ -55,7 +53,8 @@ public static class LlmProtocolConverter
         if (options?.TargetThinkingBudgetTokens is < 1024) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiOutputFormat)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiFunctionSchemaFormat)) throw new ArgumentOutOfRangeException(nameof(options));
-        if (options is { MaxToolConversionMappings: <= 0 } or { MaxToolConversionHistoryCalls: <= 0 } or { MaxCustomToolInputBytes: <= 0 })
+        if (options is { MaxToolConversionMappings: <= 0 } or { MaxToolConversionHistoryCalls: <= 0 }
+            or { MaxToolConversionOutputCalls: <= 0 } or { MaxCustomToolInputBytes: <= 0 })
             throw new ArgumentOutOfRangeException(nameof(options));
         TargetSettingsValidator.ValidateConfiguration(options?.TargetSettings);
         if (options?.DefaultSchemaName is { } schemaName

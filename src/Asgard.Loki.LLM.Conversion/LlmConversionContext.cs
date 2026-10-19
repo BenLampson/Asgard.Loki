@@ -35,20 +35,33 @@ public sealed class LlmConversionContext
     internal JsonObject Restore(JsonObject response)
     {
         if (CustomToolCount == 0) return response;
+        var calls = 0;
         foreach (var node in ConversionJson.Array(response["output"]))
         {
             var item = ConversionJson.Object(node);
             if (item["type"]?.GetValue<string>() != "function_call") continue;
-            if (HistoricalIds.Contains(ConversionJson.Text(item["call_id"]))) CustomToolRequestCodec.Reject("$.output[].call_id", "tool_call_id_reused");
-            var name = ConversionJson.Text(item["name"]);
-            if (!CustomTools.TryGetValue(name, out var tool))
-            {
-                if (!OrdinaryNames.Contains(name)) CustomToolRequestCodec.Reject("$.output[].name", "tool_context_mismatch");
-                continue;
-            }
-            var input = CustomToolTextCodec.Decode(ConversionJson.Text(item["arguments"]), Options.MaxCustomToolInputBytes);
-            item["type"] = "custom_tool_call"; item["name"] = tool.OriginalName; item["input"] = input; item.Remove("arguments");
+            if (++calls > Options.MaxToolConversionOutputCalls) CustomToolRequestCodec.Reject("$.output", "custom_tool_output_limit");
+            RestoreItem(item, complete: true);
         }
         return response;
+    }
+
+    /// <summary>完整和流式路径共享身份校验，不猜测编码前缀，也不复用历史调用 ID。</summary>
+    internal CustomToolBinding? ResolveTool(string name, string callId)
+    {
+        if (CustomToolCount == 0) return null;
+        if (HistoricalIds.Contains(callId)) CustomToolRequestCodec.Reject("$.output[].call_id", "tool_call_id_reused");
+        if (CustomTools.TryGetValue(name, out var tool)) return tool;
+        if (!OrdinaryNames.Contains(name)) CustomToolRequestCodec.Reject("$.output[].name", "tool_context_mismatch");
+        return null;
+    }
+
+    /// <summary>开始项输入为空，完成项严格解包；源转换文档及其终态校验不被修改。</summary>
+    internal void RestoreItem(JsonObject item, bool complete)
+    {
+        var tool = ResolveTool(ConversionJson.Text(item["name"]), ConversionJson.Text(item["call_id"]));
+        if (tool is null) return;
+        var input = complete ? CustomToolTextCodec.Decode(ConversionJson.Text(item["arguments"]), Options.MaxCustomToolInputBytes) : "";
+        item["type"] = "custom_tool_call"; item["name"] = tool.OriginalName; item["input"] = input; item.Remove("arguments");
     }
 }

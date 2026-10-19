@@ -4,7 +4,7 @@ using static Asgard.Loki.LLM.Conversion.Internal.ConversionJson;
 namespace Asgard.Loki.LLM.Conversion.Internal;
 
 /// <summary>将即时文本与完整工具块编码为目标原生事件序列。</summary>
-internal sealed class TargetStream(LlmProtocol protocol)
+internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? context = null)
 {
     private readonly HashSet<int> _started = [];
     private readonly Dictionary<int, int> _toolIndices = [];
@@ -89,6 +89,8 @@ internal sealed class TargetStream(LlmProtocol protocol)
                     events.Add(Event("response.output_text.done", i, new() { ["content_index"] = 0, ["text"] = Text(block["text"]), ["item_id"] = ItemId(i) }));
                     events.Add(Event("response.content_part.done", i, new() { ["content_index"] = 0, ["part"] = item["content"]![0]!.DeepClone(), ["item_id"] = ItemId(i) }));
                 }
+                else if (Text(item["type"]) == "custom_tool_call")
+                    events.Add(Event("response.custom_tool_call_input.done", i, new() { ["input"] = Text(item["input"]), ["item_id"] = ItemId(i) }));
                 else events.Add(Event("response.function_call_arguments.done", i, new() { ["arguments"] = Text(block["arguments"]), ["item_id"] = ItemId(i) }));
                 events.Add(Event("response.output_item.done", i, new() { ["item"] = item.DeepClone() })); output.Add(item);
             }
@@ -153,16 +155,23 @@ internal sealed class TargetStream(LlmProtocol protocol)
             if (!change.Tool) events.Add(Event("response.content_part.added", index, new() { ["item_id"] = ItemId(index), ["content_index"] = 0,
                 ["part"] = new JsonObject { ["type"] = "output_text", ["text"] = "", ["annotations"] = new JsonArray() } }));
         }
-        var extra = new JsonObject { ["item_id"] = ItemId(index), ["delta"] = change.Tool ? Text(block["arguments"]) : change.Delta };
+        var custom = change.Tool && context?.ResolveTool(Text(block["name"]), Text(block["id"])) is not null;
+        var delta = custom ? CustomToolTextCodec.Decode(Text(block["arguments"]), context!.Options.MaxCustomToolInputBytes)
+            : change.Tool ? Text(block["arguments"]) : change.Delta;
+        var extra = new JsonObject { ["item_id"] = ItemId(index), ["delta"] = delta };
         if (!change.Tool) extra["content_index"] = 0;
-        events.Add(Event(change.Tool ? "response.function_call_arguments.delta" : "response.output_text.delta", index, extra));
+        events.Add(Event(custom ? "response.custom_tool_call_input.delta" : change.Tool ? "response.function_call_arguments.delta" : "response.output_text.delta", index, extra));
     }
 
     /// <summary>构造单个 Responses 输出项，最终快照与流内项目完全一致。</summary>
     private JsonObject ResponseItem(JsonObject block, int index, bool complete)
     {
-        if (Text(block["type"]) == "call") return new() { ["id"] = ItemId(index), ["type"] = "function_call", ["call_id"] = Text(block["id"]),
-            ["name"] = Text(block["name"]), ["arguments"] = complete ? Text(block["arguments"]) : "", ["status"] = complete ? "completed" : "in_progress" };
+        if (Text(block["type"]) == "call")
+        {
+            var item = new JsonObject { ["id"] = ItemId(index), ["type"] = "function_call", ["call_id"] = Text(block["id"]),
+                ["name"] = Text(block["name"]), ["arguments"] = complete ? Text(block["arguments"]) : "", ["status"] = complete ? "completed" : "in_progress" };
+            context?.RestoreItem(item, complete); return item;
+        }
         return new() { ["id"] = ItemId(index), ["type"] = "message", ["role"] = "assistant", ["status"] = complete ? "completed" : "in_progress", ["content"] = complete
             ? new JsonArray(new JsonObject { ["type"] = "output_text", ["text"] = Text(block["text"]), ["annotations"] = new JsonArray() }) : new JsonArray() };
     }
