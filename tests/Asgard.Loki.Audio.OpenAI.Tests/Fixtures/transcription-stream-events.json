@@ -1,0 +1,8 @@
+[
+  {"type":"transcript.text.delta","delta":"你好","segment_id":"seg_A","logprobs":[{"token":"你","bytes":[228,189,160],"logprob":-0.1,"future":null}],"future":{"enabled":false}},
+  {"type":"transcript.future.note","opaque":[null,false,"🙂"]},
+  {"type":"transcript.text.delta","delta":"Hello","segment_id":"seg_B","future":null},
+  {"type":"transcript.text.segment","id":"seg_A","start":0.125,"end":1.75,"text":"你好。","speaker":"A","future":{"id":"kept"}},
+  {"type":"transcript.text.segment","id":"seg_B","start":1.0,"end":3.5,"text":"Hello!","speaker":"B","future":false},
+  {"type":"transcript.text.done","text":"你好。 Hello!","languages":[{"code":"zh","future":false},{"code":"en"}],"usage":{"type":"tokens","input_tokens":14,"input_token_details":{"audio_tokens":12,"text_tokens":2},"output_tokens":10,"total_tokens":31,"future":null},"logprobs":[{"token":"!","bytes":[33],"logprob":-0.2}],"future":[null,false,"完成"]}
+]

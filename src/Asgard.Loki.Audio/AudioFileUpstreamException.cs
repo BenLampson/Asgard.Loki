@@ -12,4 +12,6 @@ public sealed class AudioFileUpstreamException : Exception
     public ReadOnlyMemory<byte> Body { get; }
     /// <summary>原始内容类型的 .NET 表示，包括 charset；未提供时为空。</summary>
     public string? ContentType { get; }
+    /// <summary>可选原生转录错误事件，保留完整 JSON、目标与 SSE 身份；普通 HTTP/文件错误不伪造事件。</summary>
+    public AudioTranscriptionEvent? TranscriptionEvent { get; init; }
 }

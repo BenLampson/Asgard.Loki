@@ -8,7 +8,7 @@ internal static class OpenAiAudioFilePayload
 {
     private static readonly Encoding NativeUtf8 = new UTF8Encoding(false, true);
     /// <summary>直接适配器入口也校验借用上传，不依赖调用者一定经过 Audio 路由。</summary>
-    internal static (AudioFileRequest Request, string? Format) Snapshot(AudioFileRequest request, CancellationToken token)
+    internal static (AudioFileRequest Request, string? Format) Snapshot(AudioFileRequest request, CancellationToken token, bool streaming = false)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrWhiteSpace(request.Model); ArgumentNullException.ThrowIfNull(request.File);
@@ -25,10 +25,12 @@ internal static class OpenAiAudioFilePayload
             {
                 if (!scalars.Add(field.Name)) throw new ArgumentException("原生输出格式和传输开关不能重复。");
                 if (field.Name == "response_format") { ArgumentException.ThrowIfNullOrWhiteSpace(field.Value); format = field.Value; }
-                else if (field.Value == "true") throw new NotSupportedException("当前文件结果入口尚不消费转录 SSE，请勿隐式降级请求。");
-                else if (field.Value != "false") throw new ArgumentException("原生 stream 文本必须为 false，流式能力另行接入。");
+                else if (field.Value is not ("true" or "false")) throw new ArgumentException("原生 stream 文本必须为 true 或 false。");
+                else if (streaming && field.Value != "true") throw new ArgumentException("流式入口不能静默覆盖明确的 stream=false。");
+                else if (!streaming && field.Value == "true") throw new NotSupportedException("原生 stream=true 必须使用转录流式入口，不能降级为文件结果。");
             }
         }
+        if (streaming && !scalars.Contains("stream")) fields = [.. fields, new("stream", "true")];
         return (request with { File = request.File with { }, Fields = Array.AsReadOnly(fields) }, format);
     }
 

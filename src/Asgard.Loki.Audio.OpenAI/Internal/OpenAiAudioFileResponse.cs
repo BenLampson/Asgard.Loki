@@ -67,7 +67,7 @@ internal static class OpenAiAudioFileResponse
         => new("OpenAI 文件操作返回了原生失败。", (int)response.StatusCode, body, response.Content.Headers.ContentType?.ToString());
 
     /// <summary>重复成员使成功/错误解释存在歧义，应显式失败而不是选择末值。</summary>
-    private static void UniqueMembers(JsonElement value)
+    internal static void UniqueMembers(JsonElement value)
     {
         if (value.ValueKind == JsonValueKind.Object)
         {

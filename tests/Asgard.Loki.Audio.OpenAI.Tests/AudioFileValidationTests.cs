@@ -42,16 +42,16 @@ public sealed class AudioFileValidationTests
         Assert.Empty(factory.Clients); Assert.Equal(0, upload.Reads); Assert.Equal(kind == "closed", upload.Disposed);
     }
 
-    /// <summary>普通文件目标不能因类型上属于 OpenAI 就获得未实现的转录流式能力。</summary>
+    /// <summary>转录流式是显式的原生接口，准备流不会提前创建 HTTP 客户端或触碰上传。</summary>
     [Fact]
-    public async Task StreamingCapability_RemainsExplicitlyUnsupported()
+    public async Task StreamingCapability_IsExplicitAndLazy()
     {
         using var upload = new SpeechReadStream(AudioFileHttpFixture.UploadBytes); var factory = Factory();
         var adapter = new OpenAiAudioFileAdapter(factory, AudioFileHttpFixture.Options);
         await using var client = AudioFileHttpFixture.Build(adapter, false);
-        Assert.False((object)adapter is IStreamingAudioTranscriptionAdapter);
-        Assert.Throws<NotSupportedException>(() => client.Audio.Transcriptions.StreamAsync(AudioFileHttpFixture.Request(upload, "minimal"), TestContext.Current.CancellationToken));
-        Assert.Empty(factory.Clients);
+        Assert.IsAssignableFrom<IStreamingAudioTranscriptionAdapter>(adapter);
+        _ = client.Audio.Transcriptions.StreamAsync(AudioFileHttpFixture.Request(upload, "minimal"), TestContext.Current.CancellationToken);
+        Assert.Empty(factory.Clients); Assert.Equal(0, upload.Reads);
     }
 
     /// <summary>构造目标时不访问 HTTP，明确拒绝不完整目标与含凭据/查询的 API 根地址。</summary>

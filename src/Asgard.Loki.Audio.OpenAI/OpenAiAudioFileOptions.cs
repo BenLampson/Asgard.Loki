@@ -20,4 +20,6 @@ public sealed class OpenAiAudioFileOptions
     public string? Project { get; init; }
     /// <summary>外部工厂注册的命名客户端。</summary>
     public string HttpClientName { get; init; } = "Asgard.Loki.Audio.OpenAI.File";
+    /// <summary>单次转录流跟踪的分段 ID 上限；同时包括待完成和已完成 ID，达到上限时明确失败。</summary>
+    public int MaxTrackedTranscriptionSegments { get; init; } = 100_000;
 }

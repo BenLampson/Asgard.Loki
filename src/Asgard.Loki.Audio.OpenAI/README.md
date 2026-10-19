@@ -15,7 +15,7 @@ Native OpenAI Speech binary/SSE and file transcription/translation transport for
 | Unknown SSE events/fields | Complete JSON and raw data text retained; unknown events emit metadata, never guessed audio/completion |
 | File transcription | Native multipart; JSON/verbose/diarized objects and text/subtitle bytes retained |
 | File translation | Native multipart; native JSON/verbose/text/subtitle results retained |
-| File transcription SSE | Pending; explicit stream=true and optional streaming-interface calls fail before upload |
+| File transcription SSE | Native delta/segment/done; complete JSON, logprobs, languages, usage and SSE identity |
 | Voice creation/consent uploads, playback, decoding, resampling | Outside this implementation |
 | Real-provider verification | Not performed; offline HTTP tests only |
 
@@ -72,7 +72,7 @@ Use `StreamNativeAsync` to consume `SpeechChunk.Audio` incrementally, or `Genera
 
 ## Verification
 
-272 xUnit v3 offline tests comprise 103 speech binary/request cases, 70 speech SSE cases and 99 file-operation cases. Speech tests use independent complete native/convenience/SSE request goldens, full SSE events and terminal envelope snapshots, opaque bytes (including zero/invalid UTF-8 values) and substitute HTTP handlers/fragmented streams. They cover all six binary formats, unknown/null fields, custom voice objects, snapshots, raw errors, headers, lengths, framing/encoding, audio-event association, native usage, partial/complete results, cancellation and early/error disposal. Byte fixtures are not valid media files and do not establish speech quality, model acceptance or container validity. Aggregation retains full raw events and audio in memory; use streaming and discard processed chunks for large outputs. No real key, network, Redis or GitHub Actions is used by these tests.
+378 xUnit v3 offline tests comprise 103 speech binary/request cases, 70 speech SSE cases, 99 nonstream file-operation cases and 106 transcription SSE cases. Speech tests use independent complete native/convenience/SSE request goldens, full SSE events and terminal envelope snapshots, opaque bytes (including zero/invalid UTF-8 values) and substitute HTTP handlers/fragmented streams. They cover all six binary formats, unknown/null fields, custom voice objects, snapshots, raw errors, headers, lengths, framing/encoding, audio-event association, native usage, partial/complete results, cancellation and early/error disposal. Byte fixtures are not valid media files and do not establish speech quality, model acceptance or container validity. Aggregation retains full raw events and audio in memory; use streaming and discard processed chunks for large outputs. No real key, network, Redis or GitHub Actions is used by these tests.
 
 ## File transcription and translation
 
@@ -106,6 +106,31 @@ Uploads are read once from the caller's current position, including nonseekable 
 
 The adapter reads the complete nonstream response and returns only after stream/response/client disposal succeeds. Known JSON formats require an unambiguous UTF-8 object with string text; native error envelopes, incomplete JSON, duplicate success members, format/media contradictions, transport faults and length mismatches fail explicitly. Segments/words/speakers/logprobs/languages/usage and future fields are retained byte-for-byte, without semantic normalization, range repair, counter arithmetic or recognition/language-quality claims. Native text/subtitles are not decoded/re-encoded; actual content type/charset is retained. Empty text and JSON BOM bytes remain unchanged. HTTP and native business errors expose actual status, content type and full raw Body through capability-owned AudioFileUpstreamException, including binary/unknown-encoding error bodies.
 
-Only synchronous file results are implemented at this checkpoint. The adapter does not implement IStreamingAudioTranscriptionAdapter; stream=true is rejected before HTTP, while a supplied false part is retained. Unexpected SSE/non-result media on a successful response fail before reading. JSON/text output is buffered in memory without a configured response-size cap. No headers/result views beyond the declared raw-body/content-type/target contract or semantic timestamp/speaker validation are claimed.
+The ordinary file-result methods require native stream=false or omission; they never turn SSE into a reconstructed file result. Unexpected SSE/non-result media on those methods fail before reading. JSON/text output is buffered in memory without a configured response-size cap. No headers/result views beyond the declared raw-body/content-type/target contract or semantic validation of complete-file timestamps/speakers are claimed. Use the separate transcription streaming operation described below for native events.
 
 File tests compare five independently authored complete multipart goldens against actual serialized bytes (normalizing only the random boundary), plus complete JSON/diarization/subtitle bodies. They cover native settings and unknown fields, default omission, Unicode filenames/current position, direct snapshots, all declared format families, raw errors, upload/download/read/disposal/cancellation failures, no replay/failover and borrowed ownership. They do not contact OpenAI or certify a model/account, audio container or transcription/translation accuracy.
+
+## Native file transcription SSE
+
+`OpenAiAudioFileAdapter` implements `IStreamingAudioTranscriptionAdapter`. Call `.Audio.Transcriptions.StreamAsync(request, cancellationToken)` or the adapter's explicit StreamAsync method. It adds only the native `stream=true` part when omitted, preserves a supplied true part in place, and rejects a supplied false or duplicate/invalid stream controls before HTTP. It uses the same fixed transcription target, one-shot upload and borrowed ownership rules. Translation remains a separate nonstream operation. No model-name heuristic is used: if a model ignores streaming and returns a normal JSON result, the operation fails instead of changing models or manufacturing events.
+
+```csharp
+await using var streamInput = File.OpenRead(audioPath); // A fresh caller-owned upload for this call.
+await foreach (var item in files.Audio.Transcriptions.StreamAsync(new AudioFileRequest
+{
+    Model = "recording", File = new() { Content = streamInput, FileName = "recording.wav", ContentType = "audio/wav" }
+}, cancellationToken))
+{
+    ProcessNativeEvent(item); // Data retains native delta/segment/done and unknown events.
+}
+```
+
+The [official transcription event reference](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/streaming-events) defines transcript.text.delta, transcript.text.segment and transcript.text.done. Every AudioTranscriptionEvent retains original JSON/Data.GetRawText, separate public/upstream/provider identity and original SSE name/id/retry. Optional languages, logprobs, token bytes, usage, explicit nulls, future usage variants and unknown events/fields are preserved. Native final text/segment text are not rewritten from deltas; totals are not recalculated. No event is promoted to completion based on its SSE name, HTTP EOF or a generic [DONE] marker.
+
+Delta segment_id references are tracked independently of SSE id. Completed segment ids must be unique, may arrive without earlier deltas, and may overlap in time with other segments. Interleaved pending ids are accepted. Reopened ids, delta references after segment completion, unresolved references at global done and invalid/nonfinite times fail. Known time/range and byte-integer comparisons use original decimal lexemes, avoiding floating-point rounding of adjacent values; original numbers remain unchanged. Known numeric fields must be finite in binary64 validation; no numeric view or re-encoding is returned. Optional native containers/known types are checked, while unknown fields and usage variants are not coerced into an invented schema.
+
+MaxTrackedTranscriptionSegments defaults to 100,000 and must be positive. It bounds unique observed segment identities (pending and completed) per stream; the SDK fails at the limit rather than evicting ids, truncating events or retrying. It does not accumulate transcript text or persist cross-call state. SSE framing uses strict UTF-8 with an initial UTF-8 BOM allowed, original HTTP byte-length validation and no configured per-event byte cap. One valid native done is held until the source and all transport resources end/dispose normally; duplicate/late data, error events even after done, truncated tails, cancellation or disposal errors prevent successful completion. Partial events already delivered cannot be recalled.
+
+SSE errors throw AudioFileUpstreamException with actual HTTP status, content type and original data payload bytes. Its optional TranscriptionEvent retains the raw error JSON, target and SSE identity (including name/id/retry); ordinary HTTP/nonstream errors leave that property null rather than fabricating an event. HTTP error responses retain their complete body. Unknown events before completion pass through as nonterminal native events. Native errors are not converted into ordinary text, speaker events or success.
+
+106 additional offline cases include two complete MIME request goldens, full native event/terminal snapshots, interleaved id references, native final-text differences, optional metadata and exact numeric boundaries. Failure cases cover malformed/duplicate/UTF-8 JSON, bad shapes/usage/times/bytes, id reopening/orphans/limits, wrong transport, late errors, incomplete/duplicate/missing done, read/disposal/length/cancellation and early consumer stop. Live account/model acceptance, diarization quality and real-media transcription remain unverified.
