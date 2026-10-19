@@ -8,6 +8,8 @@ namespace Asgard.Loki.LLM.Ollama.Internal;
 internal static class OllamaJson
 {
     private static readonly UTF8Encoding StrictUtf8 = new(false, true);
+    /// <summary>纯 JSON 错误判定由同供应商的原生操作共用，不共享业务状态。</summary>
+    internal static bool IsError(JsonElement data) => data.ValueKind == JsonValueKind.Object && data.TryGetProperty("error", out var error) && error.ValueKind != JsonValueKind.Null;
     /// <summary>读取完整字节前逐段验证上限；响应拥有流，读取器不单独接管所有权。</summary>
     internal static async Task<byte[]> ReadAsync(Stream source, int maximum, CancellationToken token, long? expectedLength = null)
     {

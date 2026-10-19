@@ -91,11 +91,11 @@ The client disposes factory-created modules that implement disposal, once each. 
 
 ## 3. LLM contracts
 
-The public surface is `loki.LLM.ChatCompletions`, `loki.LLM.Responses`, `loki.LLM.ClaudeMessages`, `loki.LLM.Gemini` and `loki.LLM.OllamaChat`, each with complete and streamed calls. Each owns native request/result/event contracts; they are distinct protocols, not aliases for one text-only message format. Claude has explicit `MaxTokens`. Gemini keeps its native `contents`, `systemInstruction`, `generationConfig` and tool structure; its actual model is encoded in the endpoint path, and method-selected streaming uses `:streamGenerateContent?alt=sse` rather than a body field. Ollama Chat has its own protocol flag (16), native messages/extensions and JSON/NDJSON transport; the four-protocol converter does not automatically support it. Existing default target protocol flags remain unchanged.
+The public surface is `loki.LLM.ChatCompletions`, `loki.LLM.Responses`, `loki.LLM.ClaudeMessages`, `loki.LLM.Gemini`, `loki.LLM.OllamaChat` and `loki.LLM.OllamaGenerate`, each with complete and streamed calls. Each owns native request/result/event contracts; they are distinct protocols, not aliases for one text-only message format. Claude has explicit `MaxTokens`. Gemini keeps its native `contents`, `systemInstruction`, `generationConfig` and tool structure; its actual model is encoded in the endpoint path, and method-selected streaming uses `:streamGenerateContent?alt=sse` rather than a body field. Ollama Chat has its own protocol flag (16), native messages/extensions and JSON/NDJSON transport; the four-protocol converter does not automatically support it. Existing default target protocol flags remain unchanged.
 
 Requests have strongly named core fields and extension JSON parameters. Results own an independent JSON snapshot. Preserve unknown fields/events, input/output items, tools, reasoning, usage, cache controls, errors and original IDs. Only actual model mapping and the method-selected stream switch are changed. Extension parameters cannot override explicitly declared core fields.
 
-The currently implemented LLM providers are Volcengine Ark, OpenAI, Anthropic Claude Messages and Google Gemini Developer API over HTTP/JSON and SSE, plus native Ollama Chat over JSON/NDJSON. Provider packages reference only LLM and standard HTTP dependencies. OpenAI additionally implements explicit native Responses compaction and WebSocket through optional LLM contracts; Gemini Live and Bedrock/Vertex AI authentication remain unimplemented. There is no automatic protocol conversion in native providers. Claude streams require `message_stop` or an explicit error; Gemini streams require a terminal reason for every observed candidate or an explicit prompt block/error. Native unknown events, signed reasoning and media remain unchanged.
+The currently implemented LLM providers are Volcengine Ark, OpenAI, Anthropic Claude Messages and Google Gemini Developer API over HTTP/JSON and SSE, plus native Ollama Chat/generate over JSON/NDJSON. Provider packages reference only LLM and standard HTTP dependencies. OpenAI additionally implements explicit native Responses compaction and WebSocket through optional LLM contracts; Gemini Live and Bedrock/Vertex AI authentication remain unimplemented. There is no automatic protocol conversion in native providers. Claude streams require `message_stop` or an explicit error; Gemini streams require a terminal reason for every observed candidate or an explicit prompt block/error. Native unknown events, signed reasoning and media remain unchanged.
 
 ```mermaid
 classDiagram
@@ -105,6 +105,7 @@ class LlmClient {
   +ClaudeMessages : IClaudeMessagesClient
   +Gemini : IGeminiClient
   +OllamaChat : IOllamaChatClient
+  +OllamaGenerate : IOllamaGenerateClient
 }
 class LlmRoute {
   +Model
@@ -157,6 +158,7 @@ IResponsesCompactionAdapter --> ResponseCompaction
 LlmClient --> IClaudeMessagesAdapter
 LlmClient --> IGeminiAdapter
 LlmClient --> IOllamaChatAdapter
+LlmClient --> IOllamaGenerateAdapter
 LlmClient --> ILlmSessionStore
 IChatCompletionsAdapter --|> ILlmProvider
 IResponsesAdapter --|> ILlmProvider
@@ -164,6 +166,7 @@ IResponsesCompactionAdapter --|> ILlmProvider
 IClaudeMessagesAdapter --|> ILlmProvider
 IGeminiAdapter --|> ILlmProvider
 IOllamaChatAdapter --|> ILlmProvider
+IOllamaGenerateAdapter --|> ILlmProvider
 ```
 
 ### Native Ollama Chat
@@ -181,9 +184,19 @@ OllamaLlmProvider --> OllamaLlmOptions : fingerprinted limits
 OllamaLlmProvider --> OllamaChatResponse : native JSON
 OllamaLlmProvider --> OllamaChatEvent : native NDJSON
 OllamaLlmProvider --> OllamaChatState : per invocation
+IOllamaGenerateClient <|.. OllamaGenerateClient
+OllamaGenerateClient --> LlmInvocation : independent protocol binding
+OllamaGenerateClient --> IOllamaGenerateAdapter
+IOllamaGenerateAdapter --|> ILlmProvider
+IOllamaGenerateAdapter <|.. OllamaLlmProvider
+OllamaLlmProvider --> OllamaGenerateState : independent per invocation
+OllamaLlmProvider --> OllamaGenerateResponse : native response/context
+OllamaLlmProvider --> OllamaGenerateEvent : native NDJSON
 ```
 
-`LLM.Ollama` depends only on LLM and standard HTTP. It implements explicit `POST chat` relative to the caller's `/api/` root, preserving proxy prefixes. `OllamaChatRequest` owns `Model`, `Messages` and extension parameters; `think`, `format`, `options`, `keep_alive`, images, tool IDs/object arguments/history and future fields remain native. Only method stream mode and configured actual model change. No model-name branch, model registry/download, tool executor, server or shared Embedding workflow is added. Native `/api/generate` and cross-protocol Ollama conversion remain pending.
+The native generate client uses protocol flag 32 and `OllamaGenerateRequest`, whose routed model is named and whose remaining fields use native extension JSON. This retains optional prompt omission versus empty/null and original suffix/system/template/context/images/think/format/options without a Chat wrapper. `IOllamaGenerateAdapter.GenerateAsync` and its explicit streaming implementation append `generate` to the configured API root. Generate state validates native response/model/done independently of Chat; only pure UTF-8/JSON/NDJSON/error utilities and request construction are shared within the provider. Returned context stays application-owned and is never automatically cached or replayed. Both operations use complete Session affinity, explicit credentials and delayed terminal publication. Provider implementation identity includes `generate-v1`, invalidating bindings from the preceding Chat-only checkpoint; no new package/dependency or automatic protocol upgrade is introduced.
+
+`LLM.Ollama` depends only on LLM and standard HTTP. It implements explicit `POST chat` relative to the caller's `/api/` root, preserving proxy prefixes. `OllamaChatRequest` owns `Model`, `Messages` and extension parameters; `think`, `format`, `options`, `keep_alive`, images, tool IDs/object arguments/history and future fields remain native. Only method stream mode and configured actual model change. No model-name branch, model registry/download, tool executor, server or shared Embedding workflow is added. Native `/api/generate` is delivered through its own client and state below; cross-protocol Ollama conversion remains pending.
 
 Anonymous authentication requires a stable explicit identity, per-provider support and no inherited default Authorization; selected API Key calls use their own Bearer value. Named clients and resource limits participate in implementation fingerprints. Session changes fail without reselection. Request-owned messages, responses and clients are disposed; factories/caches/coordinators remain borrowed.
 
@@ -425,7 +438,7 @@ Codec->>Native: Chat options OR genuine tool and selector
 Note over Codec,Native: No HTTP, model selection or tool execution
 ```
 
-`HostedSearchOutput` identifies unrepresented execution/results/citations and generateContent grounding metadata at their native content positions, including history and streaming frames. The guard never scans arbitrary JSON keys inside function arguments or Schema. Known Claude search result/reference types and encrypted content/indices are hard native-only replay boundaries. Native copies bypass conversion and retain their JSON. Complete Web grounding ↔ Chat/Responses is mapped only with declared endpoint units as described below; the explicit single-text-part Gemini → Responses stream profile is described below; broader result/stream mappings remain pending; request wiring with a substitute text reply is not live search or full conversation verification. The current algorithm identity is `conversion-v23`, with no native supplier identity changes.
+`HostedSearchOutput` identifies unrepresented execution/results/citations and generateContent grounding metadata at their native content positions, including history and streaming frames. The guard never scans arbitrary JSON keys inside function arguments or Schema. Known Claude search result/reference types and encrypted content/indices are hard native-only replay boundaries. Native copies bypass conversion and retain their JSON. Complete Web grounding ↔ Chat/Responses is mapped only with declared endpoint units as described below; the explicit single-text-part Gemini → Responses stream profile is described below; broader result/stream mappings remain pending; request wiring with a substitute text reply is not live search or full conversation verification. The current conversion algorithm identity remains `conversion-v23`; native providers version their own binding identities independently.
 
 Private `ResponseCitations` maps complete Chat nested URL annotations and Responses flat URL annotations through private text blocks only. It preserves URL/title/order and unchanged-text indices. With default unknown units, rebasing still requires an ASCII prefix and range validation uses only a UTF-8 byte-length plausibility bound. Public `LlmCitationIndexUnit` and `LlmConversionOptions.OpenAiCitationIndexUnit` let callers declare verified endpoint behavior; they do not change endpoint behavior or infer model support. Private `CitationOffsets` then validates exact Unicode scalar boundaries and computes scalar/UTF-16/UTF-8 offsets without normalization. This scalar option is snapshotted and participates in `conversion-v23` binding. No public universal citation model, resolver or dependency is introduced.
 
@@ -542,7 +555,7 @@ Providers without the optional support contract remain API-Key-only. All configu
 
 API Key fingerprint bytes are unchanged. Anonymous fingerprints use a distinct prefix domain and include the complete serialized target plus provider identity, preserving server/model/logical credential identity/protocol/version binding. Switching authentication kind or target semantics invalidates existing Sessions rather than rebinding them. Twenty-five core, nine converting and six direct OpenAI offline cases verify this behavior, including real legacy cache entries and coordinated concurrent first binding.
 
-This credential prerequisite is now used by the separate native Ollama Chat client/provider described above; cloud refresh/signing remains pending. Native adapter header/default handling stays provider-owned, with 97 additional Ollama transport/public-SDK tests. Entry/abstractions, other capabilities and borrowed HTTP factory/cache ownership remain unchanged; existing four-protocol conversion still has its own declared matrix.
+This credential prerequisite is now used by the separate native Ollama Chat client/provider described above; cloud refresh/signing remains pending. Native adapter header/default handling stays provider-owned, with 159 additional Ollama Chat/generate transport/public-SDK tests. Entry/abstractions, other capabilities and borrowed HTTP factory/cache ownership remain unchanged; existing four-protocol conversion still has its own declared matrix.
 
 ## 4. LLM Session and cache
 

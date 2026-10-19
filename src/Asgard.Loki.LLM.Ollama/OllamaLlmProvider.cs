@@ -7,8 +7,8 @@ using Asgard.Loki.LLM.Ollama.Internal;
 
 namespace Asgard.Loki.LLM.Ollama;
 
-/// <summary>实现 Ollama 原生 Chat JSON/NDJSON，不启动服务器、管理模型、执行工具或转换 OpenAI 外壳。</summary>
-public sealed class OllamaLlmProvider : IOllamaChatAdapter, ILlmCredentialSupport
+/// <summary>实现 Ollama 原生 Chat/generate JSON/NDJSON，不启动服务器、管理模型、执行工具或转换 OpenAI 外壳。</summary>
+public sealed partial class OllamaLlmProvider : IOllamaChatAdapter, IOllamaGenerateAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _factory;
     private readonly string _clientName;
@@ -25,7 +25,7 @@ public sealed class OllamaLlmProvider : IOllamaChatAdapter, ILlmCredentialSuppor
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:ollama-chat-v1:{_clientName}:{JsonSerializer.Serialize(_options)}";
+    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:ollama-chat-v1:generate-v1:{_clientName}:{JsonSerializer.Serialize(_options)}";
     /// <inheritdoc />
     public bool SupportsCredential(LlmCredentialKind kind) => kind is LlmCredentialKind.ApiKey or LlmCredentialKind.Anonymous;
 
@@ -44,7 +44,7 @@ public sealed class OllamaLlmProvider : IOllamaChatAdapter, ILlmCredentialSuppor
             var source = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             var bytes = await OllamaJson.ReadAsync(source, _options.MaximumResponseBytes, cancellationToken, response.Content.Headers.ContentLength).ConfigureAwait(false);
             var data = OllamaJson.Parse(bytes);
-            if (OllamaChatState.IsError(data)) throw new LlmUpstreamException("Ollama 返回原生错误。", response.StatusCode, OllamaJson.Text(bytes));
+            if (OllamaJson.IsError(data)) throw new LlmUpstreamException("Ollama 返回原生错误。", response.StatusCode, OllamaJson.Text(bytes));
             var state = new OllamaChatState(); state.Push(data); state.Complete(); result = new(data, context.Metadata);
         }
         cancellationToken.ThrowIfCancellationRequested(); return result;
@@ -86,7 +86,7 @@ public sealed class OllamaLlmProvider : IOllamaChatAdapter, ILlmCredentialSuppor
     }
 
     /// <summary>固定实际模型和方法流标志，其余原生字段深拷贝；不解析或重写消息/工具/媒体。</summary>
-    private HttpRequestMessage Request(JsonObject payload, LlmAdapterContext context, bool stream)
+    private HttpRequestMessage Request(JsonObject payload, LlmAdapterContext context, bool stream, string operation = "chat")
     {
         ArgumentNullException.ThrowIfNull(payload); ArgumentNullException.ThrowIfNull(context); ArgumentNullException.ThrowIfNull(context.Credential);
         var target = context.Target; ArgumentException.ThrowIfNullOrWhiteSpace(target.UpstreamModel); ArgumentNullException.ThrowIfNull(target.BaseAddress);
@@ -94,10 +94,10 @@ public sealed class OllamaLlmProvider : IOllamaChatAdapter, ILlmCredentialSuppor
             || target.BaseAddress.UserInfo.Length != 0 || target.BaseAddress.Query.Length != 0 || target.BaseAddress.Fragment.Length != 0)
             throw new ArgumentException("Ollama 根地址必须为无凭据、查询或片段的 HTTP(S) 绝对地址。");
         if (!SupportsCredential(context.Credential.Kind)) throw new ArgumentException("Ollama 目标认证方式未受支持。");
-        if (payload["messages"] is not JsonArray messages || messages.Any(item => item is not JsonObject)) throw new ArgumentException("Ollama messages 必须为原生对象数组。");
+        if (operation == "chat" && (payload["messages"] is not JsonArray messages || messages.Any(item => item is not JsonObject))) throw new ArgumentException("Ollama messages 必须为原生对象数组。");
         OllamaJson.ValidateInput(payload); _ = new UTF8Encoding(false, true).GetByteCount(target.UpstreamModel);
         var body = payload.DeepClone().AsObject(); body["model"] = target.UpstreamModel; body["stream"] = stream;
-        var request = new HttpRequestMessage(HttpMethod.Post, new Uri(new Uri(target.BaseAddress.AbsoluteUri.TrimEnd('/') + "/"), "chat"));
+        var request = new HttpRequestMessage(HttpMethod.Post, new Uri(new Uri(target.BaseAddress.AbsoluteUri.TrimEnd('/') + "/"), operation));
         if (context.Credential.Kind == LlmCredentialKind.ApiKey) request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.Credential.ApiKey);
         request.Headers.Accept.Add(new(stream ? "application/x-ndjson" : "application/json")); request.Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"); return request;
     }

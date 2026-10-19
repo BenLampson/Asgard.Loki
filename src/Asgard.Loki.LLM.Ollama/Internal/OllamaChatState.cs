@@ -12,7 +12,7 @@ internal sealed class OllamaChatState
     {
         if (data.ValueKind != JsonValueKind.Object) throw new InvalidDataException("Ollama 原生记录必须为 JSON 对象。");
         if (_terminal) throw new InvalidDataException("Ollama 原生终态之后仍有记录。");
-        if (IsError(data)) return _terminal = true;
+        if (OllamaJson.IsError(data)) return _terminal = true;
         var hasDone = data.TryGetProperty("done", out var done);
         if (!hasDone)
         {
@@ -33,6 +33,4 @@ internal sealed class OllamaChatState
     }
     /// <summary>没有明确原生终态时不制造 done 或 stop。</summary>
     internal void Complete() { if (!_terminal) throw new InvalidDataException("Ollama 流在原生终态之前断开。"); }
-    /// <summary>错误原文保持独立，不能被 done 或其他貌似正常字段遮蔽。</summary>
-    internal static bool IsError(JsonElement data) => data.ValueKind == JsonValueKind.Object && data.TryGetProperty("error", out var error) && error.ValueKind != JsonValueKind.Null;
 }

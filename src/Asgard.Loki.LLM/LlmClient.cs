@@ -14,6 +14,7 @@ public sealed class LlmClient
         ClaudeMessages = new ClaudeMessagesClient(invocation);
         Gemini = new GeminiClient(invocation);
         OllamaChat = new OllamaChatClient(invocation);
+        OllamaGenerate = new OllamaGenerateClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
@@ -26,4 +27,6 @@ public sealed class LlmClient
     public IGeminiClient Gemini { get; }
     /// <summary>访问 Ollama 原生 api/chat JSON 与 NDJSON 能力。</summary>
     public IOllamaChatClient OllamaChat { get; }
+    /// <summary>访问 Ollama 原生 api/generate，不自动管理 prompt/context。</summary>
+    public IOllamaGenerateClient OllamaGenerate { get; }
 }
