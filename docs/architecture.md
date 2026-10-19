@@ -18,6 +18,7 @@ class Embedding["Asgard.Loki.Embedding"]
 class Rerank["Asgard.Loki.Rerank"]
 class OpenAIEmbedding["Asgard.Loki.Embedding.OpenAI"]
 class GoogleEmbedding["Asgard.Loki.Embedding.Google"]
+class CohereRerank["Asgard.Loki.Rerank.Cohere"]
 class Video["Asgard.Loki.Video"]
 class Ark["Asgard.Loki.LLM.Volcengine"]
 class OpenAILLM["Asgard.Loki.LLM.OpenAI"]
@@ -34,6 +35,7 @@ Embedding ..> Abstractions
 Rerank ..> Abstractions
 OpenAIEmbedding ..> Embedding
 GoogleEmbedding ..> Embedding
+CohereRerank ..> Rerank
 Video ..> Abstractions
 Ark ..> LLM
 OpenAILLM ..> LLM
@@ -563,7 +565,27 @@ Registration snapshots route/target collections. Each client gets separate per-r
 
 The core reserves public routing `Model` and retains all native query/documents/options in `Parameters`. It neither rewrites structured or multimodal documents nor imposes one supplier's top-n/score/index representation on another. Complete native result Data is an independent snapshot; metadata distinguishes public/upstream model and provider ID. Native supplier adapters must validate successful/error responses and original document association, and provide their own convenience views. Core does not compute scores, sort results, fabricate indices, normalize missing values or calculate usage. Raw upstream usage/metadata preservation is not billing logic.
 
-The core-contract checkpoint is verified with custom in-memory adapters only; bundled Cohere/Jina HTTP implementations remain separate work. No ranking quality/live provider claim is made. Rerank is a single explicitly requested model operation, not an embedding database, retriever, RAG coordinator, application search endpoint, background service or hosted batch system.
+The core-contract checkpoint is verified with custom in-memory adapters. `Asgard.Loki.Rerank.Cohere` adds the first bundled native supplier; Jina remains separate work. No ranking quality/live provider claim is made. Rerank is a single explicitly requested model operation, not an embedding database, retriever, RAG coordinator, application search endpoint, background service or hosted batch system.
+
+### Native Cohere reranking
+
+`CohereRerankAdapter` implements only `IRerankAdapter` and references only Rerank plus standard HTTP dependencies. Its immutable target options bind service root, actual model, API Key, explicit `CohereRerankApiVersion.V1` or `V2`, optional client header and named borrowed HTTP factory. A fixed version selects `v1/rerank` or `v2/rerank`; the adapter never infers a version from input shape or switches it after a failure.
+
+```mermaid
+classDiagram
+CohereRerankAdapter ..|> IRerankAdapter
+CohereRerankAdapter --> CohereRerankOptions
+CohereRerankOptions --> CohereRerankApiVersion
+CohereRerankAdapter ..> RerankResult
+CohereRerankExtensions ..> RerankResult
+CohereRerankExtensions ..> CohereRerankItem
+```
+
+v1 string/document inputs, rank-fields order and returned-document intent stay native. v2 accepts string inputs, including caller-authored YAML, and keeps native token/priority settings. Unknown fields, omitted/false/null values and exact JSON numbers are not filtered or migrated. Only the public root model is replaced. Snapshots exist before HTTP awaits, including direct adapter calls. The adapter never changes top-n, injects version defaults, converts objects to text/YAML, tokenizes, truncates or splits requests.
+
+Native JSON results retain complete order and metadata. The adapter checks the requested result count, unique original input indices and finite unit-interval scores without sorting or normalizing. v1 returned document text and every original object field must match the indexed input exactly; explicitly requested documents must be present. Provider-owned `CohereRankings`/`CohereRerankItem` expose raw data and convenience fields without adding a shared ranking schema to the core. Views constructed without a request cannot certify request association. `double` views do not replace original JSON number precision.
+
+HTTP and successful-envelope errors propagate with native status/body. Non-JSON, duplicates, truncated JSON, invalid associations or successful SSE fail explicitly; SSE is rejected before body reading. Each call owns its HTTP request/client/response, while factories and adapters remain borrowed. Cancellation before dispatch, during send/body reads and after body aggregation cannot become a successful result. No retry, fallback, score-quality claim, billing operation or live Cohere verification is introduced. See the [supplier support matrix](../src/Asgard.Loki.Rerank.Cohere/README.md).
 
 ## 7. HTTP and errors
 

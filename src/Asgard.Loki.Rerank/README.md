@@ -12,7 +12,7 @@ Independent reranking module for the Asgard.Loki .NET SDK. This capability refer
 | Requests | Public `Model` plus unchanged native JSON `Parameters`; root `model` is reserved |
 | Results | Independent complete native `Data` plus public/upstream/provider metadata |
 | Failure/cancellation | Propagated from the chosen adapter; no retry or target failover |
-| Bundled suppliers | Not included in this core-contract checkpoint; Cohere and Jina follow separately |
+| Bundled suppliers | [Native Cohere v1/v2](../Asgard.Loki.Rerank.Cohere/README.md) is available as an independent supplier package; Jina remains planned |
 
 ```csharp
 using Asgard.Loki;
@@ -44,4 +44,4 @@ Core never formats structured documents as text/YAML, truncates content, changes
 
 Configuration collections and each request dictionary/JSON value are copied. Do not mutate a dictionary while its snapshot is being taken; later changes cannot alter the dispatched copy. A pre-cancelled call does not select a target. Modules do not own borrowed adapters/factories or any other capability's resources. No conversational Session, cache, vector database, retrieval engine, RAG pipeline, background service, HTTP listener or billing logic is introduced.
 
-Thirty-four offline tests use custom in-memory adapters through the public SDK. They cover configuration/native JSON snapshots, exact/per-route/per-client/concurrent selection, cancellation, error propagation, model override rejection and borrowed ownership. They use no live Key, HTTP server, Redis, real ranking model or relevance-quality evaluation. Native supplier protocols and live acceptance are separate checkpoints.
+Thirty-four offline core tests use custom in-memory adapters through the public SDK. They cover configuration/native JSON snapshots, exact/per-route/per-client/concurrent selection, cancellation, error propagation, model override rejection and borrowed ownership. They use no live Key, HTTP server, Redis, real ranking model or relevance-quality evaluation. Cohere has its own independent supplier protocol tests; live acceptance remains separate.
