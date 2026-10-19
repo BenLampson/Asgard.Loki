@@ -29,7 +29,7 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
         if (!_started) { Document.Messages.Add(_message); _started = true; }
         var changes = new List<StreamChange>();
         Document.Diagnostics.AddRange(HostedSearchOutput.Inspect(data, protocol, mapUrlCitations: mapResponseCitations, mapGeminiGrounding: mapGeminiGrounding));
-        if (data["error"] is not null || data["type"]?.GetValue<string>() is "error" or "response.failed")
+        if (IsFailure(data))
             throw new LlmConversionException([new("upstream_stream_error", "$event.error", "上游错误事件不能转换为成功终态。")]);
         if (_terminal && !IsAllowedTail(data))
             throw new InvalidDataException("源流终态之后只允许独立用量或无内容 grounding 元数据，不能重复结束或追加内容。");
@@ -41,6 +41,16 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
             case LlmProtocol.Gemini: Gemini(data, changes); break;
         }
         return changes;
+    }
+
+    /// <summary>有类型的原生流按本协议事件判错，未知业务字段仍经过严格损耗诊断。</summary>
+    private bool IsFailure(JsonObject data)
+    {
+        if (protocol is not (LlmProtocol.ClaudeMessages or LlmProtocol.Responses))
+            return data["error"] is not null || data["type"]?.GetValue<string>() is "error" or "response.failed";
+        var type = data["type"]?.GetValue<string>();
+        return type == "error" || protocol == LlmProtocol.Responses && type == "response.failed"
+            || string.IsNullOrEmpty(type) && data["error"] is not null;
     }
 
     /// <summary>允许原生用量及 Gemini 无内容 grounding 尾帧，不允许隐藏新文本、候选或第二个结束标志。</summary>

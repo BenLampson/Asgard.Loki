@@ -1343,3 +1343,26 @@ New API is a structural reference for separating channels, model mapping and sup
 - [OpenAI image generation](https://developers.openai.com/api/docs/guides/image-generation)
 - [Ark quick start](https://docs.volcengine.com/docs/ark/quick-start?lang=en)
 - [Volcengine V3 HTTP TTS](https://www.volcengine.com/docs/6561/1598757?lang=zh)
+
+## Typed conversion source error discrimination
+
+The private `SourceStream` keeps typed native error discrimination separate from conversion field-loss policy. Claude Messages recognizes its `error` type; Responses additionally recognizes its `response.failed` type. Untyped root error guards remain defensive failures. Known non-error event extensions and unknown typed events pass through the existing loss classifier, so strict conversion rejects unsupported data while explicit loss consent can convert the known subset with cumulative diagnostics. Function arguments and business objects are not recursively scanned as transport errors. Native copies and native provider state remain separate.
+
+```mermaid
+sequenceDiagram
+    participant Native as Native adapter
+    participant Source as Conversion SourceStream
+    participant Policy as Loss policy
+    participant Target as Target stream
+    Native->>Source: Whole typed JSON event
+    alt Native protocol error type
+        Source-->>Native: Fail without converted success
+    else Known event or unknown extension
+        Source->>Policy: Known content and loss diagnostics
+        Policy->>Target: Accept only permitted representation
+    end
+    Native->>Source: Normal enumeration and disposal completed
+    Source->>Target: Validate source state and then complete
+```
+
+Metadata-only unknown events may emit no converted result. When a source event emits target deltas, their independently copied original JSON stays available; diagnostics accumulate without claiming every skipped frame is retained in final metadata. Original tool IDs, item association, final argument snapshots and required source terminals still validate under loss consent. Existing conversion-v25 binding identity/request/result semantics, native identities and package dependency directions are unchanged. The independent full fixtures and 56 regressions bring current totals to 6125 (1973 conversion), 28 packages. Nova/Converse explicit mappings and remaining roadmap families are still unfinished.

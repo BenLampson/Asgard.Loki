@@ -1,0 +1,27 @@
+{
+  "ClaudeMessages": [
+    {"type":"message_start","message":{"id":"typed-r","type":"message","role":"assistant","model":"model-a","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":3,"output_tokens":0}}},
+    {"type":"vendor.metrics","error":{"type":"overloaded_error","message":"business metadata"},"future":{"n":9007199254740993,"empty":null,"enabled":false}},
+    {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call-original","name":"lookup","input":{}}},
+    {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"error\":{\"type\":\"error\"},\"n\":"}},
+    {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"9007199254740993,\"ok\":false}"}},
+    {"type":"content_block_stop","index":0},
+    {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":2}},
+    {"type":"message_stop"}
+  ],
+  "Responses": [
+    {"type":"response.created","sequence_number":0,"response":{"id":"typed-r","object":"response","model":"model-a","status":"in_progress","output":[]}},
+    {"type":"vendor.metrics","sequence_number":1,"error":{"type":"overloaded_error","message":"business metadata"},"future":{"n":9007199254740993,"empty":null,"enabled":false}},
+    {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"fc-native","type":"function_call","call_id":"call-original","name":"lookup","arguments":"","status":"in_progress"}},
+    {"type":"response.function_call_arguments.delta","sequence_number":3,"output_index":0,"item_id":"fc-native","delta":"{\"error\":{\"type\":\"error\"},\"n\":"},
+    {"type":"response.function_call_arguments.delta","sequence_number":4,"output_index":0,"item_id":"fc-native","delta":"9007199254740993,\"ok\":false}"},
+    {"type":"response.function_call_arguments.done","sequence_number":5,"output_index":0,"item_id":"fc-native","arguments":"{\"error\":{\"type\":\"error\"},\"n\":9007199254740993,\"ok\":false}","name":"lookup"},
+    {"type":"response.output_item.done","sequence_number":6,"output_index":0,"item":{"id":"fc-native","type":"function_call","call_id":"call-original","name":"lookup","arguments":"{\"error\":{\"type\":\"error\"},\"n\":9007199254740993,\"ok\":false}","status":"completed"}},
+    {"type":"response.completed","sequence_number":7,"response":{"id":"typed-r","object":"response","model":"model-a","status":"completed","output":[{"id":"fc-native","type":"function_call","call_id":"call-original","name":"lookup","arguments":"{\"error\":{\"type\":\"error\"},\"n\":9007199254740993,\"ok\":false}","status":"completed"}],"error":null,"usage":{"input_tokens":3,"output_tokens":2,"total_tokens":5}}}
+  ],
+  "ChatGolden": [
+    {"id":"typed-r","object":"chat.completion.chunk","created":0,"model":"model-a","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]},
+    {"id":"typed-r","object":"chat.completion.chunk","created":0,"model":"model-a","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call-original","type":"function","function":{"name":"lookup","arguments":"{\"error\":{\"type\":\"error\"},\"n\":9007199254740993,\"ok\":false}"}}]},"finish_reason":null}]},
+    {"id":"typed-r","object":"chat.completion.chunk","created":0,"model":"model-a","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":3,"completion_tokens":2,"total_tokens":5}}
+  ]
+}
