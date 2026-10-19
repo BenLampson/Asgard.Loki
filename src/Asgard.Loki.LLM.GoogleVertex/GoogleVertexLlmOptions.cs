@@ -5,6 +5,10 @@ public sealed record GoogleVertexLlmOptions
 {
     /// <summary>显式发送的 x-goog-user-project；不从主体或目标资源自动推断。</summary>
     public string? QuotaProjectId { get; init; }
-    /// <summary>完整 JSON 或 HTTP 错误的原始字节上限；超限失败，不截断。</summary>
+    /// <summary>完整 JSON、HTTP 错误或整次 SSE 的原始字节上限；超限失败，不截断。</summary>
     public int MaximumBodyBytes { get; init; } = 32 * 1024 * 1024;
+    /// <summary>首次候选终态/提示拦截之后的原生事件暂存上限，包含用量和扩展尾帧。</summary>
+    public int MaximumBufferedTerminalEvents { get; init; } = 128;
+    /// <summary>一次原生流跟踪的候选索引数上限；不重编号或补造候选。</summary>
+    public int MaximumTrackedCandidates { get; init; } = 128;
 }

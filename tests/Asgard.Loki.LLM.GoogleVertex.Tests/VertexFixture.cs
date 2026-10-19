@@ -18,6 +18,10 @@ internal static class VertexFixture
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Asgard.Loki.LLM.GoogleVertex.Tests.Fixtures." + name + ".json")!; using var reader = new StreamReader(stream); return reader.ReadToEnd();
     }
     internal static JsonObject Request() => JsonNode.Parse(Text("request"))!.AsObject();
+    internal static string Sse()
+    {
+        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Asgard.Loki.LLM.GoogleVertex.Tests.Fixtures.native.sse")!; using var reader = new StreamReader(stream); return reader.ReadToEnd();
+    }
     internal static HttpResponseMessage Reply() => new(HttpStatusCode.OK) { Content = new StringContent(Text("response"), Encoding.UTF8, "application/json") };
     internal static LlmTarget Target(string id = "first", string resource = Resource) => new() { Id = id, ProviderId = "google-vertex", BaseAddress = new("https://" + id + ".invalid/proxy/v1/"), UpstreamModel = resource, CredentialId = "identity", Protocols = LlmProtocol.Gemini };
     internal static LlmAdapterContext Context() => new(Target(), LlmCredential.External("identity", "principal-a"), "public", "vertex-session");

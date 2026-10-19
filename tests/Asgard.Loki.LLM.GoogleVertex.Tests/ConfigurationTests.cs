@@ -38,11 +38,20 @@ public sealed class ConfigurationTests
         await new GoogleVertexLlmProvider(new VertexHttpFactory(handler), new VertexTokenSource(clock), timeProvider: clock).GenerateAsync(VertexFixture.Request(), new(VertexFixture.Target(resource: resource), LlmCredential.External("identity", "principal-a"), "public", "session"), TestContext.Current.CancellationToken); Assert.Equal(1, handler.Calls);
     }
     /// <summary>无效资源字节策略和 quota project 头在构造时失败。</summary>
-    [Theory] [InlineData("zero")] [InlineData("negative")] [InlineData("")] [InlineData(" ")] [InlineData("project\r\ninjected")]
+    [Theory] [InlineData("zero")] [InlineData("negative")] [InlineData("terminal-zero")] [InlineData("candidates-zero")] [InlineData("")] [InlineData(" ")] [InlineData("project\r\ninjected")]
     public void InvalidOptions_AreRejected(string value)
     {
-        var options = value is "zero" or "negative" ? new GoogleVertexLlmOptions { MaximumBodyBytes = value == "zero" ? 0 : -1 } : new() { QuotaProjectId = value };
+        var options = value switch { "zero" => new GoogleVertexLlmOptions { MaximumBodyBytes = 0 }, "negative" => new() { MaximumBodyBytes = -1 }, "terminal-zero" => new() { MaximumBufferedTerminalEvents = 0 }, "candidates-zero" => new() { MaximumTrackedCandidates = 0 }, _ => new() { QuotaProjectId = value } };
         using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException()); Assert.ThrowsAny<ArgumentException>(() => new GoogleVertexLlmProvider(new VertexHttpFactory(handler), new VertexTokenSource(new()), options));
+    }
+    /// <summary>流式资源策略参与完整绑定，不能在同一 Session 上悄悄更换语义。</summary>
+    [Theory] [InlineData(false)] [InlineData(true)]
+    public async Task ChangedStreamLimits_InvalidateExistingSession(bool candidates)
+    {
+        var clock = new VertexClock(); var source = new VertexTokenSource(clock); var store = VertexFixture.Store(); using var handler = new StubHttpHandler((_, _) => Task.FromResult(VertexFixture.Reply())); var factory = new VertexHttpFactory(handler);
+        await using (var first = VertexFixture.Client(new(factory, source, timeProvider: clock), store)) await VertexFixture.Invoke(first);
+        var options = candidates ? new GoogleVertexLlmOptions { MaximumTrackedCandidates = 1 } : new() { MaximumBufferedTerminalEvents = 1 }; await using var next = VertexFixture.Client(new(factory, source, options, timeProvider: clock), store);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => VertexFixture.Invoke(next)); Assert.Equal(1, source.Calls); Assert.Equal(1, handler.Calls);
     }
     /// <summary>无效原生 Unicode 不被修复，输入和源身份均在认证前检查。</summary>
     [Theory] [InlineData(false)] [InlineData(true)]

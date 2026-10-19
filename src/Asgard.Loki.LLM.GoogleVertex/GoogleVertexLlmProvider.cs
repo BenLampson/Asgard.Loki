@@ -7,7 +7,7 @@ using Asgard.Loki.LLM.GoogleVertex.Internal;
 namespace Asgard.Loki.LLM.GoogleVertex;
 
 /// <summary>Vertex Gemini 原生资源路径和借用式认证，不引用 Developer API 或其他供应商包。</summary>
-public sealed class GoogleVertexLlmProvider : IGeminiAdapter, ILlmCredentialSupport
+public sealed partial class GoogleVertexLlmProvider : IGeminiAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _factory;
     private readonly IGoogleVertexLlmTokenSource _source;
@@ -22,6 +22,7 @@ public sealed class GoogleVertexLlmProvider : IGeminiAdapter, ILlmCredentialSupp
     {
         ArgumentNullException.ThrowIfNull(httpClientFactory); ArgumentNullException.ThrowIfNull(tokenSource); ArgumentException.ThrowIfNullOrWhiteSpace(id); ArgumentException.ThrowIfNullOrWhiteSpace(httpClientName);
         _options = options is null ? new() : options with { }; ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_options.MaximumBodyBytes, 0);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_options.MaximumBufferedTerminalEvents, 0); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_options.MaximumTrackedCandidates, 0);
         VertexJson.Text(id); VertexJson.Text(httpClientName); _sourceIdentity = tokenSource.BindingIdentity; ArgumentException.ThrowIfNullOrWhiteSpace(_sourceIdentity); VertexJson.Text(_sourceIdentity);
         if (_options.QuotaProjectId is { } quota) { ArgumentException.ThrowIfNullOrWhiteSpace(quota); VertexJson.Text(quota); if (quota.Any(char.IsWhiteSpace) || quota.Any(char.IsControl)) throw new ArgumentException("Vertex quota project 不能包含空白或控制字符。", nameof(options)); }
         _factory = httpClientFactory; _source = tokenSource; _clientName = httpClientName; _time = timeProvider ?? TimeProvider.System; Id = id;
@@ -29,7 +30,7 @@ public sealed class GoogleVertexLlmProvider : IGeminiAdapter, ILlmCredentialSupp
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => GetType().AssemblyQualifiedName + ":vertex-json-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity });
+    public string BindingIdentity => GetType().AssemblyQualifiedName + ":vertex-sse-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity });
     /// <inheritdoc />
     public bool SupportsCredential(LlmCredentialKind kind) => kind == LlmCredentialKind.External;
     /// <summary>完整结果通过原始 EOF、长度、释放和最终取消检查后返回。</summary>
@@ -50,9 +51,6 @@ public sealed class GoogleVertexLlmProvider : IGeminiAdapter, ILlmCredentialSupp
         }
         cancellationToken.ThrowIfCancellationRequested(); return new(result, context.Metadata);
     }
-    /// <summary>流式作为下一独立检查点，不用缓冲完整 JSON 伪装流式事件。</summary>
-    public IAsyncEnumerable<GeminiContentEvent> StreamAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
-        => throw new NotSupportedException("此检查点尚未实现 Vertex 原生流式调用。");
     /// <summary>认证源等待前快照，仅去掉 SDK 路由/传输字段，保留所有原生内容与关联。</summary>
     private async Task<HttpRequestMessage> PrepareAsync(JsonObject payload, LlmAdapterContext context, bool stream, CancellationToken token)
     {

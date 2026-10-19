@@ -96,13 +96,19 @@ Requests are snapshotted before awaiting token acquisition. Conflicting unselect
 
 ## Vertex standard Gemini provider
 
-`LLM.GoogleVertex` owns the standard Vertex complete Gemini JSON transport through the existing `IGeminiAdapter` and `ILlmCredentialSupport`. It references only LLM and standard HTTP, with no dependency on `LLM.Google`, Azure, Conversion, a cloud identity SDK or another capability. It adds no new core protocol or canonical message model. SSE and other Vertex dialects remain separate pending work.
+`LLM.GoogleVertex` owns the standard Vertex Gemini JSON/SSE transport through the existing `IGeminiAdapter` and `ILlmCredentialSupport`. It references only LLM and standard HTTP, with no dependency on `LLM.Google`, Azure, Conversion, a cloud identity SDK or another capability. It adds no new core protocol or canonical message model. Other Vertex dialects remain separate pending work.
 
 ```mermaid
 classDiagram
 IGeminiAdapter <|.. GoogleVertexLlmProvider
 ILlmCredentialSupport <|.. GoogleVertexLlmProvider
 GoogleVertexLlmProvider --> GoogleVertexLlmOptions : snapshots local policy and optional quota project
+class GoogleVertexLlmOptions {
+    +int MaximumBodyBytes
+    +int MaximumBufferedTerminalEvents
+    +int MaximumTrackedCandidates
+}
+GoogleVertexLlmProvider ..> VertexStreamState : provider-local candidate and block lifecycle
 GoogleVertexLlmProvider --> IGoogleVertexLlmTokenSource : borrows
 IGoogleVertexLlmTokenSource --> GoogleVertexLlmAccessToken : principal/token/expiry assertion
 GoogleVertexLlmProvider --> LlmAdapterContext : complete bound resource target
@@ -114,7 +120,7 @@ Only External credentials are supported. The application owns source login/scope
 
 Native request snapshots precede token acquisition; only routed model and method stream flags are removed from Gemini's body. Tools/IDs, thought signatures, media, schema/thinking settings, safety, cached-content references and unknown fields remain native. This does not promise that a selected Vertex model accepts Developer API-only fields; the SDK never silently strips IDs or weakens schemas. Complete JSON uses strict bounded UTF-8, duplicate/escape/length checks and waits for EOF, disposal and cancellation. Original native errors and prompt blocks remain distinguishable from answer success. No generation retry, rerouting, file fetching, tool execution or implicit history replay is introduced.
 
-80 independent offline cases cover complete wire/results, both resource forms, stable identity recovery, authentication and resource faults. Conversion remains a separate explicit decorator with existing strict loss rules; common text integration does not establish Vertex-specific tool/schema equivalence. Live cloud authentication/model verification, SSE, Claude rawPredict, Express API Key, MaaS Chat and Live/Interactions remain unimplemented or unverified. See the [provider matrix](../src/Asgard.Loki.LLM.GoogleVertex/README.md).
+150 independent offline cases cover complete wire/results and native SSE, both resource forms, stable identity recovery, authentication and resource faults. Provider-local SSE state retains original sparse/default candidate indices, signatures, tools and unknown data without aggregation. The first candidate finish or prompt block starts a bounded tail buffer through usage/metadata, EOF, length checks and disposal; incomplete/filtered/future reasons stay native, with no synthesized success. Missing/repeated/reopened candidates, changed response/model identity and late errors fail before held terminals. Precise ProtoJSON int32/enum representations avoid float rounding or normalization. Raw bytes are bounded before line parsing, and pending terminal/candidate counts have separate explicit limits. The new SSE binding identity requires fresh Sessions for the prior JSON-only checkpoint; core credential fingerprints and conversion-v24 are unchanged. Conversion remains a separate explicit decorator with existing strict loss rules; common text integration does not establish Vertex-specific tool/schema equivalence. Live cloud authentication/model verification, Claude rawPredict, Express API Key, MaaS Chat and Live/Interactions remain unimplemented or unverified. See the [provider matrix](../src/Asgard.Loki.LLM.GoogleVertex/README.md).
 
 ## 2. Registration and lifecycle
 
