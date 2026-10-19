@@ -17,7 +17,8 @@ Every off-diagonal direction has independent request, complete-response, streami
 | --- | --- |
 | Content | Ordered user/assistant text, system instructions, inline Base64 images |
 | Functions | JSON Schema or Gemini typed `parameters` input; explicit typed target parameters; named/auto/required/none choice, original call IDs, arguments and associated results |
-| Gemini results | Must already be JSON object text; the SDK does not wrap arbitrary text in an invented result schema |
+| Custom tools | Opt-in Responses free-text custom → Chat/Claude/Gemini functions, complete response restoration and history replay; custom streaming and namespaces remain unsupported |
+| Gemini results | Ordinary functions require JSON object text. Opt-in custom conversion explicitly wraps its arbitrary text result as `{"output": text}` |
 | Parameters | Temperature, top-p, explicit output limits; top-k and stop where the destination supports them |
 | Structured output | JSON Schema wrappers across all four protocols; JSON Schema bodies copied unchanged by default. Gemini `responseJsonSchema`, modern `responseFormat.text` and typed `responseSchema` input supported. Explicit `LegacySchema` writes representable typed output schemas. Plain JSON/text modes map between OpenAI and Gemini |
 | Reasoning settings | Qualitative effort, explicit Claude/Gemini budget or dynamic/off mode, and summary/display intent where representable; no model-name heuristics or calculated budgets |
@@ -71,7 +72,30 @@ var options = new LlmConversionOptions
 // Set TargetThinkingBudgetTokens only for a target supporting manual thinking.
 ```
 
-Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v9`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
+Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v10`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
+
+## Explicit free-text custom tools
+
+Set `EnableCustomToolConversion = true` to encode Responses `custom` tools as ordinary functions on Chat, Claude or Gemini targets. The default remains disabled. This first checkpoint supports **complete calls only**. Custom conversion with a streaming request or the SDK streaming API fails before HTTP; ordinary function streams retain their existing support.
+
+Each request gets an immutable `LlmConversionContext` with bounded, collision-checked generated names. An ordinary function with the same original name remains distinct. The function schema is a closed object with one required string property, `input`. Text is not parsed as code/JSON, trimmed or executed. No strict-enforcement flag is invented; model adherence remains supplier-dependent. The decoder rejects missing/non-string input and extra properties.
+
+```csharp
+var request = LlmProtocolConverter.ConvertRequest(originalResponsesJson,
+    LlmProtocol.Responses, LlmProtocol.ClaudeMessages,
+    new LlmConversionOptions { EnableCustomToolConversion = true, DefaultMaxTokens = 512 });
+// Send request.Data through your native adapter, then use the matching context:
+var response = LlmProtocolConverter.ConvertResponse(upstreamJson, request.Context!);
+// ConvertingLlmProvider keeps this context automatically for its one complete call.
+```
+
+Restoration returns `custom_tool_call` with the original name, exact text and call ID. The old stateless response overload never infers custom type from a name prefix. A context mismatch or historical call-ID reuse fails. Concurrent calls share no restoration map; there is no global/Session map or tool loop. The caller controls context lifetime; it contains request-specific tool names and IDs.
+
+History replay preserves custom/function result kinds and consumes each ID once. Completed source item ID/status/`created_by` stay in `OriginalData`; foreign item IDs do not become another supplier's item identity. New local response item IDs and completed/incomplete status remain present. Custom results must be strings: Chat/Claude carry exact text, while Gemini receives the explicitly opted-in object `{"output": text}`. Ordinary result rules stay unchanged; rich arrays are pending.
+
+Only omitted `format` or `{"type":"text"}` is supported. Grammar/CFG, namespaces, program callers, async/deferred execution, mixed hosted tools and unknown custom fields hard-fail even with `AllowLoss`. Native calls and same-protocol copies preserve all original structures. Custom streaming is a separate pending checkpoint.
+
+Defaults bound the combined custom/ordinary name map to 128 entries, historical calls to 4096 and each decoded custom input/result to 1 MiB of strict UTF-8. Positive `MaxToolConversionMappings`, `MaxToolConversionHistoryCalls` and `MaxCustomToolInputBytes` override these limits and enter binding identity. Oversized/invalid text fails without truncation. Typed Gemini function targets still reject unrepresentable closed-object constraints; use the default JSON Schema function target for this wrapper. Independent wire goldens, public SDK replay/concurrency and rejection tests run offline; no live custom-tool verification was performed. See [OpenAI custom tools](https://developers.openai.com/api/docs/guides/function-calling#custom-tools) for the native contract.
 
 ## Caller-declared target settings
 

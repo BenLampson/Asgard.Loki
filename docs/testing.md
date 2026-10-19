@@ -48,6 +48,10 @@ With live testing disabled, xUnit reports selected cases as skipped. With it ena
 
 The [parameter verification record](llm-parameter-verification.md) documents native protocol shapes, test evidence and limitations. Current `doubao-seed-evolving` behavior fails both strict `tool_choice=none` cases despite correct final payloads. Accordingly `ToolChoice`, `Parameters` and `All` exit nonzero while that issue remains; the assertions are deliberately retained.
 
+## Offline custom-tool conversion
+
+The opt-in free-text custom complete-call slice adds 64 cases: independently authored full Chat/Claude/Gemini request/response goldens, exact arbitrary-text and result replay, normal/custom same-name separation, public SDK final HTTP bodies, concurrent out-of-order completion, original metadata retention, wrong-context and reused-ID failures, UTF-8/table/history bounds, option binding and unsupported semantic rejection. The first slice rejects custom streaming before HTTP; ordinary stream regressions continue to run. No tool code is executed and no live custom-tool model call was made. Native grammar/unknown fields remain preserved; grammar/namespace/program/async conversion cannot be enabled with loss consent.
+
 ## Five-request smoke scenario
 
 One integration test performs five requests in order:
@@ -84,7 +88,7 @@ Caller-declared target settings add 113 cases. Forty-eight public SDK/HTTP cases
 
 These suites use no live credentials, network or Redis. Passing them establishes the tested conversion contracts, not complete losslessness or upstream model acceptance. No Claude, Gemini or converted live request is authorized by ordinary tests. The current live environment-variable contract remains the four Volcengine variables above.
 
-The conversion suite includes adversarial regression fixtures for known-but-unconsumed nested fields, malformed usage, repeated/orphan tool results, sequential same-name Gemini calls and generated/explicit ID collisions. Full valid Responses transcripts exercise every done event; corrupted copies check item IDs, indices, sequence numbers, text/argument snapshots, closed-block mutation and duplicate terminal rejection. Claude lifecycle omissions, pending-tool interleaving, incomplete item status and usage-only tails have separate assertions. Native Gemini tests also reject duplicate finishes and data after error/block terminals while preserving a valid usage-only tail. The current offline totals are 621 conversion tests, 22 Claude tests and 36 Gemini tests, with 1054 tests across the solution.
+The conversion suite includes adversarial regression fixtures for known-but-unconsumed nested fields, malformed usage, repeated/orphan tool results, sequential same-name Gemini calls and generated/explicit ID collisions. Full valid Responses transcripts exercise every done event; corrupted copies check item IDs, indices, sequence numbers, text/argument snapshots, closed-block mutation and duplicate terminal rejection. Claude lifecycle omissions, pending-tool interleaving, incomplete item status and usage-only tails have separate assertions. Native Gemini tests also reject duplicate finishes and data after error/block terminals while preserving a valid usage-only tail. The current offline totals are 685 conversion tests, 22 Claude tests and 36 Gemini tests, with 1118 tests across the solution.
 
 Optional WebSocket core tests use an in-memory duplex adapter and the existing MemoryDistributedCache/coordinator. They cover complete-target selection, input snapshots, Session loss/replacement, changed provider binding identity, HTTP/WebSocket response ownership, cross-session steering/cancellation rejection, native field preservation, concurrent writes/readers, cancellation, disposal and close/dispose while cache validation is awaiting. No socket or live provider is opened; OpenAI provider framing tests are described below and lifecycle integration remains a separate checkpoint.
 

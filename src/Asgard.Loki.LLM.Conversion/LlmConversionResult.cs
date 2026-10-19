@@ -7,11 +7,12 @@ namespace Asgard.Loki.LLM.Conversion;
 public sealed class LlmConversionResult
 {
     /// <summary>内部创建已完成的转换快照。</summary>
-    internal LlmConversionResult(JsonObject data, JsonObject original, IEnumerable<LlmConversionDiagnostic> diagnostics)
+    internal LlmConversionResult(JsonObject data, JsonObject original, IEnumerable<LlmConversionDiagnostic> diagnostics, LlmConversionContext? context = null)
     {
         Data = JsonSerializer.SerializeToElement(data);
         OriginalData = JsonSerializer.SerializeToElement(original);
         Diagnostics = Array.AsReadOnly(diagnostics.ToArray());
+        Context = context;
     }
     /// <summary>目标协议 JSON。</summary>
     public JsonElement Data { get; }
@@ -19,4 +20,6 @@ public sealed class LlmConversionResult
     public JsonElement OriginalData { get; }
     /// <summary>非等价字段的完整诊断。</summary>
     public IReadOnlyList<LlmConversionDiagnostic> Diagnostics { get; }
+    /// <summary>请求及使用其上下文还原的响应携带的不可变状态；独立响应/事件转换为 null。</summary>
+    public LlmConversionContext? Context { get; }
 }

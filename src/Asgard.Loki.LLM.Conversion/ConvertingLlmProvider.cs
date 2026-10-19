@@ -31,7 +31,7 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v9:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
+    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v10:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
 
     /// <inheritdoc />
     public async Task<ChatCompletion> CompleteAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
@@ -101,7 +101,7 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
             _ => await ((IGeminiAdapter)_upstream).GenerateAsync(payload, context, cancellationToken).ConfigureAwait(false)
         };
         if (source == _protocol) return raw;
-        var result = LlmProtocolConverter.ConvertResponse(JsonNode.Parse(raw.Data.GetRawText())!.AsObject(), _protocol, source, _options);
+        var result = LlmProtocolConverter.ConvertResponse(JsonNode.Parse(raw.Data.GetRawText())!.AsObject(), converted.Context!);
         var metadata = context.Metadata with { Conversion = new(_protocol, source, raw.Data, converted.Diagnostics.Concat(result.Diagnostics)) };
         return new ChatCompletion(result.Data, metadata);
     }
@@ -113,6 +113,8 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
         cancellationToken.ThrowIfCancellationRequested();
         var converted = LlmProtocolConverter.ConvertRequest(request, source, _protocol, _options);
         var payload = JsonNode.Parse(converted.Data.GetRawText())!.AsObject();
+        if (converted.Context?.CustomToolCount > 0)
+            CustomToolRequestCodec.Reject("$.stream", "custom_tool_stream_not_supported");
         var converter = new LlmProtocolStreamConverter(_protocol, source, _options);
         await foreach (var raw in UpstreamAsync(payload, context, cancellationToken).ConfigureAwait(false))
         {
