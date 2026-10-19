@@ -142,6 +142,26 @@ The first native stop reason starts a finite tail buffer. Native message stop an
 
 Total raw bytes are bounded before SSE line parsing; the existing pending-tail limit applies. Nullable `MaximumTrackedClaudeBlocks` defaults through omission to 128, bounds total seen block associations and avoids allocating by index. Omitted policy preserves preceding Gemini/Claude JSON provider binding bytes; explicit changed policy participates in fingerprints and invalidates old Sessions. Core credential/protocol contracts and conversion-v24 remain unchanged. Fifty-eight new offline cases verify independent full native events, lifecycle/association/limits, faults, snapshots, JSON-to-stream Session recovery and explicit common-text conversion streams. Native signed/opaque fidelity still does not establish cross-protocol equivalence or live model acceptance.
 
+### Vertex Express explicit Gemini provider
+
+`GoogleVertexExpressLlmProvider` is a separate Gemini/API-Key-only implementation in the same supplier package, with its own `GoogleVertexExpressLlmOptions`. It does not expose Claude or require an OAuth source. Standard provider construction/authentication/binding identities remain unchanged. The caller explicitly selects the Express provider, versioned root and `publishers/google/models/{model}` short resource; no project/region/model-name inference or account management is introduced.
+
+```mermaid
+classDiagram
+IGeminiAdapter <|.. GoogleVertexExpressLlmProvider
+ILlmCredentialSupport <|.. GoogleVertexExpressLlmProvider
+GoogleVertexExpressLlmProvider --> GoogleVertexExpressLlmOptions : snapshots resource policy
+GoogleVertexExpressLlmProvider ..> VertexStreamState : private native Gemini lifecycle
+GoogleVertexExpressLlmProvider ..> VertexReadStream : bounded raw bytes
+GoogleVertexExpressLlmProvider --> IHttpClientFactory : borrows
+```
+
+Selected Keys enter only `x-goog-api-key`, with no automatic URL/body credential. Same-kind defaults are overridden per request, while unselected Authorization/other Key/quota-project defaults fail before HTTP. Registration rejects unsupported credentials/protocols. Sessions bind complete Express target/resource, credential Key identity and local resource policy; changes reject prior Sessions without reselection. Existing core fingerprint algorithms and conversion-v24 are unchanged.
+
+Native bodies/results retain full tools/IDs, thinking/schema/media/safety, exact values and unknown members. JSON and SSE use this supplier's strict bounded readers and native Gemini state, including delayed terminal/usage tails through normal EOF/length/disposal and final cancellation. The provider does not reinterpret standard resource names, fetch tokens/files, execute tools, reassemble signatures, infer model capabilities, retry or switch authentication/targets. Factories stay borrowed; operation HTTP resources are disposed. Explicit conversion is a separate fixed-upstream decorator with existing strict field/loss limits.
+
+Sixty-seven additional offline cases verify independent complete wire/result and native SSE event goldens, header identity, snapshots, fixed-target/Key/configuration affinity, bounds/faults and common-text conversion. Current Vertex coverage is 315 cases; real account/model acceptance remains unverified. This adds no production package, capability dependency or universal cloud coordinator. See the [Express support and initialization](../src/Asgard.Loki.LLM.GoogleVertex/README.md#explicit-express-gemini-jsonsse).
+
 ## 2. Registration and lifecycle
 
 ```mermaid

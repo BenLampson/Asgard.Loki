@@ -1,0 +1,7 @@
+{
+  "responseId":"express-response",
+  "modelVersion":"native-express-version",
+  "candidates":[{"index":0,"content":{"role":"model","parts":[{"thought":true,"text":"reasoning","thoughtSignature":"opaque-signature"},{"functionCall":{"id":"call_output","name":"lookup","args":{"value":9007199254740993}}}]},"finishReason":"STOP","safetyRatings":[{"category":"HARM_CATEGORY_HATE_SPEECH","probability":"NEGLIGIBLE","blocked":false}]}],
+  "usageMetadata":{"promptTokenCount":11,"candidatesTokenCount":7,"thoughtsTokenCount":3,"totalTokenCount":21},
+  "future":{"integer":9007199254740993,"null":null,"false":false}
+}
