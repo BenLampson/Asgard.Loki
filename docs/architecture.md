@@ -493,6 +493,23 @@ Redis preserves logical routing identity, not TCP state or provider prompt cache
 
 Audio owns `AudioClient`, `ISpeechClient`, `ISpeechAdapter`, speech routes and audio results. It does not reuse LLM orchestration or Session state.
 
+Optional `INativeSpeechAdapter` extends the existing adapter with an explicit native JSON method. Capability-owned `NativeSpeechRequest` carries the public route Model and unchanged native parameter dictionary; `NativeSpeechResult` aggregates bytes/frames without a guessed format. `ISpeechClient.GenerateNativeAsync` / `StreamNativeAsync` have default unsupported implementations so existing external clients remain source compatible. The convenience string-based request and its methods are unchanged. Native field/type and wire validation remain supplier responsibilities, not a universal speech model.
+
+```mermaid
+classDiagram
+ISpeechAdapter <|-- INativeSpeechAdapter
+ISpeechClient <|.. SpeechClient
+SpeechClient --> SpeechRoute : existing complete target set
+SpeechClient --> ISpeechAdapter : convenience request
+SpeechClient --> INativeSpeechAdapter : explicit native JSON only
+INativeSpeechAdapter --> NativeSpeechRequest
+SpeechClient --> NativeSpeechResult : native ordered bytes and frames
+```
+
+The core snapshots native JSON independently of mutable dictionaries/documents, reserves root `model`, rejects Undefined and checks that every configured route target supports the optional contract before selection. It never filters targets or falls back to another protocol/provider. Registration snapshots, existing selection state and borrowed target ownership remain Audio-owned; no LLM Session, distributed cache or other capability dependency is introduced. A supplier/native route must use a payload compatible with every configured target; the core does not translate dialects.
+
+Common and native streams share a private completion guard. Nonterminal chunks are immediate; the original terminal chunk is held until source enumeration and disposal finish successfully. Extra/duplicate chunks, missing completion, tail/disposal errors and cancellation fail without first exposing success. This buffers one terminal chunk only, retaining its audio/metadata once; it does not reconstruct history or invent an application-level end marker from EOF. Thirty-eight offline core cases include 35 new regressions across both paths, optional-client source compatibility, snapshots, non-failover and borrowed ownership. No bundled native JSON supplier, binary/SSE protocol or live speech call is implemented by this core checkpoint.
+
 The first provider implements Volcengine V3 HTTP chunked TTS. Its API Key or legacy app/token credentials and resource ID are configured independently of Ark LLM. Do not assume one key authorizes every vendor product.
 
 Return ordered decoded audio chunks plus complete raw metadata. Aggregate results only after an explicit upstream completion code. Preserve subtitle, usage and unknown frames. Invalid Base64, business errors, unexpected data after completion and truncated streams fail explicitly.
