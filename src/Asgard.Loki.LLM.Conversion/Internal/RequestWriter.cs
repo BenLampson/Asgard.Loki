@@ -53,7 +53,7 @@ internal static class RequestWriter
                 }
             target[protocol == LlmProtocol.Gemini ? "systemInstruction" : "system"] = protocol == LlmProtocol.Gemini ? new JsonObject { ["parts"] = blocks } : blocks;
         }
-        ToolMapping.Write(target, protocol, doc);
+        ToolMapping.Write(target, protocol, doc, options);
         WriteParallel(target, protocol, doc);
         ReasoningMapping.Write(target, protocol, doc, options);
         StructuredOutputMapping.Write(target, protocol, doc, options);

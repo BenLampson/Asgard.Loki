@@ -39,6 +39,7 @@ public static class LlmProtocolConverter
         if (options?.DefaultMaxTokens is <= 0) throw new ArgumentOutOfRangeException(nameof(options));
         if (options?.TargetThinkingBudgetTokens is < 1024) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiOutputFormat)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.GeminiFunctionSchemaFormat)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options?.DefaultSchemaName is { } schemaName
             && (schemaName.Length is < 1 or > 64 || schemaName.Any(c => !char.IsAsciiLetterOrDigit(c) && c is not ('_' or '-'))))
             throw new ArgumentException("Schema 名称必须为 1 至 64 个 ASCII 字母、数字、下划线或连字符。", nameof(options));

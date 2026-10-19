@@ -15,4 +15,6 @@ public sealed record LlmConversionOptions
     public int? TargetThinkingBudgetTokens { get; init; }
     /// <summary>Gemini 目标的文本输出外壳；默认保持原有报文，模型支持由调用者确认。</summary>
     public GeminiOutputFormat GeminiOutputFormat { get; init; }
+    /// <summary>Gemini 目标函数参数方言；默认保留 JSON Schema，与文本输出格式独立。</summary>
+    public GeminiFunctionSchemaFormat GeminiFunctionSchemaFormat { get; init; }
 }

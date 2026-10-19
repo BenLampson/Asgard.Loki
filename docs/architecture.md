@@ -203,11 +203,16 @@ ResponsesWebSocketState --> OpenAiResponsesWebSocketOptions
 
 `Asgard.Loki.LLM.Conversion` is an optional LLM extension with a single project dependency on `Asgard.Loki.LLM`. It owns pure request/response conversion and single-call stream state. Its private conversion representation never replaces the four native contracts or crosses capability boundaries. This remains an embeddable SDK: no listener, HTTP relay endpoint, gateway administration, billing, tool executor or background orchestration is introduced.
 
-`LlmConversionOptions.GeminiOutputFormat` explicitly selects the Gemini target envelope: `LegacyJsonSchema` preserves the current default wire body, `ResponseFormat` writes modern `generationConfig.responseFormat.text`, and explicit `LegacySchema` translates representable JSON Schema into typed `responseSchema`. Source modern text and legacy JSON Schema envelopes are recognized independently; conflicting text settings are rejected and unrepresentable media/unknown fields remain diagnosed. JSON Schema bodies are copied unchanged by default. A private `GeminiSchemaMapping` separately translates typed source input. `GeminiSchemaWriter` owns explicit typed output, exact int64 strings and double decimal-roundtrip validation; unavailable validation keywords hard-fail even with `AllowLoss`. Explicit open-object true is equivalent to the native default; closed/schema-constrained objects are not. Only annotation losses such as multiple examples can receive diagnosed consent. Private `OutputSchemaOrdered` carries the strict OpenAI text-format guarantee into recursive typed property ordering; other sources gain no invented guarantee. Typed function input reuses the reader; typed function target selection remains a separate checkpoint. Options and the `conversion-v7` algorithm identity enter Session fingerprints, so old conversion Sessions fail validation instead of being silently rebound. Native providers do not reference or inherit this policy.
+`LlmConversionOptions.GeminiOutputFormat` explicitly selects the Gemini target envelope: `LegacyJsonSchema` preserves the current default wire body, `ResponseFormat` writes modern `generationConfig.responseFormat.text`, and explicit `LegacySchema` translates representable JSON Schema into typed `responseSchema`. Source modern text and legacy JSON Schema envelopes are recognized independently; conflicting text settings are rejected and unrepresentable media/unknown fields remain diagnosed. JSON Schema bodies are copied unchanged by default. A private `GeminiSchemaMapping` separately translates typed source input. `GeminiSchemaWriter` owns explicit typed output, exact int64 strings and double decimal-roundtrip validation; unavailable validation keywords hard-fail even with `AllowLoss`. Explicit open-object true is equivalent to the native default; closed/schema-constrained objects are not. Only annotation losses such as multiple examples can receive diagnosed consent. Private `OutputSchemaOrdered` carries the strict OpenAI text-format guarantee into recursive typed property ordering; other sources gain no invented guarantee. Typed function input reuses the reader. Independent `GeminiFunctionSchemaFormat` selects unchanged `parametersJsonSchema` by default or explicit typed `parameters`, reusing the writer without inventing a text-order guarantee for function arguments. Options and the `conversion-v8` algorithm identity enter Session fingerprints, so old conversion Sessions fail validation instead of being silently rebound. Native providers do not reference or inherit this policy.
 
 ```mermaid
 classDiagram
 LlmConversionOptions --> GeminiOutputFormat
+LlmConversionOptions --> GeminiFunctionSchemaFormat
+class GeminiFunctionSchemaFormat {
+  JsonSchema
+  LegacySchema
+}
 class GeminiOutputFormat {
   LegacyJsonSchema
   ResponseFormat
@@ -218,6 +223,8 @@ GeminiOutputMapping --> GeminiOutputFormat : explicit target envelope
 GeminiOutputMapping --> GeminiSchemaMapping : typed source only
 GeminiSchemaMapping --> GeminiSchemaInteger : exact ProtoJSON limits
 ToolMapping --> GeminiSchemaMapping : typed function input
+ToolMapping --> GeminiSchemaWriter : explicit typed function target
+ToolMapping --> GeminiFunctionSchemaFormat : independent function dialect
 GeminiOutputMapping --> GeminiSchemaWriter : explicit typed output
 GeminiSchemaWriter --> GeminiSchemaInteger : exact int64 strings
 GeminiSchemaWriter --> GeminiSchemaNumber : decimal roundtrip validation

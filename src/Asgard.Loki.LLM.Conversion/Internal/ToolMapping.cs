@@ -71,7 +71,7 @@ internal static class ToolMapping
         else Loss(doc, "$.tool_choice", "unsupported_tool_choice");
     }
 
-    /// <summary>保留 JSON Schema 原文；Gemini typed 参数显式转换，目标仍使用 parametersJsonSchema。</summary>
+    /// <summary>保留 JSON Schema 原文；Gemini typed 参数显式读取，目标方言由独立选项选择。</summary>
     private static void Add(JsonObject tool, LlmProtocol protocol, ConversionDocument doc)
     {
         var schemaKey = protocol == LlmProtocol.ClaudeMessages ? "input_schema" : protocol == LlmProtocol.Gemini ? "parametersJsonSchema" : "parameters";
@@ -95,7 +95,7 @@ internal static class ToolMapping
     }
 
     /// <summary>将规范函数与选择写入目标协议。</summary>
-    internal static void Write(JsonObject target, LlmProtocol protocol, ConversionDocument doc)
+    internal static void Write(JsonObject target, LlmProtocol protocol, ConversionDocument doc, LlmConversionOptions options)
     {
         var tools = new JsonArray();
         foreach (var node in doc.Tools)
@@ -109,7 +109,11 @@ internal static class ToolMapping
                 if (protocol == LlmProtocol.Gemini)
                 {
                     if (function.Remove("strict")) Loss(doc, "$.tools[].strict");
-                    function["parametersJsonSchema"] = function["parameters"]?.DeepClone(); function.Remove("parameters");
+                    var schema = function["parameters"];
+                    function.Remove("parameters");
+                    if (options.GeminiFunctionSchemaFormat == GeminiFunctionSchemaFormat.LegacySchema)
+                        function["parameters"] = GeminiSchemaWriter.Write(Object(schema), doc, "$.tools[].function.parameters", ordered: false);
+                    else function["parametersJsonSchema"] = schema?.DeepClone();
                 }
                 tools.Add(function);
             }
