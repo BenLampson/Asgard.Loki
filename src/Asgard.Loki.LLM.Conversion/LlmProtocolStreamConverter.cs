@@ -35,7 +35,8 @@ public sealed class LlmProtocolStreamConverter
         LlmProtocolConverter.Validate(new(), from, to, options);
         var mapped = context?.MappedToolCount > 0;
         _source = new(from, mapped ? 6L * context!.Options.MaxCustomToolInputBytes + 64 : null,
-            mapped ? context!.Options.MaxToolConversionOutputCalls : null);
+            mapped ? context!.Options.MaxToolConversionOutputCalls : null,
+            options.OpenAiCitationIndexUnit, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes);
         _target = new(to, mapped ? context : null); _options = options; _identity = from == to; _context = context;
     }
 

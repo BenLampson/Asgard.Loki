@@ -4,7 +4,8 @@ using static Asgard.Loki.LLM.Conversion.Internal.ConversionJson;
 namespace Asgard.Loki.LLM.Conversion.Internal;
 
 /// <summary>聚合单条原生流的文本、函数参数与终态，不恢复或重试网络连接。</summary>
-internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumArgumentBytes = null, int? maximumToolCalls = null)
+internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumArgumentBytes = null, int? maximumToolCalls = null,
+    LlmCitationIndexUnit citationIndexUnit = LlmCitationIndexUnit.Unspecified, int maximumAnnotations = 1024, int maximumAnnotationBytes = 1024 * 1024)
 {
     private readonly Dictionary<string, int> _indices = new(StringComparer.Ordinal);
     private readonly HashSet<int> _emittedTools = [];
@@ -15,9 +16,10 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
     private readonly Dictionary<int, long> _argumentSizes = [];
     private int _toolCount;
     private static readonly System.Text.UTF8Encoding StrictUtf8 = new(false, true);
+    private readonly ResponseStreamAnnotations _responseAnnotations = new(maximumAnnotations, maximumAnnotationBytes);
 
     /// <summary>跨事件维护的单次转换文档。</summary>
-    internal ConversionDocument Document { get; } = new();
+    internal ConversionDocument Document { get; } = new() { CitationIndexUnit = citationIndexUnit };
 
     /// <summary>读取一个原生事件，文本立即产生增量，函数参数在完整时产生调用。</summary>
     internal List<StreamChange> Push(JsonObject data)

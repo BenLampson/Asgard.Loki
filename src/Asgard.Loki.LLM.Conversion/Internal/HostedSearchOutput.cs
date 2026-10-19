@@ -80,7 +80,8 @@ internal static class HostedSearchOutput
         }
         void Annotations(JsonNode? node, string path)
         {
-            if (!mapUrlCitations && node is JsonArray list && list.OfType<JsonObject>().Any(a => a["type"]?.GetValue<string>() == "url_citation")) Add("search_citations_not_representable", path);
+            if (!mapUrlCitations && node is JsonArray list && list.OfType<JsonObject>().Any(a => a["type"] is JsonValue kind
+                && kind.TryGetValue<string>(out var name) && name == "url_citation")) Add("search_citations_not_representable", path);
         }
         void Add(string code, string path) => diagnostics.Add(new(code, path, "搜索执行、来源或引用尚不能在目标结构中保真表达。"));
     }

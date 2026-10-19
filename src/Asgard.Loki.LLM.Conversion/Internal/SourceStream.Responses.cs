@@ -25,6 +25,7 @@ internal sealed partial class SourceStream
             "response.content_part.added" or "response.content_part.done" => ["type", "sequence_number", "output_index", "content_index", "item_id", "part"],
             "response.output_text.delta" => ["type", "sequence_number", "output_index", "content_index", "item_id", "delta", "logprobs"],
             "response.output_text.done" => ["type", "sequence_number", "output_index", "content_index", "item_id", "text", "logprobs"],
+            "response.output_text.annotation.added" => ["type", "sequence_number", "output_index", "content_index", "item_id", "annotation_index", "annotation"],
             "response.function_call_arguments.delta" => ["type", "sequence_number", "output_index", "item_id", "delta"],
             "response.function_call_arguments.done" => ["type", "sequence_number", "output_index", "item_id", "arguments", "name"],
             _ => ["type", "sequence_number"]
@@ -49,7 +50,7 @@ internal sealed partial class SourceStream
         }
         if (type is "response.completed" or "response.incomplete") { FinishResponses(data, type); return; }
         if (type is not ("response.output_item.added" or "response.output_item.done" or "response.content_part.added" or "response.content_part.done"
-            or "response.output_text.delta" or "response.output_text.done" or "response.function_call_arguments.delta" or "response.function_call_arguments.done"))
+            or "response.output_text.delta" or "response.output_text.done" or "response.output_text.annotation.added" or "response.function_call_arguments.delta" or "response.function_call_arguments.done"))
         { Loss(Document, "$event." + type, "unknown_event"); return; }
         if (!_responsesStarted) throw new InvalidDataException("Responses 内容事件之前缺少开始事件。");
         var index = Index(data, "output_index"); var key = "responses-" + index;
@@ -95,6 +96,13 @@ internal sealed partial class SourceStream
         }
         if (_responseItemTypes[index] != "message") throw new InvalidDataException("文本事件引用非消息输出项。");
         var textKey = key + "-text-" + Index(data, "content_index");
+        if (_responsePartsDone.Contains(textKey)) throw new InvalidDataException("已完成的内容块不能继续接收事件。");
+        if (type == "response.output_text.annotation.added")
+        {
+            _ = Existing(textKey);
+            if (!data.ContainsKey("item_id") || !data.ContainsKey("annotation")) throw new InvalidDataException("原生引用事件缺少 item_id 或 annotation。");
+            _responseAnnotations.Add(textKey, Index(data, "annotation_index"), data["annotation"], Document); return;
+        }
         if (data["logprobs"] is not null && Array(data["logprobs"]).Count != 0) Loss(Document, "$event.logprobs");
         switch (type)
         {
@@ -120,9 +128,17 @@ internal sealed partial class SourceStream
     {
         Check(part, Document, "$event.part", "type", "text", "annotations");
         if (Text(part["type"]) != "output_text") { Loss(Document, "$event.part", "unsupported_content"); return; }
-        if (part.ContainsKey("annotations") && Array(part["annotations"]).Count != 0) Loss(Document, "$event.part.annotations");
-        if (start) TextDelta(key, Text(part["text"]), changes);
-        else if (Text(_message.Blocks[Existing(key)]["text"]) != Text(part["text"])) throw new InvalidDataException("内容块 done 与增量不一致。");
+        if (part.ContainsKey("annotations"))
+        {
+            if (part["annotations"] is not JsonArray annotations) throw new InvalidDataException("原生 annotations 必须是数组。");
+            if (annotations.Count != 0) Loss(Document, "$event.part.annotations");
+        }
+        if (start) { TextDelta(key, Text(part["text"]), changes); _responseAnnotations.Start(key, part, Document); }
+        else
+        {
+            if (Text(_message.Blocks[Existing(key)]["text"]) != Text(part["text"])) throw new InvalidDataException("内容块 done 与增量不一致。");
+            _responseAnnotations.Snapshot(key, part, Document);
+        }
     }
 
     /// <summary>输出项的原始 ID、名称、内容和工具参数必须与此前事件一致。</summary>
@@ -130,6 +146,7 @@ internal sealed partial class SourceStream
     {
         if (Text(item["id"]) != _responseItemIds[index] || Text(item["type"]) != _responseItemTypes[index])
             throw new InvalidDataException("Responses 输出项完成时改变身份或类型。");
+        _responseAnnotations.Item(index, item, Document);
         var read = ResponseMapping.Read(new() { ["id"] = Document.Id, ["model"] = Document.Model, ["status"] = "completed", ["output"] = new JsonArray(item.DeepClone()) }, LlmProtocol.Responses, mapCitations: false);
         Document.Diagnostics.AddRange(read.Diagnostics);
         var prefix = "responses-" + index;
@@ -150,6 +167,7 @@ internal sealed partial class SourceStream
         if (output.Count != _responseItemIds.Count) throw new InvalidDataException("Responses 最终输出项目数量不一致。");
         for (var i = 0; i < output.Count; i++)
             if (!_responseItemIds.TryGetValue(i, out var id) || Text(Object(output[i])["id"]) != id) throw new InvalidDataException("Responses 最终项目 ID 或索引不一致。");
+        for (var i = 0; i < output.Count; i++) _responseAnnotations.Item(i, Object(output[i]), Document);
         var complete = ResponseMapping.Read(response, LlmProtocol.Responses, mapCitations: false); Document.Diagnostics.AddRange(complete.Diagnostics);
         if (!JsonNode.DeepEquals(System.Text.Json.JsonSerializer.SerializeToNode(complete.Messages[0].Blocks), System.Text.Json.JsonSerializer.SerializeToNode(_message.Blocks)))
             throw new InvalidDataException("Responses 最终输出与已转换的增量不一致。");
@@ -162,8 +180,9 @@ internal sealed partial class SourceStream
     /// <summary>索引必须显式存在且是非负整数。</summary>
     private static int Index(JsonObject data, string name)
     {
-        if (!data.ContainsKey(name) || data[name] is null || Number(data[name]) < 0 || Number(data[name]) > int.MaxValue)
+        var value = System.Text.Json.JsonSerializer.SerializeToElement(data[name]);
+        if (!data.ContainsKey(name) || value.ValueKind != System.Text.Json.JsonValueKind.Number || !value.TryGetInt32(out var index) || index < 0)
             throw new InvalidDataException("Responses 事件索引无效。");
-        return (int)Number(data[name]);
+        return index;
     }
 }
