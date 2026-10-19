@@ -74,7 +74,7 @@ public sealed class ToolErrorProviderTests
         var request = ToolErrorFixtures.Read(source, format); request["model"] = "public"; var received = new List<LlmJsonEvent>();
         var failure = await Record.ExceptionAsync(async () => { await foreach (var item in Stream(client, source, request)) received.Add(item); });
         if (target == LlmProtocol.Gemini) Assert.Equal("upstream_stream_error", Assert.Single(Assert.IsType<LlmConversionException>(failure).Diagnostics).Code);
-        else Assert.IsType<InvalidDataException>(failure);
+        else { var native = Assert.IsType<LlmUpstreamException>(failure); Assert.Equal(HttpStatusCode.OK, native.StatusCode); Assert.Equal(error, native.ResponseBody); }
         Assert.NotEmpty(received); Assert.DoesNotContain(received, item => IsTerminal(item, source)); Assert.Equal(1, handler.Calls);
     }
     /// <summary>只观察目标协议明确成功终态，不把正文中的 done 等普通字符串误判为完成。</summary>

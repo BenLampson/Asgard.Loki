@@ -1227,6 +1227,25 @@ Complete results and terminal candidates are published after real EOF, declared-
 
 The existing core HTTP Responses client records ownership only for explicitly known created/in-progress/queued/completed/failed/incomplete lifecycle events. It uses the existing native event `Type` contract (JSON type, otherwise SSE name). Unknown event bodies, including business `response.id` and `error` members, remain raw rather than affecting Session response ownership. No new public type, provider dependency, fingerprint algorithm or coordinator is added. Complete-result and existing WebSocket registration remain unchanged; the SDK does not purge previous cached entries. Nine public SDK regressions cover raw delivery, valid lifecycle registration before publication, empty unknown IDs and pre-HTTP continuation rejection. Current totals are 5690 offline cases (284 OpenAI) and 28 packages.
 
+### Anthropic native HTTP and explicit authentication
+
+`LLM.Anthropic` keeps the original constructor signature and adds immutable `AnthropicHttpOptions` plus `AnthropicAuthentication`. Authentication is an explicit Key/Bearer choice consuming the existing core API Key credential kind. It does not acquire cloud identities, parse gateway credentials or infer the mode from host/model. Version, named client, auth and limits bind under the new `anthropic-http-v2` domain; predecessor Sessions need new IDs/expiry. Other native identities and core/conversion-v25 algorithms are unchanged.
+
+```mermaid
+classDiagram
+    AnthropicLlmProvider --> AnthropicHttpOptions : snapshots
+    AnthropicHttpOptions --> AnthropicAuthentication : explicit header
+    AnthropicLlmProvider --> IHttpClientFactory : borrows
+    AnthropicLlmProvider --> AnthropicHttpJson : bounded strict bytes and JSON
+    AnthropicLlmProvider --> AnthropicHttpReadStream : raw SSE bounds
+    AnthropicLlmProvider --> AnthropicStreamState : own block and terminal lifecycle
+    AnthropicLlmProvider --> SseReader : independently compiled transport parser
+```
+
+The supplier now owns its complete HTTP boundary rather than the old generic native HTTP helper. Source message/content/tool association uses finite supplier-local state; unknown data remains raw and indices/IDs are not renumbered. No argument aggregation, image/document interpretation, reasoning/signature rewriting or tool execution is introduced. Stop-reason candidates and native terminal/tail events wait for EOF/length, async/sync disposal and final cancellation; late errors discard held success. Strict bytes/JSON and policy limits fail without trimming or retrying. A named client's selected auth/version/Host is overridden per request, while unselected auth/signature defaults fail without send.
+
+Three full independent manifests and 104 additional offline cases verify standard Messages and explicit Runtime/Mantle native Messages root reuse, 24 direct/public JSON/SSE paths, all raw fields/frame metadata, authentication, snapshots, legacy/changed/recovered bindings and late failures. Current totals are 5794 tests (126 Anthropic) and 28 packages. No provider-to-provider reference is added: native Key-mode Messages uses the existing Anthropic package; InvokeModel/Converse and eventual Mantle SigV4 remain AWS-owned. Generic explicit Bearer transport is not proof of endpoint/model acceptance. No live account, cloud login, background worker or remote Actions run is added.
+
 ## 7. HTTP and errors
 
 Providers own address/authentication/protocol mapping. API roots include their version path. Do not hard-code model lists or rewrite model suffixes heuristically.

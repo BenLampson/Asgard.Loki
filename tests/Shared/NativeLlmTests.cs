@@ -213,7 +213,7 @@ public abstract class NativeLlmTests
     /// <summary>最小成功 JSON，仅验证透传。</summary>
     private static string Result() => "{\"future\":\"native\"}";
     /// <summary>包含明确终态的最小供应商流。</summary>
-    private string StreamBody() => Claude ? "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n" : "data: {\"candidates\":[{\"index\":0,\"finishReason\":\"STOP\"}]}\n\n";
+    private string StreamBody() => Claude ? "data: {\"type\":\"message_start\",\"message\":{\"id\":\"native-message\",\"content\":[]}}\n\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\"}}\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"}\n\n" : "data: {\"candidates\":[{\"index\":0,\"finishReason\":\"STOP\"}]}\n\n";
     /// <summary>创建 JSON 测试响应。</summary>
     private static HttpResponseMessage Json(string data) => new(HttpStatusCode.OK) { Content = new StringContent(data, Encoding.UTF8, "application/json") };
     /// <summary>创建按三字节分片的 SSE 测试响应。</summary>

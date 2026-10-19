@@ -161,3 +161,9 @@ Local Release build with warnings as errors, all ordinary tests, pack and depend
 ## Responses ownership regression checkpoint
 
 Nine public SDK cases exercise known lifecycle and unknown extension events through actual OpenAI SSE, `MemoryDistributedCache` and the explicit test coordinator. Native lifecycle IDs register before event delivery. Unknown JSON type and SSE event-name forms preserve complete business objects without response ownership; empty IDs cannot break the stream, and a continuation using a foreign business ID fails before any second HTTP request. Current ordinary totals are 5690 (284 OpenAI), 27 test projects and 28 production packages. No previous-cache purge, live request, remote Actions run or Linux result is claimed.
+
+## Anthropic native Messages HTTP checkpoint
+
+Current totals are **5794 offline tests** across 27 ordinary test projects (reserved Video remains empty), including **126 Anthropic cases**, and 28 production packages. The checkpoint adds 104 cases: three complete hand-authored standard/Runtime/Mantle native manifests and 24 direct/public HTTP/JSON/SSE snapshots; auth/header isolation, strict byte/JSON/length limits, source block/tool lifecycle, state limits, pre-factory validation/snapshots, actual predecessor Session rejection and cross-client binding tests; late read, async-only and sync disposal, client disposal/final cancellation and native error handling.
+
+The old shared Claude minimal stream fixture now has a real message_start, stop-reason delta and message_stop instead of a lone stop event. Gemini's branch is unchanged. No test uses real Keys, cloud login, model execution, network or Redis. Tests prove explicit wire behavior, not cloud/model acceptance of Bearer, reasoning, schemas or media. Volcengine live variables and entry remain unchanged. The local Release/ordinary-tests/28-package boundary and metadata gates are independent of GitHub Actions; no Linux/remote CI claim follows from them.
