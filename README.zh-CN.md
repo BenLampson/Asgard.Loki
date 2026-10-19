@@ -92,3 +92,5 @@ LLM 适配器新增可选 `ILlmProtocolSupport`：声明只能收窄物理适配
 转换数据 API 新增四种文本请求到原生 Converse 的通用完整调用子集，以及上下文绑定的反向响应。独立完整 JSON 金样验证工具 ID、JSON／文本结果及 Schema 约束。固定 Converse 的 SDK 接入已完成；反向调用、混合流和模型推理方言仍单独推进，见[转换说明](src/Asgard.Loki.LLM.Conversion/README.md#four-text-requests-to-native-converse-complete-data-conversion)。
 
 既有 Bedrock 转换装饰器已将这些文本完整调用接入公共 SDK：显式固定 Converse 上游，沿用原生认证和完整目标／Session 绑定。固定 Nova 仍只支持原生协议对；混合文本流在获取凭据／HTTP 之前拒绝，禁止装饰器互相嵌套。见[初始化及限制](src/Asgard.Loki.LLM.Conversion/README.md#public-sdk-text-calls-over-native-converse)。
+
+转换后的 Responses ID 继续保留在结果中，但不再登记成原生可续传响应。完整／流式入口保留原生响应链行为，新转换 ID 的续接在再次调用上游前失败；见[归属契约](src/Asgard.Loki.LLM/README.md#native-responses-ownership-versus-converted-output-ids)。

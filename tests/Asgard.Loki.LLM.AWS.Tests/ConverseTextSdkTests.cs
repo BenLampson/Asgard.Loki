@@ -12,6 +12,25 @@ namespace Asgard.Loki.LLM.AWS.Tests;
 /// <summary>四个公共文本入口实际走固定 Converse HTTP，工具及格式转换与原生认证仍分别归属原包。</summary>
 public sealed class ConverseTextSdkTests
 {
+    /// <summary>真实转换产生的合成 ID 不进入原生续传归属，续接失败不能发起第二次 HTTP。</summary>
+    [Theory] [InlineData(false)] [InlineData(true)]
+    public async Task SyntheticResponseId_IsVisibleButNotRegisteredForContinuation(bool apiKey)
+    {
+        var output = Read(LlmProtocol.Responses, "nativeResponse");
+        using var handler = new StubHttpHandler((_, _) => Task.FromResult(MantleFixture.Reply(new MemoryStream(MantleFixture.Bytes(output.ToJsonString())), false)));
+        var factory = new AwsHttpFactory(handler); var clock = new AwsClock(); var credentials = new AwsCredentialSource(clock);
+        var native = apiKey ? new AwsLlmProvider(factory, new AwsLlmOptions { Region = "us-east-1" })
+            : new AwsLlmProvider(factory, credentials, new() { Region = "us-east-1" }, timeProvider: clock);
+        var provider = new ConvertingBedrockLlmProvider(native, LlmProtocol.BedrockConverse, "explicit"); var store = AwsFixture.Store();
+        await using var client = BedrockConversionFixture.Client(provider, LlmProtocol.Responses, apiKey, store);
+        var token = TestContext.Current.CancellationToken; var result = await Complete(client, LlmProtocol.Responses, Read(LlmProtocol.Responses, "request"), token);
+        Assert.Matches("^loki_[0-9a-f]{32}$", result.Id!); var binding = await store.GetAsync("text-converse", token); Assert.NotNull(binding);
+        Assert.False(await store.OwnsResponseAsync(binding, result.Id!, token));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => client.LLM.Responses.CreateAsync(new()
+            { Model = "public", Input = "next", PreviousResponseId = result.Id }, new() { SessionId = "text-converse" }, token));
+        Assert.Equal(1, handler.Calls); Assert.Equal(apiKey ? 0 : 1, credentials.Calls);
+    }
+
     /// <summary>每个公开协议独立覆盖 Runtime Bearer 与借用凭据源的 SigV4。</summary>
     public static IEnumerable<object[]> Calls()
     {

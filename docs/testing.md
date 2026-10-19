@@ -223,3 +223,9 @@ Local Release solution validation for this checkpoint passed with zero warnings/
 An AWS contract audit found that the old positive Nova2 high request incorrectly retained maxTokens. Three hand-authored positive v2 bodies now use medium while preserving 8192, and the high positive test explicitly omits maxTokens. Eight conversion variants preserve high plus the invalid limit and assert rejection/immutability across direction, layout and loss consent. Two public AWS cases additionally assert failure before credential/HTTP. Existing high sampling tests now explicitly set high and remove the independent maxTokens conflict, so each negative verifies its intended cause.
 
 The high/limit correction passed the local Release solution build with zero warnings/errors and all **6584 offline tests** (2284 conversion, 756 AWS), plus a fresh 28-package pack/boundary/metadata verification without upload. No native live call, remote action or Linux execution was performed.
+
+## Converted Responses continuation ownership
+
+Twelve core cases use the same visible ID for native and converted complete/stream results, with real MemoryDistributedCache and explicit test coordination. Before the correction, ten converted cases failed and the two native controls passed. They now verify both actual cache ownership and whether continuation reaches the adapter. Two AWS public SDK cases additionally exercise real Converse conversion over substitute SigV4/Bearer HTTP, retain the synthetic JSON ID and reject continuation without a second HTTP/signing operation. This is offline ownership/protocol evidence, not live model validation.
+
+This ownership checkpoint passed the local Release solution build with zero warnings/errors, **6598 offline tests** (220 core, 2284 conversion, 758 AWS) and fresh **28-package** boundary/metadata verification without upload. No push, GitHub Actions or live model execution was performed.

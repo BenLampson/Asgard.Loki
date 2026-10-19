@@ -52,7 +52,9 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
         payload["model"] = call.Context.Target.UpstreamModel;
         var response = await ((IResponsesAdapter)call.Provider).CreateAsync(
             payload, call.Context, cancellationToken).ConfigureAwait(false);
-        if (response.Id is not null) await invocation.Sessions.BindResponseAsync(call.Binding, response.Id, cancellationToken).ConfigureAwait(false);
+        // 转换结果的可见 ID 不代表上游存在可续接的原生 Responses 对象。
+        if (response.Metadata.Conversion is null && response.Id is not null)
+            await invocation.Sessions.BindResponseAsync(call.Binding, response.Id, cancellationToken).ConfigureAwait(false);
         return response;
     }
 
@@ -69,7 +71,8 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
             payload, call.Context, cancellationToken).ConfigureAwait(false))
         {
             // 未知扩展中的同名业务对象不代表原生响应生命周期，不能登记为可续接响应。
-            if (item.Type is "response.created" or "response.in_progress" or "response.queued" or "response.completed" or "response.failed" or "response.incomplete"
+            if (item.Metadata.Conversion is null
+                && item.Type is ("response.created" or "response.in_progress" or "response.queued" or "response.completed" or "response.failed" or "response.incomplete")
                 && item.Data.TryGetProperty("response", out var response) && response.ValueKind == JsonValueKind.Object
                 && response.TryGetProperty("id", out var id) && id.ValueKind == JsonValueKind.String)
                 await invocation.Sessions.BindResponseAsync(call.Binding, id.GetString()!, cancellationToken).ConfigureAwait(false);
