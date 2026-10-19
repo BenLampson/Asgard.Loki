@@ -1098,6 +1098,26 @@ MaaS has a separate explicit provider/Session identity. Stable principal/source 
 
 SSE retains original choice/tool indices, IDs, name/argument fragments, reasoning, usage and unknown event metadata without aggregation or rewriting. The private state bounds association counts, validates exact numeric indices, stable IDs and native choice finishes, and rejects repeated/reopened/missing or mismatched state. Every event from the first finish onward waits for native DONE, EOF/length and complete disposal before delivery; no successful terminal escapes late errors or cancellation. A bounded pending tail avoids unbounded terminal buffering; raw-byte bounds apply before line parsing. Unknown native finish reasons remain native. The SSE semantics change the MaaS binding domain, requiring fresh Sessions for its JSON-only predecessor. Sixty-two additional cases bring Vertex coverage to 451; real cloud identity/model acceptance remains unverified. See the [MaaS initialization and limits](../src/Asgard.Loki.LLM.GoogleVertex/README.md#explicit-maas-chat-jsonsse).
 
+### AWS Bedrock native Claude provider
+
+`Asgard.Loki.LLM.AWS` references only the LLM capability and standard HTTP. Its `AwsLlmProvider` implements the existing ClaudeMessages adapter for complete InvokeModel JSON; it does not reference another supplier or Conversion. The Runtime root/proxy and actual model ID/profile/ARN are explicit target fields. Region, body version, byte policy, named client and independently snapshotted native request headers are explicit provider configuration.
+
+```mermaid
+classDiagram
+IClaudeMessagesAdapter <|.. AwsLlmProvider
+ILlmCredentialSupport <|.. AwsLlmProvider
+AwsLlmProvider --> AwsLlmOptions : snapshots
+AwsLlmProvider --> IAwsLlmCredentialSource : borrows
+IAwsLlmCredentialSource --> AwsLlmSigningCredentials : immutable principal and expiry assertion
+AwsLlmProvider --> IHttpClientFactory : borrows
+AwsLlmProvider ..> AwsSigV4 : private HMAC signing
+AwsLlmProvider ..> AwsJson : private strict bounded JSON
+```
+
+The existing External principal contract binds stable source/role identity and complete target/configuration; refreshed access keys/tokens do not invalidate Sessions. Credentials are acquired once, with assertion/source/expiry checks and another check immediately before signing/sending. Signing uses the actual host/body/native headers, optional Session Token, explicit region and service bedrock. Model slashes stay within an escaped path parameter; canonical non-S3 SigV4 double encoding is independent of wire escaping. Default authentication/request settings cannot inject an unselected token or native control. Derived signing keys are cleared, not cached. No cloud login, default credential discovery, role assumption, clock-skew retry or model failover is implemented.
+
+Only routed model/stream and selected anthropic_version change in the body; native tool/results IDs, reasoning/signatures, schemas/cache/usage and unknown values remain raw. Strict encoding/duplicate JSON, exact raw lengths, EOF/disposal and final cancellation guard success; native errors preserve status/body. Binary EventStream, Converse/Nova and Bearer/Mantle are separate pending operations, not inferred from a model name. Ninety-one offline cases verify independent full native and signing vectors, public SDK wire, stable Sessions/source faults, transport boundaries and explicit text conversion. No real AWS identity or model acceptance is claimed. See the [supplier initialization and limits](../src/Asgard.Loki.LLM.AWS/README.md).
+
 ## 7. HTTP and errors
 
 Providers own address/authentication/protocol mapping. API roots include their version path. Do not hard-code model lists or rewrite model suffixes heuristically.

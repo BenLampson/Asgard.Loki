@@ -14,6 +14,7 @@
     <Project Path="src/Asgard.Loki.LLM.Ollama/Asgard.Loki.LLM.Ollama.csproj" />
     <Project Path="src/Asgard.Loki.LLM.Azure/Asgard.Loki.LLM.Azure.csproj" />
     <Project Path="src/Asgard.Loki.LLM.GoogleVertex/Asgard.Loki.LLM.GoogleVertex.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.AWS/Asgard.Loki.LLM.AWS.csproj" />
     <Project Path="src/Asgard.Loki.LLM.Conversion/Asgard.Loki.LLM.Conversion.csproj" />
     <Project Path="src/Asgard.Loki.Image/Asgard.Loki.Image.csproj" />
     <Project Path="src/Asgard.Loki.Embedding/Asgard.Loki.Embedding.csproj" />
@@ -42,6 +43,7 @@
     <Project Path="tests/Asgard.Loki.LLM.Ollama.Tests/Asgard.Loki.LLM.Ollama.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.Azure.Tests/Asgard.Loki.LLM.Azure.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.GoogleVertex.Tests/Asgard.Loki.LLM.GoogleVertex.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.AWS.Tests/Asgard.Loki.LLM.AWS.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.Conversion.Tests/Asgard.Loki.LLM.Conversion.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.OpenAI.Tests/Asgard.Loki.Image.OpenAI.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Tests/Asgard.Loki.Image.Tests.csproj" />

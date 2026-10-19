@@ -1,0 +1,14 @@
+{
+  "max_tokens": 512,
+  "system": [{"type":"text","text":"原生 é 🚀","cache_control":{"type":"ephemeral"}}],
+  "messages": [
+    {"role":"user","content":[{"type":"text","text":"lookup"}]},
+    {"role":"assistant","content":[{"type":"thinking","thinking":"opaque","signature":"original-signature"},{"type":"tool_use","id":"tool-native-7","name":"lookup","input":{"id":9007199254740993}}]},
+    {"role":"user","content":[{"type":"tool_result","tool_use_id":"tool-native-7","is_error":true,"content":[{"type":"text","text":"native error result"}]}]}
+  ],
+  "tools":[{"name":"lookup","description":"native tool","input_schema":{"type":"object","properties":{"id":{"type":"integer"}},"required":["id"]}}],
+  "tool_choice":{"type":"auto"}, "thinking":{"type":"enabled","budget_tokens":128},
+  "output_config":{"format":{"type":"json_schema","schema":{"type":"object","properties":{"value":{"type":"integer"}},"required":["value"],"additionalProperties":false}}},
+  "anthropic_beta":["fixture-native-beta"], "future":{"integer":9223372036854775807,"false":false,"nil":null,"empty":[]},
+  "anthropic_version":"bedrock-2023-05-31"
+}

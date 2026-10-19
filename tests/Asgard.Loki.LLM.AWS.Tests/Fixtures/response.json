@@ -1,0 +1,7 @@
+{
+  "id":"native-bedrock-message", "type":"message", "role":"assistant", "model":"native-returned-model",
+  "content":[{"type":"thinking","thinking":"native reasoning","signature":"native-signed-thinking"},{"type":"redacted_thinking","data":"opaque-original-data"},{"type":"tool_use","id":"tool-native-next","name":"lookup","input":{"id":9007199254740993},"future":null}],
+  "stop_reason":"tool_use", "stop_sequence":null,
+  "usage":{"input_tokens":11,"output_tokens":7,"cache_read_input_tokens":0,"cache_creation_input_tokens":2,"future":false},
+  "future":{"integer":9223372036854775807,"nil":null,"empty":[],"false":false}
+}
