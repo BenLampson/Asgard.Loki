@@ -68,18 +68,18 @@ public sealed class BedrockCompleteConversionTests
     [Theory] [InlineData(true, "format")] [InlineData(false, "format")]
     [InlineData(true, "layout")] [InlineData(false, "layout")]
     [InlineData(true, "document")] [InlineData(false, "document")]
-    [InlineData(true, "stream")] [InlineData(false, "stream")]
+    [InlineData(true, "stream-format")] [InlineData(false, "stream-format")]
     public async Task UnsupportedCalls_FailBeforeCredentialOrHttp(bool nova, string kind)
     {
         using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException("must not send")); var clock = new AwsClock(); var source = new AwsCredentialSource(clock); var factory = new AwsHttpFactory(handler);
         var native = new AwsLlmProvider(factory, source, new() { Region = "us-east-1" }, timeProvider: clock); var options = Options();
-        if (kind == "format") options = options with { BedrockNovaRequestFormat = BedrockNovaRequestFormat.Unspecified };
+        if (kind is "format" or "stream-format") options = options with { BedrockNovaRequestFormat = BedrockNovaRequestFormat.Unspecified };
         if (kind == "layout") options = options with { BedrockConverseInferenceFormat = BedrockConverseInferenceFormat.Unspecified };
         var provider = new ConvertingBedrockLlmProvider(native, nova ? LlmProtocol.BedrockConverse : LlmProtocol.BedrockNova, "explicit", options);
         await using var client = Client(provider, nova ? LlmProtocol.BedrockNova : LlmProtocol.BedrockConverse); var input = Read("v2", nova ? "Nova" : "ConverseDirect");
         if (kind == "document") input["messages"]![0]!["content"]!.AsArray().Add(new JsonObject { ["document"] = new JsonObject() });
-        var failure = await Record.ExceptionAsync(async () => { if (kind == "stream") await Stream(client, nova, input, TestContext.Current.CancellationToken); else await Complete(client, nova, input, TestContext.Current.CancellationToken); });
-        if (kind == "stream") Assert.IsType<NotSupportedException>(failure); else if (kind == "document") Assert.IsType<LlmConversionException>(failure); else Assert.IsType<ArgumentException>(failure);
+        var failure = await Record.ExceptionAsync(async () => { if (kind == "stream-format") await Stream(client, nova, input, TestContext.Current.CancellationToken); else await Complete(client, nova, input, TestContext.Current.CancellationToken); });
+        if (kind == "document") Assert.IsType<LlmConversionException>(failure); else Assert.IsType<ArgumentException>(failure);
         Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients); Assert.Equal(0, handler.Calls);
     }
 

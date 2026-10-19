@@ -1407,3 +1407,29 @@ classDiagram
 ```
 
 Only common text/ordinary-tool native events map. Original indices/IDs/fragments/ordering remain native; malformed arguments, duplicate properties, historical-ID reuse, invalid source state and native-only opaque/execution blocks fail even with loss consent. Terminal candidates wait for a caller-confirmed normal source end and disposal; EOF never invents a stop. Resource/diagnostic state is finite and default-omitted nullable policies preserve preceding serialized options. The result exposes logical EventType, source event name and complete original JSON without a fabricated binary frame. This data-layer API does not acquire HTTP/credentials or perform SDK-native transport composition. Its 139 pure regressions and independent 15-event source/target declarations are distinct from supplier/live acceptance.
+
+## SDK composition of native logical streams
+
+The existing Bedrock decorator now composes the dedicated data converter with one selected native adapter enumeration. Request conversion occurs before acquisition, the native stream is enumerated once, and `Complete` runs only after source enumeration/disposal and final cancellation succeed. Same-protocol streams bypass mapping and return original event objects; the four-protocol decorator still advertises no Bedrock interfaces.
+
+```mermaid
+sequenceDiagram
+    participant SDK as Public Bedrock client
+    participant Wrapper as ConvertingBedrockLlmProvider
+    participant Native as Fixed native adapter
+    participant Mapper as BedrockProtocolStreamConverter
+    SDK->>Wrapper: Explicit target/request/options
+    Wrapper->>Native: One converted native stream call
+    loop Known source logical events
+        Native-->>Wrapper: Original event/JSON/name
+        Wrapper->>Mapper: Whole JSON and source name
+        Mapper-->>SDK: Incremental text/tool events
+    end
+    Native-->>Wrapper: Normal end and async disposal
+    Wrapper->>Mapper: Complete after cancellation check
+    Mapper-->>SDK: Original stop and usage metadata
+```
+
+Converted Converse logical names and Nova explicit types identify target JSON without pretending a binary header/frame exists. Public conversion metadata retains original source JSON/diagnostics, while the direct result additionally keeps the source event name. Original binary attachments are kept only on original identity-stream event instances. The historical `bedrock-json-conversion-v1` default identity stays byte-compatible because new nullable resource policies are omitted by default; explicit policies change the full target fingerprint. AWS/core/four-protocol identities and package dependency directions stay unchanged.
+
+139 pure data cases, fourteen application-adapter ownership/cancellation cases and 58 AWS native HTTP/frame cases add 211 checks, for 6461 offline tests (2212 conversion, 722 AWS), 28 packages. Source tests explicitly include async-only iterator disposal failure; new native AWS tests preserve their existing actual source-disposal coverage rather than claiming every older native path was strengthened. No live/model/Linux/remote CI claim is added. Broader native stream blocks and mixed text-protocol mappings remain open.
