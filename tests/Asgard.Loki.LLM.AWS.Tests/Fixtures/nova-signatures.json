@@ -1,0 +1,178 @@
+[
+  {
+    "version": "v1",
+    "publicSdk": false,
+    "arn": false,
+    "temporary": false,
+    "model": "us.amazon.nova-lite-v1:0",
+    "uri": "https://first.invalid/proxy/model/us.amazon.nova-lite-v1%3A0/invoke",
+    "body": "{\"schemaVersion\":\"messages-v1\",\"system\":[{\"text\":\"\\u539F\\u751F\\u4E2D\\u6587\",\"future\":false}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u67E5\\u8BE2\\u56FE\\u50CF\"},{\"image\":{\"format\":\"png\",\"source\":{\"bytes\":\"AAE=\"}}},{\"video\":{\"format\":\"mp4\",\"source\":{\"s3Location\":{\"uri\":\"s3://bucket/video.mp4\",\"bucketOwner\":\"123456789012\"}}}}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false,\"nil\":null}},{\"text\":\"known\"}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":512,\"temperature\":0.1,\"topP\":0.9,\"topK\":0,\"stopSequences\":[\"stop\"],\"future\":false},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"description\":\"\\u67E5\\u627E\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "fad1df91beb2992c64b6565688946700f2e363d941a580e1a4eb371baa1f9615",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=23e6621beea6079a92f61bc4a6902925e02fc7a7bf35d44fa6fbb674752b5305"
+  },
+  {
+    "version": "v1",
+    "publicSdk": false,
+    "arn": false,
+    "temporary": true,
+    "model": "us.amazon.nova-lite-v1:0",
+    "uri": "https://first.invalid/proxy/model/us.amazon.nova-lite-v1%3A0/invoke",
+    "body": "{\"schemaVersion\":\"messages-v1\",\"system\":[{\"text\":\"\\u539F\\u751F\\u4E2D\\u6587\",\"future\":false}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u67E5\\u8BE2\\u56FE\\u50CF\"},{\"image\":{\"format\":\"png\",\"source\":{\"bytes\":\"AAE=\"}}},{\"video\":{\"format\":\"mp4\",\"source\":{\"s3Location\":{\"uri\":\"s3://bucket/video.mp4\",\"bucketOwner\":\"123456789012\"}}}}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false,\"nil\":null}},{\"text\":\"known\"}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":512,\"temperature\":0.1,\"topP\":0.9,\"topK\":0,\"stopSequences\":[\"stop\"],\"future\":false},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"description\":\"\\u67E5\\u627E\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "fad1df91beb2992c64b6565688946700f2e363d941a580e1a4eb371baa1f9615",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-trace, Signature=f196925558ce07568a4d9eb4a0a5b31d68d8072258db7accc2e9451143eb6202"
+  },
+  {
+    "version": "v1",
+    "publicSdk": false,
+    "arn": true,
+    "temporary": false,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/nova-profile:0",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fnova-profile%3A0/invoke",
+    "body": "{\"schemaVersion\":\"messages-v1\",\"system\":[{\"text\":\"\\u539F\\u751F\\u4E2D\\u6587\",\"future\":false}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u67E5\\u8BE2\\u56FE\\u50CF\"},{\"image\":{\"format\":\"png\",\"source\":{\"bytes\":\"AAE=\"}}},{\"video\":{\"format\":\"mp4\",\"source\":{\"s3Location\":{\"uri\":\"s3://bucket/video.mp4\",\"bucketOwner\":\"123456789012\"}}}}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false,\"nil\":null}},{\"text\":\"known\"}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":512,\"temperature\":0.1,\"topP\":0.9,\"topK\":0,\"stopSequences\":[\"stop\"],\"future\":false},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"description\":\"\\u67E5\\u627E\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "fad1df91beb2992c64b6565688946700f2e363d941a580e1a4eb371baa1f9615",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=cf3fa5bc0d03625a95711a526d54b6b78939c14a9c7100717243d252d245bf6b"
+  },
+  {
+    "version": "v1",
+    "publicSdk": false,
+    "arn": true,
+    "temporary": true,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/nova-profile:0",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fnova-profile%3A0/invoke",
+    "body": "{\"schemaVersion\":\"messages-v1\",\"system\":[{\"text\":\"\\u539F\\u751F\\u4E2D\\u6587\",\"future\":false}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u67E5\\u8BE2\\u56FE\\u50CF\"},{\"image\":{\"format\":\"png\",\"source\":{\"bytes\":\"AAE=\"}}},{\"video\":{\"format\":\"mp4\",\"source\":{\"s3Location\":{\"uri\":\"s3://bucket/video.mp4\",\"bucketOwner\":\"123456789012\"}}}}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false,\"nil\":null}},{\"text\":\"known\"}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":512,\"temperature\":0.1,\"topP\":0.9,\"topK\":0,\"stopSequences\":[\"stop\"],\"future\":false},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"description\":\"\\u67E5\\u627E\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "fad1df91beb2992c64b6565688946700f2e363d941a580e1a4eb371baa1f9615",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-trace, Signature=8110c1e916ed65bd1ca9d86bb00b5063815dbf1ef8e97ec975ffbcf531466691"
+  },
+  {
+    "version": "v1",
+    "publicSdk": true,
+    "arn": false,
+    "temporary": false,
+    "model": "us.amazon.nova-lite-v1:0",
+    "uri": "https://first.invalid/proxy/model/us.amazon.nova-lite-v1%3A0/invoke",
+    "body": "{\"schemaVersion\":\"messages-v1\",\"system\":[{\"text\":\"\\u539F\\u751F\\u4E2D\\u6587\",\"future\":false}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u67E5\\u8BE2\\u56FE\\u50CF\"},{\"image\":{\"format\":\"png\",\"source\":{\"bytes\":\"AAE=\"}}},{\"video\":{\"format\":\"mp4\",\"source\":{\"s3Location\":{\"uri\":\"s3://bucket/video.mp4\",\"bucketOwner\":\"123456789012\"}}}}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false,\"nil\":null}},{\"text\":\"known\"}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":512,\"temperature\":0.1,\"topP\":0.9,\"topK\":0,\"stopSequences\":[\"stop\"],\"future\":false},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"description\":\"\\u67E5\\u627E\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "fad1df91beb2992c64b6565688946700f2e363d941a580e1a4eb371baa1f9615",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=23e6621beea6079a92f61bc4a6902925e02fc7a7bf35d44fa6fbb674752b5305"
+  },
+  {
+    "version": "v1",
+    "publicSdk": true,
+    "arn": false,
+    "temporary": true,
+    "model": "us.amazon.nova-lite-v1:0",
+    "uri": "https://first.invalid/proxy/model/us.amazon.nova-lite-v1%3A0/invoke",
+    "body": "{\"schemaVersion\":\"messages-v1\",\"system\":[{\"text\":\"\\u539F\\u751F\\u4E2D\\u6587\",\"future\":false}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u67E5\\u8BE2\\u56FE\\u50CF\"},{\"image\":{\"format\":\"png\",\"source\":{\"bytes\":\"AAE=\"}}},{\"video\":{\"format\":\"mp4\",\"source\":{\"s3Location\":{\"uri\":\"s3://bucket/video.mp4\",\"bucketOwner\":\"123456789012\"}}}}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false,\"nil\":null}},{\"text\":\"known\"}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":512,\"temperature\":0.1,\"topP\":0.9,\"topK\":0,\"stopSequences\":[\"stop\"],\"future\":false},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"description\":\"\\u67E5\\u627E\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "fad1df91beb2992c64b6565688946700f2e363d941a580e1a4eb371baa1f9615",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-trace, Signature=f196925558ce07568a4d9eb4a0a5b31d68d8072258db7accc2e9451143eb6202"
+  },
+  {
+    "version": "v1",
+    "publicSdk": true,
+    "arn": true,
+    "temporary": false,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/nova-profile:0",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fnova-profile%3A0/invoke",
+    "body": "{\"schemaVersion\":\"messages-v1\",\"system\":[{\"text\":\"\\u539F\\u751F\\u4E2D\\u6587\",\"future\":false}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u67E5\\u8BE2\\u56FE\\u50CF\"},{\"image\":{\"format\":\"png\",\"source\":{\"bytes\":\"AAE=\"}}},{\"video\":{\"format\":\"mp4\",\"source\":{\"s3Location\":{\"uri\":\"s3://bucket/video.mp4\",\"bucketOwner\":\"123456789012\"}}}}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false,\"nil\":null}},{\"text\":\"known\"}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":512,\"temperature\":0.1,\"topP\":0.9,\"topK\":0,\"stopSequences\":[\"stop\"],\"future\":false},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"description\":\"\\u67E5\\u627E\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "fad1df91beb2992c64b6565688946700f2e363d941a580e1a4eb371baa1f9615",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=cf3fa5bc0d03625a95711a526d54b6b78939c14a9c7100717243d252d245bf6b"
+  },
+  {
+    "version": "v1",
+    "publicSdk": true,
+    "arn": true,
+    "temporary": true,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/nova-profile:0",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fnova-profile%3A0/invoke",
+    "body": "{\"schemaVersion\":\"messages-v1\",\"system\":[{\"text\":\"\\u539F\\u751F\\u4E2D\\u6587\",\"future\":false}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u67E5\\u8BE2\\u56FE\\u50CF\"},{\"image\":{\"format\":\"png\",\"source\":{\"bytes\":\"AAE=\"}}},{\"video\":{\"format\":\"mp4\",\"source\":{\"s3Location\":{\"uri\":\"s3://bucket/video.mp4\",\"bucketOwner\":\"123456789012\"}}}}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false,\"nil\":null}},{\"text\":\"known\"}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":512,\"temperature\":0.1,\"topP\":0.9,\"topK\":0,\"stopSequences\":[\"stop\"],\"future\":false},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"description\":\"\\u67E5\\u627E\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "fad1df91beb2992c64b6565688946700f2e363d941a580e1a4eb371baa1f9615",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-trace, Signature=8110c1e916ed65bd1ca9d86bb00b5063815dbf1ef8e97ec975ffbcf531466691"
+  },
+  {
+    "version": "v2",
+    "publicSdk": false,
+    "arn": false,
+    "temporary": false,
+    "model": "us.amazon.nova-2-lite-v1:0",
+    "uri": "https://first.invalid/proxy/model/us.amazon.nova-2-lite-v1%3A0/invoke",
+    "body": "{\"system\":[{\"text\":\"Nova 2 \\u539F\\u751F\"}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u8FD4\\u56DE JSON\"}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false}}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":2048,\"topK\":0,\"reasoningConfig\":{\"type\":\"enabled\",\"maxReasoningEffort\":\"high\"}},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "7502dbaf3f48277cdd57efe1621a1bdee08418b06a6a3c966dcb970dba9815f1",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=744e653c8ec8452f4a547bce0fef2e07d42b6bf30d25587ca1fba520599ae25b"
+  },
+  {
+    "version": "v2",
+    "publicSdk": false,
+    "arn": false,
+    "temporary": true,
+    "model": "us.amazon.nova-2-lite-v1:0",
+    "uri": "https://first.invalid/proxy/model/us.amazon.nova-2-lite-v1%3A0/invoke",
+    "body": "{\"system\":[{\"text\":\"Nova 2 \\u539F\\u751F\"}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u8FD4\\u56DE JSON\"}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false}}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":2048,\"topK\":0,\"reasoningConfig\":{\"type\":\"enabled\",\"maxReasoningEffort\":\"high\"}},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "7502dbaf3f48277cdd57efe1621a1bdee08418b06a6a3c966dcb970dba9815f1",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-trace, Signature=e138d1150f0fc5c192f725134e06d076c01510e1dfd260fe1275e5f638922d09"
+  },
+  {
+    "version": "v2",
+    "publicSdk": false,
+    "arn": true,
+    "temporary": false,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/nova-profile:0",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fnova-profile%3A0/invoke",
+    "body": "{\"system\":[{\"text\":\"Nova 2 \\u539F\\u751F\"}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u8FD4\\u56DE JSON\"}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false}}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":2048,\"topK\":0,\"reasoningConfig\":{\"type\":\"enabled\",\"maxReasoningEffort\":\"high\"}},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "7502dbaf3f48277cdd57efe1621a1bdee08418b06a6a3c966dcb970dba9815f1",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=31547a241802bb9d27967a82b04d4e2569340f5b1c49dc2d5f586aac8787ef0e"
+  },
+  {
+    "version": "v2",
+    "publicSdk": false,
+    "arn": true,
+    "temporary": true,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/nova-profile:0",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fnova-profile%3A0/invoke",
+    "body": "{\"system\":[{\"text\":\"Nova 2 \\u539F\\u751F\"}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u8FD4\\u56DE JSON\"}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false}}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":2048,\"topK\":0,\"reasoningConfig\":{\"type\":\"enabled\",\"maxReasoningEffort\":\"high\"}},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "7502dbaf3f48277cdd57efe1621a1bdee08418b06a6a3c966dcb970dba9815f1",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-trace, Signature=bd05aa4f7ef1f11b32f5323117cb3b8bb7d7e9774388851439a26a91c6cbef8a"
+  },
+  {
+    "version": "v2",
+    "publicSdk": true,
+    "arn": false,
+    "temporary": false,
+    "model": "us.amazon.nova-2-lite-v1:0",
+    "uri": "https://first.invalid/proxy/model/us.amazon.nova-2-lite-v1%3A0/invoke",
+    "body": "{\"system\":[{\"text\":\"Nova 2 \\u539F\\u751F\"}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u8FD4\\u56DE JSON\"}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false}}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":2048,\"topK\":0,\"reasoningConfig\":{\"type\":\"enabled\",\"maxReasoningEffort\":\"high\"}},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "7502dbaf3f48277cdd57efe1621a1bdee08418b06a6a3c966dcb970dba9815f1",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=744e653c8ec8452f4a547bce0fef2e07d42b6bf30d25587ca1fba520599ae25b"
+  },
+  {
+    "version": "v2",
+    "publicSdk": true,
+    "arn": false,
+    "temporary": true,
+    "model": "us.amazon.nova-2-lite-v1:0",
+    "uri": "https://first.invalid/proxy/model/us.amazon.nova-2-lite-v1%3A0/invoke",
+    "body": "{\"system\":[{\"text\":\"Nova 2 \\u539F\\u751F\"}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u8FD4\\u56DE JSON\"}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false}}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":2048,\"topK\":0,\"reasoningConfig\":{\"type\":\"enabled\",\"maxReasoningEffort\":\"high\"}},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "7502dbaf3f48277cdd57efe1621a1bdee08418b06a6a3c966dcb970dba9815f1",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-trace, Signature=e138d1150f0fc5c192f725134e06d076c01510e1dfd260fe1275e5f638922d09"
+  },
+  {
+    "version": "v2",
+    "publicSdk": true,
+    "arn": true,
+    "temporary": false,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/nova-profile:0",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fnova-profile%3A0/invoke",
+    "body": "{\"system\":[{\"text\":\"Nova 2 \\u539F\\u751F\"}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u8FD4\\u56DE JSON\"}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false}}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":2048,\"topK\":0,\"reasoningConfig\":{\"type\":\"enabled\",\"maxReasoningEffort\":\"high\"}},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "7502dbaf3f48277cdd57efe1621a1bdee08418b06a6a3c966dcb970dba9815f1",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=31547a241802bb9d27967a82b04d4e2569340f5b1c49dc2d5f586aac8787ef0e"
+  },
+  {
+    "version": "v2",
+    "publicSdk": true,
+    "arn": true,
+    "temporary": true,
+    "model": "arn:aws:bedrock:us-east-1:123456789012:inference-profile/nova-profile:0",
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fnova-profile%3A0/invoke",
+    "body": "{\"system\":[{\"text\":\"Nova 2 \\u539F\\u751F\"}],\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"\\u8FD4\\u56DE JSON\"}]},{\"role\":\"assistant\",\"content\":[{\"toolUse\":{\"toolUseId\":\"call_prev\",\"name\":\"lookup\",\"input\":{\"n\":9007199254740993}}}]},{\"role\":\"user\",\"content\":[{\"toolResult\":{\"toolUseId\":\"call_prev\",\"content\":[{\"json\":{\"ok\":false}}],\"status\":\"success\"}},{\"text\":\"\\u7EE7\\u7EED\"}]}],\"inferenceConfig\":{\"maxTokens\":2048,\"topK\":0,\"reasoningConfig\":{\"type\":\"enabled\",\"maxReasoningEffort\":\"high\"}},\"toolConfig\":{\"tools\":[{\"toolSpec\":{\"name\":\"lookup\",\"inputSchema\":{\"json\":{\"type\":\"object\",\"properties\":{\"n\":{\"type\":\"integer\"}},\"required\":[\"n\"],\"additionalProperties\":false}}}}],\"toolChoice\":{\"auto\":{}}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"nil\":null,\"opaque\":\"caller-owned-state\"}}",
+    "payloadHash": "7502dbaf3f48277cdd57efe1621a1bdee08418b06a6a3c966dcb970dba9815f1",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-trace, Signature=bd05aa4f7ef1f11b32f5323117cb3b8bb7d7e9774388851439a26a91c6cbef8a"
+  }
+]

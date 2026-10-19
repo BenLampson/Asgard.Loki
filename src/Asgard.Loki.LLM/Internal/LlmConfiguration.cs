@@ -107,7 +107,7 @@ internal sealed class LlmConfiguration
         var supported = provider is ILlmCredentialSupport declared ? declared.SupportsCredential(credential.Kind) : credential.Kind == LlmCredentialKind.ApiKey;
         if (!supported) throw new ArgumentException("目标供应商未声明支持所选认证方式，不允许自动降级或借用凭据。");
         if (target.Protocols == LlmProtocol.None || (target.Protocols & ~(LlmProtocol.ChatCompletions | LlmProtocol.Responses
-            | LlmProtocol.ClaudeMessages | LlmProtocol.Gemini | LlmProtocol.OllamaChat | LlmProtocol.OllamaGenerate | LlmProtocol.BedrockConverse)) != 0)
+            | LlmProtocol.ClaudeMessages | LlmProtocol.Gemini | LlmProtocol.OllamaChat | LlmProtocol.OllamaGenerate | LlmProtocol.BedrockConverse | LlmProtocol.BedrockNova)) != 0)
             throw new ArgumentException("目标协议能力无效。");
         if ((target.Features & ~(LlmTargetFeatures.ResponsesCompaction | LlmTargetFeatures.ResponsesWebSocket)) != 0)
             throw new ArgumentException("目标可选操作无效。");
@@ -123,7 +123,8 @@ internal sealed class LlmConfiguration
             || target.Protocols.HasFlag(LlmProtocol.Gemini) && provider is not IGeminiAdapter
             || target.Protocols.HasFlag(LlmProtocol.OllamaChat) && provider is not IOllamaChatAdapter
             || target.Protocols.HasFlag(LlmProtocol.OllamaGenerate) && provider is not IOllamaGenerateAdapter
-            || target.Protocols.HasFlag(LlmProtocol.BedrockConverse) && provider is not IBedrockConverseAdapter)
+            || target.Protocols.HasFlag(LlmProtocol.BedrockConverse) && provider is not IBedrockConverseAdapter
+            || target.Protocols.HasFlag(LlmProtocol.BedrockNova) && provider is not IBedrockNovaAdapter)
             throw new ArgumentException("目标声明的协议没有对应适配实现。");
         return target;
     }

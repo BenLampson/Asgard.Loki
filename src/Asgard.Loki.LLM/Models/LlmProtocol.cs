@@ -19,5 +19,7 @@ public enum LlmProtocol
     /// <summary>Ollama 原生 api/generate JSON 与 NDJSON 协议。</summary>
     OllamaGenerate = 32,
     /// <summary>Amazon Bedrock Converse 原生协议，不等同于 Claude Messages。</summary>
-    BedrockConverse = 64
+    BedrockConverse = 64,
+    /// <summary>Amazon Nova 理解模型的 InvokeModel 原生协议，不等同于 Converse。</summary>
+    BedrockNova = 128
 }

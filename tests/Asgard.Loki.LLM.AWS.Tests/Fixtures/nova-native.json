@@ -1,0 +1,295 @@
+{
+  "provenance": "Hand-authored raw Nova Invoke v1/v2 examples; not model/account verification.",
+  "v1": {
+    "request": {
+      "model": "public",
+      "schemaVersion": "messages-v1",
+      "system": [
+        {
+          "text": "原生中文",
+          "future": false
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "查询图像"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AAE="
+                }
+              }
+            },
+            {
+              "video": {
+                "format": "mp4",
+                "source": {
+                  "s3Location": {
+                    "uri": "s3://bucket/video.mp4",
+                    "bucketOwner": "123456789012"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "call_prev",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "call_prev",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false,
+                      "nil": null
+                    }
+                  },
+                  {
+                    "text": "known"
+                  }
+                ],
+                "status": "success"
+              }
+            },
+            {
+              "text": "继续"
+            }
+          ]
+        }
+      ],
+      "inferenceConfig": {
+        "maxTokens": 512,
+        "temperature": 0.1,
+        "topP": 0.9,
+        "topK": 0,
+        "stopSequences": [
+          "stop"
+        ],
+        "future": false
+      },
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "查找",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ],
+        "toolChoice": {
+          "auto": {}
+        }
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "nil": null,
+        "opaque": "caller-owned-state"
+      }
+    },
+    "response": {
+      "output": {
+        "message": {
+          "role": "assistant",
+          "content": [
+            {
+              "text": "需要查询"
+            },
+            {
+              "toolUse": {
+                "toolUseId": "call_new",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993
+                },
+                "future": false
+              }
+            }
+          ]
+        }
+      },
+      "stopReason": "tool_use",
+      "usage": {
+        "inputTokens": 17,
+        "outputTokens": 8,
+        "totalTokens": 25,
+        "future": 0
+      },
+      "metrics": {
+        "latencyMs": 9,
+        "future": null
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "nil": null
+      },
+      "type": "error"
+    }
+  },
+  "v2": {
+    "request": {
+      "model": "public",
+      "system": [
+        {
+          "text": "Nova 2 原生"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "返回 JSON"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "call_prev",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "call_prev",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false
+                    }
+                  }
+                ],
+                "status": "success"
+              }
+            },
+            {
+              "text": "继续"
+            }
+          ]
+        }
+      ],
+      "inferenceConfig": {
+        "maxTokens": 2048,
+        "topK": 0,
+        "reasoningConfig": {
+          "type": "enabled",
+          "maxReasoningEffort": "high"
+        }
+      },
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ],
+        "toolChoice": {
+          "auto": {}
+        }
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "nil": null,
+        "opaque": "caller-owned-state"
+      }
+    },
+    "response": {
+      "output": {
+        "message": {
+          "role": "assistant",
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "text": "[REDACTED]"
+                },
+                "future": false
+              }
+            },
+            {
+              "text": "{\"ok\":false,\"n\":9007199254740993}"
+            }
+          ]
+        }
+      },
+      "stopReason": "end_turn",
+      "usage": {
+        "inputTokens": 17,
+        "outputTokens": 8,
+        "totalTokens": 25,
+        "future": 0
+      },
+      "metrics": {
+        "latencyMs": 9
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "nil": null
+      }
+    }
+  }
+}

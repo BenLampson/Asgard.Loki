@@ -7,7 +7,7 @@ using Asgard.Loki.LLM.AWS.Internal;
 namespace Asgard.Loki.LLM.AWS;
 
 /// <summary>Bedrock Claude/Converse 原生 JSON/EventStream，完整目标及显式 SigV4/Bearer 认证属于本供应商。</summary>
-public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, IBedrockConverseAdapter, ILlmCredentialSupport
+public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, IBedrockConverseAdapter, IBedrockNovaAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _factory;
     private readonly IAwsLlmCredentialSource? _source;
@@ -53,24 +53,25 @@ public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, IBedrockCon
     public async Task<ClaudeMessage> CreateAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
         => new(await PostJsonAsync(request, context, false, cancellationToken).ConfigureAwait(false), context.Metadata);
     /// <summary>完整 JSON 传输独立于协议正文；原生 API 由显式入口选择，不根据模型名猜测。</summary>
-    private async Task<JsonElement> PostJsonAsync(JsonObject request, LlmAdapterContext context, bool converse, CancellationToken cancellationToken)
+    private async Task<JsonElement> PostJsonAsync(JsonObject request, LlmAdapterContext context, bool converse, CancellationToken cancellationToken, bool nova = false)
     {
-        JsonElement result; var prepared = await PrepareAsync(request, context, false, cancellationToken, converse).ConfigureAwait(false);
+        JsonElement result; var prepared = await PrepareAsync(request, context, false, cancellationToken, converse, nova).ConfigureAwait(false);
         using (var message = prepared.Request)
         using (var client = _factory.CreateClient(_clientName))
         {
             AuthenticateBeforeSend(client, message, prepared.Body, prepared.Credentials, cancellationToken); using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-            var bytes = await AwsJson.ReadAsync(await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false), _options.MaximumBodyBytes, response.Content.Headers.ContentLength, cancellationToken).ConfigureAwait(false);
+            await using var novaSource = nova ? await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false) : null;
+            var bytes = await AwsJson.ReadAsync(novaSource ?? await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false), _options.MaximumBodyBytes, response.Content.Headers.ContentLength, cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode) throw new LlmUpstreamException("Bedrock 原生调用失败。", response.StatusCode, AwsJson.Decode(bytes));
             var media = response.Content.Headers.ContentType?.MediaType;
             if (media is not null && !string.Equals(media, "application/json", StringComparison.OrdinalIgnoreCase) && !media.EndsWith("+json", StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Bedrock 完整调用没有返回 JSON。");
             result = AwsJson.Parse(bytes); if (result.ValueKind != JsonValueKind.Object) throw new InvalidDataException("Bedrock 结果必须是原生对象。");
-            if (result.TryGetProperty("error", out var error) && error.ValueKind != JsonValueKind.Null || !converse && result.TryGetProperty("type", out var type) && type.ValueKind == JsonValueKind.String && type.GetString() == "error") throw new LlmUpstreamException("Bedrock 返回原生错误。", response.StatusCode, AwsJson.Decode(bytes));
+            if (result.TryGetProperty("error", out var error) && error.ValueKind != JsonValueKind.Null || !converse && !nova && result.TryGetProperty("type", out var type) && type.ValueKind == JsonValueKind.String && type.GetString() == "error") throw new LlmUpstreamException("Bedrock 返回原生错误。", response.StatusCode, AwsJson.Decode(bytes));
         }
         cancellationToken.ThrowIfCancellationRequested(); return result;
     }
-    /// <summary>首次来源等待前复制原生正文，只移除路由字段并选择 Bedrock 正文版本。</summary>
-    private async Task<(HttpRequestMessage Request, byte[] Body, AwsLlmSigningCredentials? Credentials)> PrepareAsync(JsonObject payload, LlmAdapterContext context, bool stream, CancellationToken token, bool converse = false)
+    /// <summary>首次来源等待前复制正文，移除路由模型；仅 Claude Invoke 选择正文版本及移除 stream。</summary>
+    private async Task<(HttpRequestMessage Request, byte[] Body, AwsLlmSigningCredentials? Credentials)> PrepareAsync(JsonObject payload, LlmAdapterContext context, bool stream, CancellationToken token, bool converse = false, bool nova = false)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(payload); ArgumentNullException.ThrowIfNull(context); ArgumentNullException.ThrowIfNull(context.Credential);
         if (!SupportsCredential(context.Credential.Kind)) throw new ArgumentException("Bedrock 凭据种类与显式认证初始化入口不匹配。");
@@ -78,7 +79,7 @@ public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, IBedrockCon
         if (!root.IsAbsoluteUri || root.Scheme is not ("http" or "https") || root.Query.Length != 0 || root.Fragment.Length != 0 || root.UserInfo.Length != 0) throw new ArgumentException("Bedrock Runtime 根地址必须是无凭据、查询和片段的 HTTP(S) 绝对地址。");
         var model = context.Target.UpstreamModel; ArgumentException.ThrowIfNullOrWhiteSpace(model); AwsJson.Text(model); if (model is "." or "..") throw new ArgumentException("Bedrock 模型 ID 不能是相对路径段。");
         AwsJson.Input(payload); var body = payload.DeepClone().AsObject(); body.Remove("model");
-        if (!converse)
+        if (!converse && !nova)
         {
             body.Remove("stream"); if (body.TryGetPropertyValue("anthropic_version", out var supplied) && (supplied is not JsonValue scalar || !scalar.TryGetValue<string>(out var version) || version != _options.ClaudeAnthropicVersion)) throw new ArgumentException("Claude 正文版本与所选 Bedrock 版本冲突。"); body["anthropic_version"] = _options.ClaudeAnthropicVersion;
         }

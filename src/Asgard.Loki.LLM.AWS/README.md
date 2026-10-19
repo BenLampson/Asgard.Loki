@@ -15,7 +15,9 @@ Native Bedrock Claude `InvokeModel` JSON/EventStream and explicit Converse JSON/
 | InvokeModelWithResponseStream | Native binary framing, typed headers/CRC, Claude events and delayed terminal publication |
 | Converse complete JSON | Explicit native `BedrockConverse` protocol/client; same borrowed SigV4 source |
 | ConverseStream | Native direct-JSON EventStream, original block/tool association and delayed terminal publication |
-| Nova/other native InvokeModel payloads | Not implemented; Converse-compatible models may use the explicit Converse API |
+| Nova understanding-model InvokeModel | Native complete JSON through explicit BedrockNova protocol |
+| Nova InvokeModelWithResponseStream / cross-protocol conversion | Pending; stream rejects before credentials/HTTP |
+| Other native InvokeModel payloads | Not implemented; compatible models may use explicit Converse |
 | Bedrock Runtime API Key/Bearer | Explicit constructor without a SigV4 source; all four documented native methods |
 | Mantle Messages SigV4 JSON/SSE | Separate `AwsMantleLlmProvider` in this package |
 | SigV4a, presigning | Not implemented |
@@ -235,3 +237,41 @@ The new `aws-mantle-messages-sigv4-v1` binding includes explicit signing region/
 Four independent full native resources and sixteen Python SHA256/HMAC final HTTP vectors verify paths (including encoded proxy prefixes/ports), exact body bytes/property order, selected model/auth/native headers, permanent/temporary credentials, JSON/SSE and direct/public SDK paths. 107 new offline cases cover snapshots, source/cancellation/expiry/default isolation, full-target recovery/rotation and original/late faults, plus explicit conversion delegation. Current AWS total is **488**, repository **5918**, still 28 packages. No live AWS account/model, Linux or remote Actions run is claimed. Native Nova, remaining cloud-compatible operations and broader roadmap items remain pending.
 
 References: [AWS native Messages contract](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-messages-api.html), [SigV4 request construction](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html). The pinned New API Mantle source signs service `bedrock-mantle`; its gateway root/model/credential normalization is deliberately caller configuration here.
+
+## Native Nova InvokeModel JSON
+
+`AwsLlmProvider` now implements `IBedrockNovaAdapter` in this existing package. This is a separate explicitly selected protocol from Claude and Converse; model prefixes never select the API. Both existing constructors apply: borrowed SigV4 with `LlmCredential.External`, or explicit Runtime API Key/Bearer with an ordinary API Key credential. No new AWS source, SDK dependency or automatic credential path is introduced.
+
+```csharp
+var provider = new AwsLlmProvider(httpFactory, credentialSource,
+    new AwsLlmOptions { Region = "us-east-1" });
+var target = new LlmTarget
+{
+    Id = "nova-primary", ProviderId = provider.Id,
+    BaseAddress = new Uri("https://bedrock-runtime.us-east-1.amazonaws.com/"),
+    UpstreamModel = actualNovaModelOrArn, CredentialId = "nova-principal",
+    Protocols = LlmProtocol.BedrockNova
+};
+// Register target/route, External credential, provider and the existing Session dependencies.
+var result = await loki.LLM.BedrockNova.InvokeAsync(new BedrockNovaRequest
+{
+    Model = "assistant",
+    Parameters = new Dictionary<string, System.Text.Json.JsonElement>
+    {
+        ["messages"] = System.Text.Json.JsonSerializer.SerializeToElement(
+            new[] { new { role = "user", content = new[] { new { text = "Hello" } } } }),
+        ["inferenceConfig"] = System.Text.Json.JsonSerializer.SerializeToElement(
+            new { maxTokens = 512, topK = 0 })
+    }
+}, new LlmCallOptions { SessionId = "nova-conversation" }, cancellationToken);
+```
+
+The public alias must be configured in a route. Supply the exact root/model/ARN and native v1/v2 body for that selected model. In particular, add `schemaVersion: messages-v1` explicitly when required by the selected v1 contract; it is not inserted into v2 requests. The adapter removes only the SDK `model` field, escapes the actual model/ARN as one path parameter and calls `model/{id}/invoke`. It does not add Claude's `anthropic_version`, drop source `stream`/unknown native fields, infer model generation, relocate topK/reasoning settings to Converse fields or certify native model limits. Original fields may still be rejected by the chosen upstream model.
+
+Complete output retains every content block, tool-use/result IDs, reasoning/redacted/opaque items, native stop reason, usage/metrics, exact numbers and unknown fields. It neither extracts the first text block nor recomputes totals or changes the finish reason. A root business `type` extension is not interpreted as a Claude event. HTTP/root platform errors retain status/body, including HTTP 200; strict bytes/UTF-8/JSON/media/length checks apply. Normal EOF, async/sync disposal and final cancellation precede success. Generation is never retried or moved to another target. Borrowed sources/factories remain caller-owned.
+
+`InvokeNovaAsync` is the direct supplier method; the public SDK uses the explicit adapter interface. **Nova binary streaming is the next checkpoint:** the current AWS adapter throws before acquiring credentials or HTTP, without falling back to Claude, Converse or a nonstream call. Core stream contracts can already be implemented by application adapters; this is not AWS stream support. Native Nova conversion is also unsupported, including with loss consent. Original Runtime/Key/Mantle binding bytes and signature vectors, core fingerprint algorithms and conversion-v25 are unchanged. Sessions bind protocol 128 as well as the full target and cannot switch protocols.
+
+Independent complete v1/v2 native resources and sixteen Python SHA256/HMAC wire manifests verify raw body bytes/property order, model/ARN paths, direct/public calls and temporary SigV4 credentials. Explicit Bearer cases, snapshots, errors/byte limits/disposal/cancellation and stable full-target recovery have direct regressions. This JSON checkpoint adds 51 AWS, 12 core and two conversion-boundary cases: **5983 total**, **539 AWS**, **191 core**, **1917 conversion**, 28 packages. Model/account/media/reasoning behavior, binary streaming and cross-protocol mappings are not established by offline JSON tests.
+
+References: [Nova v1 Invoke](https://docs.aws.amazon.com/nova/latest/userguide/using-invoke-api.html), [Nova 2 native Invoke](https://docs.aws.amazon.com/nova/latest/nova2-userguide/using-invoke-api.html). Unlike the pinned New API text wrapper, the SDK preserves the complete caller-native request and all response blocks.

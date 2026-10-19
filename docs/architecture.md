@@ -1273,6 +1273,27 @@ JSON/SSE reads validate raw limits, encoding, duplicate JSON and declared length
 
 Four independent native resources and sixteen Python signature vectors cover final byte order, encoded roots/ports, complete/stream, direct/public paths and temporary credentials. 107 additional offline cases include auth/default isolation, snapshots, source/expiry failures, stable full-target recovery, state/transport faults and separate explicit converter delegation. Totals: 5918 offline tests (488 AWS), 28 packages. Native Nova, other cloud-compatible operations and remaining roadmap work are still pending; no actual account/model or remote/Linux execution is claimed.
 
+### Native Nova Invoke JSON and separate core protocol
+
+The LLM capability adds `BedrockNova` (128), `IBedrockNovaClient`/`IBedrockNovaAdapter`, native request/response/event types and `.LLM.BedrockNova`. Existing protocol numbers/default flags remain unchanged. The request reserves only model and preserves all other raw JSON before Session waits; core routing writes only the selected actual model. Nova event envelopes retain a decoded native type separately from original outer event name; root business type fields do not select a lifecycle. Core depends on no supplier; entry still depends only on Abstractions.
+
+```mermaid
+classDiagram
+    LlmClient --> IBedrockNovaClient : BedrockNova
+    IBedrockNovaClient <|.. BedrockNovaClient
+    BedrockNovaClient --> LlmInvocation : complete target and Session
+    BedrockNovaClient --> IBedrockNovaAdapter : fixed explicit protocol
+    IBedrockNovaAdapter <|.. AwsLlmProvider
+    AwsLlmProvider --> AwsSigV4 : existing bedrock service
+    AwsLlmProvider --> AwsJson : native complete bytes
+```
+
+The existing AWS provider shares its own Runtime authentication/HTTP preparation, with an explicit Nova operation branch instead of model-name dispatch. It removes only the SDK model, uses the same single escaped InvokeModel path segment and keeps native schemaVersion/settings/media/tool/opaque fields. Claude version/stream stripping is not applied to Nova. Complete Nova JSON retains all original content and stop/usage/metrics. Nova awaits async source disposal as well as normal EOF/length, owned response/client release and final cancellation. Source/factory ownership and generation no-retry rules remain unchanged.
+
+Nova binary streaming is explicitly unsupported before acquisition/HTTP at this JSON checkpoint; core stream contracts are tested using an application-owned adapter. No fake stream, nonstream fallback or automatic Converse conversion is added. Converter matrix remains four protocols, with two new strict/allow-loss rejection cases. No options are added to existing AWS configuration, so prior Runtime/Mantle/Key binding bytes and signatures remain unchanged. Protocol flags and Session protocol participate in normal complete-target validation.
+
+Full independent v1/v2 native examples and sixteen Python final-byte/HMAC vectors plus 51 AWS, 12 core and two conversion cases bring totals to 5983 (539 AWS, 191 core, 1917 conversion), 28 packages. Fixtures prove wire fidelity and native resource/error boundaries, not real account/model/media acceptance. Stream decoding/lifecycle and explicit Nova/Converse mapping remain pending.
+
 ## 7. HTTP and errors
 
 Providers own address/authentication/protocol mapping. API roots include their version path. Do not hard-code model lists or rewrite model suffixes heuristically.
