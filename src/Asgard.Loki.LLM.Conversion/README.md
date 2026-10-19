@@ -351,6 +351,8 @@ var target = new LlmTarget
 
 Use a separate provider ID/target when exposing the original native protocol as well. The decorator borrows the supplied provider. No provider, cache, coordinator or factory is disposed by this package. The entire target, wrapped implementation, fixed upstream protocol and conversion options participate in the Session fingerprint. Configuration changes invalidate old bindings instead of silently changing behavior. Caller-managed `LlmTarget.Version` still tracks external HTTP/configuration semantics.
 
+The decorator implements optional `ILlmCredentialSupport` by delegating to the fixed upstream. A legacy upstream remains API-Key-only; an explicitly anonymous-capable custom upstream can be used without a fake Key. The choice does not change protocol conversion, add native Ollama support or bypass complete Session binding. Nine offline cases verify complete/stream public conversion, support declarations, eager legacy rejection and cached authentication-kind changes. Existing API Key fingerprints and `conversion-v23` algorithm/options remain unchanged.
+
 `result.Metadata.Conversion` identifies upstream/public protocols, retains complete upstream JSON (or the source event for an emitted event), and returns accumulated request/response diagnostics. Converted SSE IDs/retry hints are not represented as native upstream delivery identities. Unknown source events allowed by policy can produce no target event; their diagnostics remain accumulated and appear on later emitted/final events. Native calls retain their original JSON and SSE metadata with `Conversion == null`.
 
 ## Pure data API

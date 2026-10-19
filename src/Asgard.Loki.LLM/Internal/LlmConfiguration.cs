@@ -68,9 +68,15 @@ internal sealed class LlmConfiguration
 
     /// <summary>对目标及凭据创建稳定指纹，缓存中不保存密钥本身。</summary>
     internal string Fingerprint(LlmTarget target)
-        => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
-            JsonSerializer.Serialize(target) + "\n" + Credentials[target.CredentialId].ApiKey
-            + "\n" + Providers[target.ProviderId].BindingIdentity)));
+    {
+        var credential = Credentials[target.CredentialId]; var provider = Providers[target.ProviderId].BindingIdentity;
+        var serialized = JsonSerializer.Serialize(target);
+        // 既有 API Key 指纹字节保持不变；无认证使用不同前缀，不能与任意 Key 值拼接碰撞。
+        var identity = credential.Kind == LlmCredentialKind.Anonymous
+            ? "loki-llm:anonymous:v1\n" + serialized + "\n" + provider
+            : serialized + "\n" + credential.ApiKey + "\n" + provider;
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(identity)));
+    }
 
     /// <summary>校验目标引用及已声明的协议能力。</summary>
     private LlmTarget ValidateTarget(LlmTarget target)
@@ -86,7 +92,9 @@ internal sealed class LlmConfiguration
             || target.BaseAddress.Query.Length != 0 || target.BaseAddress.Fragment.Length != 0 || target.BaseAddress.UserInfo.Length != 0)
             throw new ArgumentException("上游基础地址必须是没有凭据、查询参数和片段的 HTTP(S) 绝对地址。");
         if (!Providers.TryGetValue(target.ProviderId, out var provider)) throw new ArgumentException("目标引用了未注册的供应商。");
-        if (!Credentials.ContainsKey(target.CredentialId)) throw new ArgumentException("目标引用了不存在的凭据。");
+        if (!Credentials.TryGetValue(target.CredentialId, out var credential)) throw new ArgumentException("目标引用了不存在的凭据。");
+        var supported = provider is ILlmCredentialSupport declared ? declared.SupportsCredential(credential.Kind) : credential.Kind == LlmCredentialKind.ApiKey;
+        if (!supported) throw new ArgumentException("目标供应商未声明支持所选认证方式，不允许自动降级或借用凭据。");
         if (target.Protocols == LlmProtocol.None || (target.Protocols & ~(LlmProtocol.ChatCompletions | LlmProtocol.Responses
             | LlmProtocol.ClaudeMessages | LlmProtocol.Gemini)) != 0)
             throw new ArgumentException("目标协议能力无效。");

@@ -495,6 +495,27 @@ Text deltas still emit immediately; source EOF plus resource disposal must succe
 
 `TargetStream` emits native Responses annotation-added indices/sequences before text/part/item done and the response terminal. The same annotations appear in every completed snapshot; explicit length/filter finishes remain incomplete. `ConvertingLlmProvider` checks cancellation at source enumeration boundaries and before each delivered converted event, including final events. EOF/disposal failure, cancellation or invalid source state cannot precede a successful terminal. Standalone converter callers own correct invocation of `Complete` after source success. Fifty-four new offline cases include independent full native/golden fixtures, three declared units, cross-parser lifecycle checks, immutable snapshots, resource/layout/field boundaries, binding and eighteen public SDK cases. Other citation stream/history pairs remain separate; no universal message API, tool executor, HTTP listener or capability/provider dependency is added.
 
+### Explicit LLM authentication kind
+
+`LlmCredentialKind` belongs only to LLM. The existing two-argument credential constructor remains nonempty API Key authentication; the explicit `Anonymous(id)` factory creates a stable no-authentication identity without a readable Key. `ApiKey` throws for this kind, protecting direct legacy adapter paths. API Key JSON/default formatting remains compatible, and no secret enters serialized credentials or Session bindings.
+
+```mermaid
+classDiagram
+LlmCredential --> LlmCredentialKind
+LlmConfiguration --> LlmCredential : validate every configured target
+LlmConfiguration --> ILlmCredentialSupport : optional native support declaration
+ILlmProvider <|.. ConvertingLlmProvider
+ConvertingLlmProvider ..|> ILlmCredentialSupport
+ConvertingLlmProvider --> ILlmProvider : delegate fixed upstream support
+LlmConfiguration --> LlmSessionBinding : same API Key domain or separate anonymous domain
+```
+
+Providers without the optional support contract remain API-Key-only. All configured targets must match their selected credential kind during module registration, before resolution/cache/HTTP activity; no fallback or endpoint/model inference is added. A converting provider delegates the fixed native support declaration, independently of conversion loss policy. Credentials remain immutable and collections are captured.
+
+API Key fingerprint bytes are unchanged. Anonymous fingerprints use a distinct prefix domain and include the complete serialized target plus provider identity, preserving server/model/logical credential identity/protocol/version binding. Switching authentication kind or target semantics invalidates existing Sessions rather than rebinding them. Twenty-five core, nine converting and six direct OpenAI offline cases verify this behavior, including real legacy cache entries and coordinated concurrent first binding.
+
+This is a prerequisite for explicitly unauthenticated native suppliers, not a native Ollama client or cloud refresh/signing implementation. Native adapter header/default handling stays provider-owned and requires separate transport tests. The entry/abstractions, other capabilities, borrowed HTTP factory/cache ownership and four existing native protocol surfaces remain unchanged.
+
 ## 4. LLM Session and cache
 
 Calls explicitly supply a stable SessionId. Authorization and Session ownership isolation belong to the caller. Use a deployment/application-specific cache prefix.

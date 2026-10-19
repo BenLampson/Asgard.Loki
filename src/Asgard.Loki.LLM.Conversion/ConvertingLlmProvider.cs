@@ -6,7 +6,7 @@ using Asgard.Loki.LLM.Conversion.Internal;
 namespace Asgard.Loki.LLM.Conversion;
 
 /// <summary>由调用者显式注册的单上游协议装饰器，不重选目标或执行工具。</summary>
-public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IClaudeMessagesAdapter, IGeminiAdapter
+public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IClaudeMessagesAdapter, IGeminiAdapter, ILlmCredentialSupport
 {
     private readonly ILlmProvider _upstream;
     private readonly LlmProtocol _protocol;
@@ -30,6 +30,9 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
 
     /// <inheritdoc />
     public string Id { get; }
+    /// <summary>认证支持完全由固定上游声明，不因转换选项或目标协议自动降级。</summary>
+    public bool SupportsCredential(LlmCredentialKind kind) => _upstream is ILlmCredentialSupport declared
+        ? declared.SupportsCredential(kind) : kind == LlmCredentialKind.ApiKey;
     /// <inheritdoc />
     public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v23:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
 

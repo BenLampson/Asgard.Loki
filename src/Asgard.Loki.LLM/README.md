@@ -10,6 +10,22 @@ Native optional operations are advertised independently of protocol families. `l
 
 Independent SDK contracts and orchestration for Chat Completions, Responses, Claude Messages and Gemini generateContent.
 
+## Explicit credential kinds
+
+`new LlmCredential(id, apiKey)` keeps the existing nonempty API Key contract. `LlmCredential.Anonymous(id)` is a separate, explicit no-authentication identity. It requires a stable nonempty ID, stores no Key, and throws when `ApiKey` is read. This prevents old native adapters, including direct OpenAI HTTP/SSE/compaction/WebSocket calls, from sending an empty Bearer value. JSON and `ToString` remain secret-free; the default API Key metadata shape is unchanged.
+
+A provider opts into `ILlmCredentialSupport.SupportsCredential(LlmCredentialKind)` for each supported native authentication kind. Existing providers without that optional interface accept API Keys only. Module registration validates every configured target, including unused alternatives, before Session/cache/HTTP work; no automatic downgrade, Key borrowing or endpoint inference occurs. A converting decorator delegates support to its fixed upstream and cannot extend it through loss consent.
+
+```csharp
+var localIdentity = LlmCredential.Anonymous("local-instance");
+// Register it only with an application-owned provider that explicitly supports
+// LlmCredentialKind.Anonymous and implements the actual native no-auth policy.
+```
+
+API Key fingerprints retain their previous byte representation, allowing valid existing Sessions to resume. Anonymous bindings use a separate fingerprint domain while retaining server, actual model, credential ID, protocol, provider implementation and configuration version. Authentication-kind changes or any of those target changes reject an old Session; they do not cause target reselection. Configuration collections are snapshotted, and concurrent first binding still uses the explicit distributed coordination contract.
+
+This is an LLM-owned credential foundation, not a native Ollama operation, cloud token refresh/signing contract or a common coordinator for other capabilities. Providers remain responsible for HTTP/header behavior; the core does not rewrite caller-owned HTTP defaults or probe servers. Native Ollama JSON/NDJSON calls and transport/header isolation require their own provider checkpoint. Forty new offline regressions include 25 core cases, nine conversion cases and six direct OpenAI boundary cases; no real authentication/model call was performed.
+
 ## Supported
 
 - Complete JSON results and streamed protocol events, including unknown fields, tools, reasoning, usage and errors.
