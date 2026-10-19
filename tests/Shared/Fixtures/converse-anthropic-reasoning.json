@@ -1,0 +1,1832 @@
+{
+  "provenance": {
+    "authorship": "Independent full Claude/Converse Anthropic reasoning, response and historical follow-up goldens; no production converter/signer or live supplier was called.",
+    "sources": [
+      "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ReasoningContentBlock.html",
+      "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ReasoningTextBlock.html",
+      "https://docs.aws.amazon.com/bedrock/latest/userguide/claude-messages-extended-thinking.html"
+    ],
+    "scope": "Only explicit Anthropic dialect and Claude public shape; same whole target/model/session required for replay. Signatures and redacted bytes are opaque test tokens, not valid live signatures. Text/signature strings and redacted Base64 stay unmodified; no cross-model portability or cryptographic verification is claimed."
+  },
+  "cases": [
+    {
+      "name": "signed",
+      "sourceRequest": {
+        "model": "public",
+        "system": "rules",
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "high",
+          "format": {
+            "type": "json_schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "trace é 🚀",
+                "signature": "opaque:+/==\n é 🚀"
+              },
+              {
+                "type": "text",
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "continue"
+              }
+            ]
+          }
+        ]
+      },
+      "nativeRequest": {
+        "model": "public",
+        "system": [
+          {
+            "text": "rules"
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 8192
+        },
+        "additionalModelRequestFields": {
+          "thinking": {
+            "type": "adaptive"
+          },
+          "output_config": {
+            "effort": "high"
+          }
+        },
+        "outputConfig": {
+          "textFormat": {
+            "type": "json_schema",
+            "structure": {
+              "jsonSchema": {
+                "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993}},\"required\":[\"n\"],\"additionalProperties\":false}"
+              }
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "trace é 🚀",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "continue"
+              }
+            ]
+          }
+        ]
+      },
+      "nativeResponse": {
+        "output": {
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "trace é 🚀",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "text": "{\"n\":9007199254740993}"
+              }
+            ]
+          }
+        },
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 17,
+          "outputTokens": 8,
+          "totalTokens": 25
+        },
+        "metrics": {
+          "latencyMs": 9
+        }
+      },
+      "claudeResponse": {
+        "id": "__ID__",
+        "type": "message",
+        "role": "assistant",
+        "model": "public",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "trace é 🚀",
+            "signature": "opaque:+/==\n é 🚀"
+          },
+          {
+            "type": "text",
+            "text": "{\"n\":9007199254740993}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 17,
+          "output_tokens": 8
+        }
+      },
+      "followupSourceRequest": {
+        "model": "public",
+        "system": "rules",
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "high",
+          "format": {
+            "type": "json_schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "trace é 🚀",
+                "signature": "opaque:+/==\n é 🚀"
+              },
+              {
+                "type": "text",
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "continue"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "trace é 🚀",
+                "signature": "opaque:+/==\n é 🚀"
+              },
+              {
+                "type": "text",
+                "text": "{\"n\":9007199254740993}"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "finish"
+              }
+            ]
+          }
+        ]
+      },
+      "followupNativeRequest": {
+        "model": "public",
+        "system": [
+          {
+            "text": "rules"
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 8192
+        },
+        "additionalModelRequestFields": {
+          "thinking": {
+            "type": "adaptive"
+          },
+          "output_config": {
+            "effort": "high"
+          }
+        },
+        "outputConfig": {
+          "textFormat": {
+            "type": "json_schema",
+            "structure": {
+              "jsonSchema": {
+                "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993}},\"required\":[\"n\"],\"additionalProperties\":false}"
+              }
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "trace é 🚀",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "continue"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "trace é 🚀",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "text": "{\"n\":9007199254740993}"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "finish"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "redacted",
+      "sourceRequest": {
+        "model": "public",
+        "system": "rules",
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "high",
+          "format": {
+            "type": "json_schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "redacted_thinking",
+                "data": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+              },
+              {
+                "type": "text",
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "continue"
+              }
+            ]
+          }
+        ]
+      },
+      "nativeRequest": {
+        "model": "public",
+        "system": [
+          {
+            "text": "rules"
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 8192
+        },
+        "additionalModelRequestFields": {
+          "thinking": {
+            "type": "adaptive"
+          },
+          "output_config": {
+            "effort": "high"
+          }
+        },
+        "outputConfig": {
+          "textFormat": {
+            "type": "json_schema",
+            "structure": {
+              "jsonSchema": {
+                "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993}},\"required\":[\"n\"],\"additionalProperties\":false}"
+              }
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "redactedContent": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+                }
+              },
+              {
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "continue"
+              }
+            ]
+          }
+        ]
+      },
+      "nativeResponse": {
+        "output": {
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "redactedContent": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+                }
+              },
+              {
+                "text": "{\"n\":9007199254740993}"
+              }
+            ]
+          }
+        },
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 17,
+          "outputTokens": 8,
+          "totalTokens": 25
+        },
+        "metrics": {
+          "latencyMs": 9
+        }
+      },
+      "claudeResponse": {
+        "id": "__ID__",
+        "type": "message",
+        "role": "assistant",
+        "model": "public",
+        "content": [
+          {
+            "type": "redacted_thinking",
+            "data": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+          },
+          {
+            "type": "text",
+            "text": "{\"n\":9007199254740993}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 17,
+          "output_tokens": 8
+        }
+      },
+      "followupSourceRequest": {
+        "model": "public",
+        "system": "rules",
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "high",
+          "format": {
+            "type": "json_schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "redacted_thinking",
+                "data": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+              },
+              {
+                "type": "text",
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "continue"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "redacted_thinking",
+                "data": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+              },
+              {
+                "type": "text",
+                "text": "{\"n\":9007199254740993}"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "finish"
+              }
+            ]
+          }
+        ]
+      },
+      "followupNativeRequest": {
+        "model": "public",
+        "system": [
+          {
+            "text": "rules"
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 8192
+        },
+        "additionalModelRequestFields": {
+          "thinking": {
+            "type": "adaptive"
+          },
+          "output_config": {
+            "effort": "high"
+          }
+        },
+        "outputConfig": {
+          "textFormat": {
+            "type": "json_schema",
+            "structure": {
+              "jsonSchema": {
+                "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993}},\"required\":[\"n\"],\"additionalProperties\":false}"
+              }
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "redactedContent": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+                }
+              },
+              {
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "continue"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "redactedContent": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+                }
+              },
+              {
+                "text": "{\"n\":9007199254740993}"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "finish"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "mixed-tools",
+      "sourceRequest": {
+        "model": "public",
+        "system": "rules",
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "high",
+          "format": {
+            "type": "json_schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "trace é 🚀",
+                "signature": "opaque:+/==\n é 🚀"
+              },
+              {
+                "type": "redacted_thinking",
+                "data": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+              },
+              {
+                "type": "text",
+                "text": "between"
+              },
+              {
+                "type": "tool_use",
+                "id": "history-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "signature": null
+                  }
+                }
+              },
+              {
+                "type": "tool_use",
+                "id": "history-b",
+                "name": "lookup",
+                "input": {
+                  "n": null
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "tool_use_id": "history-b",
+                "content": "second"
+              },
+              {
+                "type": "tool_result",
+                "tool_use_id": "history-a",
+                "content": "{\"n\":9007199254740993,\"ok\":false}"
+              },
+              {
+                "type": "text",
+                "text": "continue"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "lookup",
+            "description": "原始工具",
+            "strict": true,
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        ],
+        "tool_choice": {
+          "type": "auto"
+        }
+      },
+      "nativeRequest": {
+        "model": "public",
+        "system": [
+          {
+            "text": "rules"
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 8192
+        },
+        "additionalModelRequestFields": {
+          "thinking": {
+            "type": "adaptive"
+          },
+          "output_config": {
+            "effort": "high"
+          }
+        },
+        "outputConfig": {
+          "textFormat": {
+            "type": "json_schema",
+            "structure": {
+              "jsonSchema": {
+                "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993}},\"required\":[\"n\"],\"additionalProperties\":false}"
+              }
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "trace é 🚀",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "reasoningContent": {
+                  "redactedContent": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+                }
+              },
+              {
+                "text": "between"
+              },
+              {
+                "toolUse": {
+                  "toolUseId": "history-a",
+                  "name": "lookup",
+                  "input": {
+                    "n": 9007199254740993,
+                    "error": {
+                      "signature": null
+                    }
+                  }
+                }
+              },
+              {
+                "toolUse": {
+                  "toolUseId": "history-b",
+                  "name": "lookup",
+                  "input": {
+                    "n": null
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "toolResult": {
+                  "toolUseId": "history-b",
+                  "content": [
+                    {
+                      "text": "second"
+                    }
+                  ]
+                }
+              },
+              {
+                "toolResult": {
+                  "toolUseId": "history-a",
+                  "content": [
+                    {
+                      "text": "{\"n\":9007199254740993,\"ok\":false}"
+                    }
+                  ]
+                }
+              },
+              {
+                "text": "continue"
+              }
+            ]
+          }
+        ],
+        "toolConfig": {
+          "tools": [
+            {
+              "toolSpec": {
+                "name": "lookup",
+                "description": "原始工具",
+                "strict": true,
+                "inputSchema": {
+                  "json": {
+                    "type": "object",
+                    "properties": {
+                      "n": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "minimum": 9007199254740993
+                      }
+                    },
+                    "required": [
+                      "n"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          ],
+          "toolChoice": {
+            "auto": {}
+          }
+        }
+      },
+      "nativeResponse": {
+        "output": {
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "trace é 🚀",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "reasoningContent": {
+                  "redactedContent": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+                }
+              },
+              {
+                "text": "{\"n\":9007199254740993}"
+              },
+              {
+                "toolUse": {
+                  "toolUseId": "next-a",
+                  "name": "lookup",
+                  "input": {
+                    "n": 9007199254740993
+                  }
+                }
+              },
+              {
+                "toolUse": {
+                  "toolUseId": "next-b",
+                  "name": "lookup",
+                  "input": {
+                    "n": null
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 17,
+          "outputTokens": 8,
+          "totalTokens": 25
+        },
+        "metrics": {
+          "latencyMs": 9
+        }
+      },
+      "claudeResponse": {
+        "id": "__ID__",
+        "type": "message",
+        "role": "assistant",
+        "model": "public",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "trace é 🚀",
+            "signature": "opaque:+/==\n é 🚀"
+          },
+          {
+            "type": "redacted_thinking",
+            "data": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+          },
+          {
+            "type": "text",
+            "text": "{\"n\":9007199254740993}"
+          },
+          {
+            "type": "tool_use",
+            "id": "next-a",
+            "name": "lookup",
+            "input": {
+              "n": 9007199254740993
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "next-b",
+            "name": "lookup",
+            "input": {
+              "n": null
+            }
+          }
+        ],
+        "stop_reason": "tool_use",
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 17,
+          "output_tokens": 8
+        }
+      },
+      "followupSourceRequest": {
+        "model": "public",
+        "system": "rules",
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "high",
+          "format": {
+            "type": "json_schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "trace é 🚀",
+                "signature": "opaque:+/==\n é 🚀"
+              },
+              {
+                "type": "redacted_thinking",
+                "data": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+              },
+              {
+                "type": "text",
+                "text": "between"
+              },
+              {
+                "type": "tool_use",
+                "id": "history-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "signature": null
+                  }
+                }
+              },
+              {
+                "type": "tool_use",
+                "id": "history-b",
+                "name": "lookup",
+                "input": {
+                  "n": null
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "tool_use_id": "history-b",
+                "content": "second"
+              },
+              {
+                "type": "tool_result",
+                "tool_use_id": "history-a",
+                "content": "{\"n\":9007199254740993,\"ok\":false}"
+              },
+              {
+                "type": "text",
+                "text": "continue"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "trace é 🚀",
+                "signature": "opaque:+/==\n é 🚀"
+              },
+              {
+                "type": "redacted_thinking",
+                "data": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+              },
+              {
+                "type": "text",
+                "text": "{\"n\":9007199254740993}"
+              },
+              {
+                "type": "tool_use",
+                "id": "next-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993
+                }
+              },
+              {
+                "type": "tool_use",
+                "id": "next-b",
+                "name": "lookup",
+                "input": {
+                  "n": null
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "tool_use_id": "next-b",
+                "content": "result-b"
+              },
+              {
+                "type": "tool_result",
+                "tool_use_id": "next-a",
+                "content": "result-a"
+              },
+              {
+                "type": "text",
+                "text": "finish"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "lookup",
+            "description": "原始工具",
+            "strict": true,
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        ],
+        "tool_choice": {
+          "type": "auto"
+        }
+      },
+      "followupNativeRequest": {
+        "model": "public",
+        "system": [
+          {
+            "text": "rules"
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 8192
+        },
+        "additionalModelRequestFields": {
+          "thinking": {
+            "type": "adaptive"
+          },
+          "output_config": {
+            "effort": "high"
+          }
+        },
+        "outputConfig": {
+          "textFormat": {
+            "type": "json_schema",
+            "structure": {
+              "jsonSchema": {
+                "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993}},\"required\":[\"n\"],\"additionalProperties\":false}"
+              }
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "trace é 🚀",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "reasoningContent": {
+                  "redactedContent": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+                }
+              },
+              {
+                "text": "between"
+              },
+              {
+                "toolUse": {
+                  "toolUseId": "history-a",
+                  "name": "lookup",
+                  "input": {
+                    "n": 9007199254740993,
+                    "error": {
+                      "signature": null
+                    }
+                  }
+                }
+              },
+              {
+                "toolUse": {
+                  "toolUseId": "history-b",
+                  "name": "lookup",
+                  "input": {
+                    "n": null
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "toolResult": {
+                  "toolUseId": "history-b",
+                  "content": [
+                    {
+                      "text": "second"
+                    }
+                  ]
+                }
+              },
+              {
+                "toolResult": {
+                  "toolUseId": "history-a",
+                  "content": [
+                    {
+                      "text": "{\"n\":9007199254740993,\"ok\":false}"
+                    }
+                  ]
+                }
+              },
+              {
+                "text": "continue"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "trace é 🚀",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "reasoningContent": {
+                  "redactedContent": "eyJlcnJvciI6dHJ1ZSwic2lnbmF0dXJlIjoib3BhcXVlIn0="
+                }
+              },
+              {
+                "text": "{\"n\":9007199254740993}"
+              },
+              {
+                "toolUse": {
+                  "toolUseId": "next-a",
+                  "name": "lookup",
+                  "input": {
+                    "n": 9007199254740993
+                  }
+                }
+              },
+              {
+                "toolUse": {
+                  "toolUseId": "next-b",
+                  "name": "lookup",
+                  "input": {
+                    "n": null
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "toolResult": {
+                  "toolUseId": "next-b",
+                  "content": [
+                    {
+                      "text": "result-b"
+                    }
+                  ]
+                }
+              },
+              {
+                "toolResult": {
+                  "toolUseId": "next-a",
+                  "content": [
+                    {
+                      "text": "result-a"
+                    }
+                  ]
+                }
+              },
+              {
+                "text": "finish"
+              }
+            ]
+          }
+        ],
+        "toolConfig": {
+          "tools": [
+            {
+              "toolSpec": {
+                "name": "lookup",
+                "description": "原始工具",
+                "strict": true,
+                "inputSchema": {
+                  "json": {
+                    "type": "object",
+                    "properties": {
+                      "n": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "minimum": 9007199254740993
+                      }
+                    },
+                    "required": [
+                      "n"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          ],
+          "toolChoice": {
+            "auto": {}
+          }
+        }
+      }
+    },
+    {
+      "name": "empty-text",
+      "sourceRequest": {
+        "model": "public",
+        "system": "rules",
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "high",
+          "format": {
+            "type": "json_schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "",
+                "signature": "opaque:+/==\n é 🚀"
+              },
+              {
+                "type": "text",
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "continue"
+              }
+            ]
+          }
+        ]
+      },
+      "nativeRequest": {
+        "model": "public",
+        "system": [
+          {
+            "text": "rules"
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 8192
+        },
+        "additionalModelRequestFields": {
+          "thinking": {
+            "type": "adaptive"
+          },
+          "output_config": {
+            "effort": "high"
+          }
+        },
+        "outputConfig": {
+          "textFormat": {
+            "type": "json_schema",
+            "structure": {
+              "jsonSchema": {
+                "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993}},\"required\":[\"n\"],\"additionalProperties\":false}"
+              }
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "continue"
+              }
+            ]
+          }
+        ]
+      },
+      "nativeResponse": {
+        "output": {
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "text": ""
+              }
+            ]
+          }
+        },
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "totalTokens": 0
+        },
+        "metrics": {
+          "latencyMs": 0
+        }
+      },
+      "claudeResponse": {
+        "id": "__ID__",
+        "type": "message",
+        "role": "assistant",
+        "model": "public",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "",
+            "signature": "opaque:+/==\n é 🚀"
+          },
+          {
+            "type": "text",
+            "text": ""
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0
+        }
+      },
+      "followupSourceRequest": {
+        "model": "public",
+        "system": "rules",
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "high",
+          "format": {
+            "type": "json_schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "",
+                "signature": "opaque:+/==\n é 🚀"
+              },
+              {
+                "type": "text",
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "continue"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "",
+                "signature": "opaque:+/==\n é 🚀"
+              },
+              {
+                "type": "text",
+                "text": ""
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "finish"
+              }
+            ]
+          }
+        ]
+      },
+      "followupNativeRequest": {
+        "model": "public",
+        "system": [
+          {
+            "text": "rules"
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 8192
+        },
+        "additionalModelRequestFields": {
+          "thinking": {
+            "type": "adaptive"
+          },
+          "output_config": {
+            "effort": "high"
+          }
+        },
+        "outputConfig": {
+          "textFormat": {
+            "type": "json_schema",
+            "structure": {
+              "jsonSchema": {
+                "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993}},\"required\":[\"n\"],\"additionalProperties\":false}"
+              }
+            }
+          }
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "start é 🚀"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "text": "between"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "continue"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "reasoningContent": {
+                  "reasoningText": {
+                    "text": "",
+                    "signature": "opaque:+/==\n é 🚀"
+                  }
+                }
+              },
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "finish"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "finalNativeResponse": {
+    "output": {
+      "message": {
+        "role": "assistant",
+        "content": [
+          {
+            "text": "final"
+          }
+        ]
+      }
+    },
+    "stopReason": "end_turn",
+    "usage": {
+      "inputTokens": 31,
+      "outputTokens": 2,
+      "totalTokens": 33
+    },
+    "metrics": {
+      "latencyMs": 4
+    }
+  }
+}

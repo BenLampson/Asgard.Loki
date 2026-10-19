@@ -5,6 +5,7 @@
     <EmbeddedResource Include="../Shared/Fixtures/nova-converse-stream-conversion.json" LogicalName="BedrockStreamConversion.Fixture" />
     <EmbeddedResource Include="../Shared/Fixtures/converse-text-complete.json" LogicalName="ConverseTextConversion.Fixture" />
     <EmbeddedResource Include="../Shared/Fixtures/converse-reasoning-requests.json" LogicalName="ConverseReasoningRequests.Fixture" />
+    <EmbeddedResource Include="../Shared/Fixtures/converse-anthropic-reasoning.json" LogicalName="ConverseAnthropicReasoning.Fixture" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
     <ProjectReference Include="../../src/Asgard.Loki.LLM.Conversion/Asgard.Loki.LLM.Conversion.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
