@@ -24,4 +24,7 @@ public sealed record AwsLlmOptions
     /// <summary>Converse 内容块上限，省略时为 128；默认省略保留旧供应商绑定字节。</summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? MaximumTrackedConverseBlocks { get; init; }
+    /// <summary>Nova 原生内容块上限，省略时为 128；默认省略保留现有供应商绑定字节。</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaximumTrackedNovaBlocks { get; init; }
 }

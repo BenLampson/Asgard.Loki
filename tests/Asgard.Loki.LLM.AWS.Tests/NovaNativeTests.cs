@@ -72,12 +72,13 @@ public sealed class NovaNativeTests
         });
         await new AwsLlmProvider(new AwsHttpFactory(handler), new AwsLlmOptions { Region = "us-east-1" }).InvokeNovaAsync(input, NovaFixture.Context(apiKey: true), TestContext.Current.CancellationToken); Assert.Equal(1, handler.Calls);
     }
-    /// <summary>未实现的原生二进制流在获取凭据/HTTP 前明确失败，不退化为其他方法。</summary>
+    /// <summary>预先取消的原生流在获取凭据/HTTP 前失败，不退化为其他方法。</summary>
     [Theory] [InlineData(false)] [InlineData(true)]
-    public async Task UnsupportedStreaming_FailsBeforeAcquisition(bool apiKey)
+    public async Task CancelledStreaming_FailsBeforeAcquisition(bool apiKey)
     {
         var clock = new AwsClock(); var source = new AwsCredentialSource(clock); using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException("must not send")); var factory = new AwsHttpFactory(handler); var provider = apiKey ? new AwsLlmProvider(factory, new AwsLlmOptions { Region = "us-east-1" }) : new AwsLlmProvider(factory, source, new() { Region = "us-east-1" }, timeProvider: clock);
-        Assert.Throws<NotSupportedException>(() => ((IBedrockNovaAdapter)provider).StreamAsync(NovaFixture.Request(), NovaFixture.Context(apiKey: apiKey), TestContext.Current.CancellationToken));
-        await using var client = NovaFixture.Client(provider, apiKey); await Assert.ThrowsAsync<NotSupportedException>(async () => { await foreach (var _ in client.LLM.BedrockNova.StreamAsync(NovaFixture.Typed(), new() { SessionId = "aws-session" }, TestContext.Current.CancellationToken)) { } }); Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients); Assert.Equal(0, handler.Calls);
+        using var cancel = new CancellationTokenSource(); cancel.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => { await foreach (var _ in ((IBedrockNovaAdapter)provider).StreamAsync(NovaFixture.Request(), NovaFixture.Context(apiKey: apiKey), cancel.Token)) { } });
+        await using var client = NovaFixture.Client(provider, apiKey); await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => { await foreach (var _ in client.LLM.BedrockNova.StreamAsync(NovaFixture.Typed(), new() { SessionId = "aws-session" }, cancel.Token)) { } }); Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients); Assert.Equal(0, handler.Calls);
     }
 }

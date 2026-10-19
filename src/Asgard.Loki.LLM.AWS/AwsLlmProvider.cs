@@ -34,6 +34,7 @@ public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, IBedrockCon
         ArgumentOutOfRangeException.ThrowIfLessThan(options.MaximumEventStreamFrameBytes, 16); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBufferedTerminalEvents, 0); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumTrackedClaudeBlocks, 0);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumEventStreamHeaders, 0);
         if (options.MaximumTrackedConverseBlocks is { } converseBlocks) ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(converseBlocks, 0);
+        if (options.MaximumTrackedNovaBlocks is { } novaBlocks) ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(novaBlocks, 0);
         var headers = new SortedDictionary<string, string>(StringComparer.Ordinal);
         foreach (var header in options.RequestHeaders)
         {

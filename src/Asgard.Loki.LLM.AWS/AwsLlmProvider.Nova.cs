@@ -11,7 +11,7 @@ public sealed partial class AwsLlmProvider
     /// <summary>通过独立原生契约调用，不靠模型名称切换行为。</summary>
     Task<BedrockNovaResponse> IBedrockNovaAdapter.InvokeAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken)
         => InvokeNovaAsync(request, context, cancellationToken);
-    /// <summary>二进制 Nova 流在后续检查点实现；当前在获取凭据和 HTTP 前明确拒绝。</summary>
+    /// <summary>通过独立 Nova 解码路径读取 InvokeModelWithResponseStream，不套用 Claude 事件。</summary>
     IAsyncEnumerable<BedrockNovaEvent> IBedrockNovaAdapter.StreamAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken)
-        => throw new NotSupportedException("Nova InvokeModelWithResponseStream 尚未实现；不会改用 Claude、Converse 或完整 JSON 调用。");
+        => NovaStreamAsync(request, context, cancellationToken);
 }

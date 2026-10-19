@@ -1,0 +1,336 @@
+[
+  {
+    "eventName": "chunk",
+    "nativeType": "messageStart",
+    "data": {
+      "messageStart": {
+        "role": "assistant",
+        "future": false
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "nil": null
+      }
+    },
+    "outer": {
+      "bytes": "eyJtZXNzYWdlU3RhcnQiOnsicm9sZSI6ImFzc2lzdGFudCIsImZ1dHVyZSI6ZmFsc2V9LCJmdXR1cmUiOnsiaW50ZWdlciI6OTAwNzE5OTI1NDc0MDk5MywibmlsIjpudWxsfX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockDelta",
+    "data": {
+      "contentBlockDelta": {
+        "contentBlockIndex": 0,
+        "delta": {
+          "reasoningContent": {
+            "text": "[REDACTED]",
+            "future": false
+          }
+        }
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tEZWx0YSI6eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsicmVhc29uaW5nQ29udGVudCI6eyJ0ZXh0IjoiW1JFREFDVEVEXSIsImZ1dHVyZSI6ZmFsc2V9fX19",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockStop",
+    "data": {
+      "contentBlockStop": {
+        "contentBlockIndex": 0
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tTdG9wIjp7ImNvbnRlbnRCbG9ja0luZGV4IjowfX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockDelta",
+    "data": {
+      "contentBlockDelta": {
+        "contentBlockIndex": 1,
+        "delta": {
+          "text": "原生 Nova"
+        }
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tEZWx0YSI6eyJjb250ZW50QmxvY2tJbmRleCI6MSwiZGVsdGEiOnsidGV4dCI6IuWOn+eUnyBOb3ZhIn19fQ==",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockStop",
+    "data": {
+      "contentBlockStop": {
+        "contentBlockIndex": 1
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tTdG9wIjp7ImNvbnRlbnRCbG9ja0luZGV4IjoxfX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockStart",
+    "data": {
+      "contentBlockStart": {
+        "contentBlockIndex": 2,
+        "start": {
+          "toolUse": {
+            "toolUseId": "call_a",
+            "name": "lookup",
+            "future": false
+          }
+        }
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tTdGFydCI6eyJjb250ZW50QmxvY2tJbmRleCI6Miwic3RhcnQiOnsidG9vbFVzZSI6eyJ0b29sVXNlSWQiOiJjYWxsX2EiLCJuYW1lIjoibG9va3VwIiwiZnV0dXJlIjpmYWxzZX19fX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockDelta",
+    "data": {
+      "contentBlockDelta": {
+        "contentBlockIndex": 2,
+        "delta": {
+          "toolUse": {
+            "input": "{\"n\":"
+          }
+        }
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tEZWx0YSI6eyJjb250ZW50QmxvY2tJbmRleCI6MiwiZGVsdGEiOnsidG9vbFVzZSI6eyJpbnB1dCI6IntcIm5cIjoifX19fQ==",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockStart",
+    "data": {
+      "contentBlockStart": {
+        "contentBlockIndex": 3,
+        "start": {
+          "toolUse": {
+            "toolUseId": "call_b",
+            "name": "lookup"
+          }
+        }
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tTdGFydCI6eyJjb250ZW50QmxvY2tJbmRleCI6Mywic3RhcnQiOnsidG9vbFVzZSI6eyJ0b29sVXNlSWQiOiJjYWxsX2IiLCJuYW1lIjoibG9va3VwIn19fX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockDelta",
+    "data": {
+      "contentBlockDelta": {
+        "contentBlockIndex": 3,
+        "delta": {
+          "toolUse": {
+            "input": "{\"n\":0}"
+          }
+        }
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tEZWx0YSI6eyJjb250ZW50QmxvY2tJbmRleCI6MywiZGVsdGEiOnsidG9vbFVzZSI6eyJpbnB1dCI6IntcIm5cIjowfSJ9fX19",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockStop",
+    "data": {
+      "contentBlockStop": {
+        "contentBlockIndex": 3
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tTdG9wIjp7ImNvbnRlbnRCbG9ja0luZGV4IjozfX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockDelta",
+    "data": {
+      "contentBlockDelta": {
+        "contentBlockIndex": 2,
+        "delta": {
+          "toolUse": {
+            "input": "9007199254740993}"
+          }
+        }
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tEZWx0YSI6eyJjb250ZW50QmxvY2tJbmRleCI6MiwiZGVsdGEiOnsidG9vbFVzZSI6eyJpbnB1dCI6IjkwMDcxOTkyNTQ3NDA5OTN9In19fX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "contentBlockStop",
+    "data": {
+      "contentBlockStop": {
+        "contentBlockIndex": 2
+      }
+    },
+    "outer": {
+      "bytes": "eyJjb250ZW50QmxvY2tTdG9wIjp7ImNvbnRlbnRCbG9ja0luZGV4IjoyfX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": null,
+    "data": {
+      "vendor.future": {
+        "opaque": "signed-state",
+        "zero": 0,
+        "nil": null
+      },
+      "type": "error",
+      "error": {
+        "business": true
+      }
+    },
+    "outer": {
+      "bytes": "eyJ2ZW5kb3IuZnV0dXJlIjp7Im9wYXF1ZSI6InNpZ25lZC1zdGF0ZSIsInplcm8iOjAsIm5pbCI6bnVsbH0sInR5cGUiOiJlcnJvciIsImVycm9yIjp7ImJ1c2luZXNzIjp0cnVlfX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "messageStop",
+    "data": {
+      "messageStop": {
+        "stopReason": "tool_use",
+        "future": false
+      }
+    },
+    "outer": {
+      "bytes": "eyJtZXNzYWdlU3RvcCI6eyJzdG9wUmVhc29uIjoidG9vbF91c2UiLCJmdXR1cmUiOmZhbHNlfX0=",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": "metadata",
+    "data": {
+      "metadata": {
+        "usage": {
+          "inputTokens": 17,
+          "outputTokens": 8,
+          "totalTokens": 25,
+          "future": 9007199254740993
+        },
+        "future": null
+      },
+      "type": "error"
+    },
+    "outer": {
+      "bytes": "eyJtZXRhZGF0YSI6eyJ1c2FnZSI6eyJpbnB1dFRva2VucyI6MTcsIm91dHB1dFRva2VucyI6OCwidG90YWxUb2tlbnMiOjI1LCJmdXR1cmUiOjkwMDcxOTkyNTQ3NDA5OTN9LCJmdXR1cmUiOm51bGx9LCJ0eXBlIjoiZXJyb3IifQ==",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "chunk",
+    "nativeType": null,
+    "data": {
+      "vendor.tail": {
+        "integer": 9007199254740993,
+        "nil": null
+      },
+      "error": {
+        "business": true
+      }
+    },
+    "outer": {
+      "bytes": "eyJ2ZW5kb3IudGFpbCI6eyJpbnRlZ2VyIjo5MDA3MTk5MjU0NzQwOTkzLCJuaWwiOm51bGx9LCJlcnJvciI6eyJidXNpbmVzcyI6dHJ1ZX19",
+      "future": {
+        "zero": 0,
+        "nil": null
+      }
+    }
+  },
+  {
+    "eventName": "vendor.outer",
+    "nativeType": null,
+    "data": {
+      "type": "messageStop",
+      "error": {
+        "business": true
+      },
+      "future": false
+    },
+    "outer": {
+      "type": "messageStop",
+      "error": {
+        "business": true
+      },
+      "future": false
+    }
+  }
+]

@@ -1294,6 +1294,22 @@ Nova binary streaming is explicitly unsupported before acquisition/HTTP at this 
 
 Full independent v1/v2 native examples and sixteen Python final-byte/HMAC vectors plus 51 AWS, 12 core and two conversion cases bring totals to 5983 (539 AWS, 191 core, 1917 conversion), 28 packages. Fixtures prove wire fidelity and native resource/error boundaries, not real account/model/media acceptance. Stream decoding/lifecycle and explicit Nova/Converse mapping remain pending.
 
+### Native Nova binary Invoke streaming
+
+The existing AWS supplier implements `NovaStreamAsync` and the existing native adapter stream method. It keeps the JSON preparation/authentication path with explicit stream operation/Accept; there is no public core protocol/interface expansion in this checkpoint. The supplier-private decoder consumes CRC-checked binary frames, parses `chunk.bytes` as a complete native envelope and uses a separate finite `AwsNovaStreamState` for known message/content/ordinary tool/metadata closure. Confirmed fields are checked without borrowing Converse-only media/result/signature constraints or aggregating content/arguments. Unknown data remains original.
+
+```mermaid
+classDiagram
+    AwsLlmProvider --> AwsEventStreamReader : raw lengths CRC and typed headers
+    AwsLlmProvider --> AwsNovaStreamState : separate native envelope lifecycle
+    AwsLlmProvider --> BedrockNovaEvent : complete envelope and decoded native Type
+    BedrockNovaEvent --> AwsEventStreamExtensions : weak original-frame attachment
+```
+
+Event Data is the full inner JSON, EventName the original outer name, Type the recognized inner native name or raw outer name. Valid original frame/header/Base64-wrapper bytes remain in AWS-owned views; no transport fields are injected into native JSON or imported into core. Non-JSON binary data fails with its valid raw frame available. Stop/usage/tails wait for normal EOF, lengths, async/sync response/client disposal and final cancellation, while initial events remain incremental. Metadata requires native usage; metrics is optional but validated when present. Original errors and all malformed/corrupt/late tails fail without synthetic success, reconnect or resend.
+
+`MaximumTrackedNovaBlocks` is a nullable AWS-owned policy with effective default 128. Default omission preserves preceding Runtime/Key binding bytes and exact signatures; explicit values enter the existing full-target identity. Other frame/header/raw/tail policies and stable principal/source rotation remain supplier-local. Core/other supplier identities, dependency direction and conversion-v25 remain unchanged. An independent 17-frame Python binary/typed-header/inner-envelope manifest and sixteen request-signature vectors plus 86 new regressions bring totals to 6069 (625 AWS), 28 packages. Explicit Nova/Converse conversion, other native/cloud variants and remaining roadmap families are still pending; no live/remote/Linux claim is added.
+
 ## 7. HTTP and errors
 
 Providers own address/authentication/protocol mapping. API roots include their version path. Do not hard-code model lists or rewrite model suffixes heuristically.
