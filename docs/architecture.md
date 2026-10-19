@@ -579,6 +579,22 @@ This credential prerequisite is now used by the separate native Ollama Chat clie
 
 ## 4. LLM Session and cache
 
+### External LLM authentication identity
+
+`LlmCredentialKind.External` and `LlmCredential.External(id, principalIdentity)` are LLM-owned explicit identity contracts. They contain no token source or short-lived access token. `ApiKey` throws for this kind; `PrincipalIdentity` throws for other kinds, and is ignored by default JSON/formatting. Credential/principal references are required and strict-UTF-8-validated at registration. Only providers explicitly declaring external-kind support can receive these targets; fixed converting upstreams delegate that declaration.
+
+```mermaid
+classDiagram
+LlmCredential --> LlmCredentialKind
+LlmCredential : +External(id, principalIdentity)
+LlmCredential : +PrincipalIdentity
+LlmConfiguration --> ILlmCredentialSupport : validate every target
+LlmConfiguration --> LlmSessionBinding : structured external principal fingerprint
+ConvertingLlmProvider --> ILlmCredentialSupport : fixed upstream declaration
+```
+
+API Key and anonymous fingerprint bytes remain unchanged. External fingerprints use their own prefix and JSON-encoded target/principal/provider components, retaining unambiguous boundaries even when principal or implementation text contains newlines. Principal/kind/configuration changes reject old Sessions; externally refreshed tokens are deliberately absent from core/cache metadata. This does not acquire tokens, sign cloud requests, probe endpoints or add a shared authentication coordinator for other capabilities. Cloud sources and SDK dependencies belong in their capability-specific provider packages, remain borrowed and must enforce the declared principal identity. Thirty-eight new offline cases verify identity/getter/serialization guards, all kind transitions, legacy caches, separator isolation, snapshots, coordinated first binding, conversion delegation and direct Key-only operation rejection; no real authentication is performed.
+
 ### Original JSON encoding before snapshots
 
 The private LLM-owned `LlmJsonInput` validates original native DOM strings/property names, extension `JsonElement` string escapes and named model/response fields before public clients serialize a snapshot. All six native protocol clients use it; Responses compaction and bound WebSocket sends also validate before snapshot/cache/send. This prevents malformed UTF-16 from being replaced before the converter sees original tool/error identity. Configuration and fingerprint identity strings and call Session IDs use the same strict UTF-8 check. Valid fingerprint bytes, native fields and borrowing/coordination rules remain unchanged.

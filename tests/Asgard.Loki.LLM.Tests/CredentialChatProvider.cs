@@ -6,14 +6,14 @@ using System.Text.Json.Nodes;
 namespace Asgard.Loki.LLM.Tests;
 
 /// <summary>显式声明认证支持的离线 Chat 供应商，不读取虚构 Key，也不发起网络请求。</summary>
-internal sealed class CredentialChatProvider(bool anonymous = true, bool apiKey = true, string version = "1") : IChatCompletionsAdapter, ILlmCredentialSupport
+internal sealed class CredentialChatProvider(bool anonymous = true, bool apiKey = true, string version = "1", bool external = false) : IChatCompletionsAdapter, ILlmCredentialSupport
 {
     /// <inheritdoc />
     public string Id => "credential-chat";
     /// <inheritdoc />
     public string BindingIdentity => "credential-chat-v" + version;
     /// <inheritdoc />
-    public bool SupportsCredential(LlmCredentialKind kind) => kind == LlmCredentialKind.Anonymous && anonymous || kind == LlmCredentialKind.ApiKey && apiKey;
+    public bool SupportsCredential(LlmCredentialKind kind) => kind == LlmCredentialKind.Anonymous && anonymous || kind == LlmCredentialKind.ApiKey && apiKey || kind == LlmCredentialKind.External && external;
     /// <summary>保留本次请求和完整上下文以核对实际绑定。</summary>
     internal ConcurrentQueue<(JsonObject Request, LlmAdapterContext Context)> Calls { get; } = new();
     /// <inheritdoc />

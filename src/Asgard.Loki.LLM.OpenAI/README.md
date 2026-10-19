@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.OpenAI
 
+Authentication remains API-Key-only. `LlmCredential.External` is an explicit core identity for providers that implement their own token/signing source; this OpenAI adapter does not opt into it. Direct Chat/Responses JSON/SSE, compaction and WebSocket operations reject both anonymous and external identities before dispatch, rather than using an empty Key.
+
 OpenAI LLM provider for Asgard.Loki.
 
 | API | Complete result | Streaming |

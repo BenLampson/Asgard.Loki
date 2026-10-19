@@ -21,6 +21,22 @@ public sealed class CredentialSupportTests
         Assert.Equal(anonymous, provider.SupportsCredential(LlmCredentialKind.Anonymous)); Assert.Equal(key, provider.SupportsCredential(LlmCredentialKind.ApiKey));
         Assert.False(provider.SupportsCredential((LlmCredentialKind)99));
     }
+    /// <summary>外部主体支持由固定上游明确代理，普通损耗许可不能添加新的认证方式。</summary>
+    [Theory] [InlineData(false)] [InlineData(true)]
+    public void ExternalSupport_IsDelegated(bool external)
+    {
+        var provider = new ConvertingLlmProvider(new CredentialChatProvider(external: external), LlmProtocol.ChatCompletions, "convert", new() { AllowLoss = true });
+        Assert.Equal(external, provider.SupportsCredential(LlmCredentialKind.External));
+    }
+    /// <summary>公开转换入口保留同一外部主体，正文和上游结果 JSON 不注入认证材料。</summary>
+    [Theory] [InlineData(false)] [InlineData(true)]
+    public async Task PublicConversion_UsesExternalPrincipal(bool stream)
+    {
+        var upstream = new CredentialChatProvider(external: true); await using var client = Build(upstream, LlmCredential.External("credential", "tenant/principal"), Store());
+        var request = CustomToolFixtures.Parse("""{"model":"public","input":"hello"}""");
+        if (stream) await ConvertingProviderTests.StreamAsync(client, LlmProtocol.Responses, request); else await ConvertingProviderTests.CompleteAsync(client, LlmProtocol.Responses, request);
+        var call = Assert.Single(upstream.Calls); Assert.Equal("tenant/principal", call.Context.Credential.PrincipalIdentity); Assert.DoesNotContain("tenant/principal", call.Request.ToJsonString()); Assert.Throws<InvalidOperationException>(() => call.Context.Credential.ApiKey);
+    }
     /// <summary>公开 Responses 到固定无认证 Chat 的完整/流式调用仍使用该身份，结果保留上游元数据。</summary>
     [Theory] [InlineData(false)] [InlineData(true)]
     public async Task PublicConversion_UsesDeclaredAnonymousUpstream(bool stream)

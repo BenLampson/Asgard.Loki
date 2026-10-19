@@ -31,4 +31,27 @@ public sealed class AnonymousCredentialTests
         });
         Assert.Equal(0, handler.Calls); Assert.Empty(sockets.Calls);
     }
+    /// <summary>外部主体同样不能从旧接口得到空 Key；认证源不属于 OpenAI 现有适配器。</summary>
+    [Theory] [InlineData("chat")] [InlineData("chat-stream")] [InlineData("responses")] [InlineData("responses-stream")] [InlineData("compaction")] [InlineData("websocket")]
+    public async Task DirectNativeOperation_DoesNotDispatchExternalPrincipal(string operation)
+    {
+        using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException("unexpected HTTP")); using var sockets = new StubResponsesWebSocketFactory();
+        var provider = new OpenAiLlmProvider(new StubHttpClientFactory(handler), new OpenAiResponsesWebSocketOptions(), sockets);
+        var target = new LlmTarget { Id = "fixed", ProviderId = provider.Id, BaseAddress = new("https://wire.invalid/v1/"), UpstreamModel = "actual", CredentialId = "external" };
+        var context = new LlmAdapterContext(target, LlmCredential.External("external", "tenant/principal"), "public", "session");
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+        {
+            var request = new JsonObject { ["model"] = "actual" }; var token = TestContext.Current.CancellationToken;
+            switch (operation)
+            {
+                case "chat": await provider.CompleteAsync(request, context, token); break;
+                case "chat-stream": await foreach (var _ in provider.StreamAsync(request, context, token)) { } break;
+                case "responses": await provider.CreateAsync(request, context, token); break;
+                case "responses-stream": await foreach (var _ in ((IResponsesAdapter)provider).StreamAsync(request, context, token)) { } break;
+                case "compaction": await provider.CompactAsync(request, context, token); break;
+                case "websocket": await using (var connection = await provider.OpenWebSocketAsync(context, token)) { } break;
+            }
+        });
+        Assert.Equal(0, handler.Calls); Assert.Empty(sockets.Calls);
+    }
 }

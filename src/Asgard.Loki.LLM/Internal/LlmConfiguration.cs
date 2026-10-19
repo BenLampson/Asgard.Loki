@@ -42,6 +42,7 @@ internal sealed class LlmConfiguration
             ArgumentNullException.ThrowIfNull(credential);
             LlmJsonInput.Text(credential.Id);
             if (credential.Kind == LlmCredentialKind.ApiKey) LlmJsonInput.Text(credential.ApiKey);
+            if (credential.Kind == LlmCredentialKind.External) LlmJsonInput.Text(credential.PrincipalIdentity);
             if (!Credentials.TryAdd(credential.Id, credential)) throw new ArgumentException("凭据标识重复。", nameof(options));
         }
 
@@ -76,10 +77,14 @@ internal sealed class LlmConfiguration
         var credential = Credentials[target.CredentialId]; var provider = Providers[target.ProviderId].BindingIdentity;
         LlmJsonInput.Text(provider);
         var serialized = JsonSerializer.Serialize(target);
-        // 既有 API Key 指纹字节保持不变；无认证使用不同前缀，不能与任意 Key 值拼接碰撞。
-        var identity = credential.Kind == LlmCredentialKind.Anonymous
-            ? "loki-llm:anonymous:v1\n" + serialized + "\n" + provider
-            : serialized + "\n" + credential.ApiKey + "\n" + provider;
+        // 旧 Key/匿名字节不变；新主体与实现分量采用独立 JSON 字符串边界，不能通过换行移动分隔符。
+        var identity = credential.Kind switch
+        {
+            LlmCredentialKind.ApiKey => serialized + "\n" + credential.ApiKey + "\n" + provider,
+            LlmCredentialKind.Anonymous => "loki-llm:anonymous:v1\n" + serialized + "\n" + provider,
+            LlmCredentialKind.External => "loki-llm:external:v1\n" + JsonSerializer.Serialize(new { Target = serialized, Principal = credential.PrincipalIdentity, Provider = provider }),
+            _ => throw new ArgumentException("不支持此认证方式。")
+        };
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(identity)));
     }
 

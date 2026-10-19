@@ -26,7 +26,23 @@ API Key fingerprints retain their previous byte representation, allowing valid e
 
 This is an LLM-owned credential foundation; cloud token refresh/signing and other capabilities have separate contracts. Providers remain responsible for HTTP/header behavior; the core does not rewrite caller-owned HTTP defaults or probe servers. The separate [Ollama provider](../Asgard.Loki.LLM.Ollama/README.md) implements native Chat JSON/NDJSON and rejects default Authorization for anonymous targets. The credential prerequisite has 40 offline regressions; native Ollama adds 159 independent Chat/generate wire/result/event and transport/session boundary cases. No real authentication/model call was performed.
 
-## Native Ollama Chat
+## External authentication identity
+
+`LlmCredential.External(id, principalIdentity)` declares a stable external principal/reference without storing an API Key or short-lived token. Both identifiers are required; `PrincipalIdentity` is available only for this kind, and `ApiKey` throws. Default JSON and `ToString` expose the credential ID/kind without serializing the principal or any secret. It is separate from `Anonymous`, which still means no authentication.
+
+```csharp
+var identity = LlmCredential.External("cloud-credential", "configured-tenant/principal");
+// A provider must explicitly support LlmCredentialKind.External and borrow
+// the application's provider-specific token/signing source.
+```
+
+Providers opt in through `ILlmCredentialSupport`; legacy providers remain API-Key-only, and the existing Ollama provider does not support this kind. Converting decorators delegate their fixed upstream's declaration. The core does not acquire/refresh tokens, read environment credentials or add cloud dependencies. Direct legacy Key-only operations fail before HTTP/WebSocket dispatch instead of sending an empty credential.
+
+External fingerprints use a separate domain with structured target/principal/provider components, so newline-containing references cannot move separators and collide with implementation identities. Changing principal, authentication kind, server/model/credential identity or provider configuration rejects an old Session; stable principal identity allows a future provider to refresh short-lived tokens without putting them in this fingerprint. API Key and anonymous fingerprint bytes are unchanged and verified using independently constructed legacy cache entries. Concurrent first binding and snapshots retain the existing explicit coordination contract.
+
+This prerequisite has 38 new offline cases (28 core, four conversion and six direct OpenAI boundaries). It is usable by caller-owned adapters; the dedicated Azure token source/endpoint transport is a separate next checkpoint. No cloud login, actual token refresh or live model call is claimed.
+
+## Native Ollama operations
 
 `loki.LLM.OllamaChat.CompleteAsync` / `StreamAsync` use `OllamaChatRequest`, `OllamaChatResponse` and `OllamaChatEvent` through optional `IOllamaChatAdapter`. Targets explicitly declare `LlmProtocol.OllamaChat`; existing default target flags remain unchanged. Messages and native extension JSON are snapshotted before awaited Session resolution. Only actual model and method stream mode change. Native tool IDs/history, images, thinking, `format` schema, `options`, unknown values and counters remain intact; there is no conversion to an OpenAI envelope.
 
