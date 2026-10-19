@@ -563,7 +563,29 @@ Images own `ImageClient`, `IImageGenerationAdapter`, image routes and image resu
 
 The OpenAI provider implements `POST /v1/images/generations` and its SSE generation events. Preserve partial/final image data, URLs, revised prompts, usage and unknown JSON. Public route names and actual image models are distinct. Parameters such as format, quality, size, count, compression and transparency remain caller-selected.
 
-Base64 decoding is explicit and format-preserving. Return URLs without downloading them. Image edits and variations are not implemented. Availability of streaming and individual parameters is determined by the actual upstream model/account.
+Base64 decoding is explicit and format-preserving. Return URLs without downloading them. Availability of streaming and individual parameters is determined by the actual upstream model/account.
+
+Native editing has separate `ImageEditRequest` JSON and `ImageMultipartEditRequest` upload contracts, exposed by `EditAsync` and `EditMultipartAsync`. Optional `IStreamingImageEditAdapter` adds their explicit streaming counterparts. `ImageOptions.EditRoutes` selects complete editing targets independently from generation routes; either operation can be configured alone. Registration copies configuration/target arrays, and the module factory builds independent client selection state. Each editing model owns its target counter. There is no retry, capability filtering, automatic JSON/multipart conversion or shared LLM/Audio coordinator.
+
+```mermaid
+classDiagram
+ImageExtensions --> ImageConfiguration : registration snapshot
+ImageConfiguration --> ImageClient : fresh module per client
+ImageClient --> ImageEditingClient : editing operations
+ImageEditingClient --> ImageEditRouteState : per-model selection
+ImageEditRouteState --> IImageEditAdapter : one complete borrowed target
+IStreamingImageEditAdapter --|> IImageEditAdapter
+IImageEditAdapter --> ImageEditRequest : native JSON
+IImageEditAdapter --> ImageMultipartEditRequest : ordered uploads and mask
+ImageMultipartEditRequest --> ImageUpload : borrowed stream
+ImageMultipartEditRequest --> ImageMultipartField : literal repeated text
+IImageEditAdapter --> ImageGenerationResult : full native image response
+IStreamingImageEditAdapter --> ImageEditEvent : native JSON and SSE identity
+```
+
+JSON extension values are cloned without downloading references or resolving file IDs. Multipart snapshots preserve original image order, a separate mask role, names/content types and literal repeated/empty fields. Each image/mask slot requires a distinct readable stream object. The core neither reads nor queries length/position, rewinds, opens filenames, decodes media or disposes borrowed uploads/adapters. Native part encoding, reference eligibility, mask association semantics and format constraints belong to the provider. The existing `ImageGenerationResult` preserves the common complete image response container, without falling back to generation.
+
+Editing streams require every configured target to implement the optional interface before selection. `ImageEditEvent` retains full JSON, metadata and SSE name/id/retry plus an adapter-confirmed completion marker. Only the original terminal is held until source enumeration and disposal succeed; absent/duplicate/late events, tail errors and cancellation cannot first expose success. Unknown names and EOF never imply completion. These editing safeguards do not redefine the existing generation stream implementation. Ninety-six offline core tests verify custom-adapter routing, snapshots, ownership and terminal boundaries. Bundled OpenAI JSON/multipart editing and editing SSE remain unimplemented provider checkpoints; variations remain pending. No HTTP multipart, real image or model-quality verification is claimed by the core tests.
 
 ## 6a. Embeddings
 

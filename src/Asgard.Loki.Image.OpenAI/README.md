@@ -9,7 +9,7 @@ OpenAI Images Generations provider for Asgard.Loki.
 | SSE partial/final image events | Yes, when supported by the upstream model |
 | Base64 and URL outputs | Preserved; Base64 decoding is available on demand |
 | Quality, size, transparency, output format, image count and future parameters | Passed through |
-| Image edits / variations | Not implemented |
+| Image edits / variations | Provider transport not implemented; Image capability has separate custom-adapter edit contracts |
 
 Create `OpenAiImageAdapter(IHttpClientFactory, OpenAiImageOptions)` and register it in `ImageOptions.Routes`. Configure the actual upstream model and API Key in the adapter options; use the route alias in requests. Optional organization/project headers and a custom base address are supported.
 

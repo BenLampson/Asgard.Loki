@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Independent image generation contracts and module for Asgard.Loki.</Description>
+    <Description>Independent image generation and editing contracts and module for Asgard.Loki.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Asgard.Loki.Abstractions/Asgard.Loki.Abstractions.csproj" />

@@ -1,0 +1,8 @@
+{
+  "created":123,
+  "data":[{"b64_json":"AQID","revised_prompt":"native revised","future":null},{"url":"https://media.invalid/result.png","future":false}],
+  "background":"transparent",
+  "output_format":"webp",
+  "usage":{"input_tokens":7,"input_tokens_details":{"image_tokens":5,"text_tokens":2},"output_tokens":9,"total_tokens":16,"future":[]},
+  "future":{"opaque":[null,false,"保留"]}
+}
