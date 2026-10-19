@@ -15,6 +15,7 @@ class LLM["Asgard.Loki.LLM"]
 class Audio["Asgard.Loki.Audio"]
 class Image["Asgard.Loki.Image"]
 class Embedding["Asgard.Loki.Embedding"]
+class OpenAIEmbedding["Asgard.Loki.Embedding.OpenAI"]
 class Video["Asgard.Loki.Video"]
 class Ark["Asgard.Loki.LLM.Volcengine"]
 class OpenAILLM["Asgard.Loki.LLM.OpenAI"]
@@ -28,6 +29,7 @@ LLM ..> Abstractions
 Audio ..> Abstractions
 Image ..> Abstractions
 Embedding ..> Abstractions
+OpenAIEmbedding ..> Embedding
 Video ..> Abstractions
 Ark ..> LLM
 OpenAILLM ..> LLM
@@ -485,9 +487,32 @@ EmbeddingResult --> EmbeddingResultMetadata
 
 Each borrowed `IEmbeddingAdapter` encapsulates its own server, actual model, credentials and native dialect; it exposes a stable instance `Id` and one `EmbedAsync` operation. Routes match exact public model names. A call snapshots the request parameters, selects one complete target and forwards cancellation; it never retries or fails over. A pre-cancelled call does not consume a target selection. Client disposal does not dispose caller-owned adapters or their dependencies. No conversational Session, cache or cross-capability scheduler is introduced.
 
-`EmbeddingRequest.Model` is a public routing alias. Its extension `Parameters` retain native fields such as OpenAI `input` or Google `content`; core reserves only root `model` and never assumes that different suppliers accept the same input shape. Future provider operations must preserve their own protocol and cannot silently convert those fields. `EmbeddingResult.Data` is an independent native object snapshot; metadata distinguishes public/upstream model and provider identity. Core does not sort vectors, invent indices, tokenize, infer usage, normalize dimensions or decode encodings. Each supplier adapter owns native response validation and provider-specific convenience views. `EmbeddingUpstreamException` retains raw HTTP status/body. The core-contract checkpoint includes custom in-memory adapter tests only; bundled OpenAI/Google providers and their wire validation are separate deliveries.
+`EmbeddingRequest.Model` is a public routing alias. Its extension `Parameters` retain native fields such as OpenAI `input` or Google `content`; core reserves only root `model` and never assumes that different suppliers accept the same input shape. Future provider operations must preserve their own protocol and cannot silently convert those fields. `EmbeddingResult.Data` is an independent native object snapshot; metadata distinguishes public/upstream model and provider identity. Core does not sort vectors, invent indices, tokenize, infer usage, normalize dimensions or decode encodings. Each supplier adapter owns native response validation and provider-specific convenience views. `EmbeddingUpstreamException` retains raw HTTP status/body. Core tests use custom in-memory adapters; the separately packaged native OpenAI provider is described below. Google remains a separate delivery.
 
 Multi-input synchronous requests are distinct from a hosted asynchronous Batch API. Vector databases, similarity search, RAG, chunking, billing, gateway catalogs and background processing are outside this capability. No live embedding acceptance or vector quality has been verified.
+
+### Native OpenAI Embeddings
+
+`Asgard.Loki.Embedding.OpenAI` depends only on Embedding and standard HTTP components. `OpenAiEmbeddingAdapter` encapsulates an explicit API root, actual model, API Key, optional organization/project and named borrowed HTTP factory. It implements one native `POST embeddings` operation, with public-route model mapping as the only mandatory body rewrite. It never injects an encoding default or stream switch, tokenizes, splits inputs or retries. The API Key is constructor-validated and excluded from options JSON.
+
+```mermaid
+sequenceDiagram
+participant Caller
+participant Core as EmbeddingClient
+participant Adapter as OpenAiEmbeddingAdapter
+participant HTTP as Borrowed IHttpClientFactory
+Caller->>Core: Native input/parameters and public model
+Core->>Adapter: One selected complete target, request snapshot
+Adapter->>Adapter: Validate native input count, format and dimensions
+Adapter->>HTTP: Create named request-local client
+HTTP-->>Adapter: One native HTTP response
+Adapter->>Adapter: Validate original indices, count, width and encoding
+Adapter-->>Caller: Native Data, metadata and provider-owned views
+```
+
+Native input is nonempty text, a text batch, one token array or a token-array batch. Actual token/model limits remain upstream decisions. Complete result validation requires one item per input with unique original indices, uniform nonempty vector widths/encoding and agreement with explicit format/dimensions. Unknown JSON is retained; missing usage is unknown. Float arrays contain finite numbers. Base64 syntax and full float32 byte widths are validated without decoding or assuming an endianness. Malformed/truncated JSON, duplicate JSON properties, broken association, mismatched results, SSE and explicit business errors cannot become a successful empty vector list.
+
+`OpenAiEmbeddingVector` and `EmbeddingResult.OpenAiVectors` are provider-owned native views. They preserve original array order and `Index`; numeric `Values` is an optional copied double view, and `Base64`/explicit `DecodeBytes()` retain original encoded bytes. Raw `Data` is not replaced with a normalized embedding model. The native returned model stays in `Data`, while metadata records configured public/upstream/provider identities. HTTP errors preserve actual status/body; a 200 business error keeps its actual status. Requests/responses and factory-created clients are disposed per call; factory and target adapters remain borrowed. There is no conversational state, hosted Batch/SSE API, vector database or RAG pipeline. Offline final-wire and lifecycle tests do not certify live acceptance or vector quality.
 
 ## 7. HTTP and errors
 

@@ -1,0 +1,351 @@
+{
+  "request-text-float": {
+    "model": "public",
+    "input": "原生😀",
+    "dimensions": 2,
+    "encoding_format": "float",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "wire-text-float": {
+    "model": "text-embedding-test",
+    "input": "原生😀",
+    "dimensions": 2,
+    "encoding_format": "float",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "request-text-base64": {
+    "model": "public",
+    "input": "原生😀",
+    "dimensions": 2,
+    "encoding_format": "base64",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "wire-text-base64": {
+    "model": "text-embedding-test",
+    "input": "原生😀",
+    "dimensions": 2,
+    "encoding_format": "base64",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "request-strings-float": {
+    "model": "public",
+    "input": [
+      "first",
+      " second "
+    ],
+    "dimensions": 2,
+    "encoding_format": "float",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "wire-strings-float": {
+    "model": "text-embedding-test",
+    "input": [
+      "first",
+      " second "
+    ],
+    "dimensions": 2,
+    "encoding_format": "float",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "request-strings-base64": {
+    "model": "public",
+    "input": [
+      "first",
+      " second "
+    ],
+    "dimensions": 2,
+    "encoding_format": "base64",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "wire-strings-base64": {
+    "model": "text-embedding-test",
+    "input": [
+      "first",
+      " second "
+    ],
+    "dimensions": 2,
+    "encoding_format": "base64",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "request-tokens-float": {
+    "model": "public",
+    "input": [
+      0,
+      1,
+      123
+    ],
+    "dimensions": 2,
+    "encoding_format": "float",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "wire-tokens-float": {
+    "model": "text-embedding-test",
+    "input": [
+      0,
+      1,
+      123
+    ],
+    "dimensions": 2,
+    "encoding_format": "float",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "request-tokens-base64": {
+    "model": "public",
+    "input": [
+      0,
+      1,
+      123
+    ],
+    "dimensions": 2,
+    "encoding_format": "base64",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "wire-tokens-base64": {
+    "model": "text-embedding-test",
+    "input": [
+      0,
+      1,
+      123
+    ],
+    "dimensions": 2,
+    "encoding_format": "base64",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "request-token-batch-float": {
+    "model": "public",
+    "input": [
+      [
+        0,
+        1
+      ],
+      [
+        2
+      ]
+    ],
+    "dimensions": 2,
+    "encoding_format": "float",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "wire-token-batch-float": {
+    "model": "text-embedding-test",
+    "input": [
+      [
+        0,
+        1
+      ],
+      [
+        2
+      ]
+    ],
+    "dimensions": 2,
+    "encoding_format": "float",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "request-token-batch-base64": {
+    "model": "public",
+    "input": [
+      [
+        0,
+        1
+      ],
+      [
+        2
+      ]
+    ],
+    "dimensions": 2,
+    "encoding_format": "base64",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "wire-token-batch-base64": {
+    "model": "text-embedding-test",
+    "input": [
+      [
+        0,
+        1
+      ],
+      [
+        2
+      ]
+    ],
+    "dimensions": 2,
+    "encoding_format": "base64",
+    "user": "caller",
+    "future": {
+      "enabled": false,
+      "value": null
+    }
+  },
+  "response-1-float": {
+    "object": "list",
+    "model": "returned-version",
+    "data": [
+      {
+        "object": "embedding",
+        "index": 0,
+        "embedding": [
+          1,
+          -2
+        ],
+        "future": {
+          "kept": null
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3,
+      "total_tokens": 3,
+      "future": false
+    },
+    "future": {
+      "id": "opaque"
+    }
+  },
+  "response-1-base64": {
+    "object": "list",
+    "model": "returned-version",
+    "data": [
+      {
+        "object": "embedding",
+        "index": 0,
+        "embedding": "AACAPwAAAMA=",
+        "future": {
+          "kept": null
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3,
+      "total_tokens": 3,
+      "future": false
+    },
+    "future": {
+      "id": "opaque"
+    }
+  },
+  "response-2-float": {
+    "object": "list",
+    "model": "returned-version",
+    "data": [
+      {
+        "object": "embedding",
+        "index": 1,
+        "embedding": [
+          0.5,
+          0
+        ],
+        "future": {
+          "kept": null
+        }
+      },
+      {
+        "object": "embedding",
+        "index": 0,
+        "embedding": [
+          1,
+          -2
+        ],
+        "future": {
+          "kept": null
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3,
+      "total_tokens": 3,
+      "future": false
+    },
+    "future": {
+      "id": "opaque"
+    }
+  },
+  "response-2-base64": {
+    "object": "list",
+    "model": "returned-version",
+    "data": [
+      {
+        "object": "embedding",
+        "index": 1,
+        "embedding": "AAAAPwAAAAA=",
+        "future": {
+          "kept": null
+        }
+      },
+      {
+        "object": "embedding",
+        "index": 0,
+        "embedding": "AACAPwAAAMA=",
+        "future": {
+          "kept": null
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3,
+      "total_tokens": 3,
+      "future": false
+    },
+    "future": {
+      "id": "opaque"
+    }
+  }
+}

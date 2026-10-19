@@ -12,7 +12,7 @@ Independent embedding module for the Asgard.Loki .NET SDK. It references only `A
 | Request | Public `Model` plus native JSON `Parameters`; only root `model` is reserved |
 | Result | Complete independently owned native `Data` and public/upstream/provider metadata |
 | Errors/cancellation | Propagated from the selected adapter, without retries or target failover |
-| Bundled providers | Not included in this core-contract checkpoint; OpenAI and Google follow independently |
+| Bundled providers | [Embedding.OpenAI](../Asgard.Loki.Embedding.OpenAI/README.md) implements native HTTP embeddings and vector views; Google remains pending |
 
 ```csharp
 using Asgard.Loki;
@@ -42,4 +42,4 @@ Core does not infer an input shape, tokenize text, normalize vectors, reorder ba
 
 Only one explicit native operation is called. Synchronous multi-input requests are not an asynchronous Batch service. There is no conversational Session, cache, shared LLM scheduler, vector database, search engine, RAG pipeline, tool executor, automatic chunking, background job, billing or HTTP listener. Adapters remain caller-owned after client disposal. Do not mutate request dictionaries concurrently while a call snapshots them; once dispatched, subsequent source dictionary/document changes cannot alter the adapter's copy.
 
-Thirty-four offline core cases use custom in-memory adapters to verify native JSON, configuration/request snapshots, exact and concurrent routing, cancellation, failure propagation and borrowed ownership. They do not verify an upstream embedding model, HTTP protocol or vector quality. No live embedding call has been made.
+The separately tested OpenAI provider does not change these core contracts. Thirty-four offline core cases use custom in-memory adapters to verify native JSON, configuration/request snapshots, exact and concurrent routing, cancellation, failure propagation and borrowed ownership. They do not verify an upstream embedding model, HTTP protocol or vector quality. No live embedding call has been made.

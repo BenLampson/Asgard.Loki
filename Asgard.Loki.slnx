@@ -13,6 +13,7 @@
     <Project Path="src/Asgard.Loki.LLM.Conversion/Asgard.Loki.LLM.Conversion.csproj" />
     <Project Path="src/Asgard.Loki.Image/Asgard.Loki.Image.csproj" />
     <Project Path="src/Asgard.Loki.Embedding/Asgard.Loki.Embedding.csproj" />
+    <Project Path="src/Asgard.Loki.Embedding.OpenAI/Asgard.Loki.Embedding.OpenAI.csproj" />
     <Project Path="src/Asgard.Loki.Image.OpenAI/Asgard.Loki.Image.OpenAI.csproj" />
   </Folder>
   <Folder Name="/tests/">
@@ -28,5 +29,6 @@
     <Project Path="tests/Asgard.Loki.LLM.Conversion.Tests/Asgard.Loki.LLM.Conversion.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.OpenAI.Tests/Asgard.Loki.Image.OpenAI.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Embedding.Tests/Asgard.Loki.Embedding.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Embedding.OpenAI.Tests/Asgard.Loki.Embedding.OpenAI.Tests.csproj" />
   </Folder>
 </Solution>
