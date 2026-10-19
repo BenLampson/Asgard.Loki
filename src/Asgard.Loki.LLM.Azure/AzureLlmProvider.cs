@@ -25,6 +25,8 @@ public sealed partial class AzureLlmProvider : IChatCompletionsAdapter, IRespons
         if (!Enum.IsDefined(options.ApiStyle)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options.ApiStyle == AzureLlmApiStyle.Dated || options.ApiVersion is not null) ArgumentException.ThrowIfNullOrWhiteSpace(options.ApiVersion);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBodyBytes, 0);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBufferedTerminalEvents, 0);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumTrackedChoices, 0);
         AzureJson.Text(id); AzureJson.Text(httpClientName); if (options.ApiVersion is not null) AzureJson.Text(options.ApiVersion);
         _factory = factory; _clientName = httpClientName; _options = options; _tokenSource = tokenSource; _time = timeProvider ?? TimeProvider.System; Id = id;
         if (tokenSource is not null) { var sourceIdentity = tokenSource.BindingIdentity; ArgumentException.ThrowIfNullOrWhiteSpace(sourceIdentity); AzureJson.Text(sourceIdentity); _sourceIdentity = sourceIdentity; }
@@ -32,7 +34,7 @@ public sealed partial class AzureLlmProvider : IChatCompletionsAdapter, IRespons
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => GetType().AssemblyQualifiedName + ":azure-json-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity });
+    public string BindingIdentity => GetType().AssemblyQualifiedName + ":azure-sse-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity });
     /// <inheritdoc />
     public bool SupportsCredential(LlmCredentialKind kind) => kind == LlmCredentialKind.ApiKey || kind == LlmCredentialKind.External && _tokenSource is not null;
     /// <inheritdoc />
@@ -41,12 +43,6 @@ public sealed partial class AzureLlmProvider : IChatCompletionsAdapter, IRespons
     /// <inheritdoc />
     public async Task<Response> CreateAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
         => new(await PostAsync(request, context, true, cancellationToken).ConfigureAwait(false), context.Metadata);
-    /// <summary>先提供完整 JSON，SSE 作为独立原生终态检查点补齐。</summary>
-    public IAsyncEnumerable<ChatCompletionEvent> StreamAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
-        => throw new NotSupportedException("此检查点尚未实现 Azure 原生 SSE。");
-    /// <summary>明确区分 Responses 流类型，不用完整 JSON 伪装 SSE。</summary>
-    IAsyncEnumerable<ResponseEvent> IResponsesAdapter.StreamAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken)
-        => throw new NotSupportedException("此检查点尚未实现 Azure 原生 SSE。");
     /// <summary>结果在 EOF 和释放成功后返回，不自动重试生成或再次获取令牌。</summary>
     private async Task<JsonElement> PostAsync(JsonObject payload, LlmAdapterContext context, bool responses, CancellationToken token)
     {

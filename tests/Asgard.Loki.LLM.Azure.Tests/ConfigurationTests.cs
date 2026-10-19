@@ -23,11 +23,11 @@ public sealed class ConfigurationTests
         Assert.Equal(0, handler.Calls);
     }
     /// <summary>非法版本、样式和字节上限在建立供应商时拒绝。</summary>
-    [Theory] [InlineData("style")] [InlineData("missing")] [InlineData("empty")] [InlineData("space")] [InlineData("zero")] [InlineData("negative")]
+    [Theory] [InlineData("style")] [InlineData("missing")] [InlineData("empty")] [InlineData("space")] [InlineData("zero")] [InlineData("negative")] [InlineData("terminal-zero")] [InlineData("choices-zero")]
     public void InvalidOptions_AreRejected(string failure)
     {
         using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException());
-        var options = failure switch { "style" => new AzureLlmOptions { ApiStyle = (AzureLlmApiStyle)7 }, "missing" => new() { ApiStyle = AzureLlmApiStyle.Dated }, "empty" => new() { ApiVersion = "" }, "space" => new() { ApiVersion = " " }, "zero" => new() { MaximumBodyBytes = 0 }, _ => new() { MaximumBodyBytes = -1 } };
+        var options = failure switch { "style" => new AzureLlmOptions { ApiStyle = (AzureLlmApiStyle)7 }, "missing" => new() { ApiStyle = AzureLlmApiStyle.Dated }, "empty" => new() { ApiVersion = "" }, "space" => new() { ApiVersion = " " }, "zero" => new() { MaximumBodyBytes = 0 }, "terminal-zero" => new() { MaximumBufferedTerminalEvents = 0 }, "choices-zero" => new() { MaximumTrackedChoices = 0 }, _ => new() { MaximumBodyBytes = -1 } };
         Assert.ThrowsAny<ArgumentException>(() => new AzureLlmProvider(new AzureHttpFactory(handler), options)); Assert.Equal(0, handler.Calls);
     }
     /// <summary>认证来源身份同样必须稳定且可编码。</summary>

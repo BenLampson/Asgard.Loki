@@ -1,0 +1,23 @@
+event: response.created
+id: wire-response
+retry: 25
+data: {"type":"response.created","sequence_number":0,"response":{"id":"resp-stream","status":"in_progress","output":[]}}
+
+event: response.future.stats
+data: {"type":"response.future.stats","sequence_number":1,"future":{"integer":9007199254740993,"false":false,"null":null}}
+
+event: response.output_item.added
+data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"fc_native_0","type":"function_call","call_id":"call_native_0","name":"lookup","arguments":"","status":"in_progress"}}
+
+event: response.function_call_arguments.delta
+data: {"type":"response.function_call_arguments.delta","sequence_number":3,"item_id":"fc_native_0","output_index":0,"delta":"{\"value\":9007199254740993}"}
+
+event: response.function_call_arguments.done
+data: {"type":"response.function_call_arguments.done","sequence_number":4,"item_id":"fc_native_0","output_index":0,"arguments":"{\"value\":9007199254740993}"}
+
+event: response.output_item.done
+data: {"type":"response.output_item.done","sequence_number":5,"output_index":0,"item":{"id":"fc_native_0","type":"function_call","call_id":"call_native_0","name":"lookup","arguments":"{\"value\":9007199254740993}","status":"completed"}}
+
+event: response.completed
+data: {"type":"response.completed","sequence_number":6,"response":{"id":"resp-stream","status":"completed","model":"native-model-version","output":[{"id":"fc_native_0","type":"function_call","call_id":"call_native_0","name":"lookup","arguments":"{\"value\":9007199254740993}","status":"completed"}],"usage":{"input_tokens":11,"output_tokens":7,"total_tokens":18,"output_tokens_details":{"reasoning_tokens":3}},"content_filters":[{"blocked":false}],"future":null}}
+

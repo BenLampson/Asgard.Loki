@@ -9,4 +9,8 @@ public sealed record AzureLlmOptions
     public string? ApiVersion { get; init; }
     /// <summary>单次响应/HTTP 错误的原始字节上限；超限失败，不截断。</summary>
     public int MaximumBodyBytes { get; init; } = 32 * 1024 * 1024;
+    /// <summary>首次可能终态起暂存的原生事件数上限，包含过滤与用量尾帧。</summary>
+    public int MaximumBufferedTerminalEvents { get; init; } = 128;
+    /// <summary>单次 Chat 流允许关联的原始 choice 索引数，不重编号。</summary>
+    public int MaximumTrackedChoices { get; init; } = 128;
 }

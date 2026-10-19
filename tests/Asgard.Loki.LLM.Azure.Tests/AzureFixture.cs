@@ -18,6 +18,10 @@ internal static class AzureFixture
     }
     internal static JsonObject Request(bool responses) => JsonNode.Parse(Text(responses ? "responses-request" : "chat-request"))!.AsObject();
     internal static string Response(bool responses) => Text(responses ? "responses-response" : "chat-response");
+    internal static string Sse(bool responses)
+    {
+        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Asgard.Loki.LLM.Azure.Tests.Fixtures." + (responses ? "responses" : "chat") + ".sse")!; using var reader = new StreamReader(stream); return reader.ReadToEnd();
+    }
     internal static HttpResponseMessage Reply(bool responses) => new(HttpStatusCode.OK) { Content = new StringContent(Response(responses), Encoding.UTF8, "application/json") };
     internal static LlmTarget Target(bool responses, AzureLlmApiStyle style, string id = "primary") => new()
     { Id = id, ProviderId = "azure", BaseAddress = new("https://" + id + ".invalid/proxy/openai/" + (style == AzureLlmApiStyle.V1 ? "v1/" : "")), UpstreamModel = "deploy.1", CredentialId = "identity", Protocols = responses ? LlmProtocol.Responses : LlmProtocol.ChatCompletions };

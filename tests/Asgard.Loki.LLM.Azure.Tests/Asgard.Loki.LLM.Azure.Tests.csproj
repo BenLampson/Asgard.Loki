@@ -15,5 +15,6 @@
     <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaHttpClient.cs" Link="OllamaHttpClient.cs" />
     <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaHttpFactory.cs" Link="OllamaHttpFactory.cs" />
     <EmbeddedResource Include="Fixtures/**/*.json" />
+    <EmbeddedResource Include="Fixtures/**/*.sse" />
   </ItemGroup>
 </Project>

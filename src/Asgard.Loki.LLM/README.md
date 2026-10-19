@@ -40,7 +40,7 @@ Providers opt in through `ILlmCredentialSupport`; legacy providers remain API-Ke
 
 External fingerprints use a separate domain with structured target/principal/provider components, so newline-containing references cannot move separators and collide with implementation identities. Changing principal, authentication kind, server/model/credential identity or provider configuration rejects an old Session; stable principal identity allows a provider-owned source to refresh short-lived tokens without putting them in this fingerprint. API Key and anonymous fingerprint bytes are unchanged and verified using independently constructed legacy cache entries. Concurrent first binding and snapshots retain the existing explicit coordination contract.
 
-This prerequisite has 38 new offline cases (28 core, four conversion and six direct OpenAI boundaries). It is usable by caller-owned adapters and the independent [Azure provider](../Asgard.Loki.LLM.Azure/README.md), whose native complete JSON endpoint/token transport has 86 additional offline cases. Azure SSE remains pending. No cloud login, actual token refresh or live model call is claimed.
+This prerequisite has 38 new offline cases (28 core, four conversion and six direct OpenAI boundaries). It is usable by caller-owned adapters and the independent [Azure provider](../Asgard.Loki.LLM.Azure/README.md), whose native complete JSON endpoint/token transport has 86 additional offline cases and whose separate SSE checkpoint adds 69 cases. Azure native Chat/Responses SSE preserves delayed annotations and terminal boundaries; compact/WebSocket remain pending. No cloud login, actual token refresh or live model call is claimed.
 
 ## Native Ollama operations
 

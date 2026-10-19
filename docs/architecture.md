@@ -69,9 +69,9 @@ OpenAIImage ..> Image
 - Providers depend only on their own capability and necessary standard dependencies. No umbrella vendor package may force all capabilities to install together.
 - Private technical helpers such as an SSE parser may be source-linked into provider assemblies. They must remain internal; there is no public LokiTransport project or cross-capability workflow framework.
 
-## Azure native JSON provider
+## Azure native provider
 
-`Asgard.Loki.LLM.Azure` implements the existing Chat/Responses complete JSON adapter contracts and references only LLM plus standard HTTP. It adds no protocol flag, public universal message format or dependency on OpenAI/Conversion/another capability. SSE remains an explicit unsupported operation at this checkpoint. See the [provider support matrix](../src/Asgard.Loki.LLM.Azure/README.md).
+`Asgard.Loki.LLM.Azure` implements the existing Chat/Responses JSON/SSE adapter contracts and references only LLM plus standard HTTP. It adds no protocol flag, public universal message format or dependency on OpenAI/Conversion/another capability. Native SSE is provider-owned; it does not change the core protocol contracts. See the [provider support matrix](../src/Asgard.Loki.LLM.Azure/README.md).
 
 ```mermaid
 classDiagram
@@ -90,7 +90,7 @@ External authentication is provider-owned. The borrowed source has a captured st
 
 Requests are snapshotted before awaiting token acquisition. Conflicting unselected authentication defaults fail before send. Complete results wait for normal bounded UTF-8 body EOF, declared-length checks, response/client disposal and cancellation. `MaximumBodyBytes` bounds raw JSON/error bodies. Duplicate properties, malformed strings/encoding, truncated JSON and unexpected SSE media fail; root native errors preserve original body and HTTP status. The factory, token source and clock remain application-owned. Conversion is an explicit separate decorator with its existing strict loss rules; native Azure filter retention does not grant automatic cross-protocol equivalence.
 
-86 independent offline cases cover native complete JSON, authentication, continuation/Session identity and transport/resource boundaries. Cloud login, actual token refresh, live model verification, Azure SSE and optional compact/WebSocket/Realtime operations are not claimed.
+155 independent offline cases cover native JSON/SSE, authentication, continuation/Session identity and transport/resource boundaries. Chat retains empty-identity annotations, unknown native metadata and per-choice original indices; the first possible finish starts a bounded tail buffer through filter/usage records, DONE, normal EOF and disposal. Responses preserves unknown events and holds completed/incomplete/failed/error without changing native status; missing/repeated/late terminals or changed response identity fail. Raw bytes are bounded before SSE line parsing; pending tail records and tracked choice indices have separate explicit limits. Tool/item/call IDs remain native, with no tool execution or argument aggregation. The new SSE binding identity/resource policies require fresh Sessions for the earlier JSON-only checkpoint rather than silently rebinding. Core legacy fingerprints and conversion-v24 are unchanged. Cloud login, actual token refresh, live model verification and optional compact/WebSocket/Realtime operations are not claimed.
 
 ## 2. Registration and lifecycle
 
