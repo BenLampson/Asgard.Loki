@@ -125,7 +125,7 @@ internal static class ResponseMapping
     }
 
     /// <summary>生成完整目标响应，原始上游 JSON 由外层结果独立保存。</summary>
-    internal static JsonObject Write(ConversionDocument doc, LlmProtocol protocol)
+    internal static JsonObject Write(ConversionDocument doc, LlmProtocol protocol, bool mapGeminiCitations = false)
     {
         var message = doc.Messages.Single();
         var blocks = new JsonArray(); var calls = new JsonArray();
@@ -134,7 +134,7 @@ internal static class ResponseMapping
             var type = Text(block["type"]);
             if (type == "text")
             {
-                ResponseCitations.CheckTarget(block, protocol, doc);
+                if (protocol != LlmProtocol.Gemini || !mapGeminiCitations) ResponseCitations.CheckTarget(block, protocol, doc);
                 blocks.Add(protocol switch
                 {
                     LlmProtocol.Gemini => new JsonObject { ["text"] = Text(block["text"]) },
@@ -170,8 +170,12 @@ internal static class ResponseMapping
             return new() { ["id"] = doc.Id, ["type"] = "message", ["role"] = "assistant", ["model"] = doc.Model,
                 ["content"] = blocks, ["stop_reason"] = doc.Finish switch { "length" => "max_tokens", "tool_calls" => "tool_use", "content_filter" => "refusal", _ => "end_turn" }, ["stop_sequence"] = null, ["usage"] = usage };
         if (protocol == LlmProtocol.Gemini)
-            return new() { ["responseId"] = doc.Id, ["modelVersion"] = doc.Model, ["candidates"] = new JsonArray(new JsonObject { ["index"] = 0,
-                ["content"] = new JsonObject { ["role"] = "model", ["parts"] = blocks }, ["finishReason"] = doc.Finish switch { "length" => "MAX_TOKENS", "content_filter" => "SAFETY", _ => "STOP" } }), ["usageMetadata"] = usage };
+        {
+            var candidate = new JsonObject { ["index"] = 0, ["content"] = new JsonObject { ["role"] = "model", ["parts"] = blocks },
+                ["finishReason"] = doc.Finish switch { "length" => "MAX_TOKENS", "content_filter" => "SAFETY", _ => "STOP" } };
+            if (mapGeminiCitations && GeminiCitationWriter.Write(message, doc) is { } grounding) candidate["groundingMetadata"] = grounding;
+            return new() { ["responseId"] = doc.Id, ["modelVersion"] = doc.Model, ["candidates"] = new JsonArray(candidate), ["usageMetadata"] = usage };
+        }
         var output = new JsonArray(); var textBlocks = new JsonArray(); var sequence = 0;
         void Flush()
         {

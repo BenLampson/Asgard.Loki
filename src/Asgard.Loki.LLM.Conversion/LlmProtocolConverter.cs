@@ -39,7 +39,9 @@ public static class LlmProtocolConverter
         var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from, mapUrlCitations: true, mapGeminiGrounding: mapGrounding);
         var doc = ResponseMapping.Read(response, from, citationIndexUnit: captured.OpenAiCitationIndexUnit, mapGeminiGrounding: mapGrounding);
         doc.Diagnostics.AddRange(searchOutputDiagnostics);
-        var target = ResponseMapping.Write(doc, to);
+        var mapGeminiCitations = from is LlmProtocol.ChatCompletions or LlmProtocol.Responses && to == LlmProtocol.Gemini
+            && captured.OpenAiCitationIndexUnit != LlmCitationIndexUnit.Unspecified;
+        var target = ResponseMapping.Write(doc, to, mapGeminiCitations);
         Enforce(doc, captured);
         return new(target, response, doc.Diagnostics);
     }
