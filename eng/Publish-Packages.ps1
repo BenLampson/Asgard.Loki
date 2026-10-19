@@ -31,6 +31,7 @@ $packageIds = @(
     'Asgard.Loki.Embedding.OpenAI',
     'Asgard.Loki.Embedding.Google',
     'Asgard.Loki.Embedding.Ollama',
+    'Asgard.Loki.Embedding.Jina',
     'Asgard.Loki.Rerank.Cohere',
     'Asgard.Loki.Rerank.Jina',
     'Asgard.Loki.Rerank.Ali'

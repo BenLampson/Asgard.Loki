@@ -19,6 +19,7 @@ class Rerank["Asgard.Loki.Rerank"]
 class OpenAIEmbedding["Asgard.Loki.Embedding.OpenAI"]
 class GoogleEmbedding["Asgard.Loki.Embedding.Google"]
 class OllamaEmbedding["Asgard.Loki.Embedding.Ollama"]
+class JinaEmbedding["Asgard.Loki.Embedding.Jina"]
 class CohereRerank["Asgard.Loki.Rerank.Cohere"]
 class JinaRerank["Asgard.Loki.Rerank.Jina"]
 class AliRerank["Asgard.Loki.Rerank.Ali"]
@@ -39,6 +40,7 @@ Rerank ..> Abstractions
 OpenAIEmbedding ..> Embedding
 GoogleEmbedding ..> Embedding
 OllamaEmbedding ..> Embedding
+JinaEmbedding ..> Embedding
 CohereRerank ..> Rerank
 JinaRerank ..> Rerank
 AliRerank ..> Rerank
@@ -554,7 +556,7 @@ Native input is nonempty text, a text batch, one token array or a token-array ba
 
 The existing OpenAI provider has independent Jina text/dense compatibility fixtures, not a new vendor dependency or branch. Native `embedding_type`/task/late-chunking/normalization/truncation settings pass unchanged through the existing JSON parameter contract; compatible single-vector numeric/float32-sized Base64 output retains actual indices and raw JSON. No OpenAI/Jina option alias is deleted or renamed, no model lookup occurs, and provider authentication remains its own fixed target. Nineteen added offline cases establish this subset and its boundaries; they do not implement a native Jina supplier or verify a model.
 
-Native TextDoc/media/PDF/fused groups do not fit the OpenAI input forms. Native per-token `embeddings`, sparse maps, nullable dimensions and packed/multiple encodings have different output/validation semantics. A binary numeric array may pass generic shape checks if dimensions are omitted; that is not native packing support. Declared bit dimensions must not be silently reinterpreted as numeric-element dimensions. These cases require separately implemented `Embedding.Jina` contracts, with provider-owned input/result association and format validation. Sparse response-schema variants and PDF page counts need stronger contract-specific evidence before claiming native model support. No flattening, fabricated source indices, guessed page expansion, media resolver or implicit asynchronous Batch coordinator is introduced by the compatibility audit.
+Native TextDoc/media/PDF/fused groups do not fit the OpenAI input forms. Native per-token `embeddings`, sparse maps, nullable dimensions and packed/multiple encodings have different output/validation semantics. A binary numeric array may pass generic shape checks if dimensions are omitted; that is not native packing support. Declared bit dimensions must not be silently reinterpreted as numeric-element dimensions. The native `Embedding.Jina` package now implements object/media/fused inputs and dense Float/Base64 single/per-token output independently. Remaining PDF, packed/multiple and sparse formats still need provider-owned association/format validation. Sparse response-schema variants and PDF page counts need stronger contract-specific evidence before claiming native model support. No flattening, fabricated source indices, guessed page expansion, media resolver or implicit asynchronous Batch coordinator is introduced by the compatibility audit.
 
 ### Native Google Embeddings
 
@@ -600,6 +602,28 @@ The private payload reader snapshots native parameters and counts scalar text, m
 Positive native integer dimensions require exact returned lengths; zero/negative/null dimensions retain native no-reduction/unset semantics. Nullable `truncate`, `keep_alive` and runtime options keep their native values. The SDK neither parses duration strings nor infers model-specific settings. The response reader validates the required returned model and `embeddings` array, exact input count, nonempty finite vectors, batch dimension consistency and optional nonnegative Int64 durations/token count. It does not inject absent counters, normalize vectors, rewrite a returned canonical model or create OpenAI indices/usage. Provider-owned `OllamaEmbeddingVector` retains the original array and exposes numeric values in native order. Count/order checks cannot establish embedding quality or a server's actual input association.
 
 One complete JSON HTTP call is made; status/body and 200 business errors are preserved. SSE/NDJSON, duplicate properties, truncated/multiple JSON values and inconsistent counts/dimensions fail. Cancellation reaches send/body reads, response resources are disposed and the factory/handler remain borrowed. No LLM, conversion, Session, cache or other capability dependency is introduced. Deprecated native `embeddings` and OpenAI-compatible `v1/embeddings` are distinct contracts with no automatic fallback. Six independent complete wire fixtures and 125 offline cases verify transport/shape/lifecycle, not live models or renderable media.
+
+### Native Jina Embeddings
+
+`Asgard.Loki.Embedding.Jina` depends only on Embedding and standard HTTP components. `JinaEmbeddingOptions` fixes the API root, actual model, Key and borrowed named factory. `JinaEmbeddingAdapter` makes one native `POST embeddings`, without OpenAI/Rerank dependencies, model heuristics, field aliases or generation retries. This is separate from the retained OpenAI-compatible text/dense fixtures.
+
+```mermaid
+classDiagram
+IEmbeddingAdapter <|.. JinaEmbeddingAdapter
+JinaEmbeddingAdapter --> JinaEmbeddingOptions : complete target
+JinaEmbeddingAdapter --> JinaEmbeddingPayload : native snapshot and explicit settings
+JinaEmbeddingPayload --> JinaEmbeddingInput : top level input and fused groups
+JinaEmbeddingAdapter --> JinaEmbeddingResponse : original index coverage
+JinaEmbeddingResponse --> JinaEmbeddingItemCodec : single or token matrix
+JinaEmbeddingItemCodec --> JinaEmbeddingVectorCodec : width and format
+JinaEmbeddingExtensions --> JinaEmbeddingItem : provider owned raw view
+```
+
+Native text/media objects and ordered batch-only content groups retain their containers and unknown fields. Each top-level item, including a fused group, maps to one indexed result. Groups are neither flattened nor downloaded; empty string, empty batch and zero token matrix remain distinct. Known nullable settings remain null and absent settings stay absent. Explicit multi-vector/token flags enforce their documented dependency, and explicit multi-vector mode cannot combine with nonnull dimensions. Native per-token output without that switch is recognized from its fields rather than a model catalog. The private reader validates known types/text-only late chunking without inferring model-specific maxima or rewriting a foreign OpenAI encoding field.
+
+The response reader requires the native model, usage and indexed data array, with exact count/unique covering indices. Items have one single-vector or matrix field, homogeneous shape/width/encoding across the batch, and token strings matching each matrix's row count. Item token counts may differ. Exact nonnegative token counters are retained, including optional per-modality null fields, without inventing usage or prices. Numeric vectors are finite; Base64 validates complete float32-sized byte groups without interpreting encoded values or endianness. `JinaEmbeddingItem` keeps complete raw JSON, source Index, single/matrix data and optional tokens; copied convenience arrays cannot modify it. Native arrays remain ordered and unpooled.
+
+Known PDF and packed/multiple-encoding requests fail before HTTP until their association/packing contracts are separately implemented. Sparse replies remain unsupported and are not assigned synthetic indices. These are outstanding native formats, not implemented by arbitrary JSON retention. Native status/body and `error`/`detail`/`code` failures, including HTTP 200, are preserved. SSE/NDJSON, duplicate/truncated JSON, bad counts/token links or contradictory output fail without retry. Cancellation reaches send/body reads, responses are disposed and the factory/handler remain borrowed. Eight independent complete wire fixtures and 134 offline cases verify this slice; they do not establish live model/media, PDF, packed or sparse behavior. No Session, LLM, media processing, job coordinator or other capability dependency is introduced.
 
 ## 6b. Reranking
 
