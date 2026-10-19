@@ -69,6 +69,7 @@ public sealed class BedrockCompleteConversionTests
     [InlineData(true, "layout")] [InlineData(false, "layout")]
     [InlineData(true, "document")] [InlineData(false, "document")]
     [InlineData(true, "stream-format")] [InlineData(false, "stream-format")]
+    [InlineData(true, "high-limit")] [InlineData(false, "high-limit")]
     public async Task UnsupportedCalls_FailBeforeCredentialOrHttp(bool nova, string kind)
     {
         using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException("must not send")); var clock = new AwsClock(); var source = new AwsCredentialSource(clock); var factory = new AwsHttpFactory(handler);
@@ -78,6 +79,11 @@ public sealed class BedrockCompleteConversionTests
         var provider = new ConvertingBedrockLlmProvider(native, nova ? LlmProtocol.BedrockConverse : LlmProtocol.BedrockNova, "explicit", options);
         await using var client = Client(provider, nova ? LlmProtocol.BedrockNova : LlmProtocol.BedrockConverse); var input = Read("v2", nova ? "Nova" : "ConverseDirect");
         if (kind == "document") input["messages"]![0]!["content"]!.AsArray().Add(new JsonObject { ["document"] = new JsonObject() });
+        if (kind == "high-limit")
+        {
+            var settings = nova ? input["inferenceConfig"]! : input["additionalModelRequestFields"]!;
+            settings["reasoningConfig"]!["maxReasoningEffort"] = "high";
+        }
         var failure = await Record.ExceptionAsync(async () => { if (kind == "stream-format") await Stream(client, nova, input, TestContext.Current.CancellationToken); else await Complete(client, nova, input, TestContext.Current.CancellationToken); });
         if (kind == "document") Assert.IsType<LlmConversionException>(failure); else Assert.IsType<ArgumentException>(failure);
         Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients); Assert.Equal(0, handler.Calls);

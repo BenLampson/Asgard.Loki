@@ -64,9 +64,11 @@ public sealed class BedrockConversionTests
         var source = BedrockConversionFixtures.Read("v2", "Nova");
         var reasoning = source["inferenceConfig"]!["reasoningConfig"]!.AsObject(); reasoning["type"] = disabled ? "disabled" : "enabled";
         if (disabled) reasoning.Remove("maxReasoningEffort"); else reasoning["maxReasoningEffort"] = effort;
+        if (effort == "high") source["inferenceConfig"]!.AsObject().Remove("maxTokens");
         var actual = LlmProtocolConverter.ConvertRequest(source, LlmProtocol.BedrockNova, LlmProtocol.BedrockConverse, BedrockConversionFixtures.Options());
         Equal(reasoning, actual.Data.GetProperty("additionalModelRequestFields").GetProperty("reasoningConfig"));
-        Assert.Equal(8192, actual.Data.GetProperty("inferenceConfig").GetProperty("maxTokens").GetInt32());
+        if (effort == "high") Assert.False(actual.Data.GetProperty("inferenceConfig").TryGetProperty("maxTokens", out _));
+        else Assert.Equal(8192, actual.Data.GetProperty("inferenceConfig").GetProperty("maxTokens").GetInt32());
         Assert.DoesNotContain("budget", actual.Data.GetRawText());
     }
 
@@ -75,6 +77,8 @@ public sealed class BedrockConversionTests
     public void HighReasoningSamplingConflict_AlwaysRejects(string field)
     {
         var source = BedrockConversionFixtures.Read("v2", "Nova"); source["inferenceConfig"]![field] = 0;
+        source["inferenceConfig"]!["reasoningConfig"]!["maxReasoningEffort"] = "high";
+        source["inferenceConfig"]!.AsObject().Remove("maxTokens");
         Assert.Throws<ArgumentException>(() => LlmProtocolConverter.ConvertRequest(source, LlmProtocol.BedrockNova,
             LlmProtocol.BedrockConverse, BedrockConversionFixtures.Options(allowLoss: true)));
         Assert.Equal(0, source["inferenceConfig"]![field]!.GetValue<int>());

@@ -1481,3 +1481,5 @@ classDiagram
 ```
 
 No core interface/enum, package edge or universal coordinator is added. Historical default wrapper binding bytes remain unchanged; existing route protocol flags, full upstream and options participate in session identity. Native Nova/Converse logical streams retain their own state machine. Four-text/Converse streams and inverse complete operations remain future work with independent goldens and failure/terminal checks.
+
+The explicit Nova2 native conversion policy now also checks high reasoning against maxTokens. It rejects this contract conflict before upstream signing/HTTP, without altering the supplied limit or reasoning strength. MessagesV1 and native supplier passthrough are not reclassified by model-name inference. The positive full v2 fixture uses medium with its original limit; high without the limit and high/limit negative cases are distinct.

@@ -44,7 +44,7 @@ internal static class BedrockGenerationConversion
             throw new ArgumentException("Nova 专有参数必须显式选择 BedrockConverseInferenceFormat。", nameof(options));
         var nativePath = fromNova ? "$.inferenceConfig" : options.BedrockConverseInferenceFormat == BedrockConverseInferenceFormat.NestedInferenceConfig
             ? "$.additionalModelRequestFields.inferenceConfig" : "$.additionalModelRequestFields";
-        Validate(common, native, doc, nativePath);
+        Validate(common, native, doc, nativePath, options);
         if (fromNova)
         {
             if (source.ContainsKey("inferenceConfig")) target["inferenceConfig"] = common;
@@ -59,7 +59,7 @@ internal static class BedrockGenerationConversion
     }
 
     /// <summary>保留明确的关闭/强度；禁止采样与 high 冲突时擅自删字段，也不对输出上限做调整。</summary>
-    private static void Validate(JsonObject common, JsonObject native, ConversionDocument doc, string path)
+    private static void Validate(JsonObject common, JsonObject native, ConversionDocument doc, string path, LlmConversionOptions options)
     {
         if (common.ContainsKey("maxTokens")) { Nonnegative(common["maxTokens"]); if (Number(common["maxTokens"]) == 0) throw new ArgumentException("maxTokens 必须为正整数。"); }
         foreach (var key in new[] { "temperature", "topP" })
@@ -76,6 +76,8 @@ internal static class BedrockGenerationConversion
             if (effort is not ("low" or "medium" or "high") || mode == "disabled") throw new ArgumentException("Nova 推理强度与显式模式不一致。");
             if (effort == "high" && (common.ContainsKey("temperature") || common.ContainsKey("topP") || native.ContainsKey("topK")))
                 throw new ArgumentException("Nova high 推理不能与 temperature/topP/topK 同时使用；转换不会自动删参数。");
+            if (effort == "high" && options.BedrockNovaRequestFormat == BedrockNovaRequestFormat.Nova2 && common.ContainsKey("maxTokens"))
+                throw new ArgumentException("显式 Nova2 high 推理不能指定 maxTokens；转换不会删除或扩大调用者的输出上限。");
         }
         else if (mode == "enabled") throw new ArgumentException("启用 Nova 推理必须保留明确强度。");
         native["reasoningConfig"] = copy;
