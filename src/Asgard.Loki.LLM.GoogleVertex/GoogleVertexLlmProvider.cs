@@ -26,6 +26,7 @@ public sealed partial class GoogleVertexLlmProvider : IGeminiAdapter, IClaudeMes
         VertexJson.Text(id); VertexJson.Text(httpClientName); _sourceIdentity = tokenSource.BindingIdentity; ArgumentException.ThrowIfNullOrWhiteSpace(_sourceIdentity); VertexJson.Text(_sourceIdentity);
         if (_options.QuotaProjectId is { } quota) { ArgumentException.ThrowIfNullOrWhiteSpace(quota); VertexJson.Text(quota); if (quota.Any(char.IsWhiteSpace) || quota.Any(char.IsControl)) throw new ArgumentException("Vertex quota project 不能包含空白或控制字符。", nameof(options)); }
         if (_options.ClaudeAnthropicVersion is { } version) { ArgumentException.ThrowIfNullOrWhiteSpace(version); VertexJson.Text(version); }
+        if (_options.MaximumTrackedClaudeBlocks is { } blocks) ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(blocks, 0);
         _factory = httpClientFactory; _source = tokenSource; _clientName = httpClientName; _time = timeProvider ?? TimeProvider.System; Id = id;
     }
     /// <inheritdoc />

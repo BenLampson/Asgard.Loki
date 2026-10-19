@@ -14,4 +14,7 @@ public sealed record GoogleVertexLlmOptions
     /// <summary>Claude 正文版本；省略使用 vertex-2023-10-16，省略值不改变既有 Gemini 绑定身份。</summary>
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public string? ClaudeAnthropicVersion { get; init; }
+    /// <summary>Claude 流的内容块总关联数上限；省略时为 128，省略值保持既有绑定字节。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaximumTrackedClaudeBlocks { get; init; }
 }
