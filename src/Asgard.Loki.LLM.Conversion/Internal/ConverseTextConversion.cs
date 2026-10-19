@@ -18,7 +18,7 @@ internal static class ConverseTextConversion
         GuardTools(source, from); ConverseTextSourceGuard.Validate(source, from);
         var doc = RequestReader.Read(source, from, LlmProtocol.BedrockConverse, options);
         doc.Diagnostics.AddRange(HostedSearchOutput.Inspect(source, from));
-        var target = ConverseTextRequestWriter.Write(doc, from);
+        var target = ConverseTextRequestWriter.Write(doc, from, options);
         LlmProtocolConverter.Enforce(doc, options);
         var history = doc.Messages.SelectMany(message => message.Blocks).Where(block => Text(block["type"]) == "call").Select(block => Text(block["id"]));
         return new(target, source, doc.Diagnostics, new(from, LlmProtocol.BedrockConverse, options, historicalIds: history, requestedModel: doc.Model));

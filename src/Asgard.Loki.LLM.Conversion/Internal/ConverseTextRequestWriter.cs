@@ -8,11 +8,9 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class ConverseTextRequestWriter
 {
     /// <summary>所有正文控制保持明确；工具 Schema 与输出 Schema 分别写入原生位置。</summary>
-    internal static JsonObject Write(ConversionDocument doc, LlmProtocol source)
+    internal static JsonObject Write(ConversionDocument doc, LlmProtocol source, LlmConversionOptions options)
     {
         var target = new JsonObject { ["model"] = doc.Model };
-        if (doc.Reasoning.Count != 0 || doc.Settings.ContainsKey("topK"))
-            BedrockConversion.Reject("$reasoning", "converse_model_dialect_required");
         if (doc.Settings.ContainsKey("parallel")) BedrockConversion.Reject("$settings.parallel", "converse_parallel_control_not_representable");
         JsonArray system = []; var seenMessage = false;
         foreach (var message in doc.Messages)
@@ -31,6 +29,7 @@ internal static class ConverseTextRequestWriter
         JsonObject inference = [];
         foreach (var field in doc.Settings)
         {
+            if (field.Key == "topK") continue;
             var key = field.Key switch { "maxTokens" => "maxTokens", "temperature" => "temperature", "topP" => "topP", "stop" => "stopSequences", _ => null };
             if (key is null) BedrockConversion.Reject("$settings." + field.Key);
             if (key == "maxTokens") { BedrockConversion.Nonnegative(field.Value); if (Number(field.Value) == 0) throw new ArgumentException("maxTokens 必须为正整数。"); }
@@ -49,7 +48,8 @@ internal static class ConverseTextRequestWriter
             inference[key!] = field.Value?.DeepClone();
         }
         if (inference.Count != 0) target["inferenceConfig"] = inference;
-        WriteTools(target, doc); WriteOutput(target, doc); return target;
+        WriteTools(target, doc); WriteOutput(target, doc);
+        ConverseTextReasoning.Write(target, doc, source, options); return target;
     }
     /// <summary>普通 JSON Schema 不删约束；具名选择保留原名，none 不以删除工具来伪装支持。</summary>
     private static void WriteTools(JsonObject target, ConversionDocument doc)

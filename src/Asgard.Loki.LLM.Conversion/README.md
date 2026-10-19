@@ -562,3 +562,38 @@ The complete golden response model label is the routed actual request model, not
 Nova2 high reasoning additionally rejects an explicit `maxTokens` in either native conversion direction, including loss-consented calls. The converter does not delete/increase that limit. The positive high test omits it explicitly; positive v2 goldens retain 8192 and use medium. See the [AWS high-mode restriction](https://docs.aws.amazon.com/nova/latest/nova2-userguide/extended-thinking.html). This check follows the explicit Nova2 format policy, not a guessed model suffix; raw supplier passthrough stays raw.
 
 Converted Responses IDs (including the synthetic `loki_` labels from Converse) are output labels, not resumable upstream Responses objects. Core complete/stream clients now leave them out of native response-ownership registration while preserving JSON/metadata. A continuation with a new converted ID fails before a second upstream invocation. Native identity results remain eligible for the existing ownership contract, without prefix heuristics or cache coordination changes. Older converted ownership records are not proactively removed; cross-protocol continuation remains rejected by the converter.
+
+### Explicit Converse model reasoning request settings
+
+Set `LlmConversionOptions.BedrockConverseModelDialect` explicitly to `Anthropic` or `AmazonNova2` for four-text requests targeting Converse. `Unspecified` retains the preceding hard boundary. Selecting a dialect declares the caller's intended parameter contract; it does not inspect a model name, query model support or certify that every model in that family accepts each setting.
+
+```csharp
+var anthropicPolicy = new LlmConversionOptions
+{
+    BedrockConverseModelDialect = BedrockConverseModelDialect.Anthropic
+};
+var converted = new ConvertingBedrockLlmProvider(
+    native, LlmProtocol.BedrockConverse, "converse-anthropic", anthropicPolicy);
+
+var novaPolicy = new LlmConversionOptions
+{
+    BedrockConverseModelDialect = BedrockConverseModelDialect.AmazonNova2,
+    BedrockConverseInferenceFormat = BedrockConverseInferenceFormat.Direct
+    // Select NestedInferenceConfig instead only for the explicitly intended wrapper contract.
+};
+```
+
+| Request setting | Anthropic dialect | AmazonNova2 dialect |
+| --- | --- | --- |
+| Reasoning mode | Explicit manual/adaptive/off; qualitative source effort can select adaptive | Low/medium/high or explicit off |
+| Native fields | `additionalModelRequestFields.thinking`, `output_config.effort`, `top_k` | `reasoningConfig` and `topK` in the separately selected direct/nested wrapper |
+| Numeric budget | Preserve it; minimum 1024 and strictly below original explicit output limit | Requires explicit `TargetReasoningEffort` low/medium/high plus loss consent and replacement diagnostics |
+| Display/summary | Active thinking summarized/omitted; summary-detail changes are diagnosed | Unsupported output intent is diagnosed; no pretend native summary field |
+| High/sampling conflicts | Active thinking rejects explicit sampling/forced tools/assistant prefill | High rejects maxTokens, temperature, topP and topK |
+| Structured output | Existing native `outputConfig` remains independent and unchanged | Same native schema contract |
+
+`TargetThinkingBudgetTokens` can explicitly select an Anthropic manual budget; incompatible source off/budget values fail. No effort-to-budget ratio, limit adjustment, sampling deletion or model inference is performed. Omitted fields stay omitted, explicit null is not a default, and invalid source modes remain hard failures under loss consent. The default omitted dialect property preserves preceding binding bytes. Explicit dialect/layout/other policy changes enter the existing complete-target identity and reject an old Session before credentials/HTTP.
+
+This checkpoint supports **request settings** and ordinary text/tool replies only. Native reasoning/signature/redacted response blocks and history are still hard boundaries, including under loss consent. Enabling settings does not discard such blocks to return success. Complete signed-history/response conversion, inverse operations and mixed streams still require separate independent fixtures and implementation; use native Converse to keep its whole protocol. No live thinking, schema enforcement or model/account acceptance is claimed.
+
+Eight independent request goldens plus a plain structured-text native reply/four full public reply goldens precede implementation. Thirty-one conversion cases and 36 AWS cases verify exact schema/number/field placement, strict failure, explicit budget replacement, original snapshots, public SigV4/Bearer HTTP, no-acquisition policy failures and policy-change Session rejection. Public SDK tests deliberately use plain replies and do not simulate verified signatures or real thinking behavior. Source contracts: [Anthropic adaptive settings](https://docs.aws.amazon.com/bedrock/latest/userguide/claude-messages-adaptive-thinking.html), [extended thinking constraints](https://docs.aws.amazon.com/bedrock/latest/userguide/claude-messages-extended-thinking.html), [Nova2 reasoning](https://docs.aws.amazon.com/nova/latest/nova2-userguide/extended-thinking.html).

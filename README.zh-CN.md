@@ -94,3 +94,5 @@ LLM 适配器新增可选 `ILlmProtocolSupport`：声明只能收窄物理适配
 既有 Bedrock 转换装饰器已将这些文本完整调用接入公共 SDK：显式固定 Converse 上游，沿用原生认证和完整目标／Session 绑定。固定 Nova 仍只支持原生协议对；混合文本流在获取凭据／HTTP 之前拒绝，禁止装饰器互相嵌套。见[初始化及限制](src/Asgard.Loki.LLM.Conversion/README.md#public-sdk-text-calls-over-native-converse)。
 
 转换后的 Responses ID 继续保留在结果中，但不再登记成原生可续传响应。完整／流式入口保留原生响应链行为，新转换 ID 的续接在再次调用上游前失败；见[归属契约](src/Asgard.Loki.LLM/README.md#native-responses-ownership-versus-converted-output-ids)。
+
+Converse 显式转换新增 Anthropic／Nova2 的推理请求设置方言，可与原生结构化输出共存；完整 JSON 金样和公共 SDK HTTP 测试验证实际报文。签名及原生推理响应／历史回传仍未完成，保持严格失败，不丢弃内容来伪装成功。见[支持矩阵和限制](src/Asgard.Loki.LLM.Conversion/README.md#explicit-converse-model-reasoning-request-settings)。

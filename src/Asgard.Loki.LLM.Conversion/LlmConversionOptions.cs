@@ -3,6 +3,9 @@ namespace Asgard.Loki.LLM.Conversion;
 /// <summary>由调用者明确选择的转换损耗策略与必需默认值。</summary>
 public sealed record LlmConversionOptions
 {
+    /// <summary>四种文本请求到 Converse 的模型设置方言；默认不开放专有推理转换。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+    public BedrockConverseModelDialect BedrockConverseModelDialect { get; init; }
     /// <summary>Nova/Converse 跨协议请求的显式 Nova 外壳；缺省不影响已有四协议绑定字节。</summary>
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
     public BedrockNovaRequestFormat BedrockNovaRequestFormat { get; init; }

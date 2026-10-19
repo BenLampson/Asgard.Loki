@@ -1495,3 +1495,20 @@ flowchart LR
     Kind -->|no| Bind[Register native response ownership]
     Bind --> Return
 ```
+
+## Explicit Converse model request dialects
+
+The existing Conversion package owns `BedrockConverseModelDialect` and private `ConverseTextReasoning`. The existing options record selects Anthropic versus AmazonNova2 explicitly; default omission remains byte-compatible with preceding bindings. Existing canonical request reading, native common settings and output Schema writing remain separate from model fields. No capability interface/enum or provider package edge changes. The AWS supplier stays raw and never references Conversion.
+
+```mermaid
+flowchart LR
+    Caller[Explicit immutable dialect/layout options] --> Mapper[Private Converse model settings mapper]
+    Document[Private per-call request document] --> Mapper
+    Mapper --> Anthropic[thinking / output_config.effort / top_k]
+    Mapper --> Nova[reasoningConfig / topK with explicit wrapper]
+    Common[Common inference and outputConfig Schema] --> Request[Single native Converse request]
+    Anthropic --> Request
+    Nova --> Request
+```
+
+Anthropic manual budgets remain original and below the explicit original maxTokens; adaptive/off/display and qualitative effort use their native model fields. Nova2 numeric budgets require caller-selected qualitative replacement with loss consent and diagnostics; no numeric ratio is estimated. High/limit/sampling/forced-tool/prefill/null/mode conflicts fail before acquisition, without silently deleting controls. Explicit policy changes participate in the same whole-target/session identity. Signed/reasoning/redacted response and history blocks remain hard boundaries; request-setting support does not imply full reasoning round-trip or streaming support. Those are continuing SDK requirements.

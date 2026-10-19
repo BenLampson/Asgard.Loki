@@ -9,6 +9,12 @@ internal static class ConverseTextSourceGuard
     /// <summary>在规范化之前拒绝错位的工具身份、非普通调用和未实现的执行内容。</summary>
     internal static void Validate(JsonObject source, LlmProtocol protocol)
     {
+        if (protocol == LlmProtocol.ClaudeMessages && source["thinking"] is JsonObject thinking)
+        {
+            if (Text(thinking["type"]) is not ("enabled" or "adaptive" or "disabled"))
+                BedrockConversion.Reject("$.thinking.type", "unsupported_thinking_mode");
+            if (thinking.ContainsKey("display")) _ = Text(thinking["display"]);
+        }
         if (protocol is LlmProtocol.ChatCompletions or LlmProtocol.ClaudeMessages)
         foreach (var node in Array(source["messages"]))
         {
