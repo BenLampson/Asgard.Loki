@@ -34,16 +34,19 @@ public sealed class LlmProtocolStreamConverter
         options = ConversionOptionsSnapshot.Capture(options);
         LlmProtocolConverter.Validate(new(), from, to, options);
         var mapped = context?.MappedToolCount > 0;
+        var concatenate = options.GeminiGroundingStreamMode == GeminiGroundingStreamMode.ConcatenatedTextParts;
+        if (concatenate && from != to && (from != LlmProtocol.Responses || to != LlmProtocol.Gemini))
+            throw new ArgumentException("文本块拼接引用流只适用于 Responses 到 Gemini，不声明 Gemini 源 part 的所属约定。", nameof(options));
         var grounding = from == LlmProtocol.Gemini && to == LlmProtocol.Responses
             && options.GeminiGroundingStreamMode == GeminiGroundingStreamMode.SingleTextPart;
         var citations = from == LlmProtocol.Responses && to == LlmProtocol.Gemini
-            && options.GeminiGroundingStreamMode == GeminiGroundingStreamMode.SingleTextPart;
+            && options.GeminiGroundingStreamMode is GeminiGroundingStreamMode.SingleTextPart or GeminiGroundingStreamMode.ConcatenatedTextParts;
         if ((grounding || citations) && options.OpenAiCitationIndexUnit == LlmCitationIndexUnit.Unspecified)
             throw new ArgumentException("Gemini 引用流映射必须显式声明 OpenAI 端点索引单位。", nameof(options));
         _source = new(from, mapped ? 6L * context!.Options.MaxCustomToolInputBytes + 64 : null,
             mapped ? context!.Options.MaxToolConversionOutputCalls : null,
-            options.OpenAiCitationIndexUnit, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes, grounding, citations);
-        _target = new(to, mapped ? context : null, citations, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes); _options = options; _identity = from == to; _context = context;
+            options.OpenAiCitationIndexUnit, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes, grounding, citations, concatenate);
+        _target = new(to, mapped ? context : null, citations, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes, concatenate); _options = options; _identity = from == to; _context = context;
     }
 
     /// <summary>转换中已发现的累计损耗诊断快照。</summary>

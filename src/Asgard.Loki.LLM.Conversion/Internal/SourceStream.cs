@@ -6,7 +6,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 /// <summary>聚合单条原生流的文本、函数参数与终态，不恢复或重试网络连接。</summary>
 internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumArgumentBytes = null, int? maximumToolCalls = null,
     LlmCitationIndexUnit citationIndexUnit = LlmCitationIndexUnit.Unspecified, int maximumAnnotations = 1024, int maximumAnnotationBytes = 1024 * 1024,
-    bool mapGeminiGrounding = false, bool mapResponseCitations = false)
+    bool mapGeminiGrounding = false, bool mapResponseCitations = false, bool concatenateResponseText = false)
 {
     private readonly Dictionary<string, int> _indices = new(StringComparer.Ordinal);
     private readonly HashSet<int> _emittedTools = [];

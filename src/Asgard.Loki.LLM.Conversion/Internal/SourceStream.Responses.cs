@@ -171,6 +171,7 @@ internal sealed partial class SourceStream
         var complete = ResponseMapping.Read(response, LlmProtocol.Responses, mapCitations: mapResponseCitations, citationIndexUnit: Document.CitationIndexUnit); Document.Diagnostics.AddRange(complete.Diagnostics);
         if (!SameResponseBlocks(complete.Messages[0].Blocks, _message.Blocks))
             throw new InvalidDataException("Responses 最终输出与已转换的增量不一致。");
+        if (concatenateResponseText && complete.Messages[0].Blocks.Any(block => block["citations"] is JsonArray { Count: > 0 })) RequireResponseTextOrder(output);
         if (mapResponseCitations)
             for (var i = 0; i < _message.Blocks.Count; i++)
                 if (complete.Messages[0].Blocks[i]["citations"] is { } citations) _message.Blocks[i]["citations"] = citations.DeepClone();
@@ -178,6 +179,22 @@ internal sealed partial class SourceStream
         Document.Usage.Clear();
         foreach (var usage in complete.Usage) Document.Usage[usage.Key] = usage.Value?.DeepClone();
         Identity(response, "id", "model"); _terminal = true;
+    }
+
+    /// <summary>即使两个 part 文本相同，也按原生 output/content 键证明块身份与排序，不能靠字符串相等推断。</summary>
+    private void RequireResponseTextOrder(JsonArray output)
+    {
+        if (output.OfType<JsonObject>().Any(item => Text(item["type"]) != "message")) return;
+        List<string> expected = [];
+        for (var i = 0; i < output.Count; i++)
+        {
+            var parts = Array(Object(output[i])["content"]);
+            for (var j = 0; j < parts.Count; j++) if (Text(Object(parts[j])["type"]) == "output_text") expected.Add("responses-" + i + "-text-" + j);
+        }
+        var actual = _indices.OrderBy(pair => pair.Value).Select(pair => pair.Key).ToArray();
+        if (!expected.ToHashSet(StringComparer.Ordinal).SetEquals(actual)) throw new InvalidDataException("Responses 内容索引与最终原生 part 身份不一致。");
+        if (!expected.SequenceEqual(actual, StringComparer.Ordinal)) throw new LlmConversionException([new("grounding_stream_layout_not_representable", "$event.response.output",
+            "原生文本 part 的开始顺序与最终索引顺序不同，不能按相同文本推断引用关联。")]);
     }
 
     /// <summary>引用由独立原始快照状态逐字段校验；文本/工具比较不把已验证引用当成增量文本。</summary>

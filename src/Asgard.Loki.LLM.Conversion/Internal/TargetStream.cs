@@ -5,7 +5,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 
 /// <summary>将即时文本与完整工具块编码为目标原生事件序列。</summary>
 internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? context = null, bool mapGeminiCitations = false,
-    int maximumAnnotations = 1024, int maximumAnnotationBytes = 1024 * 1024)
+    int maximumAnnotations = 1024, int maximumAnnotationBytes = 1024 * 1024, bool concatenateGeminiTextParts = false)
 {
     private readonly HashSet<int> _started = [];
     private readonly Dictionary<int, int> _toolIndices = [];
@@ -16,6 +16,8 @@ internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? c
     private int? _activeClaude;
     private readonly HashSet<int> _closedClaude = [];
     private readonly HashSet<int> _outputStarts = [];
+    private int _highestGeminiBlock = -1;
+    private bool _geminiTextInterleaved;
 
     /// <summary>发出增量；工具参数在源协议确认完整后发出。</summary>
     internal List<JsonObject> Push(ConversionDocument doc, IEnumerable<StreamChange> changes)
@@ -44,6 +46,7 @@ internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? c
             }
             else if (protocol == LlmProtocol.Gemini)
             {
+                if (concatenateGeminiTextParts && !change.Tool && !string.IsNullOrEmpty(change.Delta)) { _geminiTextInterleaved |= change.Index < _highestGeminiBlock; _highestGeminiBlock = Math.Max(_highestGeminiBlock, change.Index); }
                 var part = change.Tool ? new JsonObject { ["functionCall"] = new JsonObject { ["id"] = Text(block["id"]), ["name"] = Text(block["name"]), ["args"] = Object(JsonNode.Parse(Text(block["arguments"]))) } }
                     : new JsonObject { ["text"] = change.Delta };
                 events.Add(new() { ["responseId"] = _id, ["modelVersion"] = _model,
@@ -61,7 +64,7 @@ internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? c
         List<JsonObject> events = [];
         Initialize(doc, events);
         doc.Id = _id!;
-        if (mapGeminiCitations) GeminiCitationStreamTarget.RequireLayout(doc);
+        if (mapGeminiCitations) GeminiCitationStreamTarget.Prepare(doc, concatenateGeminiTextParts, _geminiTextInterleaved);
         var complete = ResponseMapping.Write(doc, protocol, mapGeminiCitations);
         if (mapGeminiCitations) GeminiCitationStreamTarget.RequireLimits(complete, maximumAnnotations, maximumAnnotationBytes);
         if (protocol == LlmProtocol.ChatCompletions)

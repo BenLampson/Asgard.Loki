@@ -630,6 +630,23 @@ GeminiCitationWriter --> CitationOffsets : declared source unit to UTF8 bytes
 
 Text remains incremental; grounding/usage/finish is delivered only after upstream enumeration/disposal and final cancellation succeed. Multiple cited text blocks or tool layouts hard-fail rather than relabeling part identity; citation-free tools keep their existing behavior. Source annotations and target chunks plus supports have independent count/byte budgets, including under AllowLoss. Unknown fields retain diagnostics/original JSON, while malformed source state, bad ranges, truncation and late native/transport errors cannot release success. Fifty-four cases bring current conversion coverage to 1852 and overall coverage to 5489, still 28 packages. Conversion binding domain is now conversion-v25; exact native/core supplier identities remain unchanged, and v24 converting Sessions are rejected before HTTP. No hosted tool execution or live search acceptance is claimed.
 
+### Explicit sequential text concatenation
+
+The additive enum value GeminiGroundingStreamMode.ConcatenatedTextParts is scoped to Responses → Gemini. SourceStream's Responses branch additionally proves the original output/content key set and native part ordering before copying final citations; matching text alone does not establish identity. TargetStream tracks the order of nonempty text changes, allowing empty part starts without inventing content interleaving. Only the new mode enables these extra order/concatenation paths; default and SingleTextPart semantics stay unchanged.
+
+```mermaid
+classDiagram
+LlmConversionOptions --> GeminiGroundingStreamMode : existing serialized scalar with new opt-in value
+LlmProtocolStreamConverter --> SourceStream : prove native part key and order
+LlmProtocolStreamConverter --> TargetStream : track nonempty text order
+TargetStream --> GeminiCitationStreamTarget : prepare after source completion
+GeminiCitationStreamTarget --> ResponseCitations : exact declared-unit prefix rebasing
+GeminiCitationStreamTarget --> ConversionDocument : private cumulative text and citations
+ResponseMapping --> GeminiCitationWriter : existing native byte ranges and source order
+```
+
+After successful source completion, the private working document combines only declared sequential text blocks, reusing ResponseCitations.Chat and Read plus the existing Gemini writer/offset codec. Original upstream JSON is not changed, no separators are added and message/part grouping is explicitly cumulative in the target. Tools, native part reversals and nonempty text interleaving fail rather than relabeling citations; invalid native index sets fail as source corruption. Source and expanded-output budgets and terminal/disposal/cancellation checks remain independent. Forty-seven new cases bring totals to 5536 (1899 conversion), 28 packages. New enum value 2 uses the existing snapshotted field, preserving exact default/SingleTextPart v25 binding bytes and previous enum values; mode changes participate in normal Session invalidation. No provider, capability dependency, business coordinator or execution service is added.
+
 ### Explicit text-file encoding
 
 Public `LlmTextFileEncoding` and `LlmConversionOptions.TextFileEncoding` require a caller declaration before converting `text/plain`; `MaxTextFileBytes` independently bounds decoded UTF-8 bytes per file (1 MiB by default). `RequestReader` copies the immutable scalar options into the private `ConversionDocument` before reading content. `InputFileMapping` delegates only these declared pure-text files to private `TextFileMapping`; PDF byte handling remains separate.
