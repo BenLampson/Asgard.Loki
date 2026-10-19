@@ -1,0 +1,90 @@
+{
+  "Gemini": {
+    "model": "function-schema-model",
+    "contents": [
+      { "role": "user", "parts": [{ "text": "count rows" }] },
+      { "role": "model", "parts": [{ "functionCall": { "id": "call-typed", "name": "count", "args": { "items": ["a"] } } }] },
+      { "role": "user", "parts": [{ "functionResponse": { "id": "call-typed", "name": "count", "response": { "count": 1 } } }] },
+      { "role": "user", "parts": [{ "text": "again" }] }
+    ],
+    "generationConfig": { "maxOutputTokens": 128 },
+    "tools": [{ "functionDeclarations": [{
+      "name": "count", "description": "",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "items": { "type": "ARRAY", "minItems": "0", "items": { "type": "STRING", "nullable": true } },
+          "cap": { "type": "INTEGER", "minimum": 0 }
+        },
+        "required": ["items"]
+      }
+    }] }],
+    "toolConfig": { "functionCallingConfig": { "mode": "ANY", "allowedFunctionNames": ["count"] } }
+  },
+  "ChatCompletions": {
+    "model": "function-schema-model",
+    "max_completion_tokens": 128,
+    "messages": [
+      { "role": "user", "content": [{ "type": "text", "text": "count rows" }] },
+      { "role": "assistant", "content": [], "tool_calls": [{ "id": "call-typed", "type": "function", "function": { "name": "count", "arguments": "{\"items\":[\"a\"]}" } }] },
+      { "role": "tool", "tool_call_id": "call-typed", "content": "{\"count\":1}" },
+      { "role": "user", "content": [{ "type": "text", "text": "again" }] }
+    ],
+    "tools": [{ "type": "function", "function": {
+      "name": "count", "description": "",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "items": { "type": "array", "minItems": 0, "items": { "type": ["string", "null"] } },
+          "cap": { "type": "integer", "minimum": 0 }
+        },
+        "required": ["items"]
+      }
+    } }],
+    "tool_choice": { "type": "function", "function": { "name": "count" } }
+  },
+  "Responses": {
+    "model": "function-schema-model",
+    "max_output_tokens": 128,
+    "input": [
+      { "type": "message", "role": "user", "content": [{ "type": "input_text", "text": "count rows" }] },
+      { "type": "function_call", "call_id": "call-typed", "name": "count", "arguments": "{\"items\":[\"a\"]}" },
+      { "type": "function_call_output", "call_id": "call-typed", "output": "{\"count\":1}" },
+      { "type": "message", "role": "user", "content": [{ "type": "input_text", "text": "again" }] }
+    ],
+    "tools": [{
+      "type": "function", "name": "count", "description": "",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "items": { "type": "array", "minItems": 0, "items": { "type": ["string", "null"] } },
+          "cap": { "type": "integer", "minimum": 0 }
+        },
+        "required": ["items"]
+      }
+    }],
+    "tool_choice": { "type": "function", "name": "count" }
+  },
+  "ClaudeMessages": {
+    "model": "function-schema-model",
+    "max_tokens": 128,
+    "messages": [
+      { "role": "user", "content": [{ "type": "text", "text": "count rows" }] },
+      { "role": "assistant", "content": [{ "type": "tool_use", "id": "call-typed", "name": "count", "input": { "items": ["a"] } }] },
+      { "role": "user", "content": [{ "type": "tool_result", "tool_use_id": "call-typed", "content": "{\"count\":1}" }] },
+      { "role": "user", "content": [{ "type": "text", "text": "again" }] }
+    ],
+    "tools": [{
+      "name": "count", "description": "",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "items": { "type": "array", "minItems": 0, "items": { "type": ["string", "null"] } },
+          "cap": { "type": "integer", "minimum": 0 }
+        },
+        "required": ["items"]
+      }
+    }],
+    "tool_choice": { "type": "tool", "name": "count" }
+  }
+}

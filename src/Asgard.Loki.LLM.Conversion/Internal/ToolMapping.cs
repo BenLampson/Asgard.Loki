@@ -71,17 +71,24 @@ internal static class ToolMapping
         else Loss(doc, "$.tool_choice", "unsupported_tool_choice");
     }
 
-    /// <summary>保留 JSON Schema 原文，Gemini 使用 parametersJsonSchema 避免改写 Schema。</summary>
+    /// <summary>保留 JSON Schema 原文；Gemini typed 参数显式转换，目标仍使用 parametersJsonSchema。</summary>
     private static void Add(JsonObject tool, LlmProtocol protocol, ConversionDocument doc)
     {
         var schemaKey = protocol == LlmProtocol.ClaudeMessages ? "input_schema" : protocol == LlmProtocol.Gemini ? "parametersJsonSchema" : "parameters";
         Check(tool, doc, "$.tools[].function", protocol == LlmProtocol.Responses || protocol == LlmProtocol.ClaudeMessages
-            ? ["type", "name", "description", schemaKey, "strict"] : ["name", "description", schemaKey, "strict"]);
+            ? ["type", "name", "description", schemaKey, "strict"] : protocol == LlmProtocol.Gemini
+                ? ["name", "description", schemaKey, "parameters", "strict"] : ["name", "description", schemaKey, "strict"]);
         if (protocol == LlmProtocol.ClaudeMessages && tool.ContainsKey("type") && tool["type"]?.GetValue<string>() != "custom")
         { Loss(doc, "$.tools[].type", "unsupported_hosted_tool"); return; }
         var function = new JsonObject { ["name"] = Text(tool["name"]) };
         Copy(tool, "description", function, "description");
         Copy(tool, schemaKey, function, "parameters");
+        if (protocol == LlmProtocol.Gemini && tool.ContainsKey("parameters"))
+        {
+            if (tool.ContainsKey("parametersJsonSchema")) throw new ArgumentException("Gemini 函数不能同时指定两种参数 Schema 方言。");
+            // 普通工具参数不保证目标生成属性顺序；不能套用文本结构化输出的顺序承诺。
+            function["parameters"] = GeminiSchemaMapping.Read(Object(tool["parameters"]), doc, "$.tools[].function.parameters", LlmProtocol.None);
+        }
         Copy(tool, "strict", function, "strict");
         if (!function.ContainsKey("parameters")) function["parameters"] = new JsonObject { ["type"] = "object", ["properties"] = new JsonObject() };
         doc.Tools.Add(function);

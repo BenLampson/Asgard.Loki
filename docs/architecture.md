@@ -203,7 +203,7 @@ ResponsesWebSocketState --> OpenAiResponsesWebSocketOptions
 
 `Asgard.Loki.LLM.Conversion` is an optional LLM extension with a single project dependency on `Asgard.Loki.LLM`. It owns pure request/response conversion and single-call stream state. Its private conversion representation never replaces the four native contracts or crosses capability boundaries. This remains an embeddable SDK: no listener, HTTP relay endpoint, gateway administration, billing, tool executor or background orchestration is introduced.
 
-`LlmConversionOptions.GeminiOutputFormat` explicitly selects the Gemini target envelope: `LegacyJsonSchema` preserves the current default wire body, while `ResponseFormat` writes modern `generationConfig.responseFormat.text` with native MIME enums. Source modern text and legacy JSON Schema envelopes are recognized independently; conflicting text settings are rejected and unrepresentable media/unknown fields remain diagnosed. JSON Schema bodies are copied unchanged. A private `GeminiSchemaMapping` separately translates typed `responseSchema` input, preserving validation constraints, exact int64 limits and native null semantics. Complete property ordering maps to OpenAI property insertion order; other ordering intent requires diagnosed consent. Unknown typed constraints hard-fail even with `AllowLoss`. Typed function input and typed target output remain separate checkpoints. Options and the `conversion-v5` algorithm identity enter Session fingerprints, so old conversion Sessions fail validation instead of being silently rebound. Native providers do not reference or inherit this policy.
+`LlmConversionOptions.GeminiOutputFormat` explicitly selects the Gemini target envelope: `LegacyJsonSchema` preserves the current default wire body, while `ResponseFormat` writes modern `generationConfig.responseFormat.text` with native MIME enums. Source modern text and legacy JSON Schema envelopes are recognized independently; conflicting text settings are rejected and unrepresentable media/unknown fields remain diagnosed. JSON Schema bodies are copied unchanged. A private `GeminiSchemaMapping` separately translates typed `responseSchema` input, preserving validation constraints, exact int64 limits and native null semantics. Complete property ordering maps to OpenAI property insertion order; other ordering intent requires diagnosed consent. Unknown typed constraints hard-fail even with `AllowLoss`. Typed function `parameters` input reuses this mapper; conflicting dialects fail and function ordering intent requires diagnostics for every target. Typed target output remains a separate checkpoint. Options and the `conversion-v6` algorithm identity enter Session fingerprints, so old conversion Sessions fail validation instead of being silently rebound. Native providers do not reference or inherit this policy.
 
 ```mermaid
 classDiagram
@@ -212,6 +212,7 @@ ConvertingLlmProvider --> LlmConversionOptions : immutable snapshot
 GeminiOutputMapping --> GeminiOutputFormat : explicit target envelope
 GeminiOutputMapping --> GeminiSchemaMapping : typed source only
 GeminiSchemaMapping --> GeminiSchemaInteger : exact ProtoJSON limits
+ToolMapping --> GeminiSchemaMapping : typed function input
 GeminiOutputMapping --> ConversionDocument : private per-call data
 ```
 
