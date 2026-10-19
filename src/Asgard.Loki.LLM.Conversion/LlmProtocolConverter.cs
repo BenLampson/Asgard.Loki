@@ -18,7 +18,7 @@ public static class LlmProtocolConverter
         if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
             throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
         if (to == LlmProtocol.BedrockConverse) return ConverseTextConversion.Request(request, from, captured);
-        var candidateCount = GeminiCandidateCount.Read(request, from, to);
+        var candidateCount = GeminiCandidateCount.Read(request, from, to, options: captured);
         var candidateRequest = GeminiCandidateCount.Prepare(request, candidateCount);
         var searchOutputDiagnostics = HostedSearchOutput.Inspect(request, from);
         var search = HostedSearchCodec.Prepare(candidateRequest, from, to, captured, out var searchPrepared);
@@ -86,6 +86,8 @@ public static class LlmProtocolConverter
         if (options is not null && !Enum.IsDefined(options.BedrockConverseModelDialect)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is { MaxBedrockStreamBlocks: <= 0 } or { MaxBedrockStreamToolArgumentBytes: <= 0 }
             or { MaxBedrockStreamTailBytes: <= 0 } or { MaxBedrockStreamDiagnostics: <= 0 }) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is { MaxStreamCandidates: <= 0 } or { MaxCandidateStreamInputBytes: <= 0 }
+            or { MaxCandidateStreamOutputBytes: <= 0 } or { MaxCandidateStreamDiagnostics: <= 0 }) throw new ArgumentOutOfRangeException(nameof(options));
         if (options?.DefaultMaxTokens is <= 0) throw new ArgumentOutOfRangeException(nameof(options));
         if (options?.TargetThinkingBudgetTokens is < 1024) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiOutputFormat)) throw new ArgumentOutOfRangeException(nameof(options));

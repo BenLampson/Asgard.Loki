@@ -6,6 +6,7 @@ namespace Asgard.Loki.LLM.Conversion;
 /// <summary>一次流专用的显式转换状态；文本即时输出，函数参数完成后输出。</summary>
 public sealed class LlmProtocolStreamConverter
 {
+    private readonly CandidateStreamConversion? _multiple;
     private readonly SourceStream _source;
     private readonly TargetStream _target;
     private readonly LlmConversionOptions _options;
@@ -35,6 +36,7 @@ public sealed class LlmProtocolStreamConverter
         LlmProtocolConverter.Validate(new(), from, to, options);
         if (from != to && (BedrockConversion.IsBedrock(from) || BedrockConversion.IsBedrock(to)))
             throw new NotSupportedException("Nova/Converse 跨协议流尚未实现；不会把完整 JSON 映射当作流式协议转换。");
+        if (options.EnableMultipleCandidateStreams && CandidateStreamConversion.Applies(from, to)) _multiple = new(from, to, options);
         var mapped = context?.MappedToolCount > 0;
         var concatenate = options.GeminiGroundingStreamMode == GeminiGroundingStreamMode.ConcatenatedTextParts;
         if (concatenate && from != to && (from != LlmProtocol.Responses || to != LlmProtocol.Gemini))
@@ -52,13 +54,22 @@ public sealed class LlmProtocolStreamConverter
     }
 
     /// <summary>转换中已发现的累计损耗诊断快照。</summary>
-    public IReadOnlyList<LlmConversionDiagnostic> Diagnostics => Array.AsReadOnly(_source.Document.Diagnostics.ToArray());
+    public IReadOnlyList<LlmConversionDiagnostic> Diagnostics => _multiple?.Diagnostics ?? Array.AsReadOnly(_source.Document.Diagnostics.ToArray());
 
     /// <summary>处理一个原生 JSON 事件，不执行 HTTP 或重新订阅。</summary>
     public IReadOnlyList<LlmConversionResult> Push(JsonObject sourceEvent)
     {
         ArgumentNullException.ThrowIfNull(sourceEvent);
         if (_complete) throw new InvalidOperationException("流转换已结束。");
+        if (_multiple is not null)
+        {
+            try
+            {
+                var items = _multiple.Push(sourceEvent); _last = sourceEvent.DeepClone().AsObject();
+                return items.Select(item => new LlmConversionResult(item, sourceEvent, Diagnostics, _context)).ToArray();
+            }
+            catch { _complete = true; throw; }
+        }
         _last = sourceEvent.DeepClone().AsObject();
         if (_identity) return [new(sourceEvent, sourceEvent, [], _context)];
         try
@@ -78,6 +89,7 @@ public sealed class LlmProtocolStreamConverter
         if (_complete) throw new InvalidOperationException("流转换已结束。");
         _complete = true;
         if (_identity) return [];
+        if (_multiple is not null) return _multiple.Complete(_last).Select(item => new LlmConversionResult(item, _last, Diagnostics, _context)).ToArray();
         var changes = _source.Complete();
         var events = _target.Push(_source.Document, changes);
         events.AddRange(_target.Complete(_source.Document));

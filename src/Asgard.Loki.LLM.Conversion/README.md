@@ -24,7 +24,7 @@ Every off-diagonal direction has independent request, complete-response, streami
 | Namespace tools | Separate opt-in flattens Responses namespace functions/custom tools; restores namespace/name/kind through complete calls, streams and replay; group descriptions require diagnosed loss consent |
 | Hosted search | Six Responses / classic Claude / Gemini request directions, plus four Chat ↔ Responses/Claude directions preserving required search; complete Chat ↔ Responses URL citations; complete Gemini Web grounding ↔ Chat/Responses with declared endpoint index units; opt-in single-text-part Responses ↔ Gemini citation streams, plus explicit ordered Responses text-part concatenation; remaining result/citation diagnostics and hard native-only encrypted search state |
 | Gemini results | Ordinary functions require JSON object text. Opt-in custom conversion explicitly wraps its arbitrary text result as `{"output": text}` |
-| Parameters | Temperature, top-p, explicit output limits; top-k and stop where the destination supports them; Gemini candidateCount → Chat n for complete calls and single-candidate streams |
+| Parameters | Temperature, top-p, explicit output limits; top-k and stop where the destination supports them; Gemini candidateCount → Chat n for complete calls, single-candidate streams and explicitly enabled multi-candidate streams |
 | Structured output | JSON Schema wrappers across all four protocols; JSON Schema bodies copied unchanged by default. Gemini `responseJsonSchema`, modern `responseFormat.text` and typed `responseSchema` input supported. Explicit `LegacySchema` writes representable typed output schemas. Plain JSON/text modes map between OpenAI and Gemini |
 | Reasoning settings | Qualitative effort, explicit Claude/Gemini budget or dynamic/off mode, and summary/display intent where representable; no model-name heuristics or calculated budgets |
 | Parallel functions | Chat/Responses `parallel_tool_calls` ↔ Claude `disable_parallel_tool_use`; Gemini has no equivalent switch and produces a diagnostic |
@@ -54,7 +54,42 @@ The source-proven [Gemini request mapper](https://github.com/QuantumNous/new-api
 
 Two independently authored complete request and structured/plain reply goldens plus sixty-three additional offline pure/public SDK cases cover this checkpoint and reverse complete conversion. Final HTTP retains count, high reasoning effort, strict Schema, null/false and an exact integer above the JavaScript safe range. Per-call count changes preserve the existing complete-target Session. Original requests and upstream replies remain available independently. There are no new public contracts, package dependencies or shared coordinator; previously supported index-zero behavior and `conversion-v25` binding identities remain unchanged.
 
-Counts above one with streaming fail before native acquisition/HTTP, including direct adapter use with a missing/false `stream` field. Count one retains the existing single-candidate stream lifecycle. General multi-candidate streams still require a separate state machine. Chat `n` → Gemini `candidateCount` requests remain unsupported: the pinned opposite request mapper does not establish that behavior. Complete multi-candidate mappings to Responses/Claude also remain unsupported; the SDK does not select candidate zero or merge alternatives to approximate them. Native identity calls/copies retain their existing extension surfaces.
+By default, counts above one with streaming fail before native acquisition/HTTP, including direct adapter use with a missing/false `stream` field. Count one retains the existing single-candidate lifecycle. The explicit multi-candidate stream profile below enables the documented Chat/Gemini subset. Chat `n` → Gemini `candidateCount` requests remain unsupported: the pinned opposite request mapper does not establish that behavior. Complete multi-candidate mappings to Responses/Claude also remain unsupported; the SDK does not select candidate zero or merge alternatives to approximate them. Native identity calls/copies retain their existing extension surfaces.
+
+### Explicit Chat ↔ Gemini multi-candidate streams
+
+`EnableMultipleCandidateStreams = true` enables ordinary text/function streams between Chat and Gemini in the existing `LlmProtocolStreamConverter` and fixed-upstream `ConvertingLlmProvider`. The default remains the existing single-candidate mode. Pass the same explicit policy to the provider when exposing Gemini streams over native Chat; `generationConfig.candidateCount` then maps to `n` without the earlier default rejection. A requested count exceeding the configured receiving bound fails before HTTP. The opposite request `n` mapping is still unsupported.
+
+```csharp
+var policy = new LlmConversionOptions
+{
+    EnableMultipleCandidateStreams = true,
+    MaxStreamCandidates = 8
+};
+var converter = new LlmProtocolStreamConverter(
+    LlmProtocol.ChatCompletions, LlmProtocol.Gemini, policy);
+// Push original JSON events in arrival order. Call Complete only after normal
+// upstream enumeration, disposal and the final cancellation check succeed.
+```
+
+A dictionary preserves original nonnegative int32 candidate indices, including sparse indices; no indexed array is allocated. Gemini's omitted native index is zero, while Chat indices must be explicit. A frame cannot repeat an index. All candidates share native root identity validation and one target stream identity. Functions, names, arguments and finishes belong to their own candidate. Equal tool IDs in different alternatives remain separate calls. Fragmented Chat names/arguments are buffered until complete valid JSON is available; duplicate JSON properties, invalid Unicode, changed IDs and malformed arguments fail. Native atomic Gemini functions may be emitted immediately. Unsupported Gemini partial-function/opaque/signed dialects stay native boundaries.
+
+Immediate deltas follow native frame/candidate order. At `Complete`, every observed candidate must have a valid native terminal before any target finish is returned. Buffered tools and target finishes are finalized in first-seen candidate order. A stopped candidate cannot reopen content or repeat its finish, while other candidates continue. All final events remain held through the upstream provider's EOF/disposal/final cancellation; errors, truncation and native Gemini prompt blocking cannot release successful finishes. Callers must observe the complete enumeration. The converter neither generates SSE `[DONE]` nor executes tools.
+
+Usage is read once from the shared native envelope and emitted at most once in a final **usage-only event** (`choices: []` or `candidates: []`), after all independent finishes. Unknown counters remain absent rather than invented as zero; explicit zeros stay zero. Unrepresentable usage details require diagnostics/loss consent. Native grounding keeps source integrity checks and explicit loss diagnostics; this profile does not add Chat citation deltas, general Gemini citation mapping or support for multiple candidates in Responses/Claude. Existing citation profiles retain their own protocol/layout boundaries.
+
+Every result keeps its exact triggering original source JSON. Completion results use the last native JSON snapshot, which is not a full transcript archive. Diagnostics prefixed `$candidate[n]` identify a **logical native candidate key**, not a source array position. Common-envelope diagnostics and usage are not multiplied by candidate count. Default/new-field serialization preserves the earlier `conversion-v25` bytes; explicitly enabling this policy or setting its limits changes the Session binding. Native identity copies are unaffected.
+
+| Policy | Effective default | Meaning |
+| --- | --- | --- |
+| `MaxStreamCandidates` | 128 | Distinct observed native candidates; explicit request counts are checked before HTTP |
+| `MaxCandidateStreamInputBytes` | 16 MiB | Cumulative compact logical-source JSON serialized to UTF-8, across all candidates |
+| `MaxCandidateStreamOutputBytes` | 4 MiB | One Push/Complete return batch: every target JSON plus every independently retained original source snapshot |
+| `MaxCandidateStreamDiagnostics` | 1024 | Cumulative common-envelope and candidate diagnostics |
+
+Nullable omitted limits use these defaults and do not change default option bytes. Explicit limits must be positive. Existing `MaxStreamAnnotations`/`MaxStreamAnnotationBytes` additionally bound native grounding entries across all candidates together. These are SDK state/serialization bounds, not SSE wire lengths, provider quotas or billing rules. Overflows fail even with `AllowLoss`; no candidate, text, parameter, metadata or diagnostic is trimmed.
+
+Five independently authored complete source/target event transcripts and eighty-four new offline cases cover both directions, final HTTP, sparse/omitted indices, same-ID alternatives, interleaved names/arguments, exact numbers, empty/filter/length results, shared usage, resource boundaries, source snapshots, mode/policy Session changes and EOF/read/disposal/cancellation failures. The comparison is source-backed by the pinned New API per-choice/per-candidate stream state. These tests establish SDK protocol behavior, not live model acceptance or complete native-feature parity.
 
 ### Source annotation stream integrity
 

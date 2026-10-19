@@ -3,6 +3,21 @@ namespace Asgard.Loki.LLM.Conversion;
 /// <summary>由调用者明确选择的转换损耗策略与必需默认值。</summary>
 public sealed record LlmConversionOptions
 {
+    /// <summary>显式启用 Chat/Gemini 多候选转换流；默认保留原有单候选状态机与绑定字节。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+    public bool EnableMultipleCandidateStreams { get; init; }
+    /// <summary>显式多候选转换流的候选总数上限，缺省为 128；不按稀疏索引分配数组。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxStreamCandidates { get; init; }
+    /// <summary>多候选模式累计源逻辑 JSON 序列化 UTF-8 字节上限，缺省 16 MiB；不包含 SSE 外壳。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxCandidateStreamInputBytes { get; init; }
+    /// <summary>一次 Push/Complete 返回批次的目标 JSON 与逐项源快照字节总上限，缺省 4 MiB。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxCandidateStreamOutputBytes { get; init; }
+    /// <summary>多候选转换流的累计损耗诊断上限，缺省 1024；超限失败，不截断诊断。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxCandidateStreamDiagnostics { get; init; }
     /// <summary>四种文本到 Converse 的模型方言；Anthropic 另允许 Claude 原生签名块回传，缺省不开放专有转换。</summary>
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
     public BedrockConverseModelDialect BedrockConverseModelDialect { get; init; }
