@@ -9,7 +9,7 @@ internal static class OpenAiImageEditPayload
 {
     private static readonly Encoding NativeUtf8 = new UTF8Encoding(false, true);
     /// <summary>直接适配器入口也验证/复制 JSON 引用与原生字段，不依赖核心路由曾经校验。</summary>
-    internal static ImageEditRequest Snapshot(ImageEditRequest request, CancellationToken token)
+    internal static ImageEditRequest Snapshot(ImageEditRequest request, CancellationToken token, bool streaming = false)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(request); Identity(request.Model, request.Prompt);
         ArgumentNullException.ThrowIfNull(request.Parameters);
@@ -23,13 +23,15 @@ internal static class OpenAiImageEditPayload
         if (parameters.TryGetValue("mask", out var mask) && mask.ValueKind != JsonValueKind.Null) Reference(mask);
         if (parameters.TryGetValue("stream", out var stream))
         {
-            if (stream.ValueKind == JsonValueKind.True) throw new NotSupportedException("stream=true 必须使用独立编辑流式入口。");
-            if (stream.ValueKind != JsonValueKind.False) throw new ArgumentException("原生 stream 必须为布尔值。");
+            if (stream.ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw new ArgumentException("原生 stream 必须为布尔值。");
+            if (streaming && stream.ValueKind == JsonValueKind.False) throw new ArgumentException("流式编辑不能覆盖显式 stream=false。");
+            if (!streaming && stream.ValueKind == JsonValueKind.True) throw new NotSupportedException("stream=true 必须使用独立编辑流式入口。");
         }
+        if (streaming && !parameters.ContainsKey("stream")) parameters.Add("stream", JsonSerializer.SerializeToElement(true));
         return request with { Parameters = parameters };
     }
     /// <summary>复制表单元数据，保持多图和 mask 的独立流身份/顺序；不检查像素、尺寸或编码。</summary>
-    internal static ImageMultipartEditRequest Snapshot(ImageMultipartEditRequest request, CancellationToken token)
+    internal static ImageMultipartEditRequest Snapshot(ImageMultipartEditRequest request, CancellationToken token, bool streaming = false)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(request); Identity(request.Model, request.Prompt);
         ArgumentNullException.ThrowIfNull(request.Images); ArgumentNullException.ThrowIfNull(request.Fields);
@@ -46,10 +48,12 @@ internal static class OpenAiImageEditPayload
             { if (!scalars.Add(field.Name)) throw new ArgumentException("已知原生单值字段不能重复。"); }
             if (field.Name == "stream")
             {
-                if (field.Value == "true") throw new NotSupportedException("stream=true 必须使用独立编辑流式入口。");
-                if (field.Value != "false") throw new ArgumentException("表单 stream 必须为原生 true/false 文本。");
+                if (field.Value is not ("true" or "false")) throw new ArgumentException("表单 stream 必须为原生 true/false 文本。");
+                if (streaming && field.Value == "false") throw new ArgumentException("流式编辑不能覆盖显式 stream=false。");
+                if (!streaming && field.Value == "true") throw new NotSupportedException("stream=true 必须使用独立编辑流式入口。");
             }
         }
+        if (streaming && !scalars.Contains("stream")) fields = [.. fields, new("stream", "true")];
         return request with { Images = Array.AsReadOnly(images), Mask = mask, Fields = Array.AsReadOnly(fields) };
     }
     /// <summary>绑定实际模型，其余 JSON 值保留原生类型/数值，不注入默认 stream 或格式。</summary>

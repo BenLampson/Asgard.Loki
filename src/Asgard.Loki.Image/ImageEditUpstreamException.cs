@@ -12,4 +12,6 @@ public sealed class ImageEditUpstreamException : Exception
     public ReadOnlyMemory<byte> Body { get; }
     /// <summary>原始内容类型及 charset；上游未提供时为空。</summary>
     public string? ContentType { get; }
+    /// <summary>可选原生编辑 SSE 错误事件及完整目标/事件身份；普通 HTTP 错误不伪造事件。</summary>
+    public ImageEditEvent? EditEvent { get; init; }
 }

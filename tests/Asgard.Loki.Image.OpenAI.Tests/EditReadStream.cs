@@ -5,6 +5,8 @@ internal sealed class EditReadStream(byte[] bytes) : Stream
 {
     private int _offset;
     internal bool FailRead { get; init; }
+    internal int? FailAfterBytes { get; init; }
+    internal int FragmentSize { get; init; } = 3;
     internal bool FailDispose { get; init; }
     internal Action? OnEof { get; init; }
     internal bool Disposed { get; private set; }
@@ -18,9 +20,9 @@ internal sealed class EditReadStream(byte[] bytes) : Stream
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         Reads++; cancellationToken.ThrowIfCancellationRequested();
-        if (FailRead && _offset > 0) return ValueTask.FromException<int>(new IOException("fixture read failure"));
+        if (FailRead && _offset > 0 || FailAfterBytes is { } limit && _offset >= limit) return ValueTask.FromException<int>(new IOException("fixture read failure"));
         if (_offset == bytes.Length) { Eof = true; OnEof?.Invoke(); return ValueTask.FromResult(0); }
-        var count = Math.Min(Math.Min(3, buffer.Length), bytes.Length - _offset);
+        var count = Math.Min(Math.Min(FragmentSize, buffer.Length), bytes.Length - _offset);
         bytes.AsMemory(_offset, count).CopyTo(buffer); _offset += count; return ValueTask.FromResult(count);
     }
     protected override void Dispose(bool disposing) { Disposed = true; base.Dispose(disposing); }

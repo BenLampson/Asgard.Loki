@@ -1,11 +1,12 @@
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Asgard.Loki.Image.OpenAI.Internal;
 
 namespace Asgard.Loki.Image.OpenAI;
 
 /// <summary>OpenAI 原生 JSON/multipart 图像编辑目标，不与生成/其他能力共享调用状态或隐式重试。</summary>
-public sealed class OpenAiImageEditAdapter : IImageEditAdapter
+public sealed class OpenAiImageEditAdapter : IStreamingImageEditAdapter
 {
     private readonly IHttpClientFactory _factory;
     private readonly OpenAiImageOptions _options;
@@ -35,6 +36,59 @@ public sealed class OpenAiImageEditAdapter : IImageEditAdapter
     {
         var snapshot = OpenAiImageEditPayload.Snapshot(request, cancellationToken);
         return SendAsync(OpenAiImageEditPayload.Multipart(snapshot, _options.Model), snapshot.Model, cancellationToken);
+    }
+    /// <inheritdoc />
+    public IAsyncEnumerable<ImageEditEvent> StreamEditAsync(ImageEditRequest request, CancellationToken cancellationToken = default)
+    {
+        var snapshot = OpenAiImageEditPayload.Snapshot(request, cancellationToken, streaming: true);
+        return SingleStream(() => OpenAiImageEditPayload.Json(snapshot, _options.Model), snapshot.Model, cancellationToken);
+    }
+    /// <inheritdoc />
+    public IAsyncEnumerable<ImageEditEvent> StreamMultipartEditAsync(ImageMultipartEditRequest request, CancellationToken cancellationToken = default)
+    {
+        var snapshot = OpenAiImageEditPayload.Snapshot(request, cancellationToken, streaming: true);
+        return SingleStream(() => OpenAiImageEditPayload.Multipart(snapshot, _options.Model), snapshot.Model, cancellationToken);
+    }
+    /// <summary>每次流式调用只可枚举一次，不让复用枚举隐式再次读取借用上传。</summary>
+    private IAsyncEnumerable<ImageEditEvent> SingleStream(Func<HttpContent> create, string publicModel, CancellationToken token)
+    {
+        var started = 0;
+        return StreamPayloadAsync(() =>
+        {
+            if (Interlocked.Exchange(ref started, 1) != 0) throw new InvalidOperationException("原生编辑流不能重复枚举或重放上传。");
+            return create();
+        }, publicModel, token);
+    }
+    /// <summary>原生完成项必须等待 EOF/长度和所有传输资源成功释放；不拼接图片或重新上传。</summary>
+    private async IAsyncEnumerable<ImageEditEvent> StreamPayloadAsync(Func<HttpContent> create, string publicModel,
+        [EnumeratorCancellation] CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested(); ImageEditEvent? terminal = null;
+        using (var content = create())
+        using (var message = CreateMessage(content))
+        using (var client = _factory.CreateClient(_options.HttpClientName))
+        {
+            message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
+            using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+            var metadata = new ImageResultMetadata(publicModel, _options.Model, Id);
+            if (!response.IsSuccessStatusCode || !string.Equals(response.Content.Headers.ContentType?.MediaType, "text/event-stream", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenAiImageEditResponse.Headers(response); var body = await OpenAiImageEditResponse.ReadAsync(response, token).ConfigureAwait(false);
+                _ = OpenAiImageEditResponse.Result(response, body, metadata);
+                throw new InvalidDataException("编辑流式入口未返回 SSE，不将普通结果改造成事件流。");
+            }
+            var type = response.Content.Headers.ContentType;
+            if (type?.CharSet is { } charset && !charset.Trim('"').Equals("utf-8", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("编辑 SSE 必须为原生 UTF-8。");
+            var expected = response.Content.Headers.ContentLength;
+            if (response.Content.Headers.Contains("Content-Length") && expected is null) throw new InvalidDataException("编辑 SSE Content-Length 无效。");
+            await using (var source = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false))
+            {
+                await foreach (var item in OpenAiImageEditSse.ReadAsync(source, expected, metadata, (int)response.StatusCode, type?.ToString(), token).ConfigureAwait(false))
+                { if (item.IsCompleted) terminal = item; else yield return item; }
+            }
+        }
+        token.ThrowIfCancellationRequested(); yield return terminal ?? throw new InvalidDataException("编辑流缺少原生完成项。");
     }
     /// <summary>一次请求，结果在所有响应/客户端资源成功释放后才返回。</summary>
     private async Task<ImageGenerationResult> SendAsync(HttpContent content, string publicModel, CancellationToken token)

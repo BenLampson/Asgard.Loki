@@ -1,0 +1,16 @@
+: native edit fixture; requested partial_images=2, received one partial
+id: partial-one
+retry: 40
+event: image_edit.partial_image
+data: {"type":"image_edit.partial_image","partial_image_index":0,"b64_json":"AP+A","background":"transparent","created_at":123,"output_format":"webp","quality":"high","size":"1024x1024","future":{"value":null,"flag":false}}
+
+event: vendor.future.completed
+data: {
+data: "type":"vendor.future.completed","partial_image_index":0.125,"b64_json":false,"future":{"value":null,"text":"😀","exact":900719925474099312345}}
+
+id:
+retry: invalid
+event: image_edit.completed
+data: {"type":"image_edit.completed","b64_json":"AQIDBA==","background":"transparent","created_at":124,"output_format":"webp","quality":"high","size":"1024x1024","usage":{"input_tokens":20,"output_tokens":30,"total_tokens":50,"input_tokens_details":{"text_tokens":5,"image_tokens":15,"future":null}},"future":{"decimal":0.123456789012345678901}}
+
+: trailing heartbeat is not an additional data event

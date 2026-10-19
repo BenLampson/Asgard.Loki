@@ -11,7 +11,7 @@ OpenAI native image generation and editing provider for Asgard.Loki.
 | Quality, size, transparency, output format, image count and future parameters | Passed through |
 | `POST /v1/images/edits` JSON | Yes, explicit native `images` references and optional `mask` object |
 | `POST /v1/images/edits` multipart | Yes, ordered `image[]` uploads and optional separate `mask` upload |
-| Editing SSE | Pending; nonstream editing rejects explicit `stream=true` |
+| Editing SSE | Yes, explicit native JSON/multipart stream methods; nonstream editing rejects `stream=true` |
 | Image variations | Not implemented |
 
 Create `OpenAiImageAdapter(IHttpClientFactory, OpenAiImageOptions)` and register it in `ImageOptions.Routes`. Configure the actual upstream model and API Key in the adapter options; use the route alias in requests. Optional organization/project headers and a custom base address are supported.
@@ -51,8 +51,27 @@ For files, explicitly call `loki.Image.EditMultipartAsync(new ImageMultipartEdit
 
 The caller keeps streams alive through completion. Uploads start at their current positions, do not query length/position, rewind, close, decode, resize or validate mask pixels/dimensions. The official masked-edit contract associates a mask with the first image; this SDK preserves that native ordering and separate mask role. It never remaps masks or checks their visual effect. Arbitrary fixture bytes in tests are not accepted image-format evidence.
 
-Neither method injects `stream`, quality, size, format or other native defaults. Explicit false remains false; true must use a future dedicated edit streaming implementation and is rejected here. There is no automatic JSON/multipart fallback, generation fallback, retry or failover. Disable POST retries/hedging and unintended replay in the application-owned HTTP pipeline; multipart parts also reject a second serialization of borrowed streams.
+Neither nonstream method injects `stream`, quality, size, format or other native defaults. Explicit false remains false; true must use the dedicated edit streaming methods below and is rejected by nonstream methods. There is no automatic JSON/multipart fallback, generation fallback, retry or failover. Disable POST retries/hedging and unintended replay in the application-owned HTTP pipeline; multipart parts also reject a second serialization of borrowed streams.
 
 Complete responses retain native JSON/GetRawText, ordered Base64/URL items, revised prompts, exact numbers, usage and unknown fields. Known response container/image fields and duplicate JSON members are validated without decoding images or recalculating usage. A successful result is returned only after normal body EOF, declared-length verification and response/client disposal. Invalid UTF-8, unexpected SSE/media, tail errors, cancellation or disposal failure do not return success. `ImageEditUpstreamException` retains actual HTTP status, original error bytes and content type, including non-UTF-8 errors and native business errors in 2xx responses. Existing generation exception behavior is unchanged.
 
-The [official image guide](https://developers.openai.com/api/docs/guides/image-generation) documents file/mask editing; the official endpoint OpenAPI exposes JSON reference requests and multipart curl examples. This checkpoint has 119 new offline edit cases plus the existing five generation cases (124 total), including four independent complete request goldens (JSON and three MIME variants), full native response JSON and failure/ownership/encoding boundaries. Tests use substitute HTTP handlers only. Native editing SSE, variations, actual OpenAI image/account acceptance and image/mask quality remain unverified or pending; no real OpenAI requests are made.
+The [official image guide](https://developers.openai.com/api/docs/guides/image-generation) documents file/mask editing; the official endpoint OpenAPI exposes JSON reference requests, multipart curl examples and native partial/completed edit events. The nonstream checkpoint has 119 offline edit cases plus the existing five generation cases; 132 additional editing SSE cases bring the provider total to 256. Six independent complete request goldens (nonstream and stream JSON/MIME), full native response/event fixtures and failure/ownership/encoding boundaries use substitute HTTP handlers only. Variations, actual OpenAI image/account acceptance and image/mask quality remain unverified or pending; no real OpenAI requests are made.
+
+## Native editing event streams
+
+The same explicitly registered `OpenAiImageEditAdapter` implements `IStreamingImageEditAdapter`. Call `loki.Image.StreamEditAsync(ImageEditRequest, token)` for native JSON references or `StreamMultipartEditAsync(ImageMultipartEditRequest, token)` for uploads. Every target in the edit route must expose that optional interface. The methods add native `stream=true` only when absent, preserve explicit true and reject an explicit false instead of overwriting it. All other settings remain caller-owned. Inputs are snapshotted at method invocation; HTTP clients/content/uploads are created or consumed only when enumeration starts. Each returned enumerable supports one execution; a second enumeration fails without another HTTP request or upload.
+
+```csharp
+await foreach (var item in loki.Image.StreamEditAsync(editRequest, cancellationToken))
+{
+    // Keep native fields and event identity; the SDK does not assemble or decode images.
+    JsonElement native = item.Data;
+    bool completed = item.IsCompleted;
+}
+```
+
+`image_edit.partial_image` and `image_edit.completed` retain full JSON/GetRawText, original Base64, optional native image settings, usage and unknown fields. SSE name/id/retry remain independent delivery metadata, including standard id/retry inheritance. Partial indices and known counters are checked as exact nonnegative mathematical integers without floating-point rounding, narrowing, allocating by their value, adding usage totals or imposing a model-specific maximum. Unknown events remain intact and never gain a completion marker merely from their name. Partial images are independent native payloads; there is no image/text reconstruction, invented output association, index renumbering or requirement to receive the requested number of partial images.
+
+One native completed event is held until strict UTF-8/SSE EOF, declared-length verification and source/response/client disposal all succeed. Empty/missing/duplicate terminals, late data, malformed/truncated frames, generic `[DONE]`, conflicting event/type, read/disposal/cancellation and errors after a held terminal cannot first publish success. Trailing comments do not become data events. A native error raises `ImageEditUpstreamException` with the original JSON data payload bytes and optional `EditEvent` retaining full JSON, target and SSE identity. Ordinary HTTP errors keep exact original body bytes and leave EditEvent null. A non-SSE JSON result is never converted into fake streaming events. Early stop closes the enumerator/transport while caller uploads and factory remain open. There is no reconnect, resume or replay.
+
+The stream examples/fixtures establish the documented single-completion native protocol; they do not certify actual model/account settings, multiple-output streaming semantics, valid image encoding or visual quality. The existing generation SSE implementation has its own separate tests and behavior; its EOF/disposal and generic [DONE] handling remain a separate hardening checkpoint, so editing SSE tests do not certify that path.
