@@ -32,7 +32,7 @@ public static class LlmProtocolConverter
         return new(target, request, doc.Diagnostics, context);
     }
 
-    /// <summary>转换完整单候选响应，并保留完整源 JSON。</summary>
+    /// <summary>转换完整响应并保留源 JSON；Gemini 到 Chat 支持候选数组，其他跨协议目标仍为单候选。</summary>
     public static LlmConversionResult ConvertResponse(JsonObject response, LlmProtocol from, LlmProtocol to, LlmConversionOptions? options = null)
     {
         var captured = ConversionOptionsSnapshot.Capture(options);
@@ -42,6 +42,7 @@ public static class LlmProtocolConverter
         if (to == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(from))
             throw new NotSupportedException("文本协议响应尚不能构造包含原生指标的 Converse 响应；不会补造 latencyMs。");
         if (BedrockConversion.IsBedrock(from)) return BedrockConversion.Response(response, captured);
+        if (from == LlmProtocol.Gemini && to == LlmProtocol.ChatCompletions) return GeminiChatResponseConversion.Convert(response, captured);
         var mapGrounding = from == LlmProtocol.Gemini && to is LlmProtocol.ChatCompletions or LlmProtocol.Responses
             && captured.OpenAiCitationIndexUnit != LlmCitationIndexUnit.Unspecified;
         var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from, mapUrlCitations: true, mapGeminiGrounding: mapGrounding);

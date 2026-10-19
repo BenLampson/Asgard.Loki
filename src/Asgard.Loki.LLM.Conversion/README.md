@@ -30,6 +30,7 @@ Every off-diagonal direction has independent request, complete-response, streami
 | Parallel functions | Chat/Responses `parallel_tool_calls` ↔ Claude `disable_parallel_tool_use`; Gemini has no equivalent switch and produces a diagnostic |
 | Responses | Creation in the common stateless subset; no cross-protocol `previous_response_id`, `store` or background semantics |
 | Responses output | Single candidate, ordinary text/function calls and supported finish reasons |
+| Complete Gemini → Chat candidates | All original candidates in source order, exact nonnegative int32 indices, independent ordinary tools/finishes/declared-unit citations and one response-wide usage; complete replies only |
 | Usage | Base totals, cache reads and reasoning counts with native accounting conventions; OpenAI details transfer between Chat/Responses. Claude cache-write breakdown or unsupported nonzero details diagnose loss |
 | Streaming | Immediate text deltas; function arguments buffered until complete JSON; correct target start/item/delta/done/terminal sequence |
 | Diagnostics | Unknown fields, hosted tools, unsupported media/settings and unrepresentable usage details are rejected by default |
@@ -38,6 +39,16 @@ Every off-diagonal direction has independent request, complete-response, streami
 Encrypted Responses `compaction` items are also a hard native-only boundary in request, response and stream conversion, including when ordinary loss is allowed. Same-protocol copies preserve them unchanged. `ConvertingLlmProvider` does not implement or advertise the optional native compaction operation; configure a separate native target for it.
 
 Streams are single-call state machines, not resumable event subscriptions. Missing terminal events, invalid/incomplete tool arguments, inconsistent final Responses output, unsupported interleaving or upstream errors fail explicitly. A late failure may occur after earlier deltas have been returned; callers must observe the full enumeration. No successful terminal is emitted for a truncated source stream. Direct same-protocol stream copies leave native transport validation to the provider.
+
+### Complete Gemini → Chat candidate arrays
+
+`LlmProtocolConverter.ConvertResponse(geminiReply, LlmProtocol.Gemini, LlmProtocol.ChatCompletions, options)` and the existing fixed-Gemini `ConvertingLlmProvider` now retain every complete native candidate as a Chat choice. Original sparse/nonzero indices and array order remain unchanged; an omitted native Proto3 index is zero. Explicit null, negative, fractional/out-of-range and duplicate indices fail even with `AllowLoss`.
+
+Each candidate has separate function-call association, text, finish and grounding tables. A tool call in one alternative cannot change another alternative's finish; `MAX_TOKENS` stays `length` even when that candidate contains tools. Equal tool IDs in different alternatives are not concatenated into one call; callers select an alternative before replaying history. Existing strict argument, opaque-state, field-loss and declared citation-unit rules apply per candidate. Diagnostics identify the original candidate's array position, not its sparse native index. The complete source remains in `OriginalData` / `Metadata.Conversion.UpstreamData`; shared usage is converted once rather than summed over alternatives. An invalid later candidate rejects the complete conversion.
+
+Five independently authored full reply/target goldens and forty offline pure-data/public-SDK cases cover Unicode, same-name tools, exact large integers, null/false business fields, citations, empty/filter/length outcomes, snapshots and hard errors. The pinned [New API candidate loop](https://github.com/QuantumNous/new-api/blob/058c8231b68c51ee02abee15befcd720fee9f4a2/relaykit/relayconvert/internal/gemini_chat/to_oai_chat_resp.go) establishes the concrete parity gap; its shared tool-finish flag is not reproduced. This delivery adds no public types or dependencies and preserves existing `conversion-v25` identities and previously supported index-zero behavior.
+
+This is complete **output** conversion. Multi-candidate streams, inverse multi-candidate conversion, and request `n` / `candidateCount` controls remain separate unsupported checkpoints; the SDK does not select candidate zero to approximate them. The HTTP fixtures verify returned structures through a substitute Google handler, not that a live model will generate multiple candidates for a default request. Native JSON calls retain their own existing extension surfaces.
 
 ### Source annotation stream integrity
 
