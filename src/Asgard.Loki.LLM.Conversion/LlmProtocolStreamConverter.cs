@@ -34,9 +34,13 @@ public sealed class LlmProtocolStreamConverter
         options = ConversionOptionsSnapshot.Capture(options);
         LlmProtocolConverter.Validate(new(), from, to, options);
         var mapped = context?.MappedToolCount > 0;
+        var grounding = from == LlmProtocol.Gemini && to == LlmProtocol.Responses
+            && options.GeminiGroundingStreamMode == GeminiGroundingStreamMode.SingleTextPart;
+        if (grounding && options.OpenAiCitationIndexUnit == LlmCitationIndexUnit.Unspecified)
+            throw new ArgumentException("Gemini 引用流映射必须显式声明目标 OpenAI 索引单位。", nameof(options));
         _source = new(from, mapped ? 6L * context!.Options.MaxCustomToolInputBytes + 64 : null,
             mapped ? context!.Options.MaxToolConversionOutputCalls : null,
-            options.OpenAiCitationIndexUnit, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes);
+            options.OpenAiCitationIndexUnit, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes, grounding);
         _target = new(to, mapped ? context : null); _options = options; _identity = from == to; _context = context;
     }
 

@@ -86,6 +86,10 @@ internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? c
                 if (doc.Finish is "length" or "content_filter") item["status"] = "incomplete";
                 if (Text(block["type"]) == "text")
                 {
+                    var annotations = item["content"]![0]!["annotations"]!.AsArray();
+                    for (var annotationIndex = 0; annotationIndex < annotations.Count; annotationIndex++)
+                        events.Add(Event("response.output_text.annotation.added", i, new() { ["content_index"] = 0, ["item_id"] = ItemId(i),
+                            ["annotation_index"] = annotationIndex, ["annotation"] = annotations[annotationIndex]!.DeepClone() }));
                     events.Add(Event("response.output_text.done", i, new() { ["content_index"] = 0, ["text"] = Text(block["text"]), ["item_id"] = ItemId(i) }));
                     events.Add(Event("response.content_part.done", i, new() { ["content_index"] = 0, ["part"] = item["content"]![0]!.DeepClone(), ["item_id"] = ItemId(i) }));
                 }
@@ -173,7 +177,7 @@ internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? c
             context?.RestoreItem(item, complete); return item;
         }
         return new() { ["id"] = ItemId(index), ["type"] = "message", ["role"] = "assistant", ["status"] = complete ? "completed" : "in_progress", ["content"] = complete
-            ? new JsonArray(new JsonObject { ["type"] = "output_text", ["text"] = Text(block["text"]), ["annotations"] = new JsonArray() }) : new JsonArray() };
+            ? new JsonArray(new JsonObject { ["type"] = "output_text", ["text"] = Text(block["text"]), ["annotations"] = block["citations"]?.DeepClone() ?? new JsonArray() }) : new JsonArray() };
     }
     /// <summary>稳定的目标输出项标识。</summary>
     private string ItemId(int index) => "item_" + _id + "_" + index;

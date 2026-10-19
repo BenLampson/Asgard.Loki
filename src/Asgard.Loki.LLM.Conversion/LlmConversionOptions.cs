@@ -27,8 +27,10 @@ public sealed record LlmConversionOptions
     public LlmHostedSearchTarget HostedSearchTarget { get; init; }
     /// <summary>调用者声明该目标支持原生搜索与函数工具同时使用；不自动猜测模型能力。</summary>
     public bool AllowHostedSearchWithFunctionTools { get; init; }
-    /// <summary>固定 OpenAI 端点的引用索引单位，用于双向完整 Web grounding 映射和原生引用流范围校验。</summary>
+    /// <summary>固定 OpenAI 端点的引用索引单位，用于完整 Web grounding、显式 Gemini 引用流映射及源引用流范围校验。</summary>
     public LlmCitationIndexUnit OpenAiCitationIndexUnit { get; init; }
+    /// <summary>显式 Gemini→Responses 引用流约定；单文本模式还需声明目标 OpenAI 索引单位。</summary>
+    public GeminiGroundingStreamMode GeminiGroundingStreamMode { get; init; }
     /// <summary>启用可逆工具编码时，完整工具身份表及独立 namespace 分组表的容量上限。</summary>
     public int MaxToolConversionMappings { get; init; } = 128;
     /// <summary>启用可逆工具编码时，单次请求保留的历史调用 ID 总上限。</summary>
@@ -37,8 +39,8 @@ public sealed record LlmConversionOptions
     public int MaxToolConversionOutputCalls { get; init; } = 128;
     /// <summary>custom 输入、字符串结果及富结果数组 JSON 的最大 UTF-8 字节数；不截断内容。</summary>
     public int MaxCustomToolInputBytes { get; init; } = 1024 * 1024;
-    /// <summary>单次跨协议流保留的原生引用条目上限；Responses 完成快照不重复计数，Gemini 新来源/支持共用额度。</summary>
+    /// <summary>单次流保留条目上限；Responses 不重复计快照，Gemini 来源/支持共用额度，映射输出引用另用同值独立限额。</summary>
     public int MaxStreamAnnotations { get; init; } = 1024;
-    /// <summary>单次跨协议流保留引用/grounding 条目 JSON 的累计 UTF-8 字节上限，不截断或丢弃超限内容。</summary>
+    /// <summary>单次流保留引用/grounding JSON 的累计 UTF-8 字节上限；映射输出另用同值独立限额，不截断或丢弃。</summary>
     public int MaxStreamAnnotationBytes { get; init; } = 1024 * 1024;
 }

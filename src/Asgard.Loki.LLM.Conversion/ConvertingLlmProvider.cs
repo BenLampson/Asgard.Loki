@@ -31,7 +31,7 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v21:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
+    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v22:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
 
     /// <inheritdoc />
     public async Task<ChatCompletion> CompleteAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
@@ -116,12 +116,20 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
         var converter = new LlmProtocolStreamConverter(converted.Context!);
         await foreach (var raw in UpstreamAsync(payload, context, cancellationToken).ConfigureAwait(false))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (source == _protocol) { yield return raw; continue; }
             foreach (var item in converter.Push(JsonNode.Parse(raw.Data.GetRawText())!.AsObject()))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
                 yield return Wrap(item, converted.Diagnostics, source, context);
+            }
         }
+        cancellationToken.ThrowIfCancellationRequested();
         if (source != _protocol)
-            foreach (var item in converter.Complete()) yield return Wrap(item, converted.Diagnostics, source, context);
+            foreach (var item in converter.Complete())
+            {
+                cancellationToken.ThrowIfCancellationRequested(); yield return Wrap(item, converted.Diagnostics, source, context);
+            }
     }
 
     /// <summary>仅调用构造时固定的原生协议适配器。</summary>

@@ -16,9 +16,10 @@ internal sealed partial class SourceStream
         if (candidates.Count > 1) throw new NotSupportedException("流式转换只支持一个候选。");
         foreach (var node in candidates)
         {
-            var candidate = Object(node); Check(candidate, Document, "$event.candidates[]", "index", "content", "finishReason");
+            var candidate = Object(node);
+            Check(candidate, Document, "$event.candidates[]", mapGeminiGrounding
+                ? ["index", "content", "finishReason", "groundingMetadata"] : ["index", "content", "finishReason"]);
             if ((candidate["index"]?.GetValue<int>() ?? 0) != 0) throw new NotSupportedException("流式转换只支持一个候选。");
-            if (candidate.ContainsKey("groundingMetadata")) _geminiGrounding.Add(candidate["groundingMetadata"]);
             if (candidate["content"] is JsonObject content)
             {
                 Check(content, Document, "$event.content", "role", "parts");
@@ -38,7 +39,9 @@ internal sealed partial class SourceStream
                         CompleteTool(i, changes);
                     }
                 }
+                if (mapGeminiGrounding) _geminiGrounding.ObserveContent(content);
             }
+            if (candidate.ContainsKey("groundingMetadata")) _geminiGrounding.Add(candidate["groundingMetadata"], mapGeminiGrounding ? Document : null);
             if (candidate["finishReason"] is not null) { Document.Finish = ResponseMapping.Finish(Text(candidate["finishReason"]), protocol); _terminal = true; }
         }
     }

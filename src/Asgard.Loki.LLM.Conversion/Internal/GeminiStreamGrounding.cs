@@ -1,10 +1,11 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using static Asgard.Loki.LLM.Conversion.Internal.ConversionJson;
 
 namespace Asgard.Loki.LLM.Conversion.Internal;
 
-/// <summary>单次 Gemini 流的累计原生来源表与支持引用校验，不推导文本 part 身份或目标引用事件。</summary>
+/// <summary>单次 Gemini 流的累计来源/支持校验；只按调用者显式声明的单文本约定映射。</summary>
 internal sealed class GeminiStreamGrounding(int maximumCount, int maximumBytes)
 {
     private readonly List<JsonObject> _chunks = [];
@@ -13,10 +14,15 @@ internal sealed class GeminiStreamGrounding(int maximumCount, int maximumBytes)
     private int _count;
     private long _bytes;
     private int _highestReference = -1;
+    private bool _incompatibleLayout;
     /// <summary>先追加本帧的新来源，保留顺序和重复 URL；引用索引属于全部响应，不按帧重置。</summary>
-    internal void Add(JsonNode? value)
+    internal void Add(JsonNode? value, ConversionDocument? mapping = null)
     {
         if (value is not JsonObject metadata) throw new InvalidDataException("原生 groundingMetadata 必须为对象。");
+        if (mapping is not null)
+            foreach (var field in metadata)
+                if (field.Key is not ("groundingChunks" or "groundingSupports"))
+                    Loss(mapping, "$event.candidates[].groundingMetadata." + field.Key, "grounding_metadata_field_not_representable");
         foreach (var node in Values(metadata, "groundingChunks"))
         {
             var source = Item(node);
@@ -39,7 +45,36 @@ internal sealed class GeminiStreamGrounding(int maximumCount, int maximumBytes)
             foreach (var index in Values(support, "renderedParts")) _ = Index(index);
             Store(_supports, support);
         }
+        if (mapping is not null) RequireLayout();
     }
+    /// <summary>只接受每帧至多一个纯文本 part；出现多 part/其他内容时绝不猜测全局 part 身份。</summary>
+    internal void ObserveContent(JsonObject content)
+    {
+        var parts = Values(content, "parts");
+        if (parts.Count == 0) return;
+        _incompatibleLayout |= parts.Count != 1 || parts[0] is not JsonObject part || !part.ContainsKey("text") || part.Any(field => field.Key != "text");
+        RequireLayout();
+    }
+    /// <summary>正常源结束后复用完整引用映射器，逐范围验证累计原文；文本增量此前已经即时公开。</summary>
+    internal void Map(ConversionMessage message, ConversionDocument document)
+    {
+        if (_count == 0) return;
+        RequireLayout();
+        if (message.Blocks.Count != 1 || Text(message.Blocks[0]["type"]) != "text") Layout();
+        if (_supports.Any(support => support["renderedParts"] is JsonArray { Count: > 0 })) Layout();
+        var parts = new JsonArray(new JsonObject { ["text"] = Text(message.Blocks[0]["text"]) });
+        var metadata = new JsonObject
+        {
+            ["groundingChunks"] = new JsonArray(_chunks.Select(item => (JsonNode?)item.DeepClone()).ToArray()),
+            ["groundingSupports"] = new JsonArray(_supports.Select(item => (JsonNode?)item.DeepClone()).ToArray())
+        };
+        GeminiGrounding.Read(metadata, parts, message, document, maximumCount, maximumBytes);
+    }
+    /// <summary>仅有普通文本/工具流而没有 grounding 数据时，不扩大该配置的限制范围。</summary>
+    private void RequireLayout() { if (_count != 0 && _incompatibleLayout) Layout(); }
+    /// <summary>布局语义无法保真时硬失败，普通损耗许可也不能选错引用所属 part。</summary>
+    private static void Layout() => throw new LlmConversionException([new("grounding_stream_layout_not_representable", "$event.candidates[].content",
+        "已声明的单文本 grounding 流出现无法证明所属关系的 part/工具布局。")]);
     /// <summary>允许尚待后帧来源补全的稀疏引用，但正常结束时必须全部解析到累计来源；不按最大索引分配数组。</summary>
     internal void Complete()
     {

@@ -5,7 +5,8 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 
 /// <summary>聚合单条原生流的文本、函数参数与终态，不恢复或重试网络连接。</summary>
 internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumArgumentBytes = null, int? maximumToolCalls = null,
-    LlmCitationIndexUnit citationIndexUnit = LlmCitationIndexUnit.Unspecified, int maximumAnnotations = 1024, int maximumAnnotationBytes = 1024 * 1024)
+    LlmCitationIndexUnit citationIndexUnit = LlmCitationIndexUnit.Unspecified, int maximumAnnotations = 1024, int maximumAnnotationBytes = 1024 * 1024,
+    bool mapGeminiGrounding = false)
 {
     private readonly Dictionary<string, int> _indices = new(StringComparer.Ordinal);
     private readonly HashSet<int> _emittedTools = [];
@@ -27,7 +28,7 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
     {
         if (!_started) { Document.Messages.Add(_message); _started = true; }
         var changes = new List<StreamChange>();
-        Document.Diagnostics.AddRange(HostedSearchOutput.Inspect(data, protocol));
+        Document.Diagnostics.AddRange(HostedSearchOutput.Inspect(data, protocol, mapGeminiGrounding: mapGeminiGrounding));
         if (data["error"] is not null || data["type"]?.GetValue<string>() is "error" or "response.failed")
             throw new LlmConversionException([new("upstream_stream_error", "$event.error", "上游错误事件不能转换为成功终态。")]);
         if (_terminal && !IsAllowedTail(data))
@@ -59,7 +60,11 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
     internal List<StreamChange> Complete()
     {
         if (!_terminal) throw new InvalidDataException("源流缺少协议终态，转换不会伪造成功。");
-        if (protocol == LlmProtocol.Gemini) _geminiGrounding.Complete();
+        if (protocol == LlmProtocol.Gemini)
+        {
+            _geminiGrounding.Complete();
+            if (mapGeminiGrounding) _geminiGrounding.Map(_message, Document);
+        }
         List<StreamChange> changes = [];
         for (var i = 0; i < _message.Blocks.Count; i++)
             if (Text(_message.Blocks[i]["type"]) == "call") CompleteTool(i, changes);

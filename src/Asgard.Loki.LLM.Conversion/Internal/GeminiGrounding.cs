@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text;
 using static Asgard.Loki.LLM.Conversion.Internal.ConversionJson;
 
 namespace Asgard.Loki.LLM.Conversion.Internal;
@@ -10,7 +11,8 @@ internal static class GeminiGrounding
     private const string Path = "$.candidates[0].groundingMetadata";
 
     /// <summary>按原始 part 与 chunk 索引关联，不按重复文本定位，也不生成搜索执行 ID。</summary>
-    internal static void Read(JsonNode? value, JsonArray parts, ConversionMessage message, ConversionDocument doc)
+    internal static void Read(JsonNode? value, JsonArray parts, ConversionMessage message, ConversionDocument doc,
+        int? maximumCitations = null, int? maximumCitationBytes = null)
     {
         var metadata = Object(value);
         foreach (var field in metadata)
@@ -21,12 +23,15 @@ internal static class GeminiGrounding
         var sources = new JsonObject?[chunks.Count]; var used = new bool[chunks.Count];
         for (var i = 0; i < chunks.Count; i++) sources[i] = Source(Object(chunks[i]), doc, Path + ".groundingChunks[" + i + "]");
         var textBlocks = message.Blocks.Where(b => Text(b["type"]) == "text").ToArray();
+        var mappedCount = 0; long mappedBytes = 0;
         var byPart = new Dictionary<int, JsonObject>(); var textIndex = 0;
         for (var i = 0; i < parts.Count; i++)
             if (Object(parts[i]).ContainsKey("text")) byPart.Add(i, textBlocks[textIndex++]);
         for (var i = 0; i < supports.Count; i++)
         {
-            var support = Object(supports[i]); var supportPath = Path + ".groundingSupports[" + i + "]";
+            var support = Object(supports[i]).DeepClone().AsObject(); var supportPath = Path + ".groundingSupports[" + i + "]";
+            foreach (var empty in new[] { "confidenceScores", "renderedParts" })
+                if (support[empty] is JsonArray { Count: 0 }) support.Remove(empty);
             Check(support, doc, supportPath, "segment", "groundingChunkIndices");
             var segment = Object(support["segment"]);
             Check(segment, doc, supportPath + ".segment", "partIndex", "startIndex", "endIndex", "text");
@@ -49,13 +54,19 @@ internal static class GeminiGrounding
                 used[index] = true;
                 if (sources[index] is not { } source) continue;
                 if (block["citations"] is not JsonArray citations) block["citations"] = citations = new JsonArray();
-                citations.Add(new JsonObject { ["type"] = "url_citation", ["url"] = source["url"]!.DeepClone(),
-                    ["title"] = source["title"]!.DeepClone(), ["start_index"] = range.Start, ["end_index"] = range.End });
+                if (maximumCitations is { } maximum && mappedCount >= maximum) Limit("stream_mapped_citation_count_limit");
+                var citation = new JsonObject { ["type"] = "url_citation", ["url"] = source["url"]!.DeepClone(),
+                    ["title"] = source["title"]!.DeepClone(), ["start_index"] = range.Start, ["end_index"] = range.End };
+                var size = maximumCitationBytes.HasValue ? new UTF8Encoding(false, true).GetByteCount(citation.ToJsonString()) : 0;
+                if (maximumCitationBytes is { } byteMaximum && mappedBytes + size > byteMaximum) Limit("stream_mapped_citation_byte_limit");
+                citations.Add(citation); mappedCount++; mappedBytes += size;
             }
         }
         for (var i = 0; i < used.Length; i++)
             if (!used[i]) Loss(doc, Path + ".groundingChunks[" + i + "]", "grounding_source_without_segment");
     }
+    /// <summary>一个支持关联多个来源时也限制生成引用膨胀，不能因源条目较少而绕过资源边界。</summary>
+    private static void Limit(string code) => throw new LlmConversionException([new(code, Path, "生成的流式引用超过调用者声明的资源上限。")]);
 
     /// <summary>只接受明确的公开 HTTP(S) Web 来源；检索私有上下文和地图来源不冒充 URL 引用。</summary>
     private static JsonObject? Source(JsonObject chunk, ConversionDocument doc, string path)

@@ -17,7 +17,7 @@ public sealed class SettingsBindingTests
     [InlineData(0)] [InlineData(1)] [InlineData(2)] [InlineData(3)] [InlineData(4)] [InlineData(5)] [InlineData(6)]
     [InlineData(7)] [InlineData(8)] [InlineData(9)] [InlineData(10)]
     [InlineData(11)] [InlineData(12)] [InlineData(13)] [InlineData(14)] [InlineData(15)] [InlineData(16)] [InlineData(17)] [InlineData(18)]
-    [InlineData(19)] [InlineData(20)]
+    [InlineData(19)] [InlineData(20)] [InlineData(21)]
     public async Task ConfigurationChange_InvalidatesExistingSession(int option)
     {
         var store = new DistributedCacheLlmSessionStore(new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())), new TestSessionLock());
@@ -45,6 +45,7 @@ public sealed class SettingsBindingTests
             17 => new LlmConversionOptions { OpenAiCitationIndexUnit = LlmCitationIndexUnit.Utf8Byte },
             19 => new LlmConversionOptions { MaxStreamAnnotations = 2048 },
             20 => new LlmConversionOptions { MaxStreamAnnotationBytes = 2097152 },
+            21 => new LlmConversionOptions { GeminiGroundingStreamMode = GeminiGroundingStreamMode.SingleTextPart },
             _ => new LlmConversionOptions { HostedSearchTarget = LlmHostedSearchTarget.ChatWebSearch }
         };
         await using var first = ConvertingProviderTests.Build(handler, LlmProtocol.ClaudeMessages, LlmProtocol.ChatCompletions, store);
