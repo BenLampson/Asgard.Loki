@@ -68,7 +68,9 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
         await foreach (var item in ((IResponsesAdapter)call.Provider).StreamAsync(
             payload, call.Context, cancellationToken).ConfigureAwait(false))
         {
-            if (item.Data.TryGetProperty("response", out var response) && response.ValueKind == JsonValueKind.Object
+            // 未知扩展中的同名业务对象不代表原生响应生命周期，不能登记为可续接响应。
+            if (item.Type is "response.created" or "response.in_progress" or "response.queued" or "response.completed" or "response.failed" or "response.incomplete"
+                && item.Data.TryGetProperty("response", out var response) && response.ValueKind == JsonValueKind.Object
                 && response.TryGetProperty("id", out var id) && id.ValueKind == JsonValueKind.String)
                 await invocation.Sessions.BindResponseAsync(call.Binding, id.GetString()!, cancellationToken).ConfigureAwait(false);
             yield return item;

@@ -1223,6 +1223,10 @@ Complete results and terminal candidates are published after real EOF, declared-
 
 `openai-http-v2` includes HTTP limits and named client in supplier identity. All predecessor OpenAI Sessions (including its WebSocket bindings) need new IDs/expiry; core fingerprint algorithms, other supplier identities and conversion-v25 remain unchanged. Sixty-four new offline cases bring this supplier to 275 and total coverage to 5681, with 28 packages. Full native HTTP/JSON/SSE manifests and public SDK snapshots test reasoning/schema transmission, tools/IDs, precision, unknown fields, cancellation and resource failures. Native cloud-compatible endpoint coverage and live model behavior are separate pending evidence.
 
+### HTTP Responses ownership boundaries
+
+The existing core HTTP Responses client records ownership only for explicitly known created/in-progress/queued/completed/failed/incomplete lifecycle events. It uses the existing native event `Type` contract (JSON type, otherwise SSE name). Unknown event bodies, including business `response.id` and `error` members, remain raw rather than affecting Session response ownership. No new public type, provider dependency, fingerprint algorithm or coordinator is added. Complete-result and existing WebSocket registration remain unchanged; the SDK does not purge previous cached entries. Nine public SDK regressions cover raw delivery, valid lifecycle registration before publication, empty unknown IDs and pre-HTTP continuation rejection. Current totals are 5690 offline cases (284 OpenAI) and 28 packages.
+
 ## 7. HTTP and errors
 
 Providers own address/authentication/protocol mapping. API roots include their version path. Do not hard-code model lists or rewrite model suffixes heuristically.
