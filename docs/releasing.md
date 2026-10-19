@@ -13,6 +13,8 @@ All seventeen packages share the version in `src/Directory.Build.props`. The pac
 
 Publishing is a separate maintainer action. This repository does not automatically publish on a push or tag. The manually dispatched [Publish NuGet workflow](../.github/workflows/publish.yml) defaults to `verify`, which authenticates without uploading packages. No long-lived NuGet API key is stored in the repository or required for CI.
 
+The reusable [CI workflow](../.github/workflows/ci.yml) runs for pull requests into `main` or as part of this explicitly invoked release workflow. It has no push trigger or standalone manual entry point. Day-to-day development checkpoints are validated locally; do not start GitHub Actions for each commit. PR and release validation both retain the Windows/Linux build, offline tests, pack and package checks. Creating a tag or GitHub release does not bypass the explicit NuGet mode/version confirmation.
+
 ## Trusted publishing configuration
 
 The nuget.org policy must use repository owner `BenLampson`, repository `Asgard.Loki`, workflow filename `publish.yml`, and environment `nuget`. Select package owner `BenLampson`, allow new packages and new versions, and use glob `Asgard.Loki*` to include the entry package and extensions. The policy must be saved on nuget.org; GitHub settings cannot create it.
