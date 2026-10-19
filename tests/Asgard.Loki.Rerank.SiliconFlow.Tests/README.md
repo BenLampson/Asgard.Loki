@@ -1,0 +1,9 @@
+# Asgard.Loki.Rerank.SiliconFlow.Tests
+
+143 offline xUnit v3 cases verify the native SiliconFlow supplier through substitute HTTP and the public SDK. Six independently authored [full wire fixtures](Fixtures/native.json) cover scalar documents, arrays with empty text, mixed ImageDoc/TextDoc/string inputs, explicit settings, images and an empty scalar document. The fixtures retain Unicode, original indices, duplicate document values, optional metadata and future null/false fields. Expected wire/result JSON is not produced by the adapter.
+
+Tests check exact native endpoint/auth/model/body, scalar versus array preservation, complete ranked counts and original document association; no sorting, default options or synthetic Jina model/usage fields are accepted. Precise number tests distinguish integer semantics from floating-point rounding and retain large/exponent values. Request dictionaries may change during await without changing the dispatched/validated snapshot.
+
+Failure tests cover native HTTP/business errors, missing/invalid indices/scores/documents, changed modality/value, required returns and malformed counters. Transport tests reject unsupported success media before reads and malformed/truncated/duplicate JSON or invalid UTF-8 during reads. Cancellation at send/body/EOF/response/client disposal and tail/disposal exceptions cannot return a successful result. Factories/handlers remain borrowed; client and body disposal are verified.
+
+No real network, credentials, Redis, media decoding or ranking-quality claim is involved. The [supplier README](../../src/Asgard.Loki.Rerank.SiliconFlow/README.md) records supported native types, defaults/unknown-field rules and remaining video/live limitations. Automatic test discovery includes this project; remote CI remains reserved for PR/release gates.

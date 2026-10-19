@@ -23,6 +23,7 @@ class JinaEmbedding["Asgard.Loki.Embedding.Jina"]
 class CohereRerank["Asgard.Loki.Rerank.Cohere"]
 class JinaRerank["Asgard.Loki.Rerank.Jina"]
 class AliRerank["Asgard.Loki.Rerank.Ali"]
+class SiliconFlowRerank["Asgard.Loki.Rerank.SiliconFlow"]
 class Video["Asgard.Loki.Video"]
 class Ark["Asgard.Loki.LLM.Volcengine"]
 class OpenAILLM["Asgard.Loki.LLM.OpenAI"]
@@ -45,6 +46,7 @@ JinaEmbedding ..> Embedding
 CohereRerank ..> Rerank
 JinaRerank ..> Rerank
 AliRerank ..> Rerank
+SiliconFlowRerank ..> Rerank
 Video ..> Abstractions
 Ark ..> LLM
 OpenAILLM ..> LLM
@@ -781,7 +783,7 @@ Registration snapshots route/target collections. Each client gets separate per-r
 
 The core reserves public routing `Model` and retains all native query/documents/options in `Parameters`. It neither rewrites structured or multimodal documents nor imposes one supplier's top-n/score/index representation on another. Complete native result Data is an independent snapshot; metadata distinguishes public/upstream model and provider ID. Native supplier adapters must validate successful/error responses and original document association, and provide their own convenience views. Core does not compute scores, sort results, fabricate indices, normalize missing values or calculate usage. Raw upstream usage/metadata preservation is not billing logic.
 
-The core contract is verified with custom in-memory adapters. `Asgard.Loki.Rerank.Cohere` and `Asgard.Loki.Rerank.Jina` add independent native suppliers. No ranking quality/live provider claim is made. Rerank is a single explicitly requested model operation, not an embedding database, retriever, RAG coordinator, application search endpoint, background service or hosted batch system.
+The core contract is verified with custom in-memory adapters. `Asgard.Loki.Rerank.Cohere`, `Asgard.Loki.Rerank.Jina`, `Asgard.Loki.Rerank.Ali` and `Asgard.Loki.Rerank.SiliconFlow` add independent native suppliers. No ranking quality/live provider claim is made. Rerank is a single explicitly requested model operation, not an embedding database, retriever, RAG coordinator, application search endpoint, background service or hosted batch system.
 
 ### Native Cohere reranking
 
@@ -842,6 +844,27 @@ The private payload reader snapshots native nested `input.query`/`input.document
 The private response reader validates native `request_id`, `output.results` and exact nonnegative `usage.total_tokens`, plus `prompt_tokens` when present. Results must match the input/top-n count and retain unique in-range original indices. Returned documents are validated even without a return request; explicit `return_documents=true` requires them. Text wrappers match exact indexed source content, including native text wrappers echoing a media reference; explicit media modality/value must agree with that source. This validates protocol identity without proving server media interpretation. Scores retain original JSON and exact `[0,1]` validation without recalibration or resorting. `AliRerankItem` exposes original Index/score/document and independent raw item JSON; no universal result, invented model or generic usage wrapper is added.
 
 Native code/message/error failures remain errors even with HTTP 200 and apparent results. Original status/body are retained; malformed/truncated/duplicate JSON and SSE/NDJSON fail. Cancellation reaches send/body reads; responses are released and borrowed factory/handler ownership remains with the caller. Six independently authored complete request/response fixtures and 124 offline cases verify HTTP, shape, association, precision, unknown data, cancellation and ownership; no live regional/model/media or relevance claim is made. Entry/abstraction, LLM, Embedding, other suppliers and conversational state are unchanged.
+
+### Native SiliconFlow reranking
+
+`Rerank.SiliconFlow` references only Rerank and standard HTTP dependencies. Its fixed options bind versioned API root, actual model, API Key and named borrowed HTTP factory. It appends `rerank` without model-name routing, Key borrowing or protocol fallback. The native operation uses neither LLM Session state nor Embedding/Image dependencies.
+
+```mermaid
+classDiagram
+IRerankAdapter <|.. SiliconFlowRerankAdapter
+SiliconFlowRerankAdapter --> SiliconFlowRerankOptions : complete fixed target
+SiliconFlowRerankAdapter --> SiliconFlowRerankPayload : unchanged scalar or array wire shape
+SiliconFlowRerankPayload --> SiliconFlowRerankDocument : indexed private snapshot
+SiliconFlowRerankAdapter --> SiliconFlowRerankResponse : native id and results
+SiliconFlowRerankExtensions --> SiliconFlowRerankItem : provider owned view
+SiliconFlowRerankExtensions --> RerankResult : unchanged native JSON
+```
+
+Query strings/ImageDoc and scalar or array document inputs retain their native containers, order, text/media references and extensions. Known option types and exact integer/overlap bounds are validated without injected defaults, local chunking, MIME guessing or model catalogs. A private singleton array supports index-zero association for a scalar input, while the wire scalar stays unchanged. Complete result counts, unique original indices and returned value/modality links are checked against the immutable request snapshot, including optional returns. Scores remain finite native numbers without cross-supplier calibration; required documents cannot disappear.
+
+The supplier validates native `id/results` rather than inventing Jina model/usage fields or inheriting Cohere's array/version rules. Optional current `meta.tokens` and older `tokens` envelopes retain their raw forms; known counters are exact nonnegative integers, missing values remain unknown and billing metadata is passive raw JSON. Standalone views own snapshots but cannot prove original-request identity. Video is not asserted from an intro alone when the current concrete schema defines only text/image objects.
+
+Success requires complete strict UTF-8 JSON, valid native/business status and normal response/client disposal. Header-stage non-JSON success rejection, body/tail/disposal failure and cancellation through final disposal prevent successful return. Borrowed factories/handlers are never disposed. Six independent full native wire fixtures and 143 offline cases cover protocol, association, precision, metadata, errors and lifetime. No source download, media decoder, score-quality/live-account claim, RAG pipeline or billing implementation is added. See the [supplier guide](../src/Asgard.Loki.Rerank.SiliconFlow/README.md).
 
 ## 7. HTTP and errors
 

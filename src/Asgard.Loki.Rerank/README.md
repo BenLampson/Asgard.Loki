@@ -12,7 +12,7 @@ Independent reranking module for the Asgard.Loki .NET SDK. This capability refer
 | Requests | Public `Model` plus unchanged native JSON `Parameters`; root `model` is reserved |
 | Results | Independent complete native `Data` plus public/upstream/provider metadata |
 | Failure/cancellation | Propagated from the chosen adapter; no retry or target failover |
-| Bundled suppliers | Independent [Cohere v1/v2](../Asgard.Loki.Rerank.Cohere/README.md), [Jina text/multimodal/listwise](../Asgard.Loki.Rerank.Jina/README.md) and [Ali DashScope nested](../Asgard.Loki.Rerank.Ali/README.md) native packages |
+| Bundled suppliers | Independent [Cohere v1/v2](../Asgard.Loki.Rerank.Cohere/README.md), [Jina text/multimodal/listwise](../Asgard.Loki.Rerank.Jina/README.md), [Ali DashScope nested](../Asgard.Loki.Rerank.Ali/README.md) and [SiliconFlow scalar/text/image](../Asgard.Loki.Rerank.SiliconFlow/README.md) native packages |
 
 ```csharp
 using Asgard.Loki;

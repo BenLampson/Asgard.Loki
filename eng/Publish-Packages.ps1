@@ -35,7 +35,8 @@ $packageIds = @(
     'Asgard.Loki.Embedding.Jina',
     'Asgard.Loki.Rerank.Cohere',
     'Asgard.Loki.Rerank.Jina',
-    'Asgard.Loki.Rerank.Ali'
+    'Asgard.Loki.Rerank.Ali',
+    'Asgard.Loki.Rerank.SiliconFlow'
 )
 $expectedNames = @(foreach ($id in $packageIds) { "$id.$Version.nupkg"; "$id.$Version.snupkg" })
 $actualNames = @(Get-ChildItem -LiteralPath $PackageDirectory -File |

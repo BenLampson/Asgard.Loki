@@ -22,6 +22,7 @@
     <Project Path="src/Asgard.Loki.Rerank.Cohere/Asgard.Loki.Rerank.Cohere.csproj" />
     <Project Path="src/Asgard.Loki.Rerank.Jina/Asgard.Loki.Rerank.Jina.csproj" />
     <Project Path="src/Asgard.Loki.Rerank.Ali/Asgard.Loki.Rerank.Ali.csproj" />
+    <Project Path="src/Asgard.Loki.Rerank.SiliconFlow/Asgard.Loki.Rerank.SiliconFlow.csproj" />
     <Project Path="src/Asgard.Loki.Image.OpenAI/Asgard.Loki.Image.OpenAI.csproj" />
   </Folder>
   <Folder Name="/tests/">
@@ -47,5 +48,6 @@
     <Project Path="tests/Asgard.Loki.Rerank.Cohere.Tests/Asgard.Loki.Rerank.Cohere.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Rerank.Jina.Tests/Asgard.Loki.Rerank.Jina.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Rerank.Ali.Tests/Asgard.Loki.Rerank.Ali.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Rerank.SiliconFlow.Tests/Asgard.Loki.Rerank.SiliconFlow.Tests.csproj" />
   </Folder>
 </Solution>
