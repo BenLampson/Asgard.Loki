@@ -17,6 +17,8 @@
     <EmbeddedResource Include="../Shared/Fixtures/converse-text-complete.json" LogicalName="ConverseTextConversion.Fixture" />
     <EmbeddedResource Include="../Shared/Fixtures/converse-reasoning-requests.json" LogicalName="ConverseReasoningRequests.Fixture" />
     <EmbeddedResource Include="../Shared/Fixtures/converse-anthropic-reasoning.json" LogicalName="ConverseAnthropicReasoning.Fixture" />
+    <EmbeddedResource Include="../Shared/Fixtures/converse-chat-stream.json" LogicalName="ConverseChatStream.Fixture" />
+    <EmbeddedResource Include="../Shared/Fixtures/converse-chat-stream.eventstream" LogicalName="ConverseChatStream.Binary" />
     <EmbeddedResource Include="Fixtures/**/*.eventstream" />
   </ItemGroup>
 </Project>
