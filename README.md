@@ -341,3 +341,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SE
 ## License
 
 Licensed under the [Apache License, Version 2.0](LICENSE).
+
+The Conversion data API now supports the common complete-call subset of four text requests to native Converse and context-bound replies back, with independent full JSON goldens. Tool IDs, JSON/text result kinds and schema constraints are retained. SDK composition, inverse operations, mixed streams and model-specific reasoning remain separate work; see the [conversion contract](src/Asgard.Loki.LLM.Conversion/README.md#four-text-requests-to-native-converse-complete-data-conversion).

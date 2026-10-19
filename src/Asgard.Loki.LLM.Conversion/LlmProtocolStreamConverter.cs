@@ -33,7 +33,7 @@ public sealed class LlmProtocolStreamConverter
     {
         options = ConversionOptionsSnapshot.Capture(options);
         LlmProtocolConverter.Validate(new(), from, to, options);
-        if (from != to && BedrockConversion.IsBedrock(from))
+        if (from != to && (BedrockConversion.IsBedrock(from) || BedrockConversion.IsBedrock(to)))
             throw new NotSupportedException("Nova/Converse 跨协议流尚未实现；不会把完整 JSON 映射当作流式协议转换。");
         var mapped = context?.MappedToolCount > 0;
         var concatenate = options.GeminiGroundingStreamMode == GeminiGroundingStreamMode.ConcatenatedTextParts;

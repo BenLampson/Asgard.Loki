@@ -1449,3 +1449,19 @@ classDiagram
 ```
 
 The current four-protocol and Bedrock-pair matrix is unchanged. The new declaration will prevent future partially implemented mixed matrices from being accidentally enabled solely because a wrapper exposes an interface. No protocol enum values, target serialization, binding algorithms, credentials, native transports or package dependency directions change. The entry still references only Abstractions; providers do not gain references to Conversion. Seventeen core and five conversion regressions bring the local ordinary inventory to 6483 (208 core, 2217 conversion), 28 production packages. No live/provider/model or remote CI acceptance is implied.
+
+## Four-text to Converse complete data conversion
+
+The Conversion package adds private Converse codecs around the existing per-call document. No capability/provider references or core interfaces change at this data-only checkpoint. The native decorator still exposes the native pair. Complete directionality is explicit: four-text request -> Converse request, Converse response -> four-text response. Inverse operations and mixed streams fail before processing; native Nova/text remains pending.
+
+```mermaid
+flowchart LR
+    Text[Four text request shapes] --> Reader[Private request reader]
+    Reader --> Writer[Private Converse writer]
+    Writer --> Native[Converse request JSON]
+    Reply[Converse response JSON] --> ResponseReader[Private Converse response reader]
+    ResponseReader --> Outputs[Four native response writers]
+    Context[Immutable request model and historical IDs] --> ResponseReader
+```
+
+Schemas retain constraints and exact numbers, with output schema serialized only at the native string boundary. Images use explicit inline Base64 without fetching. Tool results retain JSON versus text identity; only adjacent pure tool items coalesce. Converse has no response ID/model body fields, so IDs are synthetic non-resumable SDK labels and model labels come from the request context (empty without context). Required usage/latency validate without invention. Unknown ordinary fields are diagnosed; tool association, execution guarantees and opaque content cannot be bypassed with loss consent. Model-specific reasoning remains separate work. These are offline protocol claims, not real AWS acceptance.

@@ -9,12 +9,14 @@ public sealed class LlmConversionContext
 {
     /// <summary>复制映射和配置，使响应不能依赖调用者后续修改的集合。</summary>
     internal LlmConversionContext(LlmProtocol source, LlmProtocol target, LlmConversionOptions options,
-        IEnumerable<ConvertedToolBinding>? tools = null, IEnumerable<string>? ordinaryNames = null, IEnumerable<string>? historicalIds = null)
+        IEnumerable<ConvertedToolBinding>? tools = null, IEnumerable<string>? ordinaryNames = null, IEnumerable<string>? historicalIds = null,
+        string? requestedModel = null)
     {
         SourceProtocol = source; TargetProtocol = target; Options = ConversionOptionsSnapshot.Capture(options);
         ToolBindings = new ReadOnlyDictionary<string, ConvertedToolBinding>((tools ?? []).ToDictionary(tool => tool.EncodedName, StringComparer.Ordinal));
         OrdinaryNames = new HashSet<string>(ordinaryNames ?? [], StringComparer.Ordinal);
         HistoricalIds = new HashSet<string>(historicalIds ?? [], StringComparer.Ordinal);
+        RequestedModel = requestedModel;
     }
     /// <summary>原始调用方协议。</summary>
     public LlmProtocol SourceProtocol { get; }
@@ -34,6 +36,8 @@ public sealed class LlmConversionContext
     internal IReadOnlySet<string> OrdinaryNames { get; }
     /// <summary>历史调用 ID 不能被本轮新调用复用，防止后续结果回填歧义。</summary>
     internal IReadOnlySet<string> HistoricalIds { get; }
+    /// <summary>本次请求已拍摄的目标模型标签；Converse 响应没有原生 model 字段，不声称这是上游返回值。</summary>
+    internal string? RequestedModel { get; }
 
     /// <summary>还原完整 Responses 工具项；不会执行调用或猜测损坏的参数。</summary>
     internal JsonObject Restore(JsonObject response)

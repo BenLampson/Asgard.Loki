@@ -88,3 +88,5 @@ Claude／Responses 流式转换现在按本协议事件类型识别错误。未�
 Nova／Converse 显式逻辑流现已接入公共 SDK：保留索引、调用 ID、交错参数分片和原始计数，源枚举／异步释放／取消检查成功后才交付消息结束与用量尾帧。新增 153 项转换测试和 58 项 AWS 测试，覆盖独立完整事件快照、关联／终态／状态上限、HTTP 原生错误及异步释放故障。原生身份流仍返回原始事件及二进制附件；转换事件不伪造帧。见[流接入说明](src/Asgard.Loki.LLM.Conversion/README.md#public-sdk-native-stream-composition)。
 
 LLM 适配器新增可选 `ILlmProtocolSupport`：声明只能收窄物理适配接口的范围，不能代替实现、联网探测模型或自动选上游。所有目标（含备用目标）在注册时校验，旧适配器按原接口规则继续工作。新增 17 项核心测试、5 项转换测试；当前协议转换矩阵不因此扩大。见[协议声明](src/Asgard.Loki.LLM/README.md#optional-protocol-support-declaration)。
+
+转换数据 API 新增四种文本请求到原生 Converse 的通用完整调用子集，以及上下文绑定的反向响应。独立完整 JSON 金样验证工具 ID、JSON／文本结果及 Schema 约束。SDK 接入、反向调用、混合流和模型推理方言仍单独推进，见[转换说明](src/Asgard.Loki.LLM.Conversion/README.md#four-text-requests-to-native-converse-complete-data-conversion)。

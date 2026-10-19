@@ -72,8 +72,10 @@ public sealed class BedrockConversionBoundaryTests
         foreach (var other in new[] { LlmProtocol.ChatCompletions, LlmProtocol.Responses, LlmProtocol.ClaudeMessages, LlmProtocol.Gemini })
         foreach (var pair in new[] { (From: native, To: other), (From: other, To: native) })
         {
-            Assert.Throws<NotSupportedException>(() => LlmProtocolConverter.ConvertRequest(new(), pair.From, pair.To, new() { AllowLoss = allowLoss }));
-            Assert.Throws<NotSupportedException>(() => LlmProtocolConverter.ConvertResponse(new(), pair.From, pair.To, new() { AllowLoss = allowLoss }));
+            if (native == LlmProtocol.BedrockNova || pair.From == native)
+                Assert.Throws<NotSupportedException>(() => LlmProtocolConverter.ConvertRequest(new(), pair.From, pair.To, new() { AllowLoss = allowLoss }));
+            if (native == LlmProtocol.BedrockNova || pair.To == native)
+                Assert.Throws<NotSupportedException>(() => LlmProtocolConverter.ConvertResponse(new(), pair.From, pair.To, new() { AllowLoss = allowLoss }));
             Assert.Throws<NotSupportedException>(() => new LlmProtocolStreamConverter(pair.From, pair.To, new() { AllowLoss = allowLoss }));
         }
         Assert.Throws<NotSupportedException>(() => new LlmProtocolStreamConverter(native,

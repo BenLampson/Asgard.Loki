@@ -12,9 +12,12 @@ public static class LlmProtocolConverter
         var captured = ConversionOptionsSnapshot.Capture(options);
         Validate(request, from, to, captured);
         if (from == to) return new(request, request, [], new(from, to, captured));
+        if (from == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(to))
+            throw new NotSupportedException("此阶段只实现文本请求到 Converse，不声明反向 SDK 调用已具备原生指标。");
         if (BedrockConversion.IsBedrock(from)) return BedrockConversion.Request(request, from, to, captured);
         if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
             throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
+        if (to == LlmProtocol.BedrockConverse) return ConverseTextConversion.Request(request, from, captured);
         var searchOutputDiagnostics = HostedSearchOutput.Inspect(request, from);
         var search = HostedSearchCodec.Prepare(request, from, to, captured, out var searchPrepared);
         var context = ToolRequestCodec.Prepare(searchPrepared, from, to, captured, out var prepared, out var toolDiagnostics);
@@ -35,6 +38,9 @@ public static class LlmProtocolConverter
         var captured = ConversionOptionsSnapshot.Capture(options);
         Validate(response, from, to, captured);
         if (from == to) return new(response, response, []);
+        if (from == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(to)) return ConverseTextConversion.Response(response, to, captured);
+        if (to == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(from))
+            throw new NotSupportedException("文本协议响应尚不能构造包含原生指标的 Converse 响应；不会补造 latencyMs。");
         if (BedrockConversion.IsBedrock(from)) return BedrockConversion.Response(response, captured);
         var mapGrounding = from == LlmProtocol.Gemini && to is LlmProtocol.ChatCompletions or LlmProtocol.Responses
             && captured.OpenAiCitationIndexUnit != LlmCitationIndexUnit.Unspecified;
@@ -52,6 +58,8 @@ public static class LlmProtocolConverter
     public static LlmConversionResult ConvertResponse(JsonObject response, LlmConversionContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
+        if (context.TargetProtocol == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(context.SourceProtocol))
+            return ConverseTextConversion.Response(response, context.SourceProtocol, context.Options, context);
         var result = ConvertResponse(response, context.TargetProtocol, context.SourceProtocol, context.Options);
         var data = JsonNode.Parse(result.Data.GetRawText())!.AsObject();
         if (BedrockConversion.IsBedrock(context.SourceProtocol) && context.SourceProtocol != context.TargetProtocol)
@@ -65,7 +73,8 @@ public static class LlmProtocolConverter
     {
         ArgumentNullException.ThrowIfNull(value);
         ConversionJson.ValidateProtocol(from); ConversionJson.ValidateProtocol(to);
-        if (BedrockConversion.IsBedrock(from) != BedrockConversion.IsBedrock(to))
+        if (BedrockConversion.IsBedrock(from) != BedrockConversion.IsBedrock(to)
+            && !(from == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(to) || to == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(from)))
             throw new NotSupportedException("Bedrock 原生转换当前只支持 Nova 与 Converse 之间的完整 JSON。");
         if (options is not null && (!Enum.IsDefined(options.BedrockNovaRequestFormat) || !Enum.IsDefined(options.BedrockConverseInferenceFormat)))
             throw new ArgumentOutOfRangeException(nameof(options));
