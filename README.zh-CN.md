@@ -14,7 +14,7 @@
 | LLM | `Asgard.Loki.LLM.Google` | Gemini generateContent 原生 JSON/SSE，保留原生多模态与工具结构 |
 | 显式转换 | `Asgard.Loki.LLM.Conversion` | 四种文本协议间十二个方向的公共子集请求、响应和流式转换 |
 | 音频 | `Asgard.Loki.Audio.Volcengine` | V3 HTTP 单向流式 TTS、音频聚合、新旧认证方式 |
-| 音频 | `Asgard.Loki.Audio.OpenAI` | Speech 原生二进制聚合/分块字节流、自定义 voice 对象与原生参数；SSE 待补 |
+| 音频 | `Asgard.Loki.Audio.OpenAI` | Speech 原生二进制及显式 SSE、音频增量/done、自定义 voice 与原始用量 |
 | 图片 | `Asgard.Loki.Image.OpenAI` | Images Generations、Base64/URL、部分与最终图像 SSE |
 | 嵌入 | `Asgard.Loki.Embedding.OpenAI` | 原生 Embeddings、文本/token 批输入、Float/Base64、原始索引及完整 JSON |
 | 嵌入 | `Asgard.Loki.Embedding.Google` | 原生单条/同步批嵌入、原生配置与多模态 JSON、按原顺序返回向量 |
@@ -25,7 +25,7 @@
 | 重排 | `Asgard.Loki.Rerank.Ali` | DashScope 原生嵌套文本/媒体请求、原始文档索引、分数与完整用量 |
 | 视频 | — | 保留项目骨架 |
 
-供应商包仅引用所属能力，不会带入其他能力包。入口只引用统一抽象。音频核心的可选原生 JSON 调用契约保留 voice 对象和未知参数，并在源枚举及释放成功后才发出完成块；[OpenAI 语音](src/Asgard.Loki.Audio.OpenAI/README.md) 已接入二进制聚合/分块字节流，帧数据明确标识为 SDK HTTP 元数据，SSE 事件仍待补。
+供应商包仅引用所属能力，不会带入其他能力包。入口只引用统一抽象。音频核心的可选原生 JSON 调用契约保留 voice 对象和未知参数，并在源枚举及释放成功后才发出完成块；[OpenAI 语音](src/Asgard.Loki.Audio.OpenAI/README.md) 已接入二进制和显式 SSE 聚合/流式读取；SSE 信封保留原生 JSON、原始 data 文本、事件身份及原始用量，done 在尾部读取和释放成功后才交付。
 
 Loki 保持可嵌入应用的标准 SDK 定位。Claude 使用 `loki.LLM.ClaudeMessages`，Gemini 使用 `loki.LLM.Gemini`；目标需要明确设置对应 `Protocols`。调用者提供 HTTP 工厂、凭据和 Session 依赖，不增加转发服务、后台或计费功能。
 
@@ -43,7 +43,7 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 初始化、调用、支持矩阵及验证命令请参阅 [英文 README](README.md)。CI 在 Windows/Linux 上执行构建、测试及十三个 NuGet 包的依赖与元数据检查，打包产物作为运行附件保存。独立的 `Publish NuGet` 工作流使用 OIDC 可信发布，默认仅验证登录；正式发布需手动选择 `publish` 并填写准确版本，步骤见 [发布说明](docs/releasing.md)。
 
-已于 2026-10-19 再次对照 New API `058c8231`，按本库 `5403f1d` 更新[模型调用补齐计划](docs/model-call-roadmap.md#remaining-sdk-work-at-the-current-checkpoint)。原生 Claude/Gemini、已声明范围的四协议转换、OpenAI compaction/Responses WebSocket、OpenAI/Google Embedding 和独立 Rerank 核心已实现。[Cohere Rerank](src/Asgard.Loki.Rerank.Cohere/README.md) 已补显式 v1/v2，[Jina Rerank](src/Asgard.Loki.Rerank.Jina/README.md) 已补原生文本/多模态/listwise 和独立离线样本，下一步收口转换字段/模式清单，再补剩余原生供应商；Responses 引用源流已补原始索引、Unicode 范围、done/最终快照与有界状态校验，允许显示损耗也不能绕过；目标引用流映射仍待补，转换继续收口搜索执行/结果、文档媒体、工具结果/错误及复杂输出。Ollama 原生 Embedding、Jina dense/per-token 和 DashScope Rerank 已补齐各自声明范围；Jina PDF/packed/sparse 等形态仍待补。OpenAI Speech 已补原生二进制传输，下一小步补 SSE，再补识别/翻译。
+已于 2026-10-19 再次对照 New API `058c8231`，按本库 `5403f1d` 更新[模型调用补齐计划](docs/model-call-roadmap.md#remaining-sdk-work-at-the-current-checkpoint)。原生 Claude/Gemini、已声明范围的四协议转换、OpenAI compaction/Responses WebSocket、OpenAI/Google Embedding 和独立 Rerank 核心已实现。[Cohere Rerank](src/Asgard.Loki.Rerank.Cohere/README.md) 已补显式 v1/v2，[Jina Rerank](src/Asgard.Loki.Rerank.Jina/README.md) 已补原生文本/多模态/listwise 和独立离线样本，下一步收口转换字段/模式清单，再补剩余原生供应商；Responses 引用源流已补原始索引、Unicode 范围、done/最终快照与有界状态校验，允许显示损耗也不能绕过；目标引用流映射仍待补，转换继续收口搜索执行/结果、文档媒体、工具结果/错误及复杂输出。Ollama 原生 Embedding、Jina dense/per-token 和 DashScope Rerank 已补齐各自声明范围；Jina PDF/packed/sparse 等形态仍待补。OpenAI Speech 已补原生二进制及显式 SSE 传输，下一小步补识别/翻译。
 
 后续依次补图片编辑、OpenAI 音频、云认证及其他原生供应商、Realtime 和 Video；旧式 completion、moderation、原生模型发现和可独立调用的搜索/fetch 保留为低优先级清单。每个小检查点附独立协议样本、本地公共 SDK 测试和分包/架构文档；Windows/Linux GitHub CI 留到 PR 和显式发布门禁执行，经授权的远端推送只面向 dev。原生传递、显式转换、真实模型验证分别验收；后台、计费、代理服务、工具执行和任务托管不纳入 SDK。
 
@@ -51,7 +51,7 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 当前火山 LLM 真实联调只需要四个环境变量：启用开关、API Key、Chat 模型、Responses 模型，详见 [测试配置规范](docs/testing.md) 和 [.env.example](.env.example)。运行 `pwsh -File eng/Test-Live.ps1`；Windows 下支持读取本机当前用户变量，不自动加载 `.env`。
 
-离线测试共 2981 项通过：OpenAI Speech 103 项、Jina Embedding 134 项、Ali Rerank 124 项、Ollama Embedding 125 项、Jina Rerank 133 项、Cohere Rerank 120 项、Rerank 核心 34 项、Embedding 核心 34 项、Embedding.OpenAI 106 项、Embedding.Google 114 项、显式转换 1486 项、OpenAI 199 项、火山 93 项、Claude 22 项、Gemini 36 项、LLM 核心 65 项、音频核心 38 项及其他 15 项；完整 Chat/Responses URL 引用与 Gemini Web grounding 已支持显式单位声明下的双向转换；转换回归覆盖嵌套字段损耗、待回填工具关联、ID 冲突、完整及截断流生命周期、done 与最终快照一致性，以及缓存和用量口径。原有 OpenAI/火山协议用例继续保留，并增加原生压缩与功能绑定验证。标准方舟 API 的 `doubao-seed-evolving` 已实测通过普通/流式调用、工具调用与结果回填、严格 JSON Schema、推理开关、输出截断、响应链续接及加密推理项原样回传。**两种协议的 `tool_choice=none` 严格测试仍失败**：最终请求参数正确，但上游仍返回工具调用。失败断言保留，详见 [参数与协议验证记录](docs/llm-parameter-verification.md)。OpenAI、Claude、Gemini、Embedding/Rerank 供应商及显式转换当前只有离线验证。
+离线测试共 3051 项通过：OpenAI Speech 173 项、Jina Embedding 134 项、Ali Rerank 124 项、Ollama Embedding 125 项、Jina Rerank 133 项、Cohere Rerank 120 项、Rerank 核心 34 项、Embedding 核心 34 项、Embedding.OpenAI 106 项、Embedding.Google 114 项、显式转换 1486 项、OpenAI 199 项、火山 93 项、Claude 22 项、Gemini 36 项、LLM 核心 65 项、音频核心 38 项及其他 15 项；完整 Chat/Responses URL 引用与 Gemini Web grounding 已支持显式单位声明下的双向转换；转换回归覆盖嵌套字段损耗、待回填工具关联、ID 冲突、完整及截断流生命周期、done 与最终快照一致性，以及缓存和用量口径。原有 OpenAI/火山协议用例继续保留，并增加原生压缩与功能绑定验证。标准方舟 API 的 `doubao-seed-evolving` 已实测通过普通/流式调用、工具调用与结果回填、严格 JSON Schema、推理开关、输出截断、响应链续接及加密推理项原样回传。**两种协议的 `tool_choice=none` 严格测试仍失败**：最终请求参数正确，但上游仍返回工具调用。失败断言保留，详见 [参数与协议验证记录](docs/llm-parameter-verification.md)。OpenAI、Claude、Gemini、Embedding/Rerank 供应商及显式转换当前只有离线验证。
 
 运行 `pwsh -File eng/Test-Live.ps1 -Suite Parameters` 或 `-Suite All` 执行扩展联调；增加 `-Scenario Structured`、`Tools`、`ToolChoice`、`Reasoning`、`Limits` 或 `Replay` 可单独选组。默认冒烟五次请求，参数套件计划 26 次，全部计划 31 次，单进程硬上限 32 次。上述工具禁用问题存在期间，参数及全部套件会返回失败。其他模型、供应商、能力和 Redis 跨进程联调仍需单独验证；普通单元测试和自动 CI 保持离线。
 

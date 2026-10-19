@@ -6,7 +6,7 @@ using Asgard.Loki.Audio.OpenAI.Internal;
 
 namespace Asgard.Loki.Audio.OpenAI;
 
-/// <summary>原生 OpenAI 二进制语音调用，支持便捷和原生 JSON 入口，不合成 SSE 或自动重试。</summary>
+/// <summary>原生 OpenAI 二进制/SSE 语音调用，支持便捷和原生 JSON 入口，不自动重试。</summary>
 public sealed class OpenAiSpeechAdapter : INativeSpeechAdapter
 {
     private readonly IHttpClientFactory _factory;
@@ -35,16 +35,18 @@ public sealed class OpenAiSpeechAdapter : INativeSpeechAdapter
     public IAsyncEnumerable<SpeechChunk> StreamNativeAsync(NativeSpeechRequest request, CancellationToken cancellationToken = default)
     { cancellationToken.ThrowIfCancellationRequested(); return StreamPayloadAsync(OpenAiSpeechPayload.Create(request, _options.Model), cancellationToken); }
 
-    /// <summary>逐次复制原始字节，正常 EOF/长度校验及全部传输资源释放成功后才发布完成块。</summary>
+    /// <summary>二进制按 HTTP 完成，SSE 按原生 done 完成；都须正常读尽并释放全部传输资源后才发布终态。</summary>
     private async IAsyncEnumerable<SpeechChunk> StreamPayloadAsync((JsonObject Body, string? Format, string PublicModel) payload,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        SpeechChunk terminal;
+        SpeechChunk? terminal = null;
+        var sse = payload.Body["stream_format"]?.GetValue<string>() == "sse";
         using (var client = _factory.CreateClient(_options.HttpClientName))
         using (var message = new HttpRequestMessage(HttpMethod.Post, _endpoint))
         {
             message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.ApiKey);
-            message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/octet-stream")); message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("audio/*"));
+            if (sse) message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
+            else { message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/octet-stream")); message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("audio/*")); }
             if (_options.Organization is not null) message.Headers.Add("OpenAI-Organization", _options.Organization);
             if (_options.Project is not null) message.Headers.Add("OpenAI-Project", _options.Project);
             message.Content = new StringContent(payload.Body.ToJsonString(), Encoding.UTF8, "application/json");
@@ -54,27 +56,35 @@ public sealed class OpenAiSpeechAdapter : INativeSpeechAdapter
                 || media.EndsWith("+json", StringComparison.OrdinalIgnoreCase) || media.StartsWith("text/", StringComparison.OrdinalIgnoreCase) && !media.Equals("text/event-stream", StringComparison.OrdinalIgnoreCase)))
                 throw new SpeechUpstreamException("OpenAI 语音返回了 HTTP/非音频错误正文。", (int)response.StatusCode,
                     await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false));
-            if (string.Equals(media, "text/event-stream", StringComparison.OrdinalIgnoreCase))
-                throw new NotSupportedException("当前二进制语音适配器不消费 SSE 事件。");
-            OpenAiSpeechTransport.ValidateContentType(media, payload.Format);
+            if (sse != string.Equals(media, "text/event-stream", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("语音响应传输类型与明确请求模式不一致。");
+            if (!sse) OpenAiSpeechTransport.ValidateContentType(media, payload.Format);
             var expected = response.Content.Headers.ContentLength;
             if (response.Content.Headers.Contains("Content-Length") && expected is null) throw new InvalidDataException("无效的原生 Content-Length。");
             var metadata = OpenAiSpeechTransport.Metadata(response, payload.PublicModel, _options.Model);
             long received = 0;
             await using (var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false))
             {
-                var buffer = new byte[_options.ReadBufferSize]; int read;
-                while ((read = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false)) != 0)
+                if (sse)
                 {
-                    cancellationToken.ThrowIfCancellationRequested(); received = checked(received + read);
-                    if (expected is not null && received > expected) throw new InvalidDataException("语音正文超过声明的 Content-Length。");
-                    yield return new SpeechChunk(buffer.AsMemory(0, read), false, OpenAiSpeechTransport.Frame(metadata, received, false), Id);
+                    await foreach (var chunk in OpenAiSpeechSse.ReadAsync(stream, metadata, Id, expected, cancellationToken).ConfigureAwait(false))
+                    { if (chunk.IsCompleted) terminal = chunk; else yield return chunk; }
                 }
-                cancellationToken.ThrowIfCancellationRequested();
-                if (received == 0 || expected is not null && received != expected) throw new InvalidDataException("语音正文为空或未完整接收声明长度。");
-                terminal = new(ReadOnlyMemory<byte>.Empty, true, OpenAiSpeechTransport.Frame(metadata, received, true), Id);
+                else
+                {
+                    var buffer = new byte[_options.ReadBufferSize]; int read;
+                    while ((read = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false)) != 0)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested(); received = checked(received + read);
+                        if (expected is not null && received > expected) throw new InvalidDataException("语音正文超过声明的 Content-Length。");
+                        yield return new SpeechChunk(buffer.AsMemory(0, read), false, OpenAiSpeechTransport.Frame(metadata, received, false), Id);
+                    }
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (received == 0 || expected is not null && received != expected) throw new InvalidDataException("语音正文为空或未完整接收声明长度。");
+                    terminal = new(ReadOnlyMemory<byte>.Empty, true, OpenAiSpeechTransport.Frame(metadata, received, true), Id);
+                }
             }
         }
-        cancellationToken.ThrowIfCancellationRequested(); yield return terminal;
+        cancellationToken.ThrowIfCancellationRequested(); yield return terminal ?? throw new InvalidDataException("语音响应没有完成。");
     }
 }

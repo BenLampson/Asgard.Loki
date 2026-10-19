@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Native OpenAI binary speech provider for Asgard.Loki.</Description>
+    <Description>Native OpenAI binary and SSE speech provider for Asgard.Loki.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Asgard.Loki.Audio/Asgard.Loki.Audio.csproj" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+    <Compile Include="../Shared/SseFrame.cs" Link="Internal/SseFrame.cs" />
+    <Compile Include="../Shared/SseReader.cs" Link="Internal/SseReader.cs" />
   </ItemGroup>
 </Project>

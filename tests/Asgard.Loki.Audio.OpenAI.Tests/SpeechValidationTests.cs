@@ -35,7 +35,7 @@ public sealed class SpeechValidationTests
     }
 
     /// <summary>不支持的传输模式在调用前明确拒绝，不偷偷改为二进制。</summary>
-    [Theory] [InlineData("sse")] [InlineData("future")]
+    [Theory] [InlineData("future")] [InlineData("SSE")]
     public void UnsupportedStreamMode_IsExplicit(string mode)
     {
         var request = SpeechFixture.Native(); request.Parameters["stream_format"] = JsonSerializer.SerializeToElement(mode);

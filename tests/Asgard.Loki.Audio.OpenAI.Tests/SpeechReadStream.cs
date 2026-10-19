@@ -6,6 +6,7 @@ internal sealed class SpeechReadStream(byte[] bytes) : Stream
     private int _offset;
     internal int FragmentSize { get; init; } = 3;
     internal bool FailRead { get; init; }
+    internal int? FailAfterBytes { get; init; }
     internal bool FailDispose { get; init; }
     internal Action? OnEof { get; init; }
     internal Func<CancellationToken, Task>? BeforeRead { get; init; }
@@ -21,7 +22,7 @@ internal sealed class SpeechReadStream(byte[] bytes) : Stream
     {
         Reads++; cancellationToken.ThrowIfCancellationRequested();
         if (BeforeRead is not null) await BeforeRead(cancellationToken);
-        if (FailRead && _offset > 0) throw new IOException("fixture read failure");
+        if (FailRead && _offset > 0 || FailAfterBytes is { } threshold && _offset >= threshold) throw new IOException("fixture read failure");
         if (_offset == bytes.Length) { Eof = true; OnEof?.Invoke(); return 0; }
         var count = Math.Min(Math.Min(FragmentSize, buffer.Length), bytes.Length - _offset);
         bytes.AsMemory(_offset, count).CopyTo(buffer); _offset += count; return count;

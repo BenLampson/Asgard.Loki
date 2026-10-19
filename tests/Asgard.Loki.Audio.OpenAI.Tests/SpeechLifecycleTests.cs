@@ -122,7 +122,7 @@ public sealed class SpeechLifecycleTests
         var handler = new StubHttpHandler((_, _) => Task.FromResult(SpeechFixture.Response(stream, media)));
         var adapter = new OpenAiSpeechAdapter(new SpeechTestFactory(handler), SpeechFixture.Options);
         var error = await Record.ExceptionAsync(() => SpeechFixture.Collect(adapter.StreamNativeAsync(SpeechFixture.Native(), TestContext.Current.CancellationToken)));
-        if (media == "text/event-stream") Assert.IsType<NotSupportedException>(error); else Assert.IsType<InvalidDataException>(error);
+        Assert.IsType<InvalidDataException>(error);
         Assert.Equal(0, stream.Reads); Assert.True(stream.Disposed);
     }
 

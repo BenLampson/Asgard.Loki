@@ -1,0 +1,6 @@
+[
+  {"type":"speech.audio.delta","audio":"AP+A","future":{"id":"一","enabled":false}},
+  {"type":"speech.future.metadata","future":[null,false,{"字幕":"你好"}]},
+  {"type":"speech.audio.delta","audio":"DQoqAP4=","future":null},
+  {"type":"speech.audio.done","usage":{"input_tokens":3,"output_tokens":5,"total_tokens":8,"future":{"audio":false}},"future":[null,"完成"]}
+]

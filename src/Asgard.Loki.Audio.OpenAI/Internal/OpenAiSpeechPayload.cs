@@ -31,7 +31,7 @@ internal static class OpenAiSpeechPayload
         return Validate(JsonSerializer.SerializeToNode(snapshot)!.AsObject(), request.Model, model);
     }
 
-    /// <summary>校验已知容器和二进制传输模式，不查询模型/声音列表或补造默认参数。</summary>
+    /// <summary>校验已知容器和原生传输模式，不查询模型/声音列表或补造默认参数。</summary>
     private static (JsonObject Body, string? Format, string PublicModel) Validate(JsonObject body, string publicModel, string model)
     {
         if (body["input"] is not JsonValue input || input.GetValueKind() != JsonValueKind.String) throw new ArgumentException("原生语音需要字符串 input。");
@@ -45,7 +45,7 @@ internal static class OpenAiSpeechPayload
         if (body["stream_format"] is { } stream)
         {
             if (stream.GetValueKind() != JsonValueKind.String) throw new ArgumentException("stream_format 必须为原生字符串或 null。");
-            if (stream.GetValue<string>() != "audio") throw new NotSupportedException("当前语音适配器只实现原生二进制 audio 传输，SSE 尚未接入。");
+            if (stream.GetValue<string>() is not ("audio" or "sse")) throw new NotSupportedException("语音传输模式必须为已实现的原生 audio 或 sse。");
         }
         string? format = body.ContainsKey("response_format") ? null : "mp3";
         if (body["response_format"] is { } formatValue)

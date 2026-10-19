@@ -7,17 +7,21 @@ namespace Asgard.Loki.Internal;
 /// <summary>内部按事件边界解析 SSE，供各供应商独立编译使用。</summary>
 internal static class SseReader
 {
-    /// <summary>保留多行正文、事件身份和重连提示，拒绝截断事件。</summary>
+    /// <summary>保留多行正文、事件身份和重连提示，拒绝截断事件；可选严格 UTF-8 不探测其他编码。</summary>
     internal static async IAsyncEnumerable<SseFrame> ReadAsync(Stream stream,
-        [EnumeratorCancellation] CancellationToken cancellationToken)
+        [EnumeratorCancellation] CancellationToken cancellationToken, bool strictUtf8 = false)
     {
-        using var reader = new StreamReader(stream, Encoding.UTF8, true, 4096, leaveOpen: true);
+        using var reader = new StreamReader(stream, strictUtf8 ? new UTF8Encoding(false, true) : Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: !strictUtf8, 4096, leaveOpen: true);
         var data = new StringBuilder();
         string? name = null;
         string? id = null;
         long? retry = null;
+        var firstLine = true;
         while (await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { } line)
         {
+            if (firstLine && strictUtf8 && line.StartsWith('\uFEFF')) line = line[1..];
+            firstLine = false;
             if (line.Length == 0)
             {
                 if (data.Length != 0)

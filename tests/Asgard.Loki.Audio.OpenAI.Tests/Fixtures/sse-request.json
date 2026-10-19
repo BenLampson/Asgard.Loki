@@ -1,0 +1,11 @@
+{
+  "input": "你好\nvoice",
+  "voice": { "id": "voice_fixture", "future": { "enabled": false, "value": null } },
+  "response_format": "pcm",
+  "stream_format": "sse",
+  "speed": 1.25,
+  "instructions": "Read softly.",
+  "future": [null, false, { "nested": [1, "二"] }],
+  "encoding_format": "unrelated-native-extension",
+  "model": "tts-upstream-fixture"
+}

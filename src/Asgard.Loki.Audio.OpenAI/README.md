@@ -1,6 +1,6 @@
 # Asgard.Loki.Audio.OpenAI
 
-Native OpenAI Speech binary transport for the independent Audio capability. Depends only on `Asgard.Loki.Audio` and `Microsoft.Extensions.Http`; no LLM, image, web server or background service.
+Native OpenAI Speech binary and SSE transport for the independent Audio capability. Depends only on `Asgard.Loki.Audio` and `Microsoft.Extensions.Http`; no LLM, image, web server or background service.
 
 ## Support matrix
 
@@ -11,11 +11,15 @@ Native OpenAI Speech binary transport for the independent Audio capability. Depe
 | MP3, Opus, AAC, FLAC, WAV, PCM | Opaque byte delivery; generic octet-stream and other audio MIME types also accepted |
 | Native omission, explicit null, false and nested fields | Retained; no default speed, format or stream_format injected |
 | Convenience `SpeechRequest` | Text/Voice/Format map to input/voice/response_format; Parameters retained; conflicting root fields rejected |
-| Speech SSE events, transcription, translation | Pending; explicit SSE requests/responses fail rather than being reinterpreted as audio |
+| Explicit `stream_format: "sse"` | Native speech.audio.delta Base64 audio and speech.audio.done usage; incremental consumption or aggregation |
+| Unknown SSE events/fields | Complete JSON and raw data text retained; unknown events emit metadata, never guessed audio/completion |
+| Transcription, translation | Pending; separate operations |
 | Voice creation/consent uploads, playback, decoding, resampling | Outside this implementation |
 | Real-provider verification | Not performed; offline HTTP tests only |
 
 Protocol references: [Speech API](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create) and [text-to-speech guide](https://developers.openai.com/api/docs/guides/text-to-speech). Model/account capabilities and range/length limits remain upstream decisions; the SDK does not infer them from model names or modify the request to bypass errors.
+
+The 2026-10-19 source review confirmed native SSE in the current create reference/OpenAPI. The indexed [legacy official Audio event reference](https://platform.openai.com/docs/api-reference/audio/json-object?lang=csharp) describes delta.audio and done.usage; its current rendered redirect does not expose those event definitions. This implementation targets those two documented event shapes and preserves extensions; it is not a live-account confirmation of current model behavior or every future event variant.
 
 ## Initialization
 
@@ -43,13 +47,14 @@ var result = await loki.Audio.Speech.GenerateNativeAsync(new NativeSpeechRequest
         ["input"] = JsonSerializer.SerializeToElement("Hello"),
         ["voice"] = JsonSerializer.SerializeToElement(new { id = customVoiceId }),
         ["response_format"] = JsonSerializer.SerializeToElement("pcm"),
+        ["stream_format"] = JsonSerializer.SerializeToElement("sse"),
         ["instructions"] = JsonSerializer.SerializeToElement("Speak softly.")
     }
 }, cancellationToken);
-// result.Audio contains unchanged bytes; result.Frames are SDK HTTP transport records.
+// result.Audio contains decoded audio bytes; SSE Frames retain each native event under "data".
 ```
 
-Use `StreamNativeAsync` to consume `SpeechChunk.Audio` incrementally, or `GenerateAsync` / `StreamAsync` with the existing convenience request. A native request has no universal Format field on its result. Convenience SampleRate and nonempty AudioParameters have no verified mapping here and fail explicitly; they are not silently discarded or renamed into another provider's dialect.
+Use `StreamNativeAsync` to consume `SpeechChunk.Audio` incrementally, or `GenerateAsync` / `StreamAsync` with the existing convenience request. Select SSE explicitly through native Parameters (also supported by the convenience request); omission/null keeps binary mode. The SDK never changes a model or drops fields to make a model accept SSE. A native request has no universal Format field on its result. Convenience SampleRate and nonempty AudioParameters have no verified mapping here and fail explicitly; they are not silently discarded or renamed into another provider's dialect.
 
 ## Transport and limits
 
@@ -57,9 +62,12 @@ Use `StreamNativeAsync` to consume `SpeechChunk.Audio` incrementally, or `Genera
 - Data chunks carry copied bytes, so subsequent reads cannot overwrite earlier chunks. ReadBufferSize (1 byte–1 MiB) controls a local read buffer, not media frames or a total-size limit. Aggregation buffers the complete audio; stream large outputs instead.
 - The empty-audio completed chunk appears only after reading and disposing stream/response/client successfully. Read errors, length mismatch, cancellation or disposal failure prevent it. Already emitted partial bytes cannot be recalled; aggregate generation fails without returning a successful result. Consumer early disposal closes transport without declaring success.
 - Each chunk's Data (and aggregate Frames) is explicitly marked `transport: "http_audio"`: public_model, target_model, HTTP status, multi-value response/content headers, cumulative bytes_received and completed. These records are SDK metadata, not upstream JSON, native usage, subtitles or SSE events. HTTP header names follow .NET normalization; values are retained. Request authentication is not included.
-- Missing/non-audio content types and known MIME/format contradictions fail. Generic octet-stream and unrecognized audio types carry no codec guarantee. HTTP failures and JSON/text error bodies retain the actual status and full text in SpeechUpstreamException; a success status carrying JSON/text is also rejected. No audio sniffing, decoding or text/Base64 conversion is performed.
+- SSE Data/Frames use `transport: "sse"`, the same target/HTTP metadata, original `data` JSON, exact `raw_data` text and `event_name`, `event_id`, `retry_ms`. Native fields are never inserted into or removed from the event JSON. Delta.audio is canonical standard Base64 decoded once into the corresponding chunk; original Base64 remains in Data. Unknown events carry empty Audio. Aggregation retains envelopes in original order, including unknown events. Both aggregation and streaming retain SSE identity. Base64 decoding does not decode a media codec.
+- SSE requires one native speech.audio.done, then normal event/UTF-8/length completion and transport disposal. Native usage requires its three nonnegative JSON integer token counts, without an Int64 cap or SDK recomputation; unknown usage fields remain unchanged. A valid done may confirm zero audio bytes. Comments after done are allowed; duplicate or later data events, partial event tails, invalid UTF-8/JSON, duplicate JSON members and generic [DONE] sentinels fail. The SDK neither promotes EOF/[DONE] to native success nor reconnects. Error envelopes/typed/error-named events retain raw text and actual HTTP status in SpeechUpstreamException, including errors arriving after a held done.
+- SSE framing uses the internal source-linked reader with strict UTF-8 (an initial UTF-8 BOM is accepted; other encoding detection/replacement is disabled). HTTP Content-Length counts original SSE bytes, never decoded audio length. Event name/type conflicts fail; default message events use the native JSON type. SSE framing identities follow standard last-value/persistence rules, with no automatic retry based on retry_ms. ReadBufferSize applies to binary reads; the SSE text parser has its own buffering and no configured event-size cap.
+- Missing/non-audio content types and known MIME/format contradictions fail; an explicit SSE request cannot silently fall back to binary, or vice versa. Generic octet-stream and unrecognized audio types carry no codec guarantee. HTTP failures and JSON/text error bodies retain the actual status and full text in SpeechUpstreamException; a success status carrying JSON/text is also rejected. No audio sniffing, codec decoding, resampling or binary-to-text conversion is performed.
 - API roots must be HTTP(S) absolute URIs without user-info, query or fragment. Organization, Project and named HTTP clients are optional target settings. No automatic retries, credential rotation, fallback, downloads or failover are configured by this adapter.
 
 ## Verification
 
-103 xUnit v3 offline tests use independent complete native/convenience request goldens, a terminal metadata golden, opaque bytes (including zero/invalid UTF-8 values) and substitute HTTP handlers/fragmented streams. They cover all six formats, unknown/null fields, custom voice objects, snapshots, raw error bodies, headers, lengths, partial/complete results, cancellation and early/error disposal. Byte fixtures are not valid media files and do not establish speech quality, model acceptance or container validity. No real key, network, Redis or GitHub Actions is used by these tests.
+173 xUnit v3 offline tests (103 binary/request cases plus 70 SSE cases) use independent complete native/convenience/SSE request goldens, full SSE events and terminal envelope snapshots, opaque bytes (including zero/invalid UTF-8 values) and substitute HTTP handlers/fragmented streams. They cover all six binary formats, unknown/null fields, custom voice objects, snapshots, raw errors, headers, lengths, framing/encoding, audio-event association, native usage, partial/complete results, cancellation and early/error disposal. Byte fixtures are not valid media files and do not establish speech quality, model acceptance or container validity. Aggregation retains full raw events and audio in memory; use streaming and discard processed chunks for large outputs. No real key, network, Redis or GitHub Actions is used by these tests.
