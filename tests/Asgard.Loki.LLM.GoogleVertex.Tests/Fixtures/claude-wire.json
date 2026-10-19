@@ -1,0 +1,16 @@
+{
+  "stream":false,
+  "anthropic_version":"vertex-2023-10-16",
+  "max_tokens":2048,
+  "system":[{"type":"text","text":"规则 é 😀","cache_control":{"type":"ephemeral"}}],
+  "messages":[
+    {"role":"user","content":[{"type":"text","text":"inspect"},{"type":"image","source":{"type":"base64","media_type":"image/png","data":"AAEC"}}]},
+    {"role":"assistant","content":[{"type":"thinking","thinking":"reasoning","signature":"opaque-thinking-signature"},{"type":"redacted_thinking","data":"opaque-redacted-data"},{"type":"tool_use","id":"tool_history","name":"lookup","input":{"value":9007199254740993}}]},
+    {"role":"user","content":[{"type":"tool_result","tool_use_id":"tool_history","is_error":true,"content":[{"type":"text","text":"原始错误"}]}]}
+  ],
+  "tools":[{"name":"lookup","description":"inspect","input_schema":{"type":"object","properties":{"value":{"type":"integer"}},"required":["value"],"additionalProperties":false},"cache_control":{"type":"ephemeral"}}],
+  "tool_choice":{"type":"auto","disable_parallel_tool_use":false},
+  "thinking":{"type":"enabled","budget_tokens":1024},
+  "output_config":{"format":{"type":"json_schema","schema":{"type":"object","properties":{"value":{"type":"integer"}},"required":["value"],"additionalProperties":false}}},
+  "future":{"integer":9007199254740993,"null":null,"false":false,"empty":[]}
+}

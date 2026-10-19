@@ -96,17 +96,19 @@ Requests are snapshotted before awaiting token acquisition. Conflicting unselect
 
 ## Vertex standard Gemini provider
 
-`LLM.GoogleVertex` owns the standard Vertex Gemini JSON/SSE transport through the existing `IGeminiAdapter` and `ILlmCredentialSupport`. It references only LLM and standard HTTP, with no dependency on `LLM.Google`, Azure, Conversion, a cloud identity SDK or another capability. It adds no new core protocol or canonical message model. Other Vertex dialects remain separate pending work.
+`LLM.GoogleVertex` owns standard Vertex Gemini JSON/SSE and Claude rawPredict JSON through the existing `IGeminiAdapter`, `IClaudeMessagesAdapter` and `ILlmCredentialSupport`. It references only LLM and standard HTTP, with no dependency on `LLM.Google`, Azure, Conversion, a cloud identity SDK or another capability. It adds no new core protocol or canonical message model. Other Vertex dialects remain separate pending work.
 
 ```mermaid
 classDiagram
 IGeminiAdapter <|.. GoogleVertexLlmProvider
+IClaudeMessagesAdapter <|.. GoogleVertexLlmProvider
 ILlmCredentialSupport <|.. GoogleVertexLlmProvider
 GoogleVertexLlmProvider --> GoogleVertexLlmOptions : snapshots local policy and optional quota project
 class GoogleVertexLlmOptions {
     +int MaximumBodyBytes
     +int MaximumBufferedTerminalEvents
     +int MaximumTrackedCandidates
+    +string? ClaudeAnthropicVersion
 }
 GoogleVertexLlmProvider ..> VertexStreamState : provider-local candidate and block lifecycle
 GoogleVertexLlmProvider --> IGoogleVertexLlmTokenSource : borrows
@@ -120,7 +122,15 @@ Only External credentials are supported. The application owns source login/scope
 
 Native request snapshots precede token acquisition; only routed model and method stream flags are removed from Gemini's body. Tools/IDs, thought signatures, media, schema/thinking settings, safety, cached-content references and unknown fields remain native. This does not promise that a selected Vertex model accepts Developer API-only fields; the SDK never silently strips IDs or weakens schemas. Complete JSON uses strict bounded UTF-8, duplicate/escape/length checks and waits for EOF, disposal and cancellation. Original native errors and prompt blocks remain distinguishable from answer success. No generation retry, rerouting, file fetching, tool execution or implicit history replay is introduced.
 
-150 independent offline cases cover complete wire/results and native SSE, both resource forms, stable identity recovery, authentication and resource faults. Provider-local SSE state retains original sparse/default candidate indices, signatures, tools and unknown data without aggregation. The first candidate finish or prompt block starts a bounded tail buffer through usage/metadata, EOF, length checks and disposal; incomplete/filtered/future reasons stay native, with no synthesized success. Missing/repeated/reopened candidates, changed response/model identity and late errors fail before held terminals. Precise ProtoJSON int32/enum representations avoid float rounding or normalization. Raw bytes are bounded before line parsing, and pending terminal/candidate counts have separate explicit limits. The new SSE binding identity requires fresh Sessions for the prior JSON-only checkpoint; core credential fingerprints and conversion-v24 are unchanged. Conversion remains a separate explicit decorator with existing strict loss rules; common text integration does not establish Vertex-specific tool/schema equivalence. Live cloud authentication/model verification, Claude rawPredict, Express API Key, MaaS Chat and Live/Interactions remain unimplemented or unverified. See the [provider matrix](../src/Asgard.Loki.LLM.GoogleVertex/README.md).
+150 Gemini offline cases cover complete wire/results and native SSE, both resource forms, stable identity recovery, authentication and resource faults. Provider-local SSE state retains original sparse/default candidate indices, signatures, tools and unknown data without aggregation. The first candidate finish or prompt block starts a bounded tail buffer through usage/metadata, EOF, length checks and disposal; incomplete/filtered/future reasons stay native, with no synthesized success. Missing/repeated/reopened candidates, changed response/model identity and late errors fail before held terminals. Precise ProtoJSON int32/enum representations avoid float rounding or normalization. Raw bytes are bounded before line parsing, and pending terminal/candidate counts have separate explicit limits. The new SSE binding identity requires fresh Sessions for the prior JSON-only checkpoint; core credential fingerprints and conversion-v24 are unchanged. Conversion remains a separate explicit decorator with existing strict loss rules; common text integration does not establish Vertex-specific tool/schema equivalence. Live cloud authentication/model verification, Claude SSE, Express API Key, MaaS Chat and Live/Interactions remain unimplemented or unverified. See the [provider matrix](../src/Asgard.Loki.LLM.GoogleVertex/README.md).
+
+### Vertex Claude complete JSON
+
+The same independent supplier implements the existing `IClaudeMessagesAdapter` complete JSON operation. The explicit caller protocol chooses `:rawPredict` with a full `projects/{project}/locations/{location}/publishers/anthropic/models/{model}` target, rather than guessing from model names or moving a Gemini Session. No new core protocol, provider dependency or universal cloud coordinator is added. Claude SSE remains a separately unsupported operation at this checkpoint.
+
+Only routed model, method stream mode and the selected body `anthropic_version` change. Tools and error-result association IDs, signed/redacted thinking, media, output schema/cache blocks, usage and unknown fields remain native. A supplied conflicting/null/wrong-type version fails before token acquisition; no first-party Anthropic Key/version header is added, and inherited versions/Keys are rejected before send. The nullable `ClaudeAnthropicVersion` option defaults through omission to the native Vertex version, and is omitted from binding serialization when null. An independent legacy-byte test proves that unchanged Gemini options retain the preceding provider identity; explicit version configuration participates in binding. Core credential fingerprint algorithms and conversion-v24 are unchanged.
+
+Both protocols reuse this supplier's borrowed token/factory/clock and bounded strict JSON transport, keeping complete-target/principal affinity, original HTTP/root errors, normal EOF/length/disposal and cancellation requirements. No generation retry, model mapping, history replay or tool execution is introduced. Forty additional offline cases verify complete Claude wire/results, version/resource/header boundaries, legacy Gemini identity, token-refresh target recovery, changed protocol/principal/version rejection, explicit common-text conversion and transport faults. Current Vertex coverage is 190 cases; real cloud authentication/model acceptance and Claude SSE remain unverified or unimplemented. See the [Claude provider section](../src/Asgard.Loki.LLM.GoogleVertex/README.md#native-claude-complete-json).
 
 ## 2. Registration and lifecycle
 

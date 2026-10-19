@@ -1,0 +1,15 @@
+{
+  "id":"msg-native",
+  "type":"message",
+  "role":"assistant",
+  "model":"native-claude-version",
+  "content":[
+    {"type":"thinking","thinking":"reasoning","signature":"opaque-output-signature"},
+    {"type":"redacted_thinking","data":"opaque-output-data"},
+    {"type":"tool_use","id":"tool_output","name":"lookup","input":{"value":9007199254740993}}
+  ],
+  "stop_reason":"tool_use",
+  "stop_sequence":null,
+  "usage":{"input_tokens":11,"output_tokens":7,"cache_creation_input_tokens":2,"cache_read_input_tokens":3},
+  "future":{"integer":9007199254740993,"null":null,"false":false}
+}

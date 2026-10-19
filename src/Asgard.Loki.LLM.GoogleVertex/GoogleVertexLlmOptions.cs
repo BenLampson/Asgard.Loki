@@ -11,4 +11,7 @@ public sealed record GoogleVertexLlmOptions
     public int MaximumBufferedTerminalEvents { get; init; } = 128;
     /// <summary>一次原生流跟踪的候选索引数上限；不重编号或补造候选。</summary>
     public int MaximumTrackedCandidates { get; init; } = 128;
+    /// <summary>Claude 正文版本；省略使用 vertex-2023-10-16，省略值不改变既有 Gemini 绑定身份。</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? ClaudeAnthropicVersion { get; init; }
 }
