@@ -33,10 +33,10 @@ public sealed class LlmProtocolStreamConverter
     {
         options = ConversionOptionsSnapshot.Capture(options);
         LlmProtocolConverter.Validate(new(), from, to, options);
-        var custom = context?.CustomToolCount > 0;
-        _source = new(from, custom ? 6L * context!.Options.MaxCustomToolInputBytes + 64 : null,
-            custom ? context!.Options.MaxToolConversionOutputCalls : null);
-        _target = new(to, custom ? context : null); _options = options; _identity = from == to; _context = context;
+        var mapped = context?.MappedToolCount > 0;
+        _source = new(from, mapped ? 6L * context!.Options.MaxCustomToolInputBytes + 64 : null,
+            mapped ? context!.Options.MaxToolConversionOutputCalls : null);
+        _target = new(to, mapped ? context : null); _options = options; _identity = from == to; _context = context;
     }
 
     /// <summary>转换中已发现的累计损耗诊断快照。</summary>

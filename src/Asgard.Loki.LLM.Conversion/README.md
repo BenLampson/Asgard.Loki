@@ -17,7 +17,8 @@ Every off-diagonal direction has independent request, complete-response, streami
 | --- | --- |
 | Content | Ordered user/assistant text, system instructions, inline Base64 images |
 | Functions | JSON Schema or Gemini typed `parameters` input; explicit typed target parameters; named/auto/required/none choice, original call IDs, arguments and associated results |
-| Custom tools | Opt-in Responses free-text custom → Chat/Claude/Gemini functions, complete/stream restoration and history replay; namespaces remain unsupported |
+| Custom tools | Opt-in Responses free-text custom → Chat/Claude/Gemini functions, complete/stream restoration and history replay |
+| Namespace tools | Separate opt-in flattens Responses namespace functions/custom tools; restores namespace/name/kind through complete calls, streams and replay; group descriptions require diagnosed loss consent |
 | Gemini results | Ordinary functions require JSON object text. Opt-in custom conversion explicitly wraps its arbitrary text result as `{"output": text}` |
 | Parameters | Temperature, top-p, explicit output limits; top-k and stop where the destination supports them |
 | Structured output | JSON Schema wrappers across all four protocols; JSON Schema bodies copied unchanged by default. Gemini `responseJsonSchema`, modern `responseFormat.text` and typed `responseSchema` input supported. Explicit `LegacySchema` writes representable typed output schemas. Plain JSON/text modes map between OpenAI and Gemini |
@@ -72,7 +73,7 @@ var options = new LlmConversionOptions
 // Set TargetThinkingBudgetTokens only for a target supporting manual thinking.
 ```
 
-Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v11`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
+Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v12`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
 
 ## Explicit free-text custom tools
 
@@ -98,9 +99,33 @@ Custom stream items use empty `input` at start, then `response.custom_tool_call_
 
 History replay preserves custom/function result kinds and consumes each ID once. Completed source item ID/status/`created_by` stay in `OriginalData`; foreign item IDs do not become another supplier's item identity. New local response item IDs and completed/incomplete status remain present. Custom results must be strings: Chat/Claude carry exact text, while Gemini receives the explicitly opted-in object `{"output": text}`. Ordinary result rules stay unchanged; rich arrays are pending.
 
-Only omitted `format` or `{"type":"text"}` is supported. Grammar/CFG, namespaces, program callers, async/deferred execution, mixed hosted tools and unknown custom fields hard-fail even with `AllowLoss`. Native calls and same-protocol copies preserve all original structures.
+Only omitted `format` or `{"type":"text"}` is supported. Namespaces require the independent option below. Grammar/CFG, program callers, async/deferred execution, mixed hosted tools and unknown custom fields hard-fail even with `AllowLoss`. Native calls and same-protocol copies preserve all original structures.
 
 Defaults bound the combined custom/ordinary name map to 128 entries, historical calls to 4096, returned calls to 128 and each decoded custom input/result to 1 MiB of strict UTF-8. Positive `MaxToolConversionMappings`, `MaxToolConversionHistoryCalls`, `MaxToolConversionOutputCalls` and `MaxCustomToolInputBytes` override these limits and enter binding identity. With an active custom context, each source-stream argument buffer is limited to `6 * MaxCustomToolInputBytes + 64` UTF-8 bytes, including ordinary functions in that stream; this allows JSON escaping and wrapper overhead without accepting unbounded padding. Counts are checked before aggregation, not just at EOF. Oversized/invalid text fails without truncation. Unmapped native/stateless streams keep their existing behavior. Typed Gemini function targets still reject unrepresentable closed-object constraints; use the default JSON Schema function target for this wrapper. Independent complete/stream goldens, public SDK replay/concurrency and rejection tests run offline; no live custom-tool verification was performed. See [OpenAI custom tools](https://developers.openai.com/api/docs/guides/function-calling#custom-tools) and [custom input events](https://developers.openai.com/api/reference/resources/responses/streaming-events#response.custom_tool_call_input.delta) for native contracts.
+
+## Explicit namespace tool identity
+
+Set `EnableNamespacedToolConversion = true` for Responses namespace tools on Chat/Claude/Gemini targets. This is independent of `EnableCustomToolConversion`: namespaced ordinary functions need only the namespace option; namespaced custom text tools need both. Native calls and same-protocol copies remain unchanged. Cross-protocol namespace data without its opt-in hard-fails even with `AllowLoss`.
+
+```csharp
+var options = new LlmConversionOptions
+{
+    EnableNamespacedToolConversion = true,
+    EnableCustomToolConversion = true, // only when custom text tools are present
+    DefaultMaxTokens = 512
+};
+// Use ConvertingLlmProvider, or the same request.Context complete/stream APIs above.
+```
+
+The request-local identity is `(namespace, name, kind)`, with a distinct root scope. Generated function names never concatenate/truncate the original identity or infer scope from a prefix. A root `crm__lookup`, `crm`/`lookup`, another namespace's `lookup`, and same-name function/custom tools remain distinct. Responses restore separate `namespace` and `name` fields and the original call ID. Ordinary function parameters and JSON Schema constraints retain their existing behavior; namespace functions are not decoded as custom wrappers. The model sees flattened generated names, so identity restoration does not promise identical model choices or preserve native grouping behavior.
+
+Nonempty namespace `description` has no equivalent group field in these targets. Strict mode fails with `namespace_description_not_representable` at the original description path. Only explicit `AllowLoss = true` permits omitting that group description, with the diagnostic and complete source retained; the SDK never silently concatenates it into function descriptions. Empty descriptions carry no group guidance. Namespace name/description/tools are validated, duplicate group names or duplicate same-kind child definitions fail, and nested namespaces, deferred/program/async tools and unknown fields remain unsupported.
+
+Global `auto`/`required`/`none` modes retain the complete tool set. A named choice can select an unambiguous declared root tool. The official named-choice structures currently expose name/type without a namespace selector: this converter rejects namespaced selectors or names matching a namespaced child instead of guessing a qualified spelling or resolving a collision. `allowed_tools` selection remains outside this slice. Native JSON APIs preserve those structures for callers using the actual upstream contract.
+
+History calls keep their original IDs and distinct namespaces, including tools no longer in current definitions. A result consumes one pending call ID exactly once; function-result `name` and `namespace` are optional consistency checks, never fallback lookup keys. Mismatched metadata, duplicate/orphan results, wrong kind and historical ID reuse fail even with loss consent. Custom results still follow their string-only contract and do not gain invented namespace metadata fields. Completed item metadata stays in `OriginalData`, and the caller's history is never mutated.
+
+`Context.MappedToolCount` counts each encoded identity once; `NamespacedToolCount` and `CustomToolCount` describe overlapping subsets. `MaxToolConversionMappings` bounds the combined identity table (including root ordinary names) and separately the declared namespace-group table, so empty groups cannot evade the limit. Historical/returned-call and raw stream argument bounds apply to any active mapped context, including namespace-only functions; the raw buffer cap still derives from `MaxCustomToolInputBytes`. Contexts remain immutable and request-local. No global registry, namespace authorization policy, tool executor or gateway service is added. Independent complete/17-event goldens and public SDK HTTP/SSE/replay/concurrency tests run offline; no live namespace conversion was verified. Contracts were checked against [namespace definitions](https://developers.openai.com/api/docs/guides/function-calling#defining-namespaces) and the [Responses reference](https://developers.openai.com/api/reference/typescript/resources/responses).
 
 ## Caller-declared target settings
 

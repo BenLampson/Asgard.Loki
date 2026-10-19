@@ -155,7 +155,7 @@ internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? c
             if (!change.Tool) events.Add(Event("response.content_part.added", index, new() { ["item_id"] = ItemId(index), ["content_index"] = 0,
                 ["part"] = new JsonObject { ["type"] = "output_text", ["text"] = "", ["annotations"] = new JsonArray() } }));
         }
-        var custom = change.Tool && context?.ResolveTool(Text(block["name"]), Text(block["id"])) is not null;
+        var custom = change.Tool && context?.ResolveTool(Text(block["name"]), Text(block["id"]))?.Identity.IsCustom == true;
         var delta = custom ? CustomToolTextCodec.Decode(Text(block["arguments"]), context!.Options.MaxCustomToolInputBytes)
             : change.Tool ? Text(block["arguments"]) : change.Delta;
         var extra = new JsonObject { ["item_id"] = ItemId(index), ["delta"] = delta };

@@ -18,16 +18,16 @@ internal static class CustomToolTextCodec
     /// <summary>必须是只有 input 字符串的对象；多余键和畸形数据不能丢弃后成功。</summary>
     internal static string Decode(string arguments, int maximumBytes)
     {
-        if (Utf8.GetByteCount(arguments) > 6L * maximumBytes + 64) CustomToolRequestCodec.Reject("$custom.arguments", "custom_tool_input_limit");
+        if (Utf8.GetByteCount(arguments) > 6L * maximumBytes + 64) ToolRequestCodec.Reject("$custom.arguments", "custom_tool_input_limit");
         var value = Object(JsonNode.Parse(arguments));
-        if (value.Count != 1 || !value.ContainsKey("input")) CustomToolRequestCodec.Reject("$custom.arguments", "invalid_custom_tool_arguments");
+        if (value.Count != 1 || !value.ContainsKey("input")) ToolRequestCodec.Reject("$custom.arguments", "invalid_custom_tool_arguments");
         if (value["input"] is not JsonValue scalar || !scalar.TryGetValue<string>(out _))
-            CustomToolRequestCodec.Reject("$custom.arguments.input", "invalid_custom_tool_arguments");
+            ToolRequestCodec.Reject("$custom.arguments.input", "invalid_custom_tool_arguments");
         var input = Text(value["input"]); Validate(input, maximumBytes); return input;
     }
     /// <summary>按 UTF-8 字节计数，拒绝无效 UTF-16 和越界文本，不截断或替换字符。</summary>
     internal static void Validate(string input, int maximumBytes)
     {
-        if (Utf8.GetByteCount(input) > maximumBytes) CustomToolRequestCodec.Reject("$custom.input", "custom_tool_input_limit");
+        if (Utf8.GetByteCount(input) > maximumBytes) ToolRequestCodec.Reject("$custom.input", "custom_tool_input_limit");
     }
 }

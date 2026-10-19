@@ -14,8 +14,9 @@ public static class LlmProtocolConverter
         if (from == to) return new(request, request, [], new(from, to, captured));
         if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
             throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
-        var context = CustomToolRequestCodec.Prepare(request, from, to, captured, out var prepared);
+        var context = ToolRequestCodec.Prepare(request, from, to, captured, out var prepared, out var toolDiagnostics);
         var doc = RequestReader.Read(prepared, from, to);
+        doc.Diagnostics.AddRange(toolDiagnostics);
         var target = RequestWriter.Write(doc, to, captured);
         ConversionJson.Copy(request, "stream", target, "stream");
         TargetSettingsValidator.Validate(target, to, captured.TargetSettings);
@@ -35,7 +36,7 @@ public static class LlmProtocolConverter
         return new(target, response, doc.Diagnostics);
     }
 
-    /// <summary>使用原请求的专属上下文反向还原完整响应，不从名称猜测 custom 工具。</summary>
+    /// <summary>使用原请求上下文还原完整工具身份，不从名称前缀猜测 namespace 或 custom 种类。</summary>
     public static LlmConversionResult ConvertResponse(JsonObject response, LlmConversionContext context)
     {
         ArgumentNullException.ThrowIfNull(context);

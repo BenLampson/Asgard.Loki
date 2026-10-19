@@ -21,7 +21,9 @@ public sealed record LlmConversionOptions
     public LlmConversionTargetSettings? TargetSettings { get; init; }
     /// <summary>显式启用 Responses 自由文本 custom 到普通函数的可逆完整/流式调用转换。</summary>
     public bool EnableCustomToolConversion { get; init; }
-    /// <summary>启用可逆工具编码时，单次请求的 custom/普通名称表总上限。</summary>
+    /// <summary>显式展开 Responses namespace 工具并使用请求上下文还原其原始身份。</summary>
+    public bool EnableNamespacedToolConversion { get; init; }
+    /// <summary>启用可逆工具编码时，完整工具身份表及独立 namespace 分组表的容量上限。</summary>
     public int MaxToolConversionMappings { get; init; } = 128;
     /// <summary>启用可逆工具编码时，单次请求保留的历史调用 ID 总上限。</summary>
     public int MaxToolConversionHistoryCalls { get; init; } = 4096;

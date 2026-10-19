@@ -91,7 +91,7 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
             return index;
         }
         if (type == "call" && maximumToolCalls is { } maximum && ++_toolCount > maximum)
-            CustomToolRequestCodec.Reject("$event.tool_calls", "custom_tool_output_limit");
+            ToolRequestCodec.Reject("$event.tool_calls", "custom_tool_output_limit");
         index = _message.Blocks.Count; _indices.Add(key, index);
         _message.Blocks.Add(new() { ["type"] = type, [type == "text" ? "text" : "arguments"] = "" });
         return index;
@@ -130,7 +130,7 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
     {
         if (maximumArgumentBytes is not { } maximum) return;
         var bytes = StrictUtf8.GetByteCount(value) + (append ? _argumentSizes.GetValueOrDefault(index) : 0L);
-        if (bytes > maximum) CustomToolRequestCodec.Reject("$event.arguments", "custom_tool_input_limit");
+        if (bytes > maximum) ToolRequestCodec.Reject("$event.arguments", "custom_tool_input_limit");
         _argumentSizes[index] = bytes;
     }
     /// <summary>拼接字符串增量。</summary>
