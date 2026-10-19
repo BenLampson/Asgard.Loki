@@ -8,10 +8,12 @@ namespace Asgard.Loki.LLM.Conversion.Tests;
 internal static class GeminiCandidateFixtures
 {
     /// <summary>每次读取均返回独立 JSON，不让变异测试修改共享预期。</summary>
-    internal static JsonObject Case(string name)
+    internal static JsonObject Case(string name) => Read("gemini-chat-complete", name);
+    /// <summary>在同一独立样本目录读取已提交的请求或反向响应。</summary>
+    internal static JsonObject Read(string file, string name)
     {
         var assembly = typeof(GeminiCandidateFixtures).Assembly;
-        var resource = assembly.GetManifestResourceNames().Single(n => n.EndsWith(".candidates.gemini-chat-complete.json", StringComparison.Ordinal));
+        var resource = assembly.GetManifestResourceNames().Single(n => n.EndsWith(".candidates." + file + ".json", StringComparison.Ordinal));
         using var stream = assembly.GetManifestResourceStream(resource)!;
         var root = JsonNode.Parse(stream)!.AsObject();
         return root["cases"]!.AsArray().Select(n => n!.AsObject()).Single(n => n["name"]!.GetValue<string>() == name);

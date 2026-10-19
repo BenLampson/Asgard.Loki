@@ -9,7 +9,7 @@ A modular .NET 10 / C# 14 client library for model APIs. Use one `LokiClient` an
 
 The architecture contract, UML, dependency rules and provider extension requirements live in [docs/architecture.md](docs/architecture.md). All namespaces start with `Asgard`.
 
-The New API comparison is limited to [source-proven SDK gaps](docs/model-call-roadmap.md#scope-correction-after-the-source-recheck-2026-10-20); newer supplier features and exhaustive conversion combinations are optional extensions. Complete [Gemini → Chat candidate-array conversion](src/Asgard.Loki.LLM.Conversion/README.md#complete-gemini--chat-candidate-arrays) now preserves source indices/order, independent tools/finishes/citations and shared usage. Multi-candidate streams, inverse mappings and request count controls remain separate work.
+The New API comparison is limited to [source-proven SDK gaps](docs/model-call-roadmap.md#scope-correction-after-the-source-recheck-2026-10-20); newer supplier features and exhaustive conversion combinations are optional extensions. Complete [Gemini ↔ Chat candidate-array conversion](src/Asgard.Loki.LLM.Conversion/README.md#complete-gemini--chat-candidate-arrays) now preserves source indices/order, independent tools/finishes/citations and shared usage. Gemini `candidateCount` → Chat `n` now works through the existing fixed-Chat SDK, alongside reasoning/Schema settings. Multi-candidate streams and the opposite request-count mapping remain separate work.
 
 ## Supported capabilities
 

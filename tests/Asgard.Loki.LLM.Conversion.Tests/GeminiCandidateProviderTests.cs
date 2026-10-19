@@ -70,7 +70,7 @@ public sealed class GeminiCandidateProviderTests
         GeminiCandidateFixtures.Equal(source["source"]!, result.OriginalData);
     }
 
-    /// <summary>本轮没有添加候选数量请求控制，仍明确拒绝未实现的 n 设置。</summary>
+    /// <summary>尚未声明 Chat n 到 Gemini 候选数量，不能自动放行该反向设置。</summary>
     [Fact]
     public async Task UnsupportedRequestCount_FailsBeforeHttp()
     {

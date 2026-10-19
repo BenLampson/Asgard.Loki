@@ -119,6 +119,7 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        _ = GeminiCandidateCount.Read(request, source, _protocol, isStream: true);
         var converted = LlmProtocolConverter.ConvertRequest(request, source, _protocol, _options);
         var payload = JsonNode.Parse(converted.Data.GetRawText())!.AsObject();
         var converter = new LlmProtocolStreamConverter(converted.Context!);

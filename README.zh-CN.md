@@ -1,6 +1,6 @@
 # Asgard.Loki
 
-New API 对齐范围已[收紧为有源码依据的 SDK 缺口](docs/model-call-roadmap.md#scope-correction-after-the-source-recheck-2026-10-20)，供应商额外能力与穷举协议组合不再自动进入补齐队列。完整 Gemini → Chat 响应现保留全部候选的原始索引及顺序，各候选的工具、引用和终态独立，usage 只转换一次；候选数量请求控制、反向多候选及多候选流式转换仍待单独核对。
+New API 对齐范围已[收紧为有源码依据的 SDK 缺口](docs/model-call-roadmap.md#scope-correction-after-the-source-recheck-2026-10-20)，供应商额外能力与穷举协议组合不再自动进入补齐队列。完整 Gemini ↔ Chat 响应现保留全部候选的原始索引及顺序，各候选的工具、引用和终态独立，usage 只转换一次。Gemini candidateCount → Chat n 已支持完整 SDK 调用，可与推理和 Schema 设置并用；反向数量请求、多候选流式仍未实现。
 
 [English](README.md) | **简体中文**
 

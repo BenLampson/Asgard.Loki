@@ -18,8 +18,10 @@ public static class LlmProtocolConverter
         if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
             throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
         if (to == LlmProtocol.BedrockConverse) return ConverseTextConversion.Request(request, from, captured);
+        var candidateCount = GeminiCandidateCount.Read(request, from, to);
+        var candidateRequest = GeminiCandidateCount.Prepare(request, candidateCount);
         var searchOutputDiagnostics = HostedSearchOutput.Inspect(request, from);
-        var search = HostedSearchCodec.Prepare(request, from, to, captured, out var searchPrepared);
+        var search = HostedSearchCodec.Prepare(candidateRequest, from, to, captured, out var searchPrepared);
         var context = ToolRequestCodec.Prepare(searchPrepared, from, to, captured, out var prepared, out var toolDiagnostics);
         var doc = RequestReader.Read(prepared, from, to, captured);
         doc.Diagnostics.AddRange(toolDiagnostics);
@@ -27,12 +29,13 @@ public static class LlmProtocolConverter
         var target = RequestWriter.Write(doc, to, captured);
         HostedSearchCodec.Write(target, search, to, captured, doc);
         ConversionJson.Copy(request, "stream", target, "stream");
+        if (candidateCount is { } count) target["n"] = count;
         TargetSettingsValidator.Validate(target, to, captured.TargetSettings);
         Enforce(doc, captured);
         return new(target, request, doc.Diagnostics, context);
     }
 
-    /// <summary>转换完整响应并保留源 JSON；Gemini 到 Chat 支持候选数组，其他跨协议目标仍为单候选。</summary>
+    /// <summary>转换完整响应并保留源 JSON；Gemini 与 Chat 之间支持候选数组，其他跨协议目标仍为单候选。</summary>
     public static LlmConversionResult ConvertResponse(JsonObject response, LlmProtocol from, LlmProtocol to, LlmConversionOptions? options = null)
     {
         var captured = ConversionOptionsSnapshot.Capture(options);
@@ -42,7 +45,8 @@ public static class LlmProtocolConverter
         if (to == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(from))
             throw new NotSupportedException("文本协议响应尚不能构造包含原生指标的 Converse 响应；不会补造 latencyMs。");
         if (BedrockConversion.IsBedrock(from)) return BedrockConversion.Response(response, captured);
-        if (from == LlmProtocol.Gemini && to == LlmProtocol.ChatCompletions) return GeminiChatResponseConversion.Convert(response, captured);
+        if (from == LlmProtocol.Gemini && to == LlmProtocol.ChatCompletions || from == LlmProtocol.ChatCompletions && to == LlmProtocol.Gemini)
+            return CandidateResponseConversion.Convert(response, from, to, captured);
         var mapGrounding = from == LlmProtocol.Gemini && to is LlmProtocol.ChatCompletions or LlmProtocol.Responses
             && captured.OpenAiCitationIndexUnit != LlmCitationIndexUnit.Unspecified;
         var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from, mapUrlCitations: true, mapGeminiGrounding: mapGrounding);
