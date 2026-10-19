@@ -7,6 +7,7 @@ OpenAI LLM provider for Asgard.Loki.
 | Chat Completions | Yes | SSE |
 | Responses creation / continuation | Yes | SSE |
 | Native Responses compaction | Yes, explicit target feature | No |
+| Native Responses WebSocket | Explicit duplex connection | Native JSON events; named lanes |
 
 Create `OpenAiLlmProvider(IHttpClientFactory)` and register it in `LlmOptions.Providers`. Configure targets with a `/v1/` base address, actual model and credential. The default provider ID is `openai`; the named HTTP client is `Asgard.Loki.LLM.OpenAI`.
 
@@ -35,8 +36,46 @@ First binding filters targets by the explicit feature; an existing Session alway
 
 Compaction tests exercise the public SDK with substitute HTTP handlers, complete-window replay, Session ownership, failed and cancelled calls and concurrent/stale first-binding decisions. No live OpenAI compaction or account entitlement verification has been performed.
 
-Native Responses WebSocket is still not wired into this provider's public call surface. A separate transport checkpoint adds `IOpenAiResponsesWebSocketFactory` and internal bounded UTF-8 JSON framing. The factory is borrowed; the connection owns the socket returned by `ConnectAsync`. The default factory uses a single `ClientWebSocket` handshake without retry. A custom factory must change its `BindingIdentity` when its configuration semantics change. Provider integration and response/stream lifecycle validation follow in the next checkpoint, so the support table above remains unchanged.
+## Native Responses WebSocket
 
-Offline in-memory WebSocket tests cover byte fragmentation (including split Unicode), strict UTF-8, binary/malformed/oversized messages, inclusive size boundaries, input snapshots, serialized writes, cancellation, close interruption and socket ownership. A cancelled or failed operation that has entered socket IO makes the connection unusable; queued cancellation is not replayed. These tests do not connect to OpenAI or establish entitlement. Automatic history reconstruction and durable replay are not implemented.
+The provider implements `IResponsesWebSocketAdapter`. Set `Protocols = LlmProtocol.Responses` and `Features = LlmTargetFeatures.ResponsesWebSocket` on a native target. Enable compaction independently with the flag combination if needed. Existing Sessions keep the complete target; other providers and conversion decorators do not implicitly gain this transport. The original three-parameter HTTP constructor remains available with its previous default binding identity.
+
+```csharp
+var provider = new OpenAiLlmProvider(httpFactory); // default ClientWebSocket factory
+// Optional explicit limits and borrowed custom handshake/proxy/header factory:
+var customized = new OpenAiLlmProvider(httpFactory,
+    new OpenAiResponsesWebSocketOptions
+    {
+        MaximumMessageBytes = 16 * 1024 * 1024,
+        MaximumPendingRequests = 256,
+        MaximumTrackedResponses = 4096
+    }, webSocketFactory: customFactory);
+```
+
+The target's HTTP(S) base path becomes WS(S) and ends in `/responses`; non-default ports are preserved. Each handshake uses that target's bearer credential. The named HTTP client's headers/proxy/resilience configuration is not automatically copied to `ClientWebSocket`; provide an `IOpenAiResponsesWebSocketFactory` for organization/project/custom headers or transport settings. The factory is borrowed; the returned socket belongs to the connection. Its `BindingIdentity` and non-default resource options participate in provider binding identity. Changing custom configuration invalidates old bindings. The default factory makes one handshake and disposes temporary sockets on failure; no retry or HTTP fallback occurs.
+
+```csharp
+await using var connection = await loki.LLM.Responses.OpenWebSocketAsync(
+    publicModel, new LlmCallOptions { SessionId = sessionId }, cancellationToken);
+await connection.SendAsync(new JsonObject
+{
+    ["type"] = "response.create", ["stream_id"] = "main",
+    ["input"] = "Explain this code", ["store"] = false
+}, cancellationToken);
+await foreach (var item in connection.ReadEventsAsync(cancellationToken))
+{
+    ConsumeNativeEvent(item); // dispatch by JSON type/stream_id and inspect failures
+    if (item.Type is "response.completed" or "response.failed" or "response.incomplete" or "error")
+        break; // this example sent one request; multiplexed calls must drain every lane
+}
+```
+
+Use one reader and explicit caller sends. `response.create` omits the model or supplies the public alias; the SDK sets the fixed actual model. Unknown JSON, opaque compaction/reasoning, native tool/call IDs, usage and errors stay unchanged. HTTP-only `stream`/`background` fields are rejected. Different named lanes can interleave; same-lane submissions stay associated with their own response IDs, queued/active states and optional sequence numbers. No model-specific scheduler or tool execution loop is introduced.
+
+The connection distinguishes completed, failed and incomplete terminals, pending requests, control errors and connection-level errors. Duplicate/mismatched response identities, output after a terminal, inconsistent native status, backward sequences and closure before all generations finish fail explicitly. Unknown future events are preserved, including events with names resembling known output prefixes. An uncorrelated control error is never evidence that a generation finished. Native `response.steer` acknowledgement is not completion: automatic successors and explicit continuations after `response.steer.pending` are tracked; failed steering can legitimately omit its ID before acceptance. Returned required-input/tool IDs are not executed or filled by the SDK.
+
+Limits are client memory policies, not upstream model capabilities. Messages are bounded in UTF-8 bytes, pending submissions in count, and remembered response identities in count. Raising them changes binding identity. On a response-identity limit error the connection aborts; the caller chooses whether and how to open another connection with suitable context. The SDK neither reconstructs history nor replays requests. Server connection/lane limits remain native errors. A socket/cache cannot restore connection-local server state; close/dispose belongs to the caller.
+
+Offline in-memory WebSocket tests cover handshake address/authentication, public SDK Session ownership, multi-lane/FIFO transcripts, steering acceptance/rejection/automatic successors/required-input continuation, failure and truncated terminals, identity/sequence/status corruption, resource limits, byte fragmentation (including split Unicode), strict UTF-8, input snapshots, cancellation, close interruption and socket ownership. A cancelled or failed operation that has entered socket IO makes the connection unusable; queued cancellation is not replayed. No live OpenAI WebSocket, compaction or account-entitlement check has been performed. References: [WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode), [native event schemas](https://developers.openai.com/api/reference/resources/responses/websocket-events), [steering lifecycle](https://developers.openai.com/api/docs/guides/steering). Automatic history reconstruction and durable replay are not implemented.
 
 For OpenAI Images Generations, install the independent `Asgard.Loki.Image.OpenAI` package. This LLM provider does not pull in image or audio dependencies.

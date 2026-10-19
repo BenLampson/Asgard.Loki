@@ -14,7 +14,7 @@ The architecture contract, UML, dependency rules and provider extension requirem
 | Capability | Provider package | Implemented APIs | Streaming |
 | --- | --- | --- | --- |
 | LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat Completions; Responses creation and continuation | SSE |
-| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation/continuation; explicit native compaction | SSE for generation; JSON for compaction |
+| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation/continuation; explicit native compaction and WebSocket | SSE; JSON compaction; native WebSocket events |
 | LLM | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages | SSE |
 | LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
@@ -24,7 +24,7 @@ The architecture contract, UML, dependency rules and provider extension requirem
 
 Native requests preserve unknown JSON parameters. Native results retain complete upstream JSON, including tools, reasoning, usage, errors and future events. Public model aliases and actual upstream models are exposed separately. Optional conversion requires explicit registration, rejects unsupported fields by default, and retains upstream JSON and diagnostics separately from the converted result. See the [conversion support matrix](src/Asgard.Loki.LLM.Conversion/README.md).
 
-Native Responses WebSocket transport, image edits/variations, speech recognition, music generation, video generation, billing and automatic request replay are **not implemented**. Supported model names and account entitlements are configured by the caller and validated by the actual provider; there is no hard-coded model catalog.
+Image edits/variations, speech recognition, music generation, video generation and automatic request replay are **not implemented**. Gateway administration and billing are outside this SDK. Supported model names and account entitlements are configured by the caller and validated by the actual provider; there is no hard-coded model catalog.
 
 ## Packages and dependencies
 
@@ -173,6 +173,10 @@ var continued = await loki.LLM.Responses.CreateAsync(new ResponseRequest
 
 Compaction is one explicit non-streaming request to `/responses/compact`; the SDK does not trigger it automatically or prune/decrypt the returned window. The optional `PreviousResponseId` uses the same Session ownership checks as creation. A compaction result ID is not registered as a generated response ID for continuation. Calls remain bound to the complete original target, and unsupported features never cause rerouting or retries. Enabling/changing a target feature changes its binding fingerprint; default `Features.None` preserves existing basic-target serialization. See the [OpenAI provider guide](src/Asgard.Loki.LLM.OpenAI/README.md).
 
+### Native Responses WebSocket
+
+Enable `LlmTargetFeatures.ResponsesWebSocket` on a native OpenAI Responses target, then call `loki.LLM.Responses.OpenWebSocketAsync(publicModel, callOptions, cancellationToken)`. The caller owns the connection, sends native JSON and reads all relevant lane/terminal events. Native `stream_id`, tools, opaque state, unknown fields and errors are retained. Session and response ownership stay bound to the original complete target. No reconnect, retry, tool execution or history replay is performed. Initialization, custom factory/resource limits and a complete usage example are in the [OpenAI provider guide](src/Asgard.Loki.LLM.OpenAI/README.md#native-responses-websocket). This support is verified offline with in-memory sockets; no live OpenAI verification has been performed.
+
 ## Session storage
 
 `DistributedCacheLlmSessionStore` depends on Microsoft's `IDistributedCache`; Redis is one implementation. It does not create or own the cache connection.
@@ -269,13 +273,13 @@ Local protocol tests are not live-provider verification. Real account permission
 
 The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
 
-The offline suite passes 697 tests, including 313 conversion, 150 OpenAI provider, 93 Ark provider, 22 Claude, 36 Gemini and 65 LLM core tests. Conversion regressions cover nested field loss, pending tool/result association, ID collisions, complete and truncated stream lifecycles, done/final snapshot consistency and cache/usage accounting. The original OpenAI/Ark protocol suites remain covered alongside native compaction and feature-binding tests. Standard-Ark live verification with `doubao-seed-evolving` covers Chat/Responses JSON and SSE, tool calls and result return, strict JSON Schema, thinking on/off, actual output truncation, response continuation and opaque reasoning replay. **Both strict `tool_choice=none` cases currently fail:** upstream emits a function call although the final request correctly contains `none`. These failures remain visible. See the [protocol and parameter verification record](docs/llm-parameter-verification.md) for evidence and limits; OpenAI, Claude, Gemini and explicit conversion have offline coverage only.
+The offline suite passes 737 tests, including 313 conversion, 190 OpenAI provider, 93 Ark provider, 22 Claude, 36 Gemini and 65 LLM core tests. Conversion regressions cover nested field loss, pending tool/result association, ID collisions, complete and truncated stream lifecycles, done/final snapshot consistency and cache/usage accounting. The original OpenAI/Ark protocol suites remain covered alongside native compaction and feature-binding tests. Standard-Ark live verification with `doubao-seed-evolving` covers Chat/Responses JSON and SSE, tool calls and result return, strict JSON Schema, thinking on/off, actual output truncation, response continuation and opaque reasoning replay. **Both strict `tool_choice=none` cases currently fail:** upstream emits a function call although the final request correctly contains `none`. These failures remain visible. See the [protocol and parameter verification record](docs/llm-parameter-verification.md) for evidence and limits; OpenAI, Claude, Gemini and explicit conversion have offline coverage only.
 
 Use `pwsh -File eng/Test-Live.ps1 -Suite Parameters` or `-Suite All` for expanded checks, or add `-Scenario Structured`, `Tools`, `ToolChoice`, `Reasoning`, `Limits` or `Replay` to select a group. Default smoke makes five calls; Parameters plans 26 and All 31, with a hard limit of 32 per process. The expanded suites exit nonzero while the known tool-choice failure persists. The fixture uses `MemoryDistributedCache`; Redis cross-process verification remains separate.
 
 ## Contributing and releases
 
-The [model-call roadmap](docs/model-call-roadmap.md) was rechecked against New API `058c8231` on 2026-10-19. Native Claude/Gemini, the initial reasoning/JSON Schema conversion slice and OpenAI compaction are implemented. Next: working Responses WebSocket transport (contracts, Session enforcement and internal framing exist; provider integration is pending), remaining Schema/tool/media conversion, independent Embedding/Rerank packages, then image edits, audio, cloud suppliers, Realtime and Video. The plan separates confirmed gaps, conditional supplier coverage and SDK exclusions, with small test-backed Git checkpoints. Gateway administration, billing, tool execution and task hosting remain outside this SDK.
+The [model-call roadmap](docs/model-call-roadmap.md) was rechecked against New API `058c8231` on 2026-10-19. Native Claude/Gemini, the initial reasoning/JSON Schema conversion slice and OpenAI compaction are implemented. Native OpenAI Responses WebSocket now includes factory/framing, multi-lane/steering/terminal validation and Session ownership. Next: remaining Schema/tool/media conversion, independent Embedding/Rerank packages, then image edits, audio, cloud suppliers, Realtime and Video. The plan separates confirmed gaps, conditional supplier coverage and SDK exclusions, with small test-backed Git checkpoints. Gateway administration, billing, tool execution and task hosting remain outside this SDK.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SECURITY.md](SECURITY.md) for reporting vulnerabilities, and [docs/releasing.md](docs/releasing.md) for the package release checklist. CI runs on Windows and Linux, and Dependabot checks NuGet dependencies and GitHub Actions weekly.
 

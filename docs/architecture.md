@@ -151,7 +151,7 @@ Compaction sends one native `/responses/compact` request, with model mapping and
 
 `Features.None` is omitted from target JSON so adding this optional contract does not change the default basic-target fingerprint representation. Non-default feature declarations are fingerprinted; changing them invalidates affected bindings. Source compaction items remain hard failures in cross-protocol conversion even with `AllowLoss`, while native requests and same-protocol copies retain them.
 
-Responses WebSocket is an optional extension. `IResponsesWebSocketAdapter` opens an `IResponsesWebSocketConnection` exposing metadata, raw JSON send, native `ResponseEvent` enumeration, explicit close and async disposal. `IResponsesClient.OpenWebSocketAsync` defaults to unsupported so existing custom clients remain valid. The built-in client now resolves targets explicitly declaring `LlmTargetFeatures.ResponsesWebSocket`, validates the returned connection identity, and wraps the caller-supplied native adapter. Bundled providers still do not implement WebSocket transport at this checkpoint.
+Responses WebSocket is an optional extension. `IResponsesWebSocketAdapter` opens an `IResponsesWebSocketConnection` exposing metadata, raw JSON send, native `ResponseEvent` enumeration, explicit close and async disposal. `IResponsesClient.OpenWebSocketAsync` defaults to unsupported so existing custom clients remain valid. The built-in client resolves targets explicitly declaring `LlmTargetFeatures.ResponsesWebSocket`, validates the returned connection identity, and wraps the native adapter. `LLM.OpenAI` implements this extension; other providers and conversion decorators do not implicitly advertise it.
 
 The internal bound connection never invokes first-binding resolution after opening: each send verifies the original binding still exists and matches exactly. A missing/replaced Session fails rather than binding a live socket to a new target. The handshake is also checked after its await; invalidated or mismatched connections are disposed. Known response lifecycle IDs are registered under the original Session after revalidation; creation/steering continuation and explicit cancellation response IDs must belong to it. The wrapper serializes writes, permits one active reader, preserves stream IDs and unknown/native JSON, and maps only the public alias on `response.create` to the fixed actual model. It rejects HTTP-only `stream`/`background` fields without silently removing them. Native transport adapters own framing, protocol terminal validation and socket resources; factories/stores remain borrowed. Socket lifetime is separate from logical Session lifetime, with no automatic reconnect, retry or event replay.
 
@@ -178,7 +178,9 @@ BoundResponsesWebSocketConnection --> IResponsesWebSocketConnection : wraps nati
 BoundResponsesWebSocketConnection --> ILlmSessionStore : validate existing binding
 ```
 
-The next provider-local transport checkpoint introduces `IOpenAiResponsesWebSocketFactory` in `LLM.OpenAI`, with a default `ClientWebSocket` factory and internal `ResponsesWebSocketTransport`. Only the owning provider and its offline tests use these byte/frame details. Messages have explicit byte limits; fragmented text is assembled and strictly validated as UTF-8 before JSON parsing. Socket IO failures/cancellation abort the connection without retry; explicit close interrupts pending IO and disposal owns the returned socket, never the borrowed factory. This foundation alone does not enable the provider's WebSocket adapter or claim native lifecycle support. No new package dependency or cross-capability transport abstraction is introduced.
+`LLM.OpenAI` owns `IOpenAiResponsesWebSocketFactory`, its default `ClientWebSocket` factory, internal `ResponsesWebSocketTransport`, native connection and protocol state. Only the owning provider and its offline tests use these byte/frame/state details. Messages have explicit byte limits; fragmented text is assembled and strictly validated as UTF-8 before JSON parsing. Socket IO failures/cancellation abort the connection without retry; explicit close interrupts pending IO and disposal owns the returned socket, never the borrowed factory. No new package dependency or cross-capability transport abstraction is introduced.
+
+`OpenAiResponsesWebSocketOptions` bounds message bytes, pending submissions and remembered response identities. Options are snapshotted; custom factory identity/options enter provider binding identity. Default configuration preserves the existing HTTP constructor signature and basic binding identity. HTTP client headers/settings are separate from the WebSocket factory's handshake configuration. Protocol state associates queued/active/terminal responses by lane and response ID, retains request event-ID correlation after creation, and checks real sequences/status/closure. Steering acceptance is not a generated response: native automatic successors and caller-supplied required-input continuations are correlated without sending anything automatically. Unallocated steering failures can omit IDs. Native unknown events are preserved; recognized output types are an explicit set rather than a prefix heuristic. State is bounded and never contains a tool executor, history reconstruction service or global scheduler.
 
 ```mermaid
 classDiagram
@@ -186,6 +188,13 @@ DefaultResponsesWebSocketFactory ..|> IOpenAiResponsesWebSocketFactory
 IOpenAiResponsesWebSocketFactory --> WebSocket : transfers socket ownership
 ResponsesWebSocketTransport *-- WebSocket
 ResponsesWebSocketTransport --> JsonElement : bounded native message
+OpenAiLlmProvider ..|> IResponsesWebSocketAdapter
+OpenAiLlmProvider --> IOpenAiResponsesWebSocketFactory : borrows
+OpenAiLlmProvider --> OpenAiResponsesWebSocketConnection : creates
+OpenAiResponsesWebSocketConnection ..|> IResponsesWebSocketConnection
+OpenAiResponsesWebSocketConnection *-- ResponsesWebSocketTransport
+OpenAiResponsesWebSocketConnection *-- ResponsesWebSocketState
+ResponsesWebSocketState --> OpenAiResponsesWebSocketOptions
 ```
 
 ### Explicit conversion extension
