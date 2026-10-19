@@ -28,7 +28,7 @@ internal sealed class OllamaGenerateClient(LlmInvocation invocation) : IOllamaGe
     private static JsonObject Payload(OllamaGenerateRequest request, bool stream)
     {
         ArgumentNullException.ThrowIfNull(request); LlmInvocation.ValidateParameters(request.Parameters, "model");
-        _ = new System.Text.UTF8Encoding(false, true).GetByteCount(request.Model);
+        LlmJsonInput.Request(request.Model, null, request.Parameters);
         return LlmInvocation.Payload(request, request.Model, stream);
     }
 }

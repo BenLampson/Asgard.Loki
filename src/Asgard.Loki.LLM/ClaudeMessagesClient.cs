@@ -34,5 +34,6 @@ internal sealed class ClaudeMessagesClient(LlmInvocation invocation) : IClaudeMe
         ArgumentNullException.ThrowIfNull(request.Messages);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(request.MaxTokens);
         LlmInvocation.ValidateParameters(request.Parameters, "model", "messages", "max_tokens");
+        LlmJsonInput.Request(request.Model, request.Messages, request.Parameters);
     }
 }

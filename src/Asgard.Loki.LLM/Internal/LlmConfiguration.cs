@@ -33,12 +33,15 @@ internal sealed class LlmConfiguration
             ArgumentNullException.ThrowIfNull(provider);
             ArgumentException.ThrowIfNullOrWhiteSpace(provider.Id);
             ArgumentException.ThrowIfNullOrWhiteSpace(provider.BindingIdentity);
+            LlmJsonInput.Text(provider.Id); LlmJsonInput.Text(provider.BindingIdentity);
             if (!Providers.TryAdd(provider.Id, provider)) throw new ArgumentException("供应商实例标识重复。", nameof(options));
         }
 
         foreach (var credential in options.Credentials)
         {
             ArgumentNullException.ThrowIfNull(credential);
+            LlmJsonInput.Text(credential.Id);
+            if (credential.Kind == LlmCredentialKind.ApiKey) LlmJsonInput.Text(credential.ApiKey);
             if (!Credentials.TryAdd(credential.Id, credential)) throw new ArgumentException("凭据标识重复。", nameof(options));
         }
 
@@ -47,6 +50,7 @@ internal sealed class LlmConfiguration
         {
             ArgumentNullException.ThrowIfNull(route);
             ArgumentException.ThrowIfNullOrWhiteSpace(route.Model);
+            LlmJsonInput.Text(route.Model);
             ArgumentNullException.ThrowIfNull(route.Targets);
             ArgumentOutOfRangeException.ThrowIfZero(route.Targets.Count);
             var copies = route.Targets.Select(target => ValidateTarget(target) with { }).ToArray();
@@ -70,6 +74,7 @@ internal sealed class LlmConfiguration
     internal string Fingerprint(LlmTarget target)
     {
         var credential = Credentials[target.CredentialId]; var provider = Providers[target.ProviderId].BindingIdentity;
+        LlmJsonInput.Text(provider);
         var serialized = JsonSerializer.Serialize(target);
         // 既有 API Key 指纹字节保持不变；无认证使用不同前缀，不能与任意 Key 值拼接碰撞。
         var identity = credential.Kind == LlmCredentialKind.Anonymous
@@ -87,6 +92,7 @@ internal sealed class LlmConfiguration
         ArgumentException.ThrowIfNullOrWhiteSpace(target.UpstreamModel);
         ArgumentException.ThrowIfNullOrWhiteSpace(target.CredentialId);
         ArgumentException.ThrowIfNullOrWhiteSpace(target.Version);
+        foreach (var value in new[] { target.Id, target.ProviderId, target.UpstreamModel, target.CredentialId, target.Version }) LlmJsonInput.Text(value);
         ArgumentNullException.ThrowIfNull(target.BaseAddress);
         if (!target.BaseAddress.IsAbsoluteUri || target.BaseAddress.Scheme is not ("https" or "http")
             || target.BaseAddress.Query.Length != 0 || target.BaseAddress.Fragment.Length != 0 || target.BaseAddress.UserInfo.Length != 0)

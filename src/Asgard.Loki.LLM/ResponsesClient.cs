@@ -34,6 +34,7 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
             && (request.Input is not JsonValue text || !text.TryGetValue<string>(out _)))
             throw new ArgumentException("压缩输入必须为文本或原生输入项数组。", nameof(request));
         LlmInvocation.ValidateParameters(request.Parameters, "model", "input", "previous_response_id", "stream");
+        LlmJsonInput.Request(request.Model, request.Input, request.Parameters, request.PreviousResponseId);
         var payload = JsonSerializer.SerializeToNode(request)!.AsObject();
         var call = await invocation.ResolveAsync(request.Model, LlmProtocol.Responses, options,
             request.PreviousResponseId, cancellationToken, LlmTargetFeatures.ResponsesCompaction).ConfigureAwait(false);
@@ -80,5 +81,6 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
         ArgumentNullException.ThrowIfNull(request);
         if (request.PreviousResponseId is not null) ArgumentException.ThrowIfNullOrWhiteSpace(request.PreviousResponseId);
         LlmInvocation.ValidateParameters(request.Parameters, "model", "input", "previous_response_id");
+        LlmJsonInput.Request(request.Model, request.Input, request.Parameters, request.PreviousResponseId);
     }
 }

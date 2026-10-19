@@ -29,6 +29,7 @@ internal sealed class LlmInvocation(LlmConfiguration configuration)
         ArgumentException.ThrowIfNullOrWhiteSpace(model);
         ArgumentNullException.ThrowIfNull(options);
         ArgumentException.ThrowIfNullOrWhiteSpace(options.SessionId);
+        LlmJsonInput.Text(model); LlmJsonInput.Text(options.SessionId); LlmJsonInput.Text(previousResponseId);
         cancellationToken.ThrowIfCancellationRequested();
         if (!configuration.Routes.TryGetValue(model, out var route)) throw new InvalidOperationException("对外模型未配置。");
         var binding = await Sessions.GetAsync(options.SessionId, cancellationToken).ConfigureAwait(false);

@@ -33,5 +33,6 @@ internal sealed class GeminiClient(LlmInvocation invocation) : IGeminiClient
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(request.Contents);
         LlmInvocation.ValidateParameters(request.Parameters, "model", "contents");
+        LlmJsonInput.Request(request.Model, request.Contents, request.Parameters);
     }
 }

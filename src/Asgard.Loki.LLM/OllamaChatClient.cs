@@ -5,7 +5,6 @@ namespace Asgard.Loki.LLM;
 /// <summary>Ollama 原生 Chat 独立于 OpenAI Chat，复用完整目标和显式首次绑定协调。</summary>
 internal sealed class OllamaChatClient(LlmInvocation invocation) : IOllamaChatClient
 {
-    private static readonly System.Text.UTF8Encoding StrictUtf8 = new(false, true);
     /// <inheritdoc />
     public async Task<OllamaChatResponse> CompleteAsync(OllamaChatRequest request, LlmCallOptions options, CancellationToken cancellationToken = default)
     {
@@ -29,14 +28,7 @@ internal sealed class OllamaChatClient(LlmInvocation invocation) : IOllamaChatCl
     private static void Validate(OllamaChatRequest request)
     {
         ArgumentNullException.ThrowIfNull(request); ArgumentNullException.ThrowIfNull(request.Messages);
-        LlmInvocation.ValidateParameters(request.Parameters, "model", "messages"); _ = StrictUtf8.GetByteCount(request.Model);
-        var pending = new Stack<JsonNode?>(); pending.Push(request.Messages);
-        while (pending.TryPop(out var node))
-        {
-            if (node is JsonObject obj)
-                foreach (var property in obj) { _ = StrictUtf8.GetByteCount(property.Key); pending.Push(property.Value); }
-            else if (node is JsonArray array) foreach (var child in array) pending.Push(child);
-            else if (node is JsonValue scalar && scalar.TryGetValue<string>(out var text)) _ = StrictUtf8.GetByteCount(text);
-        }
+        LlmInvocation.ValidateParameters(request.Parameters, "model", "messages");
+        LlmJsonInput.Request(request.Model, request.Messages, request.Parameters);
     }
 }

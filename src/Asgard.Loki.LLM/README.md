@@ -32,7 +32,17 @@ This is an LLM-owned credential foundation; cloud token refresh/signing and othe
 
 The provider retains native errors and validates NDJSON identity/terminal boundaries without aggregating tool calls or executing them. Stream done/error records wait for normal EOF, declared length and transport disposal. Partial records remain incremental; truncation, late data, invalid Unicode and resource failures propagate without fabricated completion or retry. `OllamaChatEvent.IsTerminal` includes errors; check `IsError` for failed generation. Native generate has its own client described below; Ollama conversion remains follow-up work. Provider initialization, resource limits, support matrix and offline/live status are documented in its README.
 
-## Supported
+## Native JSON snapshot encoding
+
+Public native clients validate original DOM strings/property names and extension `JsonElement` strings **before** serialization and awaited Session resolution. This covers Chat, Responses, Claude, Gemini and both Ollama clients, including complete/streamed calls, plus Responses compaction. Bound Responses WebSocket sends apply the same check before snapshot/cache/send. Unpaired UTF-16 surrogates and malformed JSON string escapes fail; they cannot become replacement characters that change tool IDs, error text or unknown native fields. Streaming validation begins when enumeration starts.
+
+Registration and fingerprint creation likewise validate model/target/credential/provider identities and Key text, while call resolution checks original model/Session/previous-response IDs. Valid target/key fingerprints and serialized metadata stay unchanged; no new protocol flag, package dependency or conversion algorithm version is introduced. Existing valid Sessions remain usable. Borrowed stores/coordinators/factories retain their ownership.
+
+Valid Unicode is not normalized, filtered or rewritten: combining characters, emoji, BOM/NUL/CRLF, unknown fields, exact JSON numbers and optional null/false values retain their native form. This is an encoding boundary, not a model/schema capability validator. Caller-supplied custom `JsonValue`/converter serialization retains its caller-owned policy; the SDK does not reflect over business objects or execute their getters as a separate validation pass. A custom adapter or direct provider call still owns any serialization it performs outside the public-client snapshot.
+
+Sixty-five new offline regressions include eight public Claude/Gemini conversion cases first observed failing before the fix, 49 LLM-core cases and eight Ollama extension cases. They directly construct raw DOM requests rather than allowing a test deserializer to repair them first. No live model call is made.
+
+## Supported operations
 
 Native `.OllamaGenerate.GenerateAsync` / `StreamAsync` are separate from Chat, using `OllamaGenerateRequest`, `OllamaGenerateResponse`, `OllamaGenerateEvent` and optional `IOllamaGenerateAdapter`. Configure `LlmProtocol.OllamaGenerate` explicitly. Only the routed model is named in the request; native prompt/suffix/system/template/context and generation settings live in extension JSON, preserving omitted/empty/null values without injecting Chat structure. Context is neither persisted nor replayed automatically. Generate keeps complete-target Session affinity and cannot change a Chat Session's protocol. See the [Ollama generate example](../Asgard.Loki.LLM.Ollama/README.md#native-generate).
 

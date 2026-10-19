@@ -579,6 +579,25 @@ This credential prerequisite is now used by the separate native Ollama Chat clie
 
 ## 4. LLM Session and cache
 
+### Original JSON encoding before snapshots
+
+The private LLM-owned `LlmJsonInput` validates original native DOM strings/property names, extension `JsonElement` string escapes and named model/response fields before public clients serialize a snapshot. All six native protocol clients use it; Responses compaction and bound WebSocket sends also validate before snapshot/cache/send. This prevents malformed UTF-16 from being replaced before the converter sees original tool/error identity. Configuration and fingerprint identity strings and call Session IDs use the same strict UTF-8 check. Valid fingerprint bytes, native fields and borrowing/coordination rules remain unchanged.
+
+```mermaid
+classDiagram
+ChatCompletionsClient ..> LlmJsonInput
+ResponsesClient ..> LlmJsonInput
+ClaudeMessagesClient ..> LlmJsonInput
+GeminiClient ..> LlmJsonInput
+OllamaChatClient ..> LlmJsonInput
+OllamaGenerateClient ..> LlmJsonInput
+BoundResponsesWebSocketConnection ..> LlmJsonInput
+LlmConfiguration ..> LlmJsonInput
+LlmInvocation ..> LlmJsonInput
+```
+
+The guard is a private pure encoding utility, not a public universal message model, cross-capability coordinator or native schema validator. It does not normalize valid text, fetch data, change stream/terminal behavior, retry calls or inspect business properties through reflection. Custom `JsonValue`/converter serialization remains caller-owned. Raw direct provider/adaptor serialization outside this public-client boundary remains provider-owned. Sixty-five new offline cases exercise original malformed tool/error strings, exact valid Unicode/data, pre-cache failure, complete/streaming and optional operations without actual HTTP/model/Redis calls.
+
 Calls explicitly supply a stable SessionId. Authorization and Session ownership isolation belong to the caller. Use a deployment/application-specific cache prefix.
 
 ```mermaid

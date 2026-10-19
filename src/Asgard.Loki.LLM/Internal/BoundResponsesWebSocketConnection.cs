@@ -18,6 +18,7 @@ internal sealed class BoundResponsesWebSocketConnection(LlmInvocation invocation
         ArgumentNullException.ThrowIfNull(message);
         ThrowIfClosed();
         // 必须在任何等待之前复制输入，调用者之后的修改不能影响实际发送。
+        LlmJsonInput.Node(message);
         var snapshot = message.DeepClone().AsObject();
         var type = RequiredText(snapshot, "type");
         string? previous = null;
