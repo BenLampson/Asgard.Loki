@@ -30,10 +30,10 @@ public sealed class MaaSNativeTests
         var clock = new VertexClock(); var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var source = new VertexTokenSource(clock) { Resolve = async (principal, token) => { entered.SetResult(); await release.Task.WaitAsync(token); return new(principal, "fixture-token", clock.Now.AddHours(1)); } };
         using var handler = new StubHttpHandler(async (request, token) => { Assert.True(JsonNode.DeepEquals(JsonNode.Parse(VertexFixture.Text("maas-wire")), JsonNode.Parse(await request.Content!.ReadAsStringAsync(token)))); return MaaSFixture.Reply(); }); var input = MaaSFixture.Request(); var provider = new GoogleVertexMaaSLlmProvider(new VertexHttpFactory(handler), source, timeProvider: clock); var call = provider.CompleteAsync(input, MaaSFixture.Context(), TestContext.Current.CancellationToken); await entered.Task.WaitAsync(TestContext.Current.CancellationToken); input["messages"] = new JsonArray(); release.SetResult(); await call; Assert.Equal(1, handler.Calls);
     }
-    /// <summary>未交付的流式操作在取令牌/HTTP 之前明确失败，不模拟单事件流。</summary>
+    /// <summary>流式预取消在取令牌/HTTP 之前失败，不取得任何传输资源。</summary>
     [Fact]
-    public void Sse_IsExplicitUnsupportedBoundary()
+    public async Task Sse_PreCancelledAcquiresNoResources()
     {
-        var clock = new VertexClock(); var source = new VertexTokenSource(clock); using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException()); var factory = new VertexHttpFactory(handler); var provider = new GoogleVertexMaaSLlmProvider(factory, source, timeProvider: clock); Assert.Throws<NotSupportedException>(() => provider.StreamAsync(MaaSFixture.Request(), MaaSFixture.Context(), TestContext.Current.CancellationToken)); Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients); Assert.Equal(0, handler.Calls);
+        using var cancel = new CancellationTokenSource(); cancel.Cancel(); var clock = new VertexClock(); var source = new VertexTokenSource(clock); using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException()); var factory = new VertexHttpFactory(handler); var provider = new GoogleVertexMaaSLlmProvider(factory, source, timeProvider: clock); await Assert.ThrowsAnyAsync<OperationCanceledException>(() => MaaSStreamFixture.Consume(provider, cancel.Token)); Assert.Equal(0, source.Calls); Assert.Empty(factory.Clients); Assert.Equal(0, handler.Calls);
     }
 }

@@ -6,8 +6,8 @@ using Asgard.Loki.LLM.GoogleVertex.Internal;
 
 namespace Asgard.Loki.LLM.GoogleVertex;
 
-/// <summary>Vertex MaaS 原生 Chat JSON 调用；项目/区域端点和 publisher/model 均由完整目标明确指定。</summary>
-public sealed class GoogleVertexMaaSLlmProvider : IChatCompletionsAdapter, ILlmCredentialSupport
+/// <summary>Vertex MaaS 原生 Chat JSON/SSE 调用；项目/区域端点和 publisher/model 均由完整目标明确指定。</summary>
+public sealed partial class GoogleVertexMaaSLlmProvider : IChatCompletionsAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _factory;
     private readonly IGoogleVertexLlmTokenSource _source;
@@ -22,6 +22,7 @@ public sealed class GoogleVertexMaaSLlmProvider : IChatCompletionsAdapter, ILlmC
     {
         ArgumentNullException.ThrowIfNull(httpClientFactory); ArgumentNullException.ThrowIfNull(tokenSource); ArgumentException.ThrowIfNullOrWhiteSpace(id); ArgumentException.ThrowIfNullOrWhiteSpace(httpClientName);
         _options = options is null ? new() : options with { }; ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_options.MaximumBodyBytes, 0);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_options.MaximumBufferedTerminalEvents, 0); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_options.MaximumTrackedChoices, 0); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_options.MaximumTrackedToolCalls, 0);
         VertexJson.Text(id); VertexJson.Text(httpClientName); _sourceIdentity = tokenSource.BindingIdentity; ArgumentException.ThrowIfNullOrWhiteSpace(_sourceIdentity); VertexJson.Text(_sourceIdentity);
         if (_options.QuotaProjectId is { } quota) { ArgumentException.ThrowIfNullOrWhiteSpace(quota); VertexJson.Text(quota); if (quota.Any(char.IsWhiteSpace) || quota.Any(char.IsControl)) throw new ArgumentException("Vertex MaaS quota project 不能包含空白或控制字符。", nameof(options)); }
         _factory = httpClientFactory; _source = tokenSource; _clientName = httpClientName; _time = timeProvider ?? TimeProvider.System; Id = id;
@@ -29,14 +30,14 @@ public sealed class GoogleVertexMaaSLlmProvider : IChatCompletionsAdapter, ILlmC
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => GetType().AssemblyQualifiedName + ":vertex-maas-json-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity });
+    public string BindingIdentity => GetType().AssemblyQualifiedName + ":vertex-maas-sse-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity });
     /// <inheritdoc />
     public bool SupportsCredential(LlmCredentialKind kind) => kind == LlmCredentialKind.External;
     /// <summary>原生 Chat 对象在完整 EOF、长度、释放和最终取消检查后返回；不映射内容或重试。</summary>
     public async Task<ChatCompletion> CompleteAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
     {
         JsonElement result;
-        using (var message = await PrepareAsync(request, context, cancellationToken).ConfigureAwait(false))
+        using (var message = await PrepareAsync(request, context, false, cancellationToken).ConfigureAwait(false))
         using (var client = _factory.CreateClient(_clientName))
         {
             BeforeSend(client, message, cancellationToken); using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
@@ -49,13 +50,8 @@ public sealed class GoogleVertexMaaSLlmProvider : IChatCompletionsAdapter, ILlmC
         }
         cancellationToken.ThrowIfCancellationRequested(); return new(result, context.Metadata);
     }
-    /// <summary>MaaS SSE 尚未实现；在取得令牌或创建客户端前明确拒绝，不以完整 JSON 模拟流。</summary>
-    public IAsyncEnumerable<ChatCompletionEvent> StreamAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested(); throw new NotSupportedException("Vertex MaaS SSE 尚未实现。");
-    }
-    /// <summary>第一次认证等待前快照请求；只替换已绑定的实际模型和完整调用传输标志。</summary>
-    private async Task<HttpRequestMessage> PrepareAsync(JsonObject payload, LlmAdapterContext context, CancellationToken token)
+    /// <summary>第一次认证等待前快照请求；只替换已绑定的实际模型和本次调用传输标志。</summary>
+    private async Task<HttpRequestMessage> PrepareAsync(JsonObject payload, LlmAdapterContext context, bool stream, CancellationToken token)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(payload); ArgumentNullException.ThrowIfNull(context); ArgumentNullException.ThrowIfNull(context.Credential);
         if (!SupportsCredential(context.Credential.Kind)) throw new ArgumentException("Vertex MaaS 要求显式 External 主体凭据。");
@@ -65,11 +61,11 @@ public sealed class GoogleVertexMaaSLlmProvider : IChatCompletionsAdapter, ILlmC
         if (segments.Length < 7 || segments[^6] != "projects" || segments[^4] != "locations" || segments[^2] != "endpoints" || segments[^1] != "openapi" || string.IsNullOrWhiteSpace(Uri.UnescapeDataString(segments[^5])) || string.IsNullOrWhiteSpace(Uri.UnescapeDataString(segments[^3]))) throw new ArgumentException("Vertex MaaS 根地址必须显式以 projects/{project}/locations/{location}/endpoints/openapi 结尾。");
         var model = context.Target.UpstreamModel; ArgumentException.ThrowIfNullOrWhiteSpace(model); VertexJson.Text(model); var parts = model.Split('/');
         if (parts.Length != 2 || parts.Any(part => string.IsNullOrWhiteSpace(part) || part is "." or "..")) throw new ArgumentException("Vertex MaaS 实际模型必须显式为 publisher/model。");
-        VertexJson.Input(payload); var body = payload.DeepClone().AsObject(); body["model"] = model; body["stream"] = false;
+        VertexJson.Input(payload); var body = payload.DeepClone().AsObject(); body["model"] = model; body["stream"] = stream;
         var message = new HttpRequestMessage(HttpMethod.Post, new Uri(new Uri(root.AbsoluteUri.TrimEnd('/') + "/"), "chat/completions"));
         try
         {
-            message.Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"); message.Headers.Accept.Add(new("application/json")); if (_options.QuotaProjectId is { } quota) message.Headers.Add("x-goog-user-project", quota);
+            message.Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"); message.Headers.Accept.Add(new(stream ? "text/event-stream" : "application/json")); if (_options.QuotaProjectId is { } quota) message.Headers.Add("x-goog-user-project", quota);
             SourceUnchanged(); var access = await _source.GetTokenAsync(context.Credential.PrincipalIdentity, token).ConfigureAwait(false) ?? throw new InvalidOperationException("Vertex MaaS 认证源未返回令牌。"); token.ThrowIfCancellationRequested(); SourceUnchanged();
             if (access.PrincipalIdentity != context.Credential.PrincipalIdentity) throw new InvalidOperationException("Vertex MaaS 认证源返回不同主体。");
             if (access.ExpiresOn <= _time.GetUtcNow()) throw new InvalidOperationException("Vertex MaaS 认证源返回已过期令牌。");

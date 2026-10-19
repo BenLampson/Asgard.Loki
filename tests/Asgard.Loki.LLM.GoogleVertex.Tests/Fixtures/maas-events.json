@@ -1,0 +1,8 @@
+[
+  {"id":"native-maas-id","model":"native-returned-model","object":"chat.completion.chunk","choices":[{"index":7,"delta":{"role":"assistant","reasoning_content":"原生 é 🚀","future":false},"finish_reason":null}]},
+  {"id":"native-maas-id","model":"native-returned-model","object":"chat.completion.chunk","choices":[{"index":7,"delta":{"tool_calls":[{"index":4,"id":"call-maas-A","type":"function","function":{"name":"look","arguments":"{\"id\":"},"future":null}]}}]},
+  {"id":"native-maas-id","model":"native-returned-model","object":"chat.completion.chunk","choices":[{"index":7,"delta":{"tool_calls":[{"index":4,"function":{"name":"up","arguments":"9007199254740993}"}},{"index":1,"id":"call-maas-B","type":"function","function":{"name":"other","arguments":"{}"}}]}}]},
+  {"id":"native-maas-id","model":"native-returned-model","object":"chat.completion.chunk","choices":[{"index":7,"delta":{},"finish_reason":"tool_calls","future_choice":[]}]},
+  {"id":"native-maas-id","model":"native-returned-model","object":"chat.completion.chunk","choices":[],"usage":{"prompt_tokens":11,"completion_tokens":7,"total_tokens":18,"completion_tokens_details":{"reasoning_tokens":5},"future_usage":0}},
+  {"future_tail":{"integer":9223372036854775807,"nil":null,"empty":[],"false":false}}
+]
