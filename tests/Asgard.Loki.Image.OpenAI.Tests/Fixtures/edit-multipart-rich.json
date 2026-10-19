@@ -1,0 +1,14 @@
+[
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=model"],"text":"native-image-model"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=prompt"],"text":"保留主体\nchange background"},
+  {"headers":["Content-Type: image/png","Content-Disposition: form-data; name=\"image[]\"; filename=first.png; filename*=utf-8''first.png"],"base64":"AP+A"},
+  {"headers":["Content-Type: image/webp","Content-Disposition: form-data; name=\"image[]\"; filename=second.webp; filename*=utf-8''second.webp"],"base64":"DQoq"},
+  {"headers":["Content-Type: image/png","Content-Disposition: form-data; name=mask; filename=mask.png; filename*=utf-8''mask.png"],"base64":"AQIDBA=="},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=stream"],"text":"false"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=output_format"],"text":"webp"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=output_compression"],"text":"75"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"future[]\""],"text":"null"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"future[]\""],"text":"false"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"future[nested]\""],"text":"{\"value\":null}"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=empty"],"text":""}
+]

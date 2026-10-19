@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <EmbeddedResource Include="Fixtures/**/*" />
     <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki.Image.OpenAI/Asgard.Loki.Image.OpenAI.csproj" />
     <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />

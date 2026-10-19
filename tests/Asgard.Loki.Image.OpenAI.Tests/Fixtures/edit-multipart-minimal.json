@@ -1,0 +1,5 @@
+[
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=model"],"text":"native-image-model"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=prompt"],"text":"保留主体\nchange background"},
+  {"headers":["Content-Disposition: form-data; name=\"image[]\"; filename=first.png; filename*=utf-8''first.png"],"base64":"AP+A"}
+]

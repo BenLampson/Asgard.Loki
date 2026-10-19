@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>OpenAI image generation provider for Asgard.Loki.</Description>
+    <Description>OpenAI image generation and editing provider for Asgard.Loki.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Asgard.Loki.Image/Asgard.Loki.Image.csproj" />

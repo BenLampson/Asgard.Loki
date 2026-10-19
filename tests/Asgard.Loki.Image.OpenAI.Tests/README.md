@@ -1,5 +1,9 @@
-# Asgard.Loki.Image.OpenAI.Tests
+# OpenAI Image offline protocol tests
 
-Local protocol tests for OpenAI image generation, payload mapping, Base64/URL results and SSE partial/final events.
+124 xUnit v3 cases: five existing generation JSON/SSE cases and 119 native nonstream image-editing cases. Tests use the public SDK or the explicit adapter with local HTTP substitutes, fake credentials and `.invalid` domains. No network, actual image codec/rendering, real key, live model or mask-quality check is used.
 
-xUnit v3 / Microsoft.Testing.Platform. Tests use no real provider credentials or external services.
+`Fixtures/edit-json-input.json` is an authored native request. The independent complete `edit-json-wire.json` expected request changes only the bound actual model. Three complete MIME goldens cover multiple images/mask, multiple images without mask and a minimal single upload with omitted content type/defaults. The test-only MIME reader decodes actual serialized bytes into full ordered header/body entries and normalizes only the random boundary; it does not call production builders to create expected output. `edit-json-response.json` retains native Base64/URL items, revised prompt, usage, nested null/false and integers/decimals beyond common floating-point precision. Arbitrary upload/result bytes do not prove a valid image format.
+
+Cases verify native JSON/file references, current stream positions, Unicode file names, separate first-image mask role, unknown/repeated/empty multipart fields, independent direct-entry snapshots, target headers, no downloads/fallback/retry and one-shot upload serialization. Negative cases cover ambiguous/reserved/duplicate inputs, invalid encoding/MIME, explicit stream=true refusal, native HTTP/business errors with exact raw bytes, malformed/duplicate result JSON, unexpected media and length/read/upload/disposal/cancellation failures. Response-content disposal, stream DisposeAsync and client disposal faults are tested independently. Borrowed upload streams and factories remain caller-owned.
+
+Build in Release, then run this project's xUnit executable or `eng/Test.ps1` after a full solution build. `Asgard.Loki.Image.Tests` separately validates core custom-adapter contracts. OpenAI native editing SSE remains a separate checkpoint; the generation SSE tests do not establish edit-stream coverage. No GitHub Actions or live supplier call is required by this suite.
