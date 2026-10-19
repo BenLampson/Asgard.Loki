@@ -16,6 +16,7 @@ public sealed class LlmProtocolStreamConverter
     /// <summary>每次调用创建独立转换器，不跨会话共享流状态。</summary>
     public LlmProtocolStreamConverter(LlmProtocol from, LlmProtocol to, LlmConversionOptions? options = null)
     {
+        options = ConversionOptionsSnapshot.Capture(options);
         LlmProtocolConverter.Validate(new(), from, to, options);
         _source = new(from); _target = new(to); _options = options ?? new(); _identity = from == to;
     }

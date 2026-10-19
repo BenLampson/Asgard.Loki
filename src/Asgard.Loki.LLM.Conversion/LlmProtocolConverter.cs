@@ -9,25 +9,28 @@ public static class LlmProtocolConverter
     /// <summary>转换请求；默认拒绝任何无法表达的字段。</summary>
     public static LlmConversionResult ConvertRequest(JsonObject request, LlmProtocol from, LlmProtocol to, LlmConversionOptions? options = null)
     {
-        Validate(request, from, to, options);
+        var captured = ConversionOptionsSnapshot.Capture(options);
+        Validate(request, from, to, captured);
         if (from == to) return new(request, request, []);
         if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
             throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
         var doc = RequestReader.Read(request, from, to);
-        var target = RequestWriter.Write(doc, to, options ?? new());
+        var target = RequestWriter.Write(doc, to, captured);
         ConversionJson.Copy(request, "stream", target, "stream");
-        Enforce(doc, options);
+        TargetSettingsValidator.Validate(target, to, captured.TargetSettings);
+        Enforce(doc, captured);
         return new(target, request, doc.Diagnostics);
     }
 
     /// <summary>转换完整单候选响应，并保留完整源 JSON。</summary>
     public static LlmConversionResult ConvertResponse(JsonObject response, LlmProtocol from, LlmProtocol to, LlmConversionOptions? options = null)
     {
-        Validate(response, from, to, options);
+        var captured = ConversionOptionsSnapshot.Capture(options);
+        Validate(response, from, to, captured);
         if (from == to) return new(response, response, []);
         var doc = ResponseMapping.Read(response, from);
         var target = ResponseMapping.Write(doc, to);
-        Enforce(doc, options);
+        Enforce(doc, captured);
         return new(target, response, doc.Diagnostics);
     }
 
@@ -40,6 +43,7 @@ public static class LlmProtocolConverter
         if (options?.TargetThinkingBudgetTokens is < 1024) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiOutputFormat)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiFunctionSchemaFormat)) throw new ArgumentOutOfRangeException(nameof(options));
+        TargetSettingsValidator.ValidateConfiguration(options?.TargetSettings);
         if (options?.DefaultSchemaName is { } schemaName
             && (schemaName.Length is < 1 or > 64 || schemaName.Any(c => !char.IsAsciiLetterOrDigit(c) && c is not ('_' or '-'))))
             throw new ArgumentException("Schema 名称必须为 1 至 64 个 ASCII 字母、数字、下划线或连字符。", nameof(options));

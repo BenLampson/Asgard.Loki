@@ -17,4 +17,6 @@ public sealed record LlmConversionOptions
     public GeminiOutputFormat GeminiOutputFormat { get; init; }
     /// <summary>Gemini 目标函数参数方言；默认保留 JSON Schema，与文本输出格式独立。</summary>
     public GeminiFunctionSchemaFormat GeminiFunctionSchemaFormat { get; init; }
+    /// <summary>可选的固定目标设置支持声明；仅校验跨协议最终请求，不补参数或查询模型。</summary>
+    public LlmConversionTargetSettings? TargetSettings { get; init; }
 }

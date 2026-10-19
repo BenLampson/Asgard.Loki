@@ -71,7 +71,32 @@ var options = new LlmConversionOptions
 // Set TargetThinkingBudgetTokens only for a target supporting manual thinking.
 ```
 
-Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v8`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
+Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v9`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
+
+## Caller-declared target settings
+
+Optional `TargetSettings` declares the support of the configured converting target. It checks the **actual native request after conversion**, including caller-selected budget replacements and defaults. The SDK does not query a model catalog, infer support from names, adjust tokens or remove rejected fields. Declarations restrict implemented mappings; `true` never enables an otherwise unsupported protocol feature. Violations produce field-level `LlmConversionException` diagnostics even with `AllowLoss = true`.
+
+```csharp
+var options = new LlmConversionOptions
+{
+    TargetSettings = new LlmConversionTargetSettings
+    {
+        AllowedReasoningEfforts = ["low", "medium", "high"],
+        AllowedOutputFormats = ["text", "json_schema"],
+        MaximumOutputTokens = 4096,
+        MaximumThinkingBudgetTokens = 2048,
+        SupportsSampling = false
+    }
+};
+// Example caller declaration, not an SDK claim about a named model/account.
+```
+
+`null` lists leave that dimension undeclared; an empty list rejects every explicit value. Efforts refer to the emitted native effort/level field, including `none`/null when emitted. `AllowedThinkingModes` separately checks Claude/Gemini native `manual`, `adaptive`, and `disabled` controls. Positive manual budgets receive optional minimum/maximum checks; zero/off and -1/dynamic are never clamped into that range. `AllowedOutputFormats` checks text/JSON-object/JSON-Schema intent in every supported envelope. Optional sampling, parallel-tool-control and reasoning-output-control flags reject field presence when false, including zero, false and null. Omission does not invent a field or a default capability.
+
+`MaximumOutputTokens` validates an explicitly emitted output-limit argument, including `DefaultMaxTokens` written for Claude. If an argument is omitted, it remains omitted; this does not bound the upstream default, returned usage or billing. These declarations apply only to cross-protocol requests, never to response/event content, same-protocol copies or native provider calls. Use separate converting provider IDs/targets when models need different declarations; this is not a gateway policy engine or an entitlement check.
+
+Registration captures independent read-only list snapshots. Lists use set semantics (ordinal sort/deduplication), so reordering equivalent declarations does not change binding identity. Mutating caller-owned lists after registration cannot change active behavior or identity; intentionally changed declarations invalidate the old converted Session. The pure request API captures a fresh declaration snapshot per call. No policy adds retries, target changes, tool execution or background work.
 
 Known descriptive response envelope fields and executed-request echoes (for example service tier, metadata and Responses sampling/tool configuration) stay in `OriginalData` / `Metadata.Conversion.UpstreamData`. They are not injected into the converted content or treated as a new request/continuation. Business output and future unclassified fields still undergo strict validation. This permits realistic native response envelopes without silently reusing upstream execution settings.
 

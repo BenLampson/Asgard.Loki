@@ -17,6 +17,7 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
     {
         ArgumentNullException.ThrowIfNull(upstream);
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        options = ConversionOptionsSnapshot.Capture(options);
         LlmProtocolConverter.Validate(new(), upstreamProtocol, upstreamProtocol, options);
         if (upstream is ConvertingLlmProvider) throw new ArgumentException("不能嵌套转换供应商。", nameof(upstream));
         if (upstreamProtocol == LlmProtocol.ChatCompletions && upstream is not IChatCompletionsAdapter
@@ -30,7 +31,7 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v8:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
+    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v9:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
 
     /// <inheritdoc />
     public async Task<ChatCompletion> CompleteAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)

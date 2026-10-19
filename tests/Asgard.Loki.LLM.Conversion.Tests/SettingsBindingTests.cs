@@ -14,7 +14,7 @@ public sealed class SettingsBindingTests
 {
     /// <summary>新增名称、预算和替代强度配置变化必须在再次发送 HTTP 前拒绝旧绑定。</summary>
     [Theory]
-    [InlineData(0)] [InlineData(1)] [InlineData(2)] [InlineData(3)] [InlineData(4)] [InlineData(5)]
+    [InlineData(0)] [InlineData(1)] [InlineData(2)] [InlineData(3)] [InlineData(4)] [InlineData(5)] [InlineData(6)]
     public async Task ConfigurationChange_InvalidatesExistingSession(int option)
     {
         var store = new DistributedCacheLlmSessionStore(new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())), new TestSessionLock());
@@ -27,7 +27,8 @@ public sealed class SettingsBindingTests
             2 => new LlmConversionOptions { TargetReasoningEffort = "medium" },
             3 => new LlmConversionOptions { GeminiOutputFormat = GeminiOutputFormat.ResponseFormat },
             4 => new LlmConversionOptions { GeminiOutputFormat = GeminiOutputFormat.LegacySchema },
-            _ => new LlmConversionOptions { GeminiFunctionSchemaFormat = GeminiFunctionSchemaFormat.LegacySchema }
+            5 => new LlmConversionOptions { GeminiFunctionSchemaFormat = GeminiFunctionSchemaFormat.LegacySchema },
+            _ => new LlmConversionOptions { TargetSettings = new() { MaximumOutputTokens = 10000 } }
         };
         await using var first = ConvertingProviderTests.Build(handler, LlmProtocol.ClaudeMessages, LlmProtocol.ChatCompletions, store);
         await using var second = ConvertingProviderTests.Build(handler, LlmProtocol.ClaudeMessages, LlmProtocol.ChatCompletions, store, changed);
