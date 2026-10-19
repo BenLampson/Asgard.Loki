@@ -78,7 +78,7 @@ public sealed class InputFileBoundaryTests
         Assert.Equal("file_mime_required", Assert.Single(error.Diagnostics).Code);
     }
 
-    /// <summary>明确的非 PDF 类型不能被重标为 PDF，其他文件格式要按独立协议补齐。</summary>
+    /// <summary>非 PDF 不重标为 PDF；Responses 纯文本缺少编码声明，Chat/Claude Base64 外壳不支持该类型。</summary>
     [Theory] [InlineData(LlmProtocol.ChatCompletions)] [InlineData(LlmProtocol.Responses)] [InlineData(LlmProtocol.ClaudeMessages)]
     public void OtherMime_IsNeverRelabeledAsPdf(LlmProtocol protocol)
     {
@@ -86,7 +86,7 @@ public sealed class InputFileBoundaryTests
         if (protocol == LlmProtocol.ClaudeMessages) file["media_type"] = "text/plain";
         else file["file_data"] = "data:text/plain;base64,YWJj";
         var error = Assert.Throws<LlmConversionException>(() => LlmProtocolConverter.ConvertRequest(source, protocol, Target(protocol), new() { AllowLoss = true }));
-        Assert.Equal("unsupported_file_mime", Assert.Single(error.Diagnostics).Code);
+        Assert.Equal(protocol == LlmProtocol.Responses ? "text_file_encoding_required" : "unsupported_file_mime", Assert.Single(error.Diagnostics).Code);
     }
 
     /// <summary>来源冲突不能从多个引用中随意挑一个，null 引用也不隐藏为省略。</summary>

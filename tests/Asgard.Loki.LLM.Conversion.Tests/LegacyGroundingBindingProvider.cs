@@ -8,7 +8,7 @@ internal sealed class LegacyGroundingBindingProvider(ConvertingLlmProvider inner
     /// <inheritdoc />
     public string Id => inner.Id;
     /// <inheritdoc />
-    public string BindingIdentity => inner.BindingIdentity.Replace(":conversion-v22:", ":conversion-v21:", StringComparison.Ordinal);
+    public string BindingIdentity => inner.BindingIdentity.Replace(":conversion-v23:", ":conversion-v22:", StringComparison.Ordinal);
     /// <inheritdoc />
     public Task<GeminiContent> GenerateAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
         => inner.GenerateAsync(request, context, cancellationToken);

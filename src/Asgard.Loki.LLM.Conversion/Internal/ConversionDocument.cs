@@ -13,6 +13,10 @@ internal sealed class ConversionDocument
     internal long Created { get; set; }
     /// <summary>本次 OpenAI 引用范围使用的显式单位；未知时不能猜测 Unicode 偏移。</summary>
     internal LlmCitationIndexUnit CitationIndexUnit { get; set; }
+    /// <summary>本次请求的纯文本文件编码声明，仅由显式选项传入。</summary>
+    internal LlmTextFileEncoding TextFileEncoding { get; init; }
+    /// <summary>单个纯文本文件的实际 UTF-8 字节上限。</summary>
+    internal int MaxTextFileBytes { get; init; } = 1024 * 1024;
     /// <summary>有序原始语义消息。</summary>
     internal List<ConversionMessage> Messages { get; } = [];
     /// <summary>可直接映射的生成设置。</summary>

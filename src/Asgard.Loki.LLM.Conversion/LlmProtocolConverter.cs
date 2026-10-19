@@ -17,7 +17,7 @@ public static class LlmProtocolConverter
         var searchOutputDiagnostics = HostedSearchOutput.Inspect(request, from);
         var search = HostedSearchCodec.Prepare(request, from, to, captured, out var searchPrepared);
         var context = ToolRequestCodec.Prepare(searchPrepared, from, to, captured, out var prepared, out var toolDiagnostics);
-        var doc = RequestReader.Read(prepared, from, to);
+        var doc = RequestReader.Read(prepared, from, to, captured);
         doc.Diagnostics.AddRange(toolDiagnostics);
         doc.Diagnostics.AddRange(searchOutputDiagnostics);
         var target = RequestWriter.Write(doc, to, captured);
@@ -67,9 +67,10 @@ public static class LlmProtocolConverter
         if (options is not null && !Enum.IsDefined(options.HostedSearchTarget)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.OpenAiCitationIndexUnit)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiGroundingStreamMode)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.TextFileEncoding)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is { MaxToolConversionMappings: <= 0 } or { MaxToolConversionHistoryCalls: <= 0 }
             or { MaxToolConversionOutputCalls: <= 0 } or { MaxCustomToolInputBytes: <= 0 }
-            or { MaxStreamAnnotations: <= 0 } or { MaxStreamAnnotationBytes: <= 0 })
+            or { MaxStreamAnnotations: <= 0 } or { MaxStreamAnnotationBytes: <= 0 } or { MaxTextFileBytes: <= 0 })
             throw new ArgumentOutOfRangeException(nameof(options));
         TargetSettingsValidator.ValidateConfiguration(options?.TargetSettings);
         if (options?.DefaultSchemaName is { } schemaName

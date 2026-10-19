@@ -7,9 +7,10 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class RequestReader
 {
     /// <summary>转换为单次调用内的有序内容，输入对象不被修改。</summary>
-    internal static ConversionDocument Read(JsonObject source, LlmProtocol protocol, LlmProtocol target = LlmProtocol.None)
+    internal static ConversionDocument Read(JsonObject source, LlmProtocol protocol, LlmProtocol target = LlmProtocol.None, LlmConversionOptions? options = null)
     {
-        var doc = new ConversionDocument { Model = Text(source["model"]) };
+        var doc = new ConversionDocument { Model = Text(source["model"]), TextFileEncoding = options?.TextFileEncoding ?? LlmTextFileEncoding.Unspecified,
+            MaxTextFileBytes = options?.MaxTextFileBytes ?? 1024 * 1024 };
         switch (protocol)
         {
             case LlmProtocol.ChatCompletions: Chat(source, doc); break;

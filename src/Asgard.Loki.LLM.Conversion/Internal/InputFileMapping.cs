@@ -4,7 +4,7 @@ using static Asgard.Loki.LLM.Conversion.Internal.ConversionJson;
 
 namespace Asgard.Loki.LLM.Conversion.Internal;
 
-/// <summary>显式转换用户提供的 PDF 输入；不下载、上传、解析文件或复用供应商私有文件引用。</summary>
+/// <summary>显式转换用户提供的 PDF 或已声明编码的纯文本文件；不下载、上传或复用供应商私有引用。</summary>
 internal static class InputFileMapping
 {
     private const string PdfMime = "application/pdf";
@@ -22,6 +22,12 @@ internal static class InputFileMapping
             {
                 Check(source, doc, "$content[].source", "type", "media_type", "data");
                 message.Blocks.Add(Inline(Text(source["media_type"]), Text(source["data"])));
+            }
+            else if (sourceType == "text")
+            {
+                Check(source, doc, "$content[].source", "type", "media_type", "data");
+                if (!IsText(Text(source["media_type"]))) Reject("unsupported_file_mime", "$content[].source.media_type");
+                message.Blocks.Add(TextFileMapping.ReadText(Text(source["data"]), doc));
             }
             else if (sourceType == "url")
             {
@@ -53,22 +59,26 @@ internal static class InputFileMapping
         var dataUrl = Text(file["file_data"]); var separator = dataUrl.IndexOf(";base64,", StringComparison.OrdinalIgnoreCase);
         if (!dataUrl.StartsWith("data:", StringComparison.OrdinalIgnoreCase) || separator < 5)
         { Reject("file_mime_required", "$content[].file_data"); return; }
-        var converted = Inline(dataUrl[5..separator], dataUrl[(separator + 8)..]);
+        var mime = dataUrl[5..separator];
+        var converted = protocol == LlmProtocol.Responses && IsText(mime)
+            ? TextFileMapping.ReadBase64(dataUrl[(separator + 8)..], doc) : Inline(mime, dataUrl[(separator + 8)..]);
         if (file.ContainsKey("filename")) converted["filename"] = Text(file["filename"]);
         message.Blocks.Add(converted);
     }
 
-    /// <summary>只为已核对的 PDF MIME 添加新映射，其他 Gemini 媒体继续走原有诊断路径。</summary>
+    /// <summary>只为 PDF 和已声明编码的纯文本 MIME 映射，其他 Gemini 媒体继续走原有诊断路径。</summary>
     internal static bool ReadGemini(JsonObject inline, ConversionMessage message, ConversionDocument doc)
     {
-        if (!string.Equals(Text(inline["mimeType"]), PdfMime, StringComparison.OrdinalIgnoreCase)) return false;
+        var mime = Text(inline["mimeType"]);
+        if (!string.Equals(mime, PdfMime, StringComparison.OrdinalIgnoreCase) && !IsText(mime)) return false;
         RequireUser(message); Check(inline, doc, "$parts[].inlineData", "mimeType", "data");
-        message.Blocks.Add(Inline(Text(inline["mimeType"]), Text(inline["data"]))); return true;
+        message.Blocks.Add(IsText(mime) ? TextFileMapping.ReadBase64(Text(inline["data"]), doc) : Inline(mime, Text(inline["data"]))); return true;
     }
 
-    /// <summary>输出目标原生 PDF 块；文件名损耗和引用解析要求不会用伪造字段掩盖。</summary>
+    /// <summary>输出目标原生文件块；PDF 与显式纯文本分开处理，不掩盖文件名损耗或引用解析要求。</summary>
     internal static JsonObject Write(JsonObject block, LlmProtocol protocol, ConversionDocument doc)
     {
+        if (block["mime"]?.GetValue<string>() == TextFileMapping.Mime) return TextFileMapping.Write(block, protocol, doc);
         if (block.ContainsKey("url"))
         {
             if (protocol != LlmProtocol.Responses) Reject("media_resolution_required", "$content[].file.url");
@@ -96,6 +106,9 @@ internal static class InputFileMapping
         return new() { ["type"] = "file", ["data"] = data };
     }
 
+    /// <summary>仅识别明确的 text/plain，不从扩展名或其他 text/* 推断同义类型/字符集。</summary>
+    private static bool IsText(string mime) => string.Equals(mime, TextFileMapping.Mime, StringComparison.OrdinalIgnoreCase);
+
     /// <summary>此检查点只支持用户输入文件，不把生成文件或系统指令移到用户消息中。</summary>
     private static void RequireUser(ConversionMessage message)
     {
@@ -106,5 +119,5 @@ internal static class InputFileMapping
     internal static void Reference() => Reject("provider_file_reference", "$content[].file_reference");
 
     /// <summary>需要补充调用方数据或独立原生接口的边界始终明确失败。</summary>
-    private static void Reject(string code, string path) => throw new LlmConversionException([new(code, path, "文件转换缺少可等价表达的数据；请使用明确的 PDF 数据或原生接口。")]);
+    private static void Reject(string code, string path) => throw new LlmConversionException([new(code, path, "文件转换缺少可等价表达的数据；请使用明确的受支持文件数据或原生接口。")]);
 }

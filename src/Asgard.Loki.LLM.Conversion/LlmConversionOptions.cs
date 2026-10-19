@@ -31,6 +31,10 @@ public sealed record LlmConversionOptions
     public LlmCitationIndexUnit OpenAiCitationIndexUnit { get; init; }
     /// <summary>显式 Gemini→Responses 引用流约定；单文本模式还需声明目标 OpenAI 索引单位。</summary>
     public GeminiGroundingStreamMode GeminiGroundingStreamMode { get; init; }
+    /// <summary>显式声明 text/plain 文档按 UTF-8 转换；保留文件容器，Chat 没有对应文件输入。</summary>
+    public LlmTextFileEncoding TextFileEncoding { get; init; }
+    /// <summary>单个纯文本文件的解码 UTF-8 字节上限；分配解码缓冲之前验证，不影响原生调用或 PDF。</summary>
+    public int MaxTextFileBytes { get; init; } = 1024 * 1024;
     /// <summary>启用可逆工具编码时，完整工具身份表及独立 namespace 分组表的容量上限。</summary>
     public int MaxToolConversionMappings { get; init; } = 128;
     /// <summary>启用可逆工具编码时，单次请求保留的历史调用 ID 总上限。</summary>
