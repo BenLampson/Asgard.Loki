@@ -1,0 +1,32 @@
+{
+  "text": {
+    "parameters":{"input":{"query":"topic😀","documents":["alpha😀","beta","gamma"]},"future":false,"futureNull":null},
+    "wire":{"model":"rerank-native","input":{"query":"topic😀","documents":["alpha😀","beta","gamma"]},"future":false,"futureNull":null},
+    "response":{"request_id":"r-text","output":{"results":[{"index":2,"relevance_score":0.9},{"index":0,"relevance_score":0.5},{"index":1,"relevance_score":0.1}],"future":null},"usage":{"total_tokens":9007199254740993,"future":false},"future":{"trace":"raw"}}
+  },
+  "top": {
+    "parameters":{"input":{"query":"topic😀","documents":["alpha😀","beta","gamma"],"future":false},"parameters":{"top_n":2,"return_documents":true,"instruct":"Rank related passages.","future":null}},
+    "wire":{"model":"rerank-native","input":{"query":"topic😀","documents":["alpha😀","beta","gamma"],"future":false},"parameters":{"top_n":2,"return_documents":true,"instruct":"Rank related passages.","future":null}},
+    "response":{"request_id":"r-top","output":{"results":[{"index":2,"relevance_score":0.9,"document":{"text":"gamma","future":null}},{"index":0,"relevance_score":0.5,"document":{"text":"alpha😀"}}]},"usage":{"total_tokens":35,"prompt_tokens":35}}
+  },
+  "oversize": {
+    "parameters":{"input":{"query":"topic","documents":["alpha","beta"]},"parameters":{"top_n":100,"return_documents":false}},
+    "wire":{"model":"rerank-native","input":{"query":"topic","documents":["alpha","beta"]},"parameters":{"top_n":100,"return_documents":false}},
+    "response":{"request_id":"r-over","output":{"results":[{"index":1,"relevance_score":1},{"index":0,"relevance_score":0}]},"usage":{"total_tokens":0}}
+  },
+  "mixed": {
+    "parameters":{"input":{"query":{"text":"query😀"},"documents":["alpha",{"text":"beta"},{"image":"https://media.invalid/i.png"},{"video":"https://media.invalid/v.mp4"}]},"parameters":{"top_n":3,"return_documents":false,"fps":0.5}},
+    "wire":{"model":"rerank-native","input":{"query":{"text":"query😀"},"documents":["alpha",{"text":"beta"},{"image":"https://media.invalid/i.png"},{"video":"https://media.invalid/v.mp4"}]},"parameters":{"top_n":3,"return_documents":false,"fps":0.5}},
+    "response":{"request_id":"r-mixed","output":{"results":[{"index":3,"relevance_score":0.9},{"index":2,"relevance_score":0.5},{"index":1,"relevance_score":0.1}]},"usage":{"total_tokens":15}}
+  },
+  "image": {
+    "parameters":{"input":{"query":{"image":"data:image/png;base64,AQID"},"documents":[{"text":"caption"},{"image":"data:image/png;base64,BAUG"},{"video":"https://media.invalid/v.mp4"}]},"parameters":{"top_n":2,"return_documents":true,"fps":0}},
+    "wire":{"model":"rerank-native","input":{"query":{"image":"data:image/png;base64,AQID"},"documents":[{"text":"caption"},{"image":"data:image/png;base64,BAUG"},{"video":"https://media.invalid/v.mp4"}]},"parameters":{"top_n":2,"return_documents":true,"fps":0}},
+    "response":{"request_id":"r-image","output":{"results":[{"index":1,"relevance_score":0.9,"document":{"text":"data:image/png;base64,BAUG"}},{"index":0,"relevance_score":0.5,"document":{"text":"caption"}}]},"usage":{"total_tokens":19}}
+  },
+  "echo": {
+    "parameters":{"input":{"query":{"image":"https://media.invalid/query.png"},"documents":[{"image":"https://media.invalid/i.png"},{"video":"https://media.invalid/v.mp4"}]},"parameters":{"return_documents":true,"fps":1}},
+    "wire":{"model":"rerank-native","input":{"query":{"image":"https://media.invalid/query.png"},"documents":[{"image":"https://media.invalid/i.png"},{"video":"https://media.invalid/v.mp4"}]},"parameters":{"return_documents":true,"fps":1}},
+    "response":{"request_id":"r-echo","output":{"results":[{"index":1,"relevance_score":0.9,"document":{"video":"https://media.invalid/v.mp4","future":false}},{"index":0,"relevance_score":0.5,"document":{"image":"https://media.invalid/i.png"}}]},"usage":{"total_tokens":12}}
+  }
+}

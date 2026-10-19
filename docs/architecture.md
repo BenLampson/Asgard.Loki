@@ -21,6 +21,7 @@ class GoogleEmbedding["Asgard.Loki.Embedding.Google"]
 class OllamaEmbedding["Asgard.Loki.Embedding.Ollama"]
 class CohereRerank["Asgard.Loki.Rerank.Cohere"]
 class JinaRerank["Asgard.Loki.Rerank.Jina"]
+class AliRerank["Asgard.Loki.Rerank.Ali"]
 class Video["Asgard.Loki.Video"]
 class Ark["Asgard.Loki.LLM.Volcengine"]
 class OpenAILLM["Asgard.Loki.LLM.OpenAI"]
@@ -40,6 +41,7 @@ GoogleEmbedding ..> Embedding
 OllamaEmbedding ..> Embedding
 CohereRerank ..> Rerank
 JinaRerank ..> Rerank
+AliRerank ..> Rerank
 Video ..> Abstractions
 Ark ..> LLM
 OpenAILLM ..> LLM
@@ -653,6 +655,27 @@ Queries retain native strings or ImageDoc objects; documents retain string/TextD
 Successful JSON must contain native model, usage and complete ranked results. Original indices must be unique and belong to the dispatched candidates; document content must match its indexed original text/image. A returned bare string keeps its native container and can be matched through the original index; an explicitly typed object cannot silently change modality. Unknown input metadata has no promised upstream echo. Required documents follow the native omitted-option default or explicit true; null is not reinterpreted as true. Explicit returned embeddings must exist for every ranked item and stay attached to its index. No shared Embedding contract, vector computation or normalization is added.
 
 Jina scores require finite numbers without importing Cohere's unit-interval rule. Full raw numbers, usage, item/media/embedding containers and future fields remain unchanged in `Data`; convenience vectors are copied. Without a request, provider-owned views can validate native shape but cannot certify original-document identity or the expected result count. HTTP status/native error bodies, strict JSON/truncation/duplicate handling, header-stage SSE refusal, cancellation and borrowed ownership follow the independent supplier pattern. No retry/failover, live model or quality claim is added. See the [Jina supplier guide](../src/Asgard.Loki.Rerank.Jina/README.md).
+
+### Native DashScope reranking
+
+`Asgard.Loki.Rerank.Ali` references only Rerank and standard HTTP components. `AliRerankOptions` explicitly binds the native API root (workspace/region), actual model, Key and named borrowed factory. `AliRerankAdapter` appends `services/rerank/text-rerank/text-rerank` and performs one complete JSON call, preserving any root prefix. No model-name routing, region inference, Key borrowing or fallback is introduced.
+
+```mermaid
+classDiagram
+IRerankAdapter <|.. AliRerankAdapter
+AliRerankAdapter --> AliRerankOptions : explicit complete target
+AliRerankAdapter --> AliRerankPayload : native input and parameters
+AliRerankPayload --> AliRerankDocument : source identity snapshot
+AliRerankAdapter --> AliRerankResponse : nested output and source indices
+AliRerankExtensions --> AliRerankItem : provider owned view
+AliRerankExtensions --> RerankResult : unchanged native JSON
+```
+
+The private payload reader snapshots native nested `input.query`/`input.documents` and `parameters`; it does not flatten the DashScope HTTP contract into another supplier's shape. Query strings or native text/image objects and text/image/video document arrays retain their original containers, order, Unicode and unknown fields. The provider validates a nonempty supported container, positive integer `top_n`, boolean return flag, string instructions and exact unit-interval `fps`; it never injects default limits/return flags or guesses model-specific media/token limits. Unknown fields are forwarded rather than certified. No Image/Video dependency, SDK media download or format interpretation is required to transmit caller-owned native references.
+
+The private response reader validates native `request_id`, `output.results` and exact nonnegative `usage.total_tokens`, plus `prompt_tokens` when present. Results must match the input/top-n count and retain unique in-range original indices. Returned documents are validated even without a return request; explicit `return_documents=true` requires them. Text wrappers match exact indexed source content, including native text wrappers echoing a media reference; explicit media modality/value must agree with that source. This validates protocol identity without proving server media interpretation. Scores retain original JSON and exact `[0,1]` validation without recalibration or resorting. `AliRerankItem` exposes original Index/score/document and independent raw item JSON; no universal result, invented model or generic usage wrapper is added.
+
+Native code/message/error failures remain errors even with HTTP 200 and apparent results. Original status/body are retained; malformed/truncated/duplicate JSON and SSE/NDJSON fail. Cancellation reaches send/body reads; responses are released and borrowed factory/handler ownership remains with the caller. Six independently authored complete request/response fixtures and 124 offline cases verify HTTP, shape, association, precision, unknown data, cancellation and ownership; no live regional/model/media or relevance claim is made. Entry/abstraction, LLM, Embedding, other suppliers and conversational state are unchanged.
 
 ## 7. HTTP and errors
 
