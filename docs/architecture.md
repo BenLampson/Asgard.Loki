@@ -1528,3 +1528,22 @@ flowchart LR
 ```
 
 The codec preserves text/signature strings and redacted Base64 without interpreting or authenticating them. Role/Unicode/exact union validation prevents repaired or truncated opaque content. Historical message containers are not coalesced. A request or reply containing opaque Anthropic blocks cannot bypass any diagnosed conversion loss with ordinary AllowLoss consent. Original source snapshots, request model/history context and existing tool ID validation remain in place. The application must replay the full previous history against the same actual model/complete target/session; the pure converter has no origin discovery or session store. Public SDK target binding and native transport disposal remain separate responsibilities. Same-protocol native copies remain raw and unchanged.
+
+## Public SDK signed Anthropic historical replay
+
+No new client interface, target/session cache shape or supplier dependency is added. Existing Claude complete calls dispatch to `ConvertingBedrockLlmProvider`, which reads the explicit Anthropic policy, invokes its fixed native Converse adapter once and maps complete native JSON after successful source completion/disposal. The application supplies all previous messages plus the unmodified first-result content for the second call; the same existing full target/session binding is resolved before native acquisition. The codec does not own history storage, execute tools, validate signatures or choose another model.
+
+```mermaid
+sequenceDiagram
+    participant App as Application-owned history
+    participant SDK as Existing Claude client and bound decorator
+    participant Native as Native Converse adapter
+    App->>SDK: Complete original history / same SessionId
+    SDK->>Native: Native request with opaque blocks intact
+    Native-->>SDK: Full JSON after EOF/disposal/cancellation checks
+    SDK-->>App: Complete Claude content / original native metadata
+    App->>SDK: All previous messages + unmodified returned content + results
+    SDK->>Native: Exact ordered follow-up / same complete target
+```
+
+Independent native request/reply/follow-up goldens verify actual two-call composition, both auth paths, unchanged opaque data and tool associations. Wrong declared scope, field loss, late native faults and changed policies cannot release success or cause another implicit invocation. Signature-origin/cryptographic validity and real model acceptance remain upstream concerns; other families, inverse complete mapping and mixed stream state machines stay pending.
