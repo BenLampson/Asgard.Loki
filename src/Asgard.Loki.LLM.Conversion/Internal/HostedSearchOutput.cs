@@ -6,7 +6,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class HostedSearchOutput
 {
     /// <summary>只检查原生协议的内容位置，不扫描用户文本、函数参数或 JSON Schema 的任意键。</summary>
-    internal static IReadOnlyList<LlmConversionDiagnostic> Inspect(JsonObject value, LlmProtocol protocol, bool mapUrlCitations = false)
+    internal static IReadOnlyList<LlmConversionDiagnostic> Inspect(JsonObject value, LlmProtocol protocol, bool mapUrlCitations = false, bool mapGeminiGrounding = false)
     {
         var diagnostics = new List<LlmConversionDiagnostic>();
         if (protocol == LlmProtocol.ClaudeMessages)
@@ -40,7 +40,7 @@ internal static class HostedSearchOutput
         }
         else if (protocol == LlmProtocol.Gemini && value["candidates"] is JsonArray candidates)
             for (var i = 0; i < candidates.Count; i++)
-                if (candidates[i] is JsonObject candidate && candidate.ContainsKey("groundingMetadata")) Add("grounding_metadata_not_representable", "$.candidates[" + i + "].groundingMetadata");
+                if (!mapGeminiGrounding && candidates[i] is JsonObject candidate && candidate.ContainsKey("groundingMetadata")) Add("grounding_metadata_not_representable", "$.candidates[" + i + "].groundingMetadata");
         return diagnostics;
 
         void Blocks(JsonNode? node, string path)

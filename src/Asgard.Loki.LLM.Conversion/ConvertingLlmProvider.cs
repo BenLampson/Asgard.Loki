@@ -31,7 +31,7 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v16:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
+    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v17:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
 
     /// <inheritdoc />
     public async Task<ChatCompletion> CompleteAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)

@@ -11,6 +11,8 @@ internal sealed class ConversionDocument
     internal string Id { get; set; } = "";
     /// <summary>原始创建时间；源协议未提供时以零表示未知。</summary>
     internal long Created { get; set; }
+    /// <summary>本次 OpenAI 引用范围使用的显式单位；未知时不能猜测 Unicode 偏移。</summary>
+    internal LlmCitationIndexUnit CitationIndexUnit { get; set; }
     /// <summary>有序原始语义消息。</summary>
     internal List<ConversionMessage> Messages { get; } = [];
     /// <summary>可直接映射的生成设置。</summary>

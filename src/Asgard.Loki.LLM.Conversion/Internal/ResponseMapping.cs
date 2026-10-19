@@ -7,13 +7,15 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class ResponseMapping
 {
     /// <summary>读取完整响应，不把失败响应转换为正常完成。</summary>
-    internal static ConversionDocument Read(JsonObject source, LlmProtocol protocol, bool mapCitations = true)
+    internal static ConversionDocument Read(JsonObject source, LlmProtocol protocol, bool mapCitations = true,
+        LlmCitationIndexUnit citationIndexUnit = LlmCitationIndexUnit.Unspecified, bool mapGeminiGrounding = false)
     {
         var doc = new ConversionDocument
         {
             Id = source[protocol == LlmProtocol.Gemini ? "responseId" : "id"]?.GetValue<string>() ?? "loki_" + Guid.NewGuid().ToString("N"),
             Model = source[protocol == LlmProtocol.Gemini ? "modelVersion" : "model"]?.GetValue<string>() ?? "",
-            Created = Number(source[protocol == LlmProtocol.ChatCompletions ? "created" : "created_at"])
+            Created = Number(source[protocol == LlmProtocol.ChatCompletions ? "created" : "created_at"]),
+            CitationIndexUnit = citationIndexUnit
         };
         var message = new ConversionMessage("assistant");
         if (source["error"] is not null) throw new LlmConversionException([new("upstream_error", "$.error", "错误响应不能转换为成功响应。")]);
@@ -96,11 +98,14 @@ internal static class ResponseMapping
                 var candidates = Array(source["candidates"]);
                 if (candidates.Count != 1) throw new LlmConversionException([new("multiple_candidates", "$.candidates", "响应转换只支持一个候选。")]);
                 var candidate = Object(candidates[0]);
-                Check(candidate, doc, "$.candidates[0]", "index", "content", "finishReason");
+                if (mapGeminiGrounding) Check(candidate, doc, "$.candidates[0]", "index", "content", "finishReason", "groundingMetadata");
+                else Check(candidate, doc, "$.candidates[0]", "index", "content", "finishReason");
                 var content = Object(candidate["content"]);
                 Check(content, doc, "$.candidates[0].content", "role", "parts");
                 if (Text(content["role"]) != "model") throw new ArgumentException("Gemini 生成响应角色必须为 model。");
                 ContentMapping.Read(content["parts"], protocol, message, doc);
+                if (mapGeminiGrounding && candidate.ContainsKey("groundingMetadata"))
+                    GeminiGrounding.Read(candidate["groundingMetadata"], Array(content["parts"]), message, doc);
                 doc.Finish = Finish(Text(candidate["finishReason"]), protocol);
                 if (doc.Finish == "stop" && message.Blocks.Any(b => Text(b["type"]) == "call")) doc.Finish = "tool_calls";
                 UsageMapping.Read(source["usageMetadata"], protocol, doc);

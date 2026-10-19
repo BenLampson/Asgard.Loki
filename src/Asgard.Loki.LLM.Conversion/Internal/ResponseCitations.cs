@@ -27,8 +27,12 @@ internal static class ResponseCitations
             else Check(citation, doc, itemPath, "type", "url", "title", "start_index", "end_index");
             var start = Index(citation["start_index"]); var end = Index(citation["end_index"]);
             // 文档只规定 character index；UTF-8 长度是常见索引单位的上界，不宣称其就是原生单位。
-            if (maximumLength < 0) maximumLength = StrictUtf8.GetByteCount(text);
-            if (end < start || end > maximumLength) throw new InvalidDataException("URL 引用范围无效。");
+            if (doc.CitationIndexUnit == LlmCitationIndexUnit.Unspecified)
+            {
+                if (maximumLength < 0) maximumLength = StrictUtf8.GetByteCount(text);
+                if (end < start || end > maximumLength) throw new InvalidDataException("URL 引用范围无效。");
+            }
+            else _ = CitationOffsets.Convert(text, start, end, doc.CitationIndexUnit, doc.CitationIndexUnit);
             result.Add(new JsonObject { ["type"] = "url_citation", ["url"] = Text(citation["url"]), ["title"] = Text(citation["title"]),
                 ["start_index"] = start, ["end_index"] = end });
         }
@@ -43,7 +47,7 @@ internal static class ResponseCitations
         {
             if (block["citations"] is JsonArray citations && citations.Count != 0)
             {
-                if (!asciiPrefix) Loss(doc, "$response.content[].annotations", "citation_offset_unit_unknown");
+                if (!asciiPrefix && doc.CitationIndexUnit == LlmCitationIndexUnit.Unspecified) Loss(doc, "$response.content[].annotations", "citation_offset_unit_unknown");
                 else foreach (var node in citations)
                 {
                     var source = Object(node);
@@ -52,7 +56,8 @@ internal static class ResponseCitations
                         ["start_index"] = checked(Number(source["start_index"]) + offset), ["end_index"] = checked(Number(source["end_index"]) + offset) } });
                 }
             }
-            var text = Text(block["text"]); asciiPrefix &= text.All(char.IsAscii); offset = checked(offset + text.Length);
+            var text = Text(block["text"]); asciiPrefix &= text.All(char.IsAscii);
+            offset = checked(offset + (doc.CitationIndexUnit == LlmCitationIndexUnit.Unspecified ? text.Length : CitationOffsets.Length(text, doc.CitationIndexUnit)));
         }
         return result;
     }

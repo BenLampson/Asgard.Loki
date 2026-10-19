@@ -27,6 +27,8 @@ public sealed record LlmConversionOptions
     public LlmHostedSearchTarget HostedSearchTarget { get; init; }
     /// <summary>调用者声明该目标支持原生搜索与函数工具同时使用；不自动猜测模型能力。</summary>
     public bool AllowHostedSearchWithFunctionTools { get; init; }
+    /// <summary>固定 OpenAI 端点的引用索引单位；明确声明后才转换 Gemini 完整响应 grounding 范围。</summary>
+    public LlmCitationIndexUnit OpenAiCitationIndexUnit { get; init; }
     /// <summary>启用可逆工具编码时，完整工具身份表及独立 namespace 分组表的容量上限。</summary>
     public int MaxToolConversionMappings { get; init; } = 128;
     /// <summary>启用可逆工具编码时，单次请求保留的历史调用 ID 总上限。</summary>

@@ -34,8 +34,10 @@ public static class LlmProtocolConverter
         var captured = ConversionOptionsSnapshot.Capture(options);
         Validate(response, from, to, captured);
         if (from == to) return new(response, response, []);
-        var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from, mapUrlCitations: true);
-        var doc = ResponseMapping.Read(response, from);
+        var mapGrounding = from == LlmProtocol.Gemini && to is LlmProtocol.ChatCompletions or LlmProtocol.Responses
+            && captured.OpenAiCitationIndexUnit != LlmCitationIndexUnit.Unspecified;
+        var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from, mapUrlCitations: true, mapGeminiGrounding: mapGrounding);
+        var doc = ResponseMapping.Read(response, from, citationIndexUnit: captured.OpenAiCitationIndexUnit, mapGeminiGrounding: mapGrounding);
         doc.Diagnostics.AddRange(searchOutputDiagnostics);
         var target = ResponseMapping.Write(doc, to);
         Enforce(doc, captured);
@@ -61,6 +63,7 @@ public static class LlmProtocolConverter
         if (options is not null && !Enum.IsDefined(options.GeminiOutputFormat)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiFunctionSchemaFormat)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.HostedSearchTarget)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.OpenAiCitationIndexUnit)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is { MaxToolConversionMappings: <= 0 } or { MaxToolConversionHistoryCalls: <= 0 }
             or { MaxToolConversionOutputCalls: <= 0 } or { MaxCustomToolInputBytes: <= 0 })
             throw new ArgumentOutOfRangeException(nameof(options));
