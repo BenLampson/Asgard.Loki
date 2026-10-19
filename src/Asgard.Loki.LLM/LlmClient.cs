@@ -13,6 +13,7 @@ public sealed class LlmClient
         Responses = new ResponsesClient(invocation);
         ClaudeMessages = new ClaudeMessagesClient(invocation);
         Gemini = new GeminiClient(invocation);
+        OllamaChat = new OllamaChatClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
@@ -23,4 +24,6 @@ public sealed class LlmClient
     public IClaudeMessagesClient ClaudeMessages { get; }
     /// <summary>访问 Gemini 原生能力。</summary>
     public IGeminiClient Gemini { get; }
+    /// <summary>访问 Ollama 原生 api/chat JSON 与 NDJSON 能力。</summary>
+    public IOllamaChatClient OllamaChat { get; }
 }

@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Conversion
 
+The matrix below covers Chat Completions, Responses, Claude Messages and Gemini. Native Ollama Chat is a separate protocol/client/provider and is outside this conversion matrix; it does not implicitly become OpenAI Chat. Native Ollama tool/history, thinking and schema settings can be passed through its own client without invoking this package.
+
 Optional, explicit protocol conversion for the Asgard.Loki .NET SDK. This package references **only `Asgard.Loki.LLM`**. Native provider packages never reference it or one another. It contains no HTTP server, model execution loop, tool executor or gateway services.
 
 ## Conversion matrix

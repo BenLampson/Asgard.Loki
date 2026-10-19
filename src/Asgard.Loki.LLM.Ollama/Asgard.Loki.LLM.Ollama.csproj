@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Native Ollama chat JSON and NDJSON provider for Asgard.Loki.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>

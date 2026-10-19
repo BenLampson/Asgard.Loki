@@ -17,6 +17,7 @@ The architecture contract, UML, dependency rules and provider extension requirem
 | LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation/continuation; explicit native compaction and WebSocket | SSE; JSON compaction; native WebSocket events |
 | LLM | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages | SSE |
 | LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
+| LLM | `Asgard.Loki.LLM.Ollama` | Native Chat JSON/NDJSON, native thinking/schema/tool history; explicit anonymous or Bearer identity | — |
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
 | Speech | `Asgard.Loki.Audio.Volcengine` | Volcengine V3 text-to-speech; API Key or legacy app/token authentication | HTTP chunked JSON to audio chunks |
 | Speech | `Asgard.Loki.Audio.OpenAI` | Native Speech binary/SSE responses; custom voice objects and complete native JSON settings | Incremental binary bytes or native delta/done events |
@@ -44,7 +45,7 @@ Image exposes separate native JSON and caller-owned multipart editing contracts,
 | --- | --- |
 | `Asgard.Loki.Abstractions` | Generic client and module builder contracts |
 | `Asgard.Loki` | Client implementation and module lifecycle |
-| `Asgard.Loki.LLM` | Four native text protocols, routing, Session storage and registration |
+| `Asgard.Loki.LLM` | Five native LLM protocols, routing, Session storage and registration |
 | `Asgard.Loki.Audio` | Independent speech and native file-operation contracts, routing and results |
 | `Asgard.Loki.Image` | Independent image contracts, routing and results |
 | `Asgard.Loki.Embedding` | Independent native embedding contracts, routing and results; custom adapters |
@@ -61,7 +62,8 @@ Image exposes separate native JSON and caller-owned multipart editing contracts,
 | `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
 | `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider |
 | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |
-| `Asgard.Loki.LLM.Google` | Native Gemini Developer API provider |
+| Asgard.Loki.LLM.Google | Native Gemini Developer API provider |
+| Asgard.Loki.LLM.Ollama | Native Ollama Chat JSON/NDJSON; explicit anonymous or Bearer authentication |
 | `Asgard.Loki.LLM.Conversion` | Optional explicit conversion; references only LLM |
 | `Asgard.Loki.Audio.Volcengine` | Volcengine speech provider |
 | `Asgard.Loki.Audio.OpenAI` | Native OpenAI speech and multipart transcription/translation; independent Audio state |
@@ -168,7 +170,7 @@ await foreach (var item in loki.LLM.Responses.StreamAsync(
 
 A route may contain any valid combination of server, actual model, credential and provider. New Sessions use the configured selector; existing Sessions always reuse the stored complete binding. Switching protocol or public model within a Session is rejected.
 
-Custom LLM providers can explicitly support `LlmCredential.Anonymous("local-instance")` through `ILlmCredentialSupport`. It retains a stable credential identity in the complete Session binding; a missing Key never selects this mode automatically. Existing providers without that optional contract remain API-Key-only. This authentication foundation does not yet implement native Ollama chat or change other capabilities; see the [LLM credential contract](src/Asgard.Loki.LLM/README.md#explicit-credential-kinds).
+Custom LLM providers can explicitly support `LlmCredential.Anonymous("local-instance")` through `ILlmCredentialSupport`. It retains a stable credential identity in the complete Session binding; a missing Key never selects this mode automatically. Existing providers without that optional contract remain API-Key-only. The separate [Ollama LLM provider](src/Asgard.Loki.LLM.Ollama/README.md) now implements native Chat JSON/NDJSON and explicit header isolation; native generate and cloud token refresh/signing remain pending; see the [LLM credential contract](src/Asgard.Loki.LLM/README.md#explicit-credential-kinds).
 
 ### Native Responses compaction
 
@@ -298,7 +300,7 @@ Local protocol tests are not live-provider verification. Real account permission
 
 The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
 
-The offline suite passes 4167 tests, including 143 SiliconFlow Rerank, 350 OpenAI Image, 96 Image core, 378 OpenAI Audio, 122 Audio core, 134 Jina Embedding, 124 Ali Rerank, 125 Ollama Embedding, 133 Jina Rerank, 120 Cohere Rerank, 34 Rerank core, 34 Embedding core, 106 OpenAI Embedding, 114 Google Embedding, 1698 conversion, 205 OpenAI provider, 93 Ark provider, 22 Claude, 36 Gemini and 90 LLM core tests. Complete Chat/Responses URL citations and Gemini Web grounding map in both directions with declared endpoint index units. Conversion regressions cover nested field loss, pending tool/result association, ID collisions, complete and truncated stream lifecycles, done/final snapshot consistency and cache/usage accounting. The original OpenAI/Ark protocol suites remain covered alongside native compaction and feature-binding tests. Standard-Ark live verification with `doubao-seed-evolving` covers Chat/Responses JSON and SSE, tool calls and result return, strict JSON Schema, thinking on/off, actual output truncation, response continuation and opaque reasoning replay. **Both strict `tool_choice=none` cases currently fail:** upstream emits a function call although the final request correctly contains `none`. These failures remain visible. See the [protocol and parameter verification record](docs/llm-parameter-verification.md) for evidence and limits; OpenAI, Claude, Gemini, Embedding/Rerank suppliers and explicit conversion have offline coverage only.
+The offline suite passes 4264 tests, including 97 native Ollama Chat, 143 SiliconFlow Rerank, 350 OpenAI Image, 96 Image core, 378 OpenAI Audio, 122 Audio core, 134 Jina Embedding, 124 Ali Rerank, 125 Ollama Embedding, 133 Jina Rerank, 120 Cohere Rerank, 34 Rerank core, 34 Embedding core, 106 OpenAI Embedding, 114 Google Embedding, 1698 conversion, 205 OpenAI provider, 93 Ark provider, 22 Claude, 36 Gemini and 90 LLM core tests. Complete Chat/Responses URL citations and Gemini Web grounding map in both directions with declared endpoint index units. Conversion regressions cover nested field loss, pending tool/result association, ID collisions, complete and truncated stream lifecycles, done/final snapshot consistency and cache/usage accounting. The original OpenAI/Ark protocol suites remain covered alongside native compaction and feature-binding tests. Standard-Ark live verification with `doubao-seed-evolving` covers Chat/Responses JSON and SSE, tool calls and result return, strict JSON Schema, thinking on/off, actual output truncation, response continuation and opaque reasoning replay. **Both strict `tool_choice=none` cases currently fail:** upstream emits a function call although the final request correctly contains `none`. These failures remain visible. See the [protocol and parameter verification record](docs/llm-parameter-verification.md) for evidence and limits; OpenAI, Claude, Gemini, Embedding/Rerank suppliers and explicit conversion have offline coverage only.
 
 Use `pwsh -File eng/Test-Live.ps1 -Suite Parameters` or `-Suite All` for expanded checks, or add `-Scenario Structured`, `Tools`, `ToolChoice`, `Reasoning`, `Limits` or `Replay` to select a group. Default smoke makes five calls; Parameters plans 26 and All 31, with a hard limit of 32 per process. The expanded suites exit nonzero while the known tool-choice failure persists. The fixture uses `MemoryDistributedCache`; Redis cross-process verification remains separate.
 
