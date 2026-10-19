@@ -35,6 +35,8 @@ First binding filters targets by the explicit feature; an existing Session alway
 
 Compaction tests exercise the public SDK with substitute HTTP handlers, complete-window replay, Session ownership, failed and cancelled calls and concurrent/stale first-binding decisions. No live OpenAI compaction or account entitlement verification has been performed.
 
-Native Responses WebSocket, automatic history reconstruction and durable replay are not implemented. Tests verify local HTTP/SSE behavior, not a live OpenAI account.
+Native Responses WebSocket is still not wired into this provider's public call surface. A separate transport checkpoint adds `IOpenAiResponsesWebSocketFactory` and internal bounded UTF-8 JSON framing. The factory is borrowed; the connection owns the socket returned by `ConnectAsync`. The default factory uses a single `ClientWebSocket` handshake without retry. A custom factory must change its `BindingIdentity` when its configuration semantics change. Provider integration and response/stream lifecycle validation follow in the next checkpoint, so the support table above remains unchanged.
+
+Offline in-memory WebSocket tests cover byte fragmentation (including split Unicode), strict UTF-8, binary/malformed/oversized messages, inclusive size boundaries, input snapshots, serialized writes, cancellation, close interruption and socket ownership. A cancelled or failed operation that has entered socket IO makes the connection unusable; queued cancellation is not replayed. These tests do not connect to OpenAI or establish entitlement. Automatic history reconstruction and durable replay are not implemented.
 
 For OpenAI Images Generations, install the independent `Asgard.Loki.Image.OpenAI` package. This LLM provider does not pull in image or audio dependencies.

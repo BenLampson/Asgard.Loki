@@ -178,6 +178,16 @@ BoundResponsesWebSocketConnection --> IResponsesWebSocketConnection : wraps nati
 BoundResponsesWebSocketConnection --> ILlmSessionStore : validate existing binding
 ```
 
+The next provider-local transport checkpoint introduces `IOpenAiResponsesWebSocketFactory` in `LLM.OpenAI`, with a default `ClientWebSocket` factory and internal `ResponsesWebSocketTransport`. Only the owning provider and its offline tests use these byte/frame details. Messages have explicit byte limits; fragmented text is assembled and strictly validated as UTF-8 before JSON parsing. Socket IO failures/cancellation abort the connection without retry; explicit close interrupts pending IO and disposal owns the returned socket, never the borrowed factory. This foundation alone does not enable the provider's WebSocket adapter or claim native lifecycle support. No new package dependency or cross-capability transport abstraction is introduced.
+
+```mermaid
+classDiagram
+DefaultResponsesWebSocketFactory ..|> IOpenAiResponsesWebSocketFactory
+IOpenAiResponsesWebSocketFactory --> WebSocket : transfers socket ownership
+ResponsesWebSocketTransport *-- WebSocket
+ResponsesWebSocketTransport --> JsonElement : bounded native message
+```
+
 ### Explicit conversion extension
 
 `Asgard.Loki.LLM.Conversion` is an optional LLM extension with a single project dependency on `Asgard.Loki.LLM`. It owns pure request/response conversion and single-call stream state. Its private conversion representation never replaces the four native contracts or crosses capability boundaries. This remains an embeddable SDK: no listener, HTTP relay endpoint, gateway administration, billing, tool executor or background orchestration is introduced.
