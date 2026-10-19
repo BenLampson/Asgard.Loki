@@ -33,7 +33,7 @@ The core snapshots native JSON, rejects a root `model` override/Undefined values
 
 Both entry paths hold at most the completed chunk until source enumeration **and disposal** finish normally, then expose its original audio and metadata once. Ordinary incomplete chunks still stream immediately. A late/duplicate frame, missing completion, tail/disposal error or cancellation fails without first publishing a successful terminal chunk. Consumer early disposal releases the source and does not generate success. The supplier defines how transport/protocol completion is established; the core never treats an arbitrary EOF as a native success marker.
 
-Register a provider separately, currently `Asgard.Loki.Audio.Volcengine` for the existing convenience path. No bundled provider implements the optional native JSON path at this core checkpoint; OpenAI speech transport remains the next supplier implementation. This package does not depend on LLM, images, the entry implementation or a provider. It does not reuse LLM Session or routing state.
+Register a provider separately: `Asgard.Loki.Audio.Volcengine` for the existing convenience path, or [Asgard.Loki.Audio.OpenAI](../Asgard.Loki.Audio.OpenAI/README.md) for both native JSON and convenience binary speech calls. OpenAI's binary transport records HTTP metadata explicitly; it does not manufacture upstream JSON/SSE events. This capability does not depend on LLM, images, the entry implementation or a provider. It does not reuse LLM Session or routing state.
 
 Speech recognition, music generation and bidirectional speech are not implemented. See the root README for initialization.
 

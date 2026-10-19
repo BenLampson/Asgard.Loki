@@ -30,6 +30,7 @@ class AnthropicLLM["Asgard.Loki.LLM.Anthropic"]
 class GoogleLLM["Asgard.Loki.LLM.Google"]
 class Conversion["Asgard.Loki.LLM.Conversion"]
 class Speech["Asgard.Loki.Audio.Volcengine"]
+class OpenAISpeech["Asgard.Loki.Audio.OpenAI"]
 class OpenAIImage["Asgard.Loki.Image.OpenAI"]
 Client ..> Abstractions
 LLM ..> Abstractions
@@ -51,6 +52,7 @@ AnthropicLLM ..> LLM
 GoogleLLM ..> LLM
 Conversion ..> LLM
 Speech ..> Audio
+OpenAISpeech ..> Audio
 OpenAIImage ..> Image
 ```
 
@@ -503,10 +505,14 @@ SpeechClient --> SpeechRoute : existing complete target set
 SpeechClient --> ISpeechAdapter : convenience request
 SpeechClient --> INativeSpeechAdapter : explicit native JSON only
 INativeSpeechAdapter --> NativeSpeechRequest
+INativeSpeechAdapter <|.. OpenAiSpeechAdapter
+OpenAiSpeechAdapter --> OpenAiSpeechOptions : fixed native target
 SpeechClient --> NativeSpeechResult : native ordered bytes and frames
 ```
 
 The core snapshots native JSON independently of mutable dictionaries/documents, reserves root `model`, rejects Undefined and checks that every configured route target supports the optional contract before selection. It never filters targets or falls back to another protocol/provider. Registration snapshots, existing selection state and borrowed target ownership remain Audio-owned; no LLM Session, distributed cache or other capability dependency is introduced. A supplier/native route must use a payload compatible with every configured target; the core does not translate dialects.
+
+`Audio.OpenAI` implements the optional native adapter and convenience mapping for `POST audio/speech` binary audio only. Its fixed target binds API root, actual model, credential, optional organization/project and named borrowed HTTP factory. JSON snapshots preserve native custom voice objects, unknown fields and omission/null; convenience SampleRate/nonempty AudioParameters fail explicitly because there is no verified mapping. SSE/transcription/translation are separate pending operations. Successful binary completion means a nonempty normal HTTP EOF, observed Content-Length consistency and successful stream/response/client disposal; it cannot certify codec validity or detect an otherwise normal early EOF when length is absent. `SpeechChunk.Data` / result Frames explicitly contain SDK `http_audio` metadata and cumulative counts, not invented upstream JSON, usage or SSE done events. Partial bytes stream immediately but any later transport/cancellation/disposal failure prevents a completed chunk and successful aggregation. The provider has no other capability or provider dependency.
 
 Common and native streams share a private completion guard. Nonterminal chunks are immediate; the original terminal chunk is held until source enumeration and disposal finish successfully. Extra/duplicate chunks, missing completion, tail/disposal errors and cancellation fail without first exposing success. This buffers one terminal chunk only, retaining its audio/metadata once; it does not reconstruct history or invent an application-level end marker from EOF. Thirty-eight offline core cases include 35 new regressions across both paths, optional-client source compatibility, snapshots, non-failover and borrowed ownership. No bundled native JSON supplier, binary/SSE protocol or live speech call is implemented by this core checkpoint.
 

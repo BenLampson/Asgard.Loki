@@ -27,6 +27,7 @@ $packageIds = @(
     'Asgard.Loki.LLM.Google',
     'Asgard.Loki.LLM.Conversion',
     'Asgard.Loki.Audio.Volcengine',
+    'Asgard.Loki.Audio.OpenAI',
     'Asgard.Loki.Image.OpenAI',
     'Asgard.Loki.Embedding.OpenAI',
     'Asgard.Loki.Embedding.Google',

@@ -1,0 +1,14 @@
+{
+  "transport": "http_audio",
+  "public_model": "voice",
+  "target_model": "tts-upstream-fixture",
+  "status_code": 200,
+  "headers": {
+    "X-Request-ID": ["req_fixture"],
+    "x-future": ["one", "two"],
+    "Content-Type": ["audio/pcm"],
+    "Content-Length": ["8"]
+  },
+  "bytes_received": 8,
+  "completed": true
+}
