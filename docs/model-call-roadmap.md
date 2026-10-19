@@ -30,6 +30,8 @@ Latest protocol-scope prerequisite: optional LLM-owned `ILlmProtocolSupport` now
 
 ## Scope correction after the source recheck (2026-10-20)
 
+User-confirmed SDK scope is **LLM, Audio, Video, Image, Embedding and Rerank**. Embedding/Rerank are explicitly included and retain existing independent capability/provider packages; no removal or merger into LLM is planned. New API comparisons must stay within these six model-call families. Fine-tuning, independent file management, gateway administration and billing remain excluded.
+
 Terminology: delivered M4 “file-operation” contracts are Audio transcription/translation uploads, not generic provider file management. Loki has no fine-tuning jobs or independent provider file-management API; the pinned New API file/fine-tune routes are unimplemented placeholders and do not enter the parity queue.
 
 The earlier execution queue mixed confirmed New API behavior, newer supplier-native features and Loki-specific hardening. Its length is not evidence that New API implements every listed feature. This correction takes precedence over broader “next”, “remaining” and M1–M6 execution instructions below; those historical entries are an inventory, not authorization to implement every extension.

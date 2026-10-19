@@ -2,6 +2,8 @@
 
 This document is the authoritative contract for package boundaries, public API structure and provider extensions. Update it whenever a dependency or public contract changes. Use UML to describe structural changes.
 
+Approved product scope: LLM, Audio, Video, Image, Embedding and Rerank. The existing UML reflects these six independent capability families; Embedding and Rerank remain separate from LLM. Fine-tuning, independent provider file management, gateway administration and billing are excluded. Audio/image uploads remain inputs to their own model calls. This scope clarification changes no public contract or dependency.
+
 ## 1. Package boundaries
 
 Asgard.Loki is a pure .NET library. The entry point is `LokiClient`; it is not a web application. All namespaces begin with `Asgard`.
