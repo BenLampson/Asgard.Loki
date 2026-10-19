@@ -13,6 +13,8 @@ The New API comparison is limited to [source-proven SDK gaps](docs/model-call-ro
 
 ## Supported capabilities
 
+Fine-tuning jobs and general provider file management (upload/list/retrieve/download/delete as independent operations) are **not implemented**. Existing audio/image uploads supply inputs to transcription, translation or image editing requests.
+
 | Capability | Provider package | Implemented APIs | Streaming |
 | --- | --- | --- | --- |
 | LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat Completions; Responses creation and continuation | SSE |
@@ -42,7 +44,7 @@ Audio exposes an optional [native JSON speech contract](src/Asgard.Loki.Audio/RE
 
 Native requests preserve unknown JSON parameters. Native results retain complete upstream JSON, including tools, reasoning, usage, errors and future events. Public model aliases and actual upstream models are exposed separately. Optional conversion requires explicit registration, rejects unsupported fields by default, and retains upstream JSON and diagnostics separately from the converted result. User inline PDF inputs map across four protocols, and explicitly declared UTF-8 text files map between Responses, Claude and Gemini; native filenames, private references and metadata have explicit preservation/loss boundaries, with no SDK file download. Complete Chat/Responses URL citations map with unchanged-text ranges or safe ASCII-prefix rebasing; declared endpoint units now enable exact Unicode offsets and complete Gemini Web grounding ↔ Chat/Responses citations. Responses ↔ Gemini citation streams additionally support an explicit single cumulative text-part convention and declared OpenAI endpoint index unit; a separate opt-in [text-part concatenation](src/Asgard.Loki.LLM.Conversion/README.md#explicit-concatenation-of-responses-text-parts) maps sequential Responses text blocks into that cumulative target with exact citation rebasing; other stream/history pairs retain documented boundaries. See the [conversion support matrix](src/Asgard.Loki.LLM.Conversion/README.md).
 
-Image exposes separate native JSON and caller-owned multipart editing contracts, including OpenAI native event streaming; see the [Image README](src/Asgard.Loki.Image/README.md#native-image-editing-contracts). The bundled OpenAI provider implements native JSON/multipart nonstream and SSE edits; generation and editing now hold native completion through EOF and transport disposal. Image variations, music generation, video generation and automatic request replay are **not implemented**. Audio exposes native file-operation contracts and an OpenAI multipart provider; see the [Audio README](src/Asgard.Loki.Audio/README.md#native-file-transcription-and-translation-contracts). Gateway administration and billing are outside this SDK. Supported model names and account entitlements are configured by the caller and validated by the actual provider; there is no hard-coded model catalog.
+Image exposes separate native JSON and caller-owned multipart editing contracts, including OpenAI native event streaming; see the [Image README](src/Asgard.Loki.Image/README.md#native-image-editing-contracts). The bundled OpenAI provider implements native JSON/multipart nonstream and SSE edits; generation and editing now hold native completion through EOF and transport disposal. Image variations, music generation, video generation and automatic request replay are **not implemented**. Audio exposes native audio-file transcription/translation contracts and an OpenAI multipart provider; see the [Audio README](src/Asgard.Loki.Audio/README.md#native-file-transcription-and-translation-contracts). Gateway administration and billing are outside this SDK. Supported model names and account entitlements are configured by the caller and validated by the actual provider; there is no hard-coded model catalog.
 
 Explicit Claude/Gemini tool-error history now supports two caller-declared formats: a complete Gemini response JSON object, or original error text. Native failure flags, original call IDs and reverse-order parallel associations stay intact; ordinary success objects cannot be implicitly upgraded by an error key. Default conversion and Chat/Responses error destinations remain strict boundaries. See the [error format matrix](src/Asgard.Loki.LLM.Conversion/README.md#explicit-claudegemini-tool-errors).
 
@@ -61,7 +63,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Abstractions` | Generic client and module builder contracts |
 | `Asgard.Loki` | Client implementation and module lifecycle |
 | `Asgard.Loki.LLM` | Six native LLM protocols, routing, Session storage and registration |
-| `Asgard.Loki.Audio` | Independent speech and native file-operation contracts, routing and results |
+| `Asgard.Loki.Audio` | Independent speech, audio-file transcription/translation contracts, routing and results |
 | `Asgard.Loki.Image` | Independent image contracts, routing and results |
 | `Asgard.Loki.Embedding` | Independent native embedding contracts, routing and results; custom adapters |
 | `Asgard.Loki.Rerank` | Independent native reranking contracts, routing and results; custom adapters |

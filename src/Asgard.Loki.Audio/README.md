@@ -37,6 +37,8 @@ Register a provider separately: `Asgard.Loki.Audio.Volcengine` for the existing 
 
 ## Native file transcription and translation contracts
 
+These clients send audio files as inputs to transcription/translation requests. They do not implement independent provider file upload/list/retrieve/download/delete operations or fine-tuning jobs. References to “file operations” in Audio documentation mean these audio inference calls.
+
 `.Audio.Transcriptions.CreateAsync(AudioFileRequest)` and `.Audio.Translations.CreateAsync(AudioFileRequest)` call explicitly configured application-owned adapters. Transcription optionally exposes `.StreamAsync` through `IStreamingAudioTranscriptionAdapter`; all targets in the route must implement it before a stream can be selected. The OpenAI package implements native multipart transcription/translation, native transcription SSE and speech synthesis. Its optional streaming interface preserves delta/segment/done events and validates segment identity/completion without rewriting native text.
 
 `AudioOptions` can configure SpeechRoutes, TranscriptionRoutes and TranslationRoutes independently; at least one operation must have a route. Accessing an unconfigured operation fails. Existing speech initialization and interfaces continue to work. File-operation routes/targets are snapshotted at registration; each client, file operation and model route has its own selection state. There is no Session, shared LLM routing, filtering, retry, failover or fallback to another Audio operation.

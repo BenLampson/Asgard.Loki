@@ -815,6 +815,8 @@ Return ordered decoded audio chunks plus complete raw metadata. Aggregate result
 
 ### Native file operations
 
+Here “file operations” means audio-file transcription and translation. Uploads are inference-request inputs; generic provider file management and model fine-tuning jobs are not implemented.
+
 Audio also owns AudioFileRequest, AudioUpload, ordered AudioMultipartField values, AudioFileResult, AudioResultMetadata, AudioFileUpstreamException and AudioTranscriptionEvent. These contracts separate file transcription and translation from speech synthesis; they do not introduce a new capability/package or a common LLM workflow. Audio.OpenAI implements native multipart file results and explicit transcription SSE.
 
 ```mermaid
