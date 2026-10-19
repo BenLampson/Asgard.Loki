@@ -46,6 +46,8 @@ internal static class StructuredOutputMapping
             if (format.ContainsKey("description")) _ = Text(format["description"]);
         }
         doc.OutputFormat = format;
+        doc.OutputSchemaOrdered = kind == "json_schema" && format["strict"]?.GetValue<bool>() == true
+            && protocol is LlmProtocol.ChatCompletions or LlmProtocol.Responses;
     }
 
     /// <summary>只更改原生格式外壳；不为不支持的目标伪造通用 JSON 工具。</summary>
@@ -73,7 +75,7 @@ internal static class StructuredOutputMapping
             if (format["strict"]?.GetValue<bool>() != true) Loss(doc, "$format.strict", "schema_enforcement_changed");
         }
         if (protocol == LlmProtocol.Gemini)
-            GeminiOutputMapping.Write(Ensure(target, "generationConfig"), format, options);
+            GeminiOutputMapping.Write(Ensure(target, "generationConfig"), format, options, doc);
         else if (type == "json_schema") Ensure(target, "output_config")["format"] = new JsonObject { ["type"] = type, ["schema"] = format["schema"]!.DeepClone() };
         else if (type != "text") Loss(doc, "$format", "unsupported_output_format");
     }

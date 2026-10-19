@@ -60,7 +60,7 @@ internal static class GeminiOutputMapping
     }
 
     /// <summary>目标格式由调用者明确选择；默认保留旧 JSON Schema 外壳，不自动迁移模型配置。</summary>
-    internal static void Write(JsonObject config, JsonObject format, LlmConversionOptions options)
+    internal static void Write(JsonObject config, JsonObject format, LlmConversionOptions options, ConversionDocument doc)
     {
         var type = Text(format["type"]);
         if (options.GeminiOutputFormat == GeminiOutputFormat.ResponseFormat)
@@ -72,7 +72,12 @@ internal static class GeminiOutputMapping
         else
         {
             config["responseMimeType"] = type == "text" ? "text/plain" : "application/json";
-            if (type == "json_schema") config["responseJsonSchema"] = format["schema"]!.DeepClone();
+            if (type == "json_schema")
+            {
+                var typed = options.GeminiOutputFormat == GeminiOutputFormat.LegacySchema;
+                config[typed ? "responseSchema" : "responseJsonSchema"] = typed
+                    ? GeminiSchemaWriter.Write(Object(format["schema"]), doc, "$format.schema", doc.OutputSchemaOrdered) : format["schema"]!.DeepClone();
+            }
         }
     }
 }

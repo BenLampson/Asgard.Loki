@@ -19,6 +19,8 @@ internal sealed class ConversionDocument
     internal JsonObject Reasoning { get; } = [];
     /// <summary>结构化输出规范，Schema 保留原始 JSON，不做降级简化。</summary>
     internal JsonObject? OutputFormat { get; set; }
+    /// <summary>源文本结构化输出承诺按 properties 顺序生成；普通函数参数不继承此承诺。</summary>
+    internal bool OutputSchemaOrdered { get; set; }
     /// <summary>规范化函数定义。</summary>
     internal JsonArray Tools { get; } = [];
     /// <summary>规范化工具选择。</summary>
