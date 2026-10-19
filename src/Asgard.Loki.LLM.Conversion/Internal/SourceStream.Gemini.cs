@@ -18,6 +18,7 @@ internal sealed partial class SourceStream
         {
             var candidate = Object(node); Check(candidate, Document, "$event.candidates[]", "index", "content", "finishReason");
             if ((candidate["index"]?.GetValue<int>() ?? 0) != 0) throw new NotSupportedException("流式转换只支持一个候选。");
+            if (candidate.ContainsKey("groundingMetadata")) _geminiGrounding.Add(candidate["groundingMetadata"]);
             if (candidate["content"] is JsonObject content)
             {
                 Check(content, Document, "$event.content", "role", "parts");

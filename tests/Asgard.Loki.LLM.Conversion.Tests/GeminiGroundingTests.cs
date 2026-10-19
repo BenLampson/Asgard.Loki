@@ -35,7 +35,7 @@ public sealed class GeminiGroundingTests
     [InlineData("part")] [InlineData("negative")] [InlineData("fraction")] [InlineData("overflow")]
     [InlineData("null-index")] [InlineData("string-index")] [InlineData("source")] [InlineData("source-negative")]
     [InlineData("source-fraction")] [InlineData("text")] [InlineData("non-text-part")] [InlineData("oneof")]
-    [InlineData("uri")]
+    [InlineData("uri")] [InlineData("image-oneof")]
     public void InvalidRangeOrAssociation_IsHardFailure(string kind)
     {
         foreach (var allowLoss in new[] { false, true })
@@ -44,6 +44,7 @@ public sealed class GeminiGroundingTests
             var support = metadata["groundingSupports"]![0]!.AsObject(); var segment = support["segment"]!.AsObject();
             switch (kind)
             {
+                case "image-oneof": metadata["groundingChunks"]![0]!["image"] = new JsonObject(); break;
                 case "start-byte": segment["startIndex"] = 4; break;
                 case "end-byte": segment["endIndex"] = 5; break;
                 case "reversed": segment["startIndex"] = 10; segment["endIndex"] = 3; break;

@@ -17,6 +17,7 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
     private int _toolCount;
     private static readonly System.Text.UTF8Encoding StrictUtf8 = new(false, true);
     private readonly ResponseStreamAnnotations _responseAnnotations = new(maximumAnnotations, maximumAnnotationBytes);
+    private readonly GeminiStreamGrounding _geminiGrounding = new(maximumAnnotations, maximumAnnotationBytes);
 
     /// <summary>跨事件维护的单次转换文档。</summary>
     internal ConversionDocument Document { get; } = new() { CitationIndexUnit = citationIndexUnit };
@@ -29,8 +30,8 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
         Document.Diagnostics.AddRange(HostedSearchOutput.Inspect(data, protocol));
         if (data["error"] is not null || data["type"]?.GetValue<string>() is "error" or "response.failed")
             throw new LlmConversionException([new("upstream_stream_error", "$event.error", "上游错误事件不能转换为成功终态。")]);
-        if (_terminal && !IsUsageTail(data))
-            throw new InvalidDataException("源流终态之后只允许独立用量尾块，不能重复结束或追加内容。");
+        if (_terminal && !IsAllowedTail(data))
+            throw new InvalidDataException("源流终态之后只允许独立用量或无内容 grounding 元数据，不能重复结束或追加内容。");
         switch (protocol)
         {
             case LlmProtocol.ChatCompletions: Chat(data, changes); break;
@@ -41,10 +42,14 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
         return changes;
     }
 
-    /// <summary>允许供应商在明确终态后发送独立用量，不允许隐藏新的候选或错误终态。</summary>
-    private bool IsUsageTail(JsonObject data)
+    /// <summary>允许原生用量及 Gemini 无内容 grounding 尾帧，不允许隐藏新文本、候选或第二个结束标志。</summary>
+    private bool IsAllowedTail(JsonObject data)
     {
         if (protocol is not (LlmProtocol.ChatCompletions or LlmProtocol.Gemini)) return false;
+        if (protocol == LlmProtocol.Gemini && !data.All(field => field.Key is "responseId" or "modelVersion" or "candidates" or "usageMetadata")) return false;
+        if (protocol == LlmProtocol.Gemini && data["candidates"] is JsonArray { Count: 1 } groundingCandidates
+            && groundingCandidates[0] is JsonObject candidate && candidate.ContainsKey("groundingMetadata")
+            && candidate.All(field => field.Key is "index" or "groundingMetadata")) return true;
         var candidates = protocol == LlmProtocol.ChatCompletions ? "choices" : "candidates";
         return data[protocol == LlmProtocol.ChatCompletions ? "usage" : "usageMetadata"] is JsonObject
             && (protocol == LlmProtocol.Gemini && !data.ContainsKey(candidates) || data[candidates] is JsonArray values && values.Count == 0);
@@ -54,6 +59,7 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
     internal List<StreamChange> Complete()
     {
         if (!_terminal) throw new InvalidDataException("源流缺少协议终态，转换不会伪造成功。");
+        if (protocol == LlmProtocol.Gemini) _geminiGrounding.Complete();
         List<StreamChange> changes = [];
         for (var i = 0; i < _message.Blocks.Count; i++)
             if (Text(_message.Blocks[i]["type"]) == "call") CompleteTool(i, changes);

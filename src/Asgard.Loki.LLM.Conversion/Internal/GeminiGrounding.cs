@@ -60,7 +60,7 @@ internal static class GeminiGrounding
     /// <summary>只接受明确的公开 HTTP(S) Web 来源；检索私有上下文和地图来源不冒充 URL 引用。</summary>
     private static JsonObject? Source(JsonObject chunk, ConversionDocument doc, string path)
     {
-        if (new[] { "web", "retrievedContext", "maps" }.Count(chunk.ContainsKey) > 1)
+        if (new[] { "web", "image", "retrievedContext", "maps" }.Count(chunk.ContainsKey) > 1)
             throw new InvalidDataException("grounding 来源必须满足原生 oneof 约束。");
         if (!chunk.ContainsKey("web")) { Loss(doc, path, "grounding_source_not_representable"); return null; }
         Check(chunk, doc, path, "web"); var web = Object(chunk["web"]);

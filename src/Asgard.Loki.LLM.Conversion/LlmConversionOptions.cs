@@ -37,8 +37,8 @@ public sealed record LlmConversionOptions
     public int MaxToolConversionOutputCalls { get; init; } = 128;
     /// <summary>custom 输入、字符串结果及富结果数组 JSON 的最大 UTF-8 字节数；不截断内容。</summary>
     public int MaxCustomToolInputBytes { get; init; } = 1024 * 1024;
-    /// <summary>单次跨协议 Responses 流保留的原生引用条目总上限；同一条目的完成快照不重复计数。</summary>
+    /// <summary>单次跨协议流保留的原生引用条目上限；Responses 完成快照不重复计数，Gemini 新来源/支持共用额度。</summary>
     public int MaxStreamAnnotations { get; init; } = 1024;
-    /// <summary>单次跨协议 Responses 流保留引用 JSON 的累计 UTF-8 字节上限，不截断或丢弃超限内容。</summary>
+    /// <summary>单次跨协议流保留引用/grounding 条目 JSON 的累计 UTF-8 字节上限，不截断或丢弃超限内容。</summary>
     public int MaxStreamAnnotationBytes { get; init; } = 1024 * 1024;
 }
