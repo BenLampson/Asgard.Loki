@@ -19,6 +19,7 @@ class Rerank["Asgard.Loki.Rerank"]
 class OpenAIEmbedding["Asgard.Loki.Embedding.OpenAI"]
 class GoogleEmbedding["Asgard.Loki.Embedding.Google"]
 class CohereRerank["Asgard.Loki.Rerank.Cohere"]
+class JinaRerank["Asgard.Loki.Rerank.Jina"]
 class Video["Asgard.Loki.Video"]
 class Ark["Asgard.Loki.LLM.Volcengine"]
 class OpenAILLM["Asgard.Loki.LLM.OpenAI"]
@@ -36,6 +37,7 @@ Rerank ..> Abstractions
 OpenAIEmbedding ..> Embedding
 GoogleEmbedding ..> Embedding
 CohereRerank ..> Rerank
+JinaRerank ..> Rerank
 Video ..> Abstractions
 Ark ..> LLM
 OpenAILLM ..> LLM
@@ -565,7 +567,7 @@ Registration snapshots route/target collections. Each client gets separate per-r
 
 The core reserves public routing `Model` and retains all native query/documents/options in `Parameters`. It neither rewrites structured or multimodal documents nor imposes one supplier's top-n/score/index representation on another. Complete native result Data is an independent snapshot; metadata distinguishes public/upstream model and provider ID. Native supplier adapters must validate successful/error responses and original document association, and provide their own convenience views. Core does not compute scores, sort results, fabricate indices, normalize missing values or calculate usage. Raw upstream usage/metadata preservation is not billing logic.
 
-The core-contract checkpoint is verified with custom in-memory adapters. `Asgard.Loki.Rerank.Cohere` adds the first bundled native supplier; Jina remains separate work. No ranking quality/live provider claim is made. Rerank is a single explicitly requested model operation, not an embedding database, retriever, RAG coordinator, application search endpoint, background service or hosted batch system.
+The core contract is verified with custom in-memory adapters. `Asgard.Loki.Rerank.Cohere` and `Asgard.Loki.Rerank.Jina` add independent native suppliers. No ranking quality/live provider claim is made. Rerank is a single explicitly requested model operation, not an embedding database, retriever, RAG coordinator, application search endpoint, background service or hosted batch system.
 
 ### Native Cohere reranking
 
@@ -586,6 +588,25 @@ v1 string/document inputs, rank-fields order and returned-document intent stay n
 Native JSON results retain complete order and metadata. The adapter checks the requested result count, unique original input indices and finite unit-interval scores without sorting or normalizing. v1 returned document text and every original object field must match the indexed input exactly; explicitly requested documents must be present. Provider-owned `CohereRankings`/`CohereRerankItem` expose raw data and convenience fields without adding a shared ranking schema to the core. Views constructed without a request cannot certify request association. `double` views do not replace original JSON number precision.
 
 HTTP and successful-envelope errors propagate with native status/body. Non-JSON, duplicates, truncated JSON, invalid associations or successful SSE fail explicitly; SSE is rejected before body reading. Each call owns its HTTP request/client/response, while factories and adapters remain borrowed. Cancellation before dispatch, during send/body reads and after body aggregation cannot become a successful result. No retry, fallback, score-quality claim, billing operation or live Cohere verification is introduced. See the [supplier support matrix](../src/Asgard.Loki.Rerank.Cohere/README.md).
+
+### Native Jina reranking
+
+`JinaRerankAdapter` implements only `IRerankAdapter`; its package references only Rerank and standard HTTP dependencies. Complete target options hold actual model, versioned base address, credential and named borrowed HTTP factory. The model string is sent unchanged, with no local model-name catalog, automatic modality selection or fallback. Jina owns the acceptance of each model's native text/multimodal/listwise request form.
+
+```mermaid
+classDiagram
+JinaRerankAdapter ..|> IRerankAdapter
+JinaRerankAdapter --> JinaRerankOptions
+JinaRerankAdapter ..> RerankResult
+JinaRerankExtensions ..> RerankResult
+JinaRerankExtensions ..> JinaRerankItem
+```
+
+Queries retain native strings or ImageDoc objects; documents retain string/TextDoc/ImageDoc arrays, media references and extension fields. The SDK does not fetch images, convert objects, guess MIME, trim text or add native defaults. Known `text`/`image` ambiguity is rejected explicitly. Nullable options remain distinct from omission/false. Exact integer validation preserves native numeric JSON and does not cap top-n or raw token counters at Int32. Current max-doc-length validation follows the native 1–8192 bound; upstream model acceptance remains separate.
+
+Successful JSON must contain native model, usage and complete ranked results. Original indices must be unique and belong to the dispatched candidates; document content must match its indexed original text/image. A returned bare string keeps its native container and can be matched through the original index; an explicitly typed object cannot silently change modality. Unknown input metadata has no promised upstream echo. Required documents follow the native omitted-option default or explicit true; null is not reinterpreted as true. Explicit returned embeddings must exist for every ranked item and stay attached to its index. No shared Embedding contract, vector computation or normalization is added.
+
+Jina scores require finite numbers without importing Cohere's unit-interval rule. Full raw numbers, usage, item/media/embedding containers and future fields remain unchanged in `Data`; convenience vectors are copied. Without a request, provider-owned views can validate native shape but cannot certify original-document identity or the expected result count. HTTP status/native error bodies, strict JSON/truncation/duplicate handling, header-stage SSE refusal, cancellation and borrowed ownership follow the independent supplier pattern. No retry/failover, live model or quality claim is added. See the [Jina supplier guide](../src/Asgard.Loki.Rerank.Jina/README.md).
 
 ## 7. HTTP and errors
 

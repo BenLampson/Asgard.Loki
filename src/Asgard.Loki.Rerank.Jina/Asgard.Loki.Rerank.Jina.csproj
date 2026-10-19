@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Native Jina text and multimodal reranking provider for Asgard.Loki.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Rerank/Asgard.Loki.Rerank.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>
