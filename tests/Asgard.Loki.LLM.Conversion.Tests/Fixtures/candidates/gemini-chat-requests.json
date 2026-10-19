@@ -1,0 +1,127 @@
+{
+  "provenance": {
+    "kind": "Independently authored complete request/target shapes; no converter-derived expectations.",
+    "source": "Pinned New API internal/gemini_chat/to_oai_chat_req.go maps GenerationConfig.CandidateCount to OpenAIRequest.N.",
+    "scope": "Only Gemini candidateCount to Chat n. Current pinned Chat to Gemini request code does not map n, so that inverse request setting remains unsupported. No multi-candidate stream claim."
+  },
+  "cases": [
+    {
+      "name": "count-settings",
+      "source": {
+        "model": "model-a",
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "structured é 😀"
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "candidateCount": 2,
+          "maxOutputTokens": 64,
+          "temperature": 0,
+          "topP": 1,
+          "thinkingConfig": {
+            "thinkingLevel": "HIGH"
+          },
+          "responseMimeType": "application/json",
+          "responseJsonSchema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "n": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 9007199254740993
+              }
+            },
+            "required": [
+              "ok",
+              "n"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "target": {
+        "model": "model-a",
+        "messages": [
+          {
+            "role": "user",
+            "content": "structured é 😀"
+          }
+        ],
+        "max_completion_tokens": 64,
+        "temperature": 0,
+        "top_p": 1,
+        "reasoning_effort": "high",
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean"
+                },
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "ok",
+                "n"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true,
+            "name": "Answer"
+          }
+        },
+        "n": 2
+      }
+    },
+    {
+      "name": "count-one",
+      "source": {
+        "model": "model-a",
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "one"
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "candidateCount": 1,
+          "maxOutputTokens": 32
+        }
+      },
+      "target": {
+        "model": "model-a",
+        "messages": [
+          {
+            "role": "user",
+            "content": "one"
+          }
+        ],
+        "max_completion_tokens": 32,
+        "n": 1
+      }
+    }
+  ]
+}
