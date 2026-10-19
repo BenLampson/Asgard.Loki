@@ -1,0 +1,35 @@
+{
+  "provenance": {
+    "kind": "independently authored offline native protocol transcript; not live provider output",
+    "connection": "https://developers.openai.com/api/docs/guides/realtime-websocket",
+    "events": "https://developers.openai.com/api/docs/guides/realtime-conversations",
+    "checked": "2026-10-20",
+    "scope": "Realtime JSON WebSocket only; not GPT-Live, Responses WebSocket, WebRTC or SIP"
+  },
+  "address": "wss://a.invalid/custom/v1/realtime?model=actual-a",
+  "client": [
+    {"type":"session.update","event_id":"client_config","session":{"type":"realtime","instructions":"你好","output_modalities":["text"],"tools":[{"type":"function","name":"lookup","parameters":{"type":"object","properties":{"x":{"type":"integer"}},"required":["x"]}}],"future":{"zero":0,"disabled":false,"optional":null}}},
+    {"type":"conversation.item.create","event_id":"client_input","item":{"type":"message","role":"user","content":[{"type":"input_text","text":"查一下"}],"future":null}},
+    {"type":"response.create","event_id":"client_generate","response":{"output_modalities":["text"],"metadata":{"request":"one"}}},
+    {"type":"conversation.item.create","event_id":"client_tool","item":{"type":"function_call_output","call_id":"call_lookup","output":"{\"x\":0,\"ok\":false}"}},
+    {"type":"input_audio_buffer.append","event_id":"client_audio","audio":"AAECAw==","future":{"keep":true}},
+    {"type":"response.cancel","event_id":"client_cancel","response_id":"resp_cancel"},
+    {"type":"conversation.item.truncate","event_id":"client_truncate","item_id":"item_audio","content_index":0,"audio_end_ms":0}
+  ],
+  "server": [
+    {"type":"session.created","event_id":"server_session","session":{"id":"sess_upstream","type":"realtime","model":"actual-a","future":{"keep":false}}},
+    {"type":"session.updated","event_id":"server_config","session":{"id":"sess_upstream","type":"realtime","model":"actual-a","instructions":"你好"}},
+    {"type":"error","event_id":"server_error","error":{"type":"invalid_request_error","code":"invalid_value","message":"Rejected client event","param":"type","event_id":"client_bad","future":null}},
+    {"type":"response.created","event_id":"server_response","response":{"id":"resp_tool","status":"in_progress","output":[]}},
+    {"type":"response.output_item.added","event_id":"server_tool","response_id":"resp_tool","output_index":0,"item":{"id":"item_tool","type":"function_call","call_id":"call_lookup","name":"lookup","arguments":""}},
+    {"type":"response.function_call_arguments.delta","event_id":"server_args","response_id":"resp_tool","item_id":"item_tool","output_index":0,"call_id":"call_lookup","delta":"{\"x\":0}"},
+    {"type":"response.function_call_arguments.done","event_id":"server_args_done","response_id":"resp_tool","item_id":"item_tool","output_index":0,"call_id":"call_lookup","name":"lookup","arguments":"{\"x\":0}"},
+    {"type":"response.done","event_id":"server_done","response":{"id":"resp_tool","status":"completed","output":[{"id":"item_tool","type":"function_call","status":"completed","call_id":"call_lookup","name":"lookup","arguments":"{\"x\":0}"}],"usage":{"total_tokens":7,"input_tokens":5,"output_tokens":2,"input_token_details":{"cached_tokens":0,"text_tokens":5,"audio_tokens":0},"output_token_details":{"text_tokens":2,"audio_tokens":0},"future":false}}},
+    {"type":"response.output_audio.delta","event_id":"server_audio","response_id":"resp_audio","item_id":"item_audio","output_index":0,"content_index":0,"delta":"AAECAw==","future":{"opaque":"signed-value"}},
+    {"type":"response.done","event_id":"server_cancelled","response":{"id":"resp_cancel","status":"cancelled","status_details":{"type":"cancelled","reason":"client_cancelled"},"output":[],"usage":null}},
+    {"type":"response.done","event_id":"server_incomplete","response":{"id":"resp_limited","status":"incomplete","status_details":{"type":"incomplete","reason":"max_output_tokens"},"output":[],"usage":{"total_tokens":0,"input_tokens":0,"output_tokens":0}}},
+    {"type":"response.done","event_id":"server_failed","response":{"id":"resp_failed","status":"failed","status_details":{"type":"failed","error":{"type":"server_error","code":"failure","message":"Failed generation"}},"output":[],"usage":null}},
+    {"type":"rate_limits.updated","event_id":"server_limit","rate_limits":[{"name":"tokens","limit":100,"remaining":0,"reset_seconds":1.5}]},
+    {"type":"vendor.future","event_id":"server_future","payload":{"false":false,"null":null,"zero":0,"unicode":"𐐀你好","items":[0,null,false]}}
+  ]
+}
