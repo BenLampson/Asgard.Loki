@@ -19,6 +19,7 @@ $packageIds = @(
     'Asgard.Loki.Audio',
     'Asgard.Loki.Image',
     'Asgard.Loki.Embedding',
+    'Asgard.Loki.Rerank',
     'Asgard.Loki.Video',
     'Asgard.Loki.LLM.Volcengine',
     'Asgard.Loki.LLM.OpenAI',

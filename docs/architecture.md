@@ -15,6 +15,7 @@ class LLM["Asgard.Loki.LLM"]
 class Audio["Asgard.Loki.Audio"]
 class Image["Asgard.Loki.Image"]
 class Embedding["Asgard.Loki.Embedding"]
+class Rerank["Asgard.Loki.Rerank"]
 class OpenAIEmbedding["Asgard.Loki.Embedding.OpenAI"]
 class GoogleEmbedding["Asgard.Loki.Embedding.Google"]
 class Video["Asgard.Loki.Video"]
@@ -30,6 +31,7 @@ LLM ..> Abstractions
 Audio ..> Abstractions
 Image ..> Abstractions
 Embedding ..> Abstractions
+Rerank ..> Abstractions
 OpenAIEmbedding ..> Embedding
 GoogleEmbedding ..> Embedding
 Video ..> Abstractions
@@ -57,7 +59,7 @@ participant Caller
 participant Extension as Capability extension
 participant Builder as ILokiClientBuilder
 participant Client as ILokiClient
-Caller->>Extension: AddLLM / AddAudio / AddImage / AddEmbedding
+Caller->>Extension: AddLLM / AddAudio / AddImage / AddEmbedding / AddRerank
 Extension->>Extension: Validate and snapshot configuration
 Extension->>Builder: AddModule(factory)
 Caller->>Builder: Build()
@@ -540,6 +542,28 @@ Single bodies retain their native Content/configuration without a root model ali
 Native single/batch response shapes remain separate. Vectors require nonempty finite numerical values; count and each declared dimension match the original request position. Different batch items may request different dimensions, so no uniform-width rule from OpenAI is reused. Numeric ProtoJSON strings retain their original JSON. Google does not provide native input indices here: `GoogleEmbeddingVector` and `EmbeddingResult.GoogleEmbeddings` preserve array order without adding an index. Unknown shape/statistics/usage fields are retained, missing usage stays unknown, and first-party shape-only tensors are not silently converted into public vectors. Metadata records the configured complete target; no conversational Session is introduced.
 
 The adapter rejects invalid/error/duplicate/incomplete JSON and unexpected SSE; the latter is rejected at headers before reading. HTTP/business errors preserve actual status/body. Cancellation, borrowed factory/adapter ownership and per-call request/response disposal follow the Embedding contract. No retries, automatic batch splitting, media upload/download, tokenizer, vector store, RAG or billing are added. Six complete request fixtures and public SDK/lifecycle tests are offline transport evidence, not live media/model acceptance or vector-quality verification. Async batch jobs and Vertex identity are separate operations/providers.
+
+## 6b. Reranking
+
+`Asgard.Loki.Rerank` is a separate capability referencing only Abstractions. It owns `RerankClient`, `RerankRequest`, `RerankResult`, `RerankResultMetadata`, `RerankOptions`, `RerankRoute`, `IRerankAdapter` and `RerankUpstreamException`. It never references Embedding/LLM, reuses their request/result types or adds business contracts to the unified abstractions.
+
+```mermaid
+classDiagram
+ILokiClientBuilder --> RerankExtensions : AddRerank
+RerankExtensions --> RerankConfiguration : eager validated snapshot
+RerankConfiguration --> RerankClient : lazy per-client module
+RerankClient --> RerankRouteState : independent selection
+RerankRouteState --> IRerankAdapter : one complete native target
+IRerankAdapter --> RerankRequest : native Parameters
+IRerankAdapter --> RerankResult : native Data and Metadata
+RerankResult --> RerankResultMetadata
+```
+
+Registration snapshots route/target collections. Each client gets separate per-route round-robin counters over caller-owned adapters. Each adapter encapsulates the complete native server/model/credentials/dialect. A call snapshots native JSON, selects once and forwards cancellation, with no retry/failover or conversational Session. Unknown model aliases, root model overrides and non-JSON Undefined parameters fail before target dispatch. Pre-cancelled calls do not advance selection. Client disposal does not take ownership of borrowed adapters or factories.
+
+The core reserves public routing `Model` and retains all native query/documents/options in `Parameters`. It neither rewrites structured or multimodal documents nor imposes one supplier's top-n/score/index representation on another. Complete native result Data is an independent snapshot; metadata distinguishes public/upstream model and provider ID. Native supplier adapters must validate successful/error responses and original document association, and provide their own convenience views. Core does not compute scores, sort results, fabricate indices, normalize missing values or calculate usage. Raw upstream usage/metadata preservation is not billing logic.
+
+The core-contract checkpoint is verified with custom in-memory adapters only; bundled Cohere/Jina HTTP implementations remain separate work. No ranking quality/live provider claim is made. Rerank is a single explicitly requested model operation, not an embedding database, retriever, RAG coordinator, application search endpoint, background service or hosted batch system.
 
 ## 7. HTTP and errors
 
