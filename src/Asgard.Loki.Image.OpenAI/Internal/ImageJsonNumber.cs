@@ -5,7 +5,7 @@ using System.Text.Json;
 namespace Asgard.Loki.Image.OpenAI.Internal;
 
 /// <summary>精确验证原生索引/计数的非负整数性，不转浮点、不按指数展开内存或重写原文。</summary>
-internal static class ImageEditJsonNumber
+internal static class ImageJsonNumber
 {
     /// <summary>数学整数可以带小数/指数形式；极小负数或近整数小数不会因舍入而被接受。</summary>
     internal static bool IsNonNegativeInteger(JsonElement value)

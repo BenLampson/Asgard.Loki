@@ -15,7 +15,7 @@ internal static class OpenAiImageEditPayload
         ArgumentNullException.ThrowIfNull(request.Parameters);
         if (request.Parameters.ContainsKey("model") || request.Parameters.ContainsKey("prompt")) throw new ArgumentException("编辑参数不能覆盖绑定字段。");
         foreach (var pair in request.Parameters)
-        { Text(pair.Key); if (pair.Value.ValueKind == JsonValueKind.Undefined) throw new ArgumentException("编辑 JSON 不能含 Undefined。"); OpenAiImageEditResponse.Unique(pair.Value); }
+        { Text(pair.Key); if (pair.Value.ValueKind == JsonValueKind.Undefined) throw new ArgumentException("编辑 JSON 不能含 Undefined。"); ImageNativeJson.Unique(pair.Value); }
         var parameters = request.Parameters.ToDictionary(p => p.Key, p => p.Value.Clone(), StringComparer.Ordinal);
         if (!parameters.TryGetValue("images", out var images) || images.ValueKind != JsonValueKind.Array || images.GetArrayLength() == 0)
             throw new ArgumentException("JSON 编辑要求非空 images 原生引用数组。");

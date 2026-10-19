@@ -1,7 +1,7 @@
 namespace Asgard.Loki.Image.OpenAI.Internal;
 
 /// <summary>按解码前原始字节校验 SSE 长度，不接管源流的生命周期或查询其长度。</summary>
-internal sealed class ImageEditCountingStream(Stream source, long? expected) : Stream
+internal sealed class ImageCountingStream(Stream source, long? expected) : Stream
 {
     private long _bytes;
     public override bool CanRead => source.CanRead;
@@ -18,7 +18,7 @@ internal sealed class ImageEditCountingStream(Stream source, long? expected) : S
     private int Count(int read)
     {
         _bytes = checked(_bytes + read);
-        if (expected is { } length && (_bytes > length || read == 0 && _bytes != length)) throw new InvalidDataException("编辑 SSE 长度与 Content-Length 不符。");
+        if (expected is { } length && (_bytes > length || read == 0 && _bytes != length)) throw new InvalidDataException("图像 SSE 长度与 Content-Length 不符。");
         return read;
     }
     public override void Flush() => throw new NotSupportedException();

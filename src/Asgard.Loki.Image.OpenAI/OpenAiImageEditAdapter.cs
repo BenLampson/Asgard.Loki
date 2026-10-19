@@ -73,7 +73,7 @@ public sealed class OpenAiImageEditAdapter : IStreamingImageEditAdapter
             var metadata = new ImageResultMetadata(publicModel, _options.Model, Id);
             if (!response.IsSuccessStatusCode || !string.Equals(response.Content.Headers.ContentType?.MediaType, "text/event-stream", StringComparison.OrdinalIgnoreCase))
             {
-                OpenAiImageEditResponse.Headers(response); var body = await OpenAiImageEditResponse.ReadAsync(response, token).ConfigureAwait(false);
+                ImageResponseBody.RequireJson(response); var body = await ImageResponseBody.ReadAsync(response, token).ConfigureAwait(false);
                 _ = OpenAiImageEditResponse.Result(response, body, metadata);
                 throw new InvalidDataException("编辑流式入口未返回 SSE，不将普通结果改造成事件流。");
             }
@@ -99,8 +99,8 @@ public sealed class OpenAiImageEditAdapter : IStreamingImageEditAdapter
         using (var client = _factory.CreateClient(_options.HttpClientName))
         {
             using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
-            OpenAiImageEditResponse.Headers(response);
-            var body = await OpenAiImageEditResponse.ReadAsync(response, token).ConfigureAwait(false);
+            ImageResponseBody.RequireJson(response);
+            var body = await ImageResponseBody.ReadAsync(response, token).ConfigureAwait(false);
             result = OpenAiImageEditResponse.Result(response, body, new(publicModel, _options.Model, Id));
         }
         token.ThrowIfCancellationRequested(); return result;
