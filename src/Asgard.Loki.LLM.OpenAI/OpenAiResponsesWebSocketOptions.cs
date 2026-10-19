@@ -9,4 +9,6 @@ public sealed record OpenAiResponsesWebSocketOptions
     public int MaximumPendingRequests { get; init; } = 256;
     /// <summary>连接保留的响应身份数量上限，默认 4096；达到上限后由调用者显式建立新连接。</summary>
     public int MaximumTrackedResponses { get; init; } = 4096;
+    /// <summary>连接保留的显式客户端 event_id 数量上限，默认 4096，防止迟到错误关联到复用 ID。</summary>
+    public int MaximumTrackedEventIds { get; init; } = 4096;
 }

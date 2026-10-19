@@ -42,6 +42,7 @@ public sealed class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapt
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_webSocketOptions.MaximumMessageBytes, 0);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_webSocketOptions.MaximumPendingRequests, 0);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_webSocketOptions.MaximumTrackedResponses, 0);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_webSocketOptions.MaximumTrackedEventIds, 0);
         Id = id;
     }
 

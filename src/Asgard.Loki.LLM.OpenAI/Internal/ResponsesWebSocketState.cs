@@ -9,6 +9,7 @@ internal sealed partial class ResponsesWebSocketState(OpenAiResponsesWebSocketOp
     private readonly List<ResponsesWebSocketSubmission> _pending = [];
     private readonly Dictionary<string, ResponsesWebSocketResponseState> _responses = new(StringComparer.Ordinal);
     private readonly Dictionary<string, string> _active = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _eventIds = new(StringComparer.Ordinal);
     /// <summary>没有 lane 的连接级错误会终止连接，但原始错误事件先交给调用者。</summary>
     internal bool Fatal { get; private set; }
 
@@ -27,14 +28,20 @@ internal sealed partial class ResponsesWebSocketState(OpenAiResponsesWebSocketOp
         }
         else if (type == "response.cancel" && previous is not null && _responses.TryGetValue(previous, out var cancelled)) lane = cancelled.Lane;
         var eventId = Optional(data, "event_id");
-        if (eventId is not null && (_pending.Any(item => item.EventId == eventId) || _responses.Values.Any(item => item.EventId == eventId)))
+        if (eventId is not null && _eventIds.Contains(eventId))
             throw new ArgumentException("连接内已关联的 event_id 不能重复。");
+        if (eventId is not null && _eventIds.Count >= options.MaximumTrackedEventIds)
+            throw new InvalidOperationException("连接显式事件身份数量超过上限。");
         if (_pending.Count >= options.MaximumPendingRequests) throw new InvalidOperationException("WebSocket 等待提交数量超过显式上限。");
-        var request = new ResponsesWebSocketSubmission(type, lane, previous, eventId); _pending.Add(request); return request;
+        var request = new ResponsesWebSocketSubmission(type, lane, previous, eventId); _pending.Add(request);
+        if (eventId is not null) _eventIds.Add(eventId); return request;
     }
 
     /// <summary>本地未发出的请求只撤销自己的登记，不修改其他并行生成。</summary>
-    internal void Rollback(ResponsesWebSocketSubmission? request) { if (request is not null) _pending.Remove(request); }
+    internal void Rollback(ResponsesWebSocketSubmission? request)
+    {
+        if (request is not null && _pending.Remove(request) && request.EventId is not null) _eventIds.Remove(request.EventId);
+    }
 
     /// <summary>未知事件原样传出；只对已知响应与控制关联实施生命周期校验。</summary>
     internal void Accept(JsonElement data)
@@ -83,7 +90,7 @@ internal sealed partial class ResponsesWebSocketState(OpenAiResponsesWebSocketOp
                 _pending.Remove(consumed);
             }
             foreach (var steer in steers) _pending.Remove(steer);
-            state = new(lane, consumed?.EventId); _responses.Add(id, state);
+            state = new(lane); _responses.Add(id, state);
         }
         if (state.Lane != lane || state.Terminal) throw new InvalidDataException("原生响应 lane 改变或在终态后继续发生生命周期事件。");
         var status = Optional(response, "status");
@@ -115,7 +122,8 @@ internal sealed partial class ResponsesWebSocketState(OpenAiResponsesWebSocketOp
         if (eventId is null && data.TryGetProperty("error", out var error) && error.ValueKind == JsonValueKind.Object) eventId = Optional(error, "event_id");
         var matched = eventId is null ? null : _pending.SingleOrDefault(item => item.EventId == eventId);
         if (matched is not null) { _pending.Remove(matched); return; }
-        if (eventId is not null && _responses.Values.Any(item => item.EventId == eventId)) return;
+        // 已结束控制的迟到错误或未知 ID 都不能推断为另一个未关联创建的失败。
+        if (eventId is not null) return;
         if (Optional(data, "response_id") is not null) return;
         // 原生无 lane 的错误在存在命名流时属于连接级，不能把它误当成某一流的成功完成。
         if (lane.Length == 0 && (_active.Keys.Any(key => key.Length != 0) || _pending.Any(item => item.Lane.Length != 0))) { Fatal = true; return; }

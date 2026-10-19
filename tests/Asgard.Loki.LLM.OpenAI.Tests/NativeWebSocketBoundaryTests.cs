@@ -75,4 +75,51 @@ public sealed class NativeWebSocketBoundaryTests
         await Assert.ThrowsAsync<ArgumentException>(async () => await connection.SendAsync(Create("other", "same"), TestContext.Current.CancellationToken));
         Assert.Equal(1, factory.Sockets.Single().SendAttempts);
     }
+
+    /// <summary>已经完成的控制 ID 也不能复用于新创建，否则迟到错误无法区分。</summary>
+    [Fact]
+    public async Task CompletedControlEventId_CannotBeReused()
+    {
+        var factory = new StubResponsesWebSocketFactory(); await using var client = Build(factory);
+        await using var connection = await client.LLM.Responses.OpenWebSocketAsync("public", Call(), TestContext.Current.CancellationToken);
+        await connection.SendAsync(Create("main"), TestContext.Current.CancellationToken); var socket = factory.Sockets.Single(); socket.Text(Lifecycle("response.created", lane: "main"));
+        await using var events = connection.ReadEventsAsync(TestContext.Current.CancellationToken).GetAsyncEnumerator(TestContext.Current.CancellationToken); Assert.True(await events.MoveNextAsync());
+        await connection.SendAsync(new() { ["type"] = "response.cancel", ["response_id"] = "resp_1", ["event_id"] = "cancel" }, TestContext.Current.CancellationToken);
+        socket.Text(Lifecycle("response.completed", lane: "main")); Assert.True(await events.MoveNextAsync());
+        await Assert.ThrowsAsync<ArgumentException>(async () => await connection.SendAsync(Create("main", "cancel"), TestContext.Current.CancellationToken));
+        Assert.Equal(2, socket.SendAttempts);
+    }
+
+    /// <summary>历史显式事件 ID 有独立上限，完成控制不会解除歧义保护，也不无限占用内存。</summary>
+    [Fact]
+    public async Task EventIdentityLimit_IsExplicitAndCheckedBeforeIo()
+    {
+        var factory = new StubResponsesWebSocketFactory(); await using var client = Build(factory, new() { MaximumTrackedEventIds = 1 });
+        await using var connection = await client.LLM.Responses.OpenWebSocketAsync("public", Call(), TestContext.Current.CancellationToken);
+        await connection.SendAsync(Create("main", "first"), TestContext.Current.CancellationToken);
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await connection.SendAsync(Create("other", "second"), TestContext.Current.CancellationToken));
+        Assert.Equal(1, factory.Sockets.Single().SendAttempts);
+    }
+
+    /// <summary>事件 ID 的无效资源策略也在初始化阶段拒绝。</summary>
+    [Fact]
+    public void InvalidEventIdentityLimit_FailsAtInitialization()
+    {
+        using var handler = new StubHttpHandler((_, _) => throw new InvalidOperationException());
+        Assert.Throws<ArgumentOutOfRangeException>(() => new OpenAiLlmProvider(new StubHttpClientFactory(handler),
+            new OpenAiResponsesWebSocketOptions { MaximumTrackedEventIds = 0 }));
+    }
+
+    /// <summary>本地超限而从未发送的正文回滚事件和待处理名额，调用者可显式纠正后再发送。</summary>
+    [Fact]
+    public async Task LocallyUnsentRequest_RollsBackEventIdentityReservation()
+    {
+        var factory = new StubResponsesWebSocketFactory(); await using var client = Build(factory, new()
+        { MaximumMessageBytes = 256, MaximumPendingRequests = 1, MaximumTrackedEventIds = 1 });
+        await using var connection = await client.LLM.Responses.OpenWebSocketAsync("public", Call(), TestContext.Current.CancellationToken);
+        var oversized = Create("main", "request"); oversized["input"] = new string('x', 4096);
+        await Assert.ThrowsAsync<ArgumentException>(async () => await connection.SendAsync(oversized, TestContext.Current.CancellationToken));
+        await connection.SendAsync(Create("main", "request"), TestContext.Current.CancellationToken);
+        Assert.Equal(1, factory.Sockets.Single().SendAttempts);
+    }
 }

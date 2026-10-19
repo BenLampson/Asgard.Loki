@@ -101,4 +101,20 @@ public sealed class NativeWebSocketLifecycleTests
         socket.Text(Lifecycle("response.completed", "good", "good")); socket.PeerClose();
         var events = await Drain(connection, TestContext.Current.CancellationToken); Assert.Equal(3, events.Count); Assert.Equal("error", events[1].GetProperty("type").GetString());
     }
+
+    /// <summary>父响应完成后才到达的旧控制错误，不能把新排队请求误当成已经结束。</summary>
+    [Fact]
+    public async Task LateControlError_DoesNotConsumeNextGeneration()
+    {
+        var factory = new StubResponsesWebSocketFactory(); await using var client = Build(factory);
+        await using var connection = await client.LLM.Responses.OpenWebSocketAsync("public", Call(), TestContext.Current.CancellationToken);
+        await connection.SendAsync(Create("main", "first"), TestContext.Current.CancellationToken); var socket = factory.Sockets.Single(); socket.Text(Lifecycle("response.created", lane: "main"));
+        await using var events = connection.ReadEventsAsync(TestContext.Current.CancellationToken).GetAsyncEnumerator(TestContext.Current.CancellationToken); Assert.True(await events.MoveNextAsync());
+        await connection.SendAsync(new() { ["type"] = "response.cancel", ["response_id"] = "resp_1", ["event_id"] = "old-control" }, TestContext.Current.CancellationToken);
+        socket.Text(Lifecycle("response.completed", lane: "main")); Assert.True(await events.MoveNextAsync());
+        await connection.SendAsync(Create("main", "next"), TestContext.Current.CancellationToken);
+        socket.Text("""{"type":"error","stream_id":"main","event_id":"old-control","error":{"code":"response_already_completed"}}"""); socket.PeerClose();
+        Assert.True(await events.MoveNextAsync()); Assert.Equal("error", events.Current.Type);
+        await Assert.ThrowsAsync<InvalidDataException>(async () => await events.MoveNextAsync());
+    }
 }
