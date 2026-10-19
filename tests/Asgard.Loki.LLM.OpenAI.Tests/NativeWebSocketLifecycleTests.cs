@@ -117,4 +117,51 @@ public sealed class NativeWebSocketLifecycleTests
         Assert.True(await events.MoveNextAsync()); Assert.Equal("error", events.Current.Type);
         await Assert.ThrowsAsync<InvalidDataException>(async () => await events.MoveNextAsync());
     }
+
+    /// <summary>服务器省略 event_id 时，已结束控制的错误仍不能推断为新请求的失败终态。</summary>
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public async Task UnidentifiedLateControlError_DoesNotConsumeNextGeneration(bool controlHasId)
+    {
+        var factory = new StubResponsesWebSocketFactory(); await using var client = Build(factory);
+        await using var connection = await client.LLM.Responses.OpenWebSocketAsync("public", Call(), TestContext.Current.CancellationToken);
+        await connection.SendAsync(Create("main"), TestContext.Current.CancellationToken); var socket = factory.Sockets.Single(); socket.Text(Lifecycle("response.created", lane: "main"));
+        await using var events = connection.ReadEventsAsync(TestContext.Current.CancellationToken).GetAsyncEnumerator(TestContext.Current.CancellationToken); Assert.True(await events.MoveNextAsync());
+        var cancel = new JsonObject { ["type"] = "response.cancel", ["response_id"] = "resp_1" }; if (controlHasId) cancel["event_id"] = "control";
+        await connection.SendAsync(cancel, TestContext.Current.CancellationToken); socket.Text(Lifecycle("response.completed", lane: "main")); Assert.True(await events.MoveNextAsync());
+        await connection.SendAsync(Create("main"), TestContext.Current.CancellationToken);
+        socket.Text("""{"type":"error","stream_id":"main","error":{"code":"response_already_completed"}}"""); socket.PeerClose();
+        Assert.True(await events.MoveNextAsync()); await Assert.ThrowsAsync<InvalidDataException>(async () => await events.MoveNextAsync());
+    }
+
+    /// <summary>已确定控制归属的历史只影响原 lane，不阻止另一 lane 的独立请求错误结束。</summary>
+    [Fact]
+    public async Task UnidentifiedControlHistory_DoesNotContaminateOtherLane()
+    {
+        var factory = new StubResponsesWebSocketFactory(); await using var client = Build(factory);
+        await using var connection = await client.LLM.Responses.OpenWebSocketAsync("public", Call(), TestContext.Current.CancellationToken);
+        await connection.SendAsync(Create("main"), TestContext.Current.CancellationToken); var socket = factory.Sockets.Single(); socket.Text(Lifecycle("response.created", lane: "main"));
+        await using var events = connection.ReadEventsAsync(TestContext.Current.CancellationToken).GetAsyncEnumerator(TestContext.Current.CancellationToken); Assert.True(await events.MoveNextAsync());
+        await connection.SendAsync(new() { ["type"] = "response.cancel", ["response_id"] = "resp_1" }, TestContext.Current.CancellationToken);
+        socket.Text(Lifecycle("response.completed", lane: "main")); Assert.True(await events.MoveNextAsync());
+        await connection.SendAsync(Create("bad"), TestContext.Current.CancellationToken);
+        socket.Text("""{"type":"error","stream_id":"bad","error":{"code":"invalid_request_error"}}"""); socket.PeerClose();
+        Assert.True(await events.MoveNextAsync()); Assert.Equal("error", events.Current.Type); Assert.False(await events.MoveNextAsync());
+    }
+
+    /// <summary>本地未发送控制的关联标记也必须回滚，不得永久污染后续真正生成的错误判断。</summary>
+    [Fact]
+    public async Task LocallyUnsentControl_RollsBackUncertainHistory()
+    {
+        var factory = new StubResponsesWebSocketFactory(); await using var client = Build(factory, new() { MaximumMessageBytes = 256 });
+        await using var connection = await client.LLM.Responses.OpenWebSocketAsync("public", Call(), TestContext.Current.CancellationToken);
+        await connection.SendAsync(Create("main"), TestContext.Current.CancellationToken); var socket = factory.Sockets.Single(); socket.Text(Lifecycle("response.created", lane: "main"));
+        await using var events = connection.ReadEventsAsync(TestContext.Current.CancellationToken).GetAsyncEnumerator(TestContext.Current.CancellationToken); Assert.True(await events.MoveNextAsync());
+        var oversized = new JsonObject { ["type"] = "response.cancel", ["response_id"] = "resp_1", ["future"] = new string('x', 4096) };
+        await Assert.ThrowsAsync<ArgumentException>(async () => await connection.SendAsync(oversized, TestContext.Current.CancellationToken));
+        socket.Text(Lifecycle("response.completed", lane: "main")); Assert.True(await events.MoveNextAsync());
+        await connection.SendAsync(Create("main"), TestContext.Current.CancellationToken);
+        socket.Text("""{"type":"error","stream_id":"main","error":{"code":"invalid_request_error"}}"""); socket.PeerClose();
+        Assert.True(await events.MoveNextAsync()); Assert.False(await events.MoveNextAsync()); Assert.Equal(2, socket.SendAttempts);
+    }
 }

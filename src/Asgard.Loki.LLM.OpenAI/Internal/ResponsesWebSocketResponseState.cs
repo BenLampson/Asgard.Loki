@@ -11,4 +11,6 @@ internal sealed class ResponsesWebSocketResponseState(string lane)
     internal bool Created { get; set; }
     /// <summary>最后一个真实上游序号。</summary>
     internal long? Sequence { get; set; }
+    /// <summary>曾发送不能由生成终态证明已确认的控制；迟到无 ID 错误仍可能属于它。</summary>
+    internal bool UnconfirmedControlHistory { get; set; }
 }

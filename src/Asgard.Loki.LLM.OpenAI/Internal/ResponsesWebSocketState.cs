@@ -10,6 +10,7 @@ internal sealed partial class ResponsesWebSocketState(OpenAiResponsesWebSocketOp
     private readonly Dictionary<string, ResponsesWebSocketResponseState> _responses = new(StringComparer.Ordinal);
     private readonly Dictionary<string, string> _active = new(StringComparer.Ordinal);
     private readonly HashSet<string> _eventIds = new(StringComparer.Ordinal);
+    private bool _unscopedControlHistory;
     /// <summary>没有 lane 的连接级错误会终止连接，但原始错误事件先交给调用者。</summary>
     internal bool Fatal { get; private set; }
 
@@ -34,13 +35,30 @@ internal sealed partial class ResponsesWebSocketState(OpenAiResponsesWebSocketOp
             throw new InvalidOperationException("连接显式事件身份数量超过上限。");
         if (_pending.Count >= options.MaximumPendingRequests) throw new InvalidOperationException("WebSocket 等待提交数量超过显式上限。");
         var request = new ResponsesWebSocketSubmission(type, lane, previous, eventId); _pending.Add(request);
+        if (type is not ("response.create" or "response.steer")) MarkControlHistory(request);
         if (eventId is not null) _eventIds.Add(eventId); return request;
     }
 
     /// <summary>本地未发出的请求只撤销自己的登记，不修改其他并行生成。</summary>
     internal void Rollback(ResponsesWebSocketSubmission? request)
     {
-        if (request is not null && _pending.Remove(request) && request.EventId is not null) _eventIds.Remove(request.EventId);
+        if (request is null || !_pending.Remove(request)) return;
+        if (request.EventId is not null) _eventIds.Remove(request.EventId);
+        if (request.AddedControlHistory is not null) request.AddedControlHistory.UnconfirmedControlHistory = false;
+        if (request.AddedUnscopedHistory) _unscopedControlHistory = false;
+    }
+
+    /// <summary>只在已有有限响应状态上保留位标记；未知控制最多需要一个保守全连接标记。</summary>
+    private void MarkControlHistory(ResponsesWebSocketSubmission request)
+    {
+        var response = request.Previous is not null ? _responses.GetValueOrDefault(request.Previous)
+            : _active.TryGetValue(request.Lane, out var id) ? _responses[id] : null;
+        if (response is not null)
+        {
+            if (response.UnconfirmedControlHistory) return;
+            response.UnconfirmedControlHistory = true; request.AddedControlHistory = response;
+        }
+        else if (!_unscopedControlHistory) { _unscopedControlHistory = true; request.AddedUnscopedHistory = true; }
     }
 
     /// <summary>未知事件原样传出；只对已知响应与控制关联实施生命周期校验。</summary>
@@ -127,6 +145,7 @@ internal sealed partial class ResponsesWebSocketState(OpenAiResponsesWebSocketOp
         if (Optional(data, "response_id") is not null) return;
         // 原生无 lane 的错误在存在命名流时属于连接级，不能把它误当成某一流的成功完成。
         if (lane.Length == 0 && (_active.Keys.Any(key => key.Length != 0) || _pending.Any(item => item.Lane.Length != 0))) { Fatal = true; return; }
+        if (_unscopedControlHistory || _responses.Values.Any(item => item.Lane == lane && item.UnconfirmedControlHistory)) return;
         var controls = _pending.Any(item => item.Lane == lane && item.Type != "response.create");
         if (controls) return;
         var queued = _pending.FirstOrDefault(item => item.Lane == lane && item.Type == "response.create");

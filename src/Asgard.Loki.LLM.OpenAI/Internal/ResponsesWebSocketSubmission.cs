@@ -13,4 +13,8 @@ internal sealed class ResponsesWebSocketSubmission(string type, string lane, str
     internal string? EventId { get; } = eventId;
     /// <summary>仅服务器接受后提供的 steering ID。</summary>
     internal string? SteerId { get; set; }
+    /// <summary>本提交首次设置的响应控制历史，仅用于未发送时回滚。</summary>
+    internal ResponsesWebSocketResponseState? AddedControlHistory { get; set; }
+    /// <summary>本提交首次设置了无法定位 lane 的控制历史。</summary>
+    internal bool AddedUnscopedHistory { get; set; }
 }
