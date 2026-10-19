@@ -690,7 +690,7 @@
         ],
         "reasoningConfig": {
           "type": "enabled",
-          "maxReasoningEffort": "high"
+          "maxReasoningEffort": "medium"
         }
       }
     },
@@ -839,7 +839,7 @@
       "additionalModelRequestFields": {
         "reasoningConfig": {
           "type": "enabled",
-          "maxReasoningEffort": "high"
+          "maxReasoningEffort": "medium"
         }
       }
     },
@@ -989,7 +989,7 @@
         "inferenceConfig": {
           "reasoningConfig": {
             "type": "enabled",
-            "maxReasoningEffort": "high"
+            "maxReasoningEffort": "medium"
           }
         }
       }
