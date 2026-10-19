@@ -522,7 +522,31 @@ The first provider implements Volcengine V3 HTTP chunked TTS. Its API Key or leg
 
 Return ordered decoded audio chunks plus complete raw metadata. Aggregate results only after an explicit upstream completion code. Preserve subtitle, usage and unknown frames. Invalid Base64, business errors, unexpected data after completion and truncated streams fail explicitly.
 
-ASR, music generation and bidirectional/WebSocket speech are not implemented.
+### Native file operations
+
+Audio also owns AudioFileRequest, AudioUpload, ordered AudioMultipartField values, AudioFileResult, AudioResultMetadata and AudioTranscriptionEvent. These contracts separate file transcription and translation from speech synthesis; they do not introduce a new capability/package or a common LLM workflow. The first file-provider HTTP implementation remains pending.
+
+```mermaid
+classDiagram
+AudioClient --> AudioTranscriptionClient
+AudioClient --> AudioTranslationClient
+AudioTranscriptionClient --> AudioTranscriptionRoute
+AudioTranslationClient --> AudioTranslationRoute
+AudioTranscriptionClient --> IAudioTranscriptionAdapter
+IAudioTranscriptionAdapter <|-- IStreamingAudioTranscriptionAdapter
+AudioTranslationClient --> IAudioTranslationAdapter
+AudioFileRequest --> AudioUpload : borrowed current-position stream
+AudioFileRequest --> AudioMultipartField : ordered repeated native text
+IAudioTranscriptionAdapter --> AudioFileResult
+IAudioTranslationAdapter --> AudioFileResult
+IStreamingAudioTranscriptionAdapter --> AudioTranscriptionEvent : complete native JSON and SSE identity
+```
+
+AudioOptions has independent optional SpeechRoutes, TranscriptionRoutes and TranslationRoutes; at least one must be configured. Existing speech initialization/interfaces stay compatible, and accessing an unconfigured operation fails. File configurations/target arrays are copied at registration. Each file-operation client/model route owns its selection state, selecting one complete adapter without retry/failover or shared conversational Session. Stream requests validate every target's optional streaming support before selection; no target filtering occurs.
+
+AudioFileRequest snapshots route/file metadata and literal text fields while borrowing the original stream at its current position. Streams are excluded from JSON serialization and validated as readable at dispatch. The core never opens filenames, inspects length/position, buffers/rewinds uploads or closes borrowed streams/targets. Native repeated part names, order, empty/raw values and nested/array part syntax remain unchanged. Root model/file overrides, null fields/values and header controls fail locally; native multipart encoding and semantic field validation belong to the provider. AudioFileResult copies raw response bytes and content type without inventing a transcript schema; adapters validate native success/error/format rules. AudioTranscriptionEvent clones full JSON/SSE identity and carries the adapter's protocol completion marker. The core holds at most the original terminal until enumeration/disposal succeeds; extra/missing terminals, tail errors or cancellation cannot first expose success. It does not merge deltas, map supplier timestamps/speakers, guess completion names, or add translation streaming without a native contract. Eighty-four offline file tests complement the 38 speech tests; these 122 core tests do not certify HTTP multipart or a live recognizer.
+
+Bundled ASR/translation HTTP providers, music generation and bidirectional/WebSocket speech are not implemented.
 
 ## 6. Images
 

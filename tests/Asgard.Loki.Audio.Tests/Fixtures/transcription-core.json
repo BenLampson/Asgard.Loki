@@ -1,0 +1,9 @@
+{
+  "task": "transcribe",
+  "text": "你好😀",
+  "languages": [{"code":"zh","future":false}],
+  "segments": [{"id":"segment_fixture","speaker":"speaker_fixture","start":0.125,"end":1.75,"text":"你好😀","future":null}],
+  "words": [{"word":"你好","start":0.125,"end":1.25}],
+  "usage": {"input_tokens":3,"output_tokens":2,"total_tokens":5,"future":[null,false]},
+  "future": {"private":"opaque-native-value"}
+}

@@ -1,6 +1,6 @@
 # Asgard.Loki.Audio
 
-Independent speech capability for Asgard.Loki.
+Independent audio capability for Asgard.Loki.
 
 Provides `AddAudio()`, `.Audio.Speech.GenerateAsync()` and `.StreamAsync()`. Public speech routes select explicitly configured adapter targets. Audio aggregation preserves byte order, subtitles, usage and unknown provider metadata, and requires an explicit completion marker.
 
@@ -35,6 +35,40 @@ Both entry paths hold at most the completed chunk until source enumeration **and
 
 Register a provider separately: `Asgard.Loki.Audio.Volcengine` for the existing convenience path, or [Asgard.Loki.Audio.OpenAI](../Asgard.Loki.Audio.OpenAI/README.md) for native JSON and convenience binary/SSE speech calls. Binary transport records explicit SDK HTTP metadata; SSE envelopes retain native JSON/raw data and event identity without manufacturing events. This capability does not depend on LLM, images, the entry implementation or a provider. It does not reuse LLM Session or routing state.
 
-Speech recognition, music generation and bidirectional speech are not implemented. See the root README for initialization.
+## Native file transcription and translation contracts
 
-Thirty-eight offline core cases (35 new native/terminal regressions and three existing cases) use only application-owned in-memory adapters. They cover native objects/unknown JSON, snapshots, target choice/non-failover, optional-interface compatibility, borrowed ownership and shared completion/error/cancellation/disposal semantics. They do not call or certify an OpenAI/Volcengine model or a native binary/SSE protocol.
+`.Audio.Transcriptions.CreateAsync(AudioFileRequest)` and `.Audio.Translations.CreateAsync(AudioFileRequest)` call explicitly configured application-owned adapters. Transcription optionally exposes `.StreamAsync` through `IStreamingAudioTranscriptionAdapter`; all targets in the route must implement it before a stream can be selected. These contracts do not yet include a bundled OpenAI transcription/translation HTTP implementation. The existing OpenAI package implements speech synthesis only.
+
+`AudioOptions` can configure SpeechRoutes, TranscriptionRoutes and TranslationRoutes independently; at least one operation must have a route. Accessing an unconfigured operation fails. Existing speech initialization and interfaces continue to work. File-operation routes/targets are snapshotted at registration; each client, file operation and model route has its own selection state. There is no Session, shared LLM routing, filtering, retry, failover or fallback to another Audio operation.
+
+```csharp
+using Asgard.Loki;
+using Asgard.Loki.Audio;
+
+IAudioTranscriptionAdapter target = applicationOwnedTranscriptionAdapter;
+await using var loki = new LokiClientBuilder().AddAudio(new AudioOptions
+{
+    TranscriptionRoutes = [new() { Model = "recording", Targets = [target] }]
+}).Build();
+// File access and lifetime belong to the application, never the SDK.
+await using var input = File.OpenRead(audioPath);
+var result = await loki.Audio.Transcriptions.CreateAsync(new AudioFileRequest
+{
+    Model = "recording",
+    File = new() { Content = input, FileName = "recording.wav", ContentType = "audio/wav" },
+    Fields = [new("response_format", "verbose_json"), new("timestamp_granularities[]", "word")]
+}, cancellationToken);
+// result.Body / ContentType preserve the complete native response; inspect native JSON as needed.
+```
+
+`AudioUpload.Content` is a caller-owned readable stream, validated at dispatch and excluded from JSON serialization. The core does not read its length/position, prebuffer, rewind, dispose or open a filename. Metadata is independently snapshotted while stream identity/current position remain unchanged. Keep the stream alive until enumeration/call ends, do not concurrently consume or mutate it, and provide a fresh upload (or explicitly reposition it yourself) for a new call. Adapters must preserve this borrowed ownership when disposing their HTTP/multipart resources.
+
+`AudioMultipartField` keeps literal native text names/values, including repeated names, empty values and original ordering. Nested/array settings use the actual supplier's native part names/text; the core does not guess JSON-to-form expansion or defaults. Root model/file overrides, null fields/values and header control characters fail before target dispatch. Unknown parameter syntax, media types and response structures remain supplier responsibilities.
+
+`AudioFileResult` copies complete native body bytes and preserves the actual content type (including charset) plus public/upstream/provider identities. JSON segments/words/speakers/usage and text/subtitle formats are not normalized into a universal transcript. The provider must validate its own native HTTP/business success, errors and result structure. `AudioTranscriptionEvent` clones complete JSON and retains SSE name/ID/retry; the core does not infer terminal semantics from event names. It holds the original completed event until source enumeration/disposal succeeds, rejects missing/duplicate/late events and does not aggregate native text deltas into a guessed final result. Early consumer disposal cleans up the source without taking the upload/adapter's ownership.
+
+## Verification and remaining operations
+
+The 122 offline core cases include 84 file-operation contract cases and the existing 38 speech cases. File cases use application-owned in-memory adapters, complete authored JSON/WEBVTT body samples and nonseekable observed uploads. They check literal form snapshots, independent routing, raw results/events, cancellation, non-failover, optional streaming gates and success-after-source-end/disposal. They do not implement or verify actual multipart wire encoding, OpenAI transcription/translation, speech recognition quality or live models.
+
+The speech subset covers native objects/unknown JSON, snapshots, target choice/non-failover, optional-interface compatibility, borrowed ownership and shared completion/error/cancellation/disposal semantics. Music generation and bidirectional speech remain unimplemented; bundled file transcription/translation transports are the next provider work.
