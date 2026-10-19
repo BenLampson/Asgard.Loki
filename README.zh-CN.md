@@ -1,10 +1,12 @@
 # Asgard.Loki
 
-New API 对齐范围已[收紧为有源码依据的 SDK 缺口](docs/model-call-roadmap.md#scope-correction-after-the-source-recheck-2026-10-20)，供应商额外能力与穷举协议组合不再自动进入补齐队列。完整 Gemini ↔ Chat 响应现保留全部候选的原始索引及顺序，各候选的工具、引用和终态独立，usage 只转换一次。Gemini candidateCount → Chat n 已支持完整 SDK 调用，可与推理和 Schema 设置并用；反向数量请求、多候选流式仍未实现。
+New API 对齐范围已[收紧为有源码依据的 SDK 缺口](docs/model-call-roadmap.md#scope-correction-after-the-source-recheck-2026-10-20)，供应商额外能力与穷举协议组合不再自动进入补齐队列。完整 Gemini ↔ Chat 响应现保留全部候选的原始索引及顺序，各候选的工具、引用和终态独立，usage 只转换一次。Gemini candidateCount → Chat n 已支持完整 SDK 调用，可与推理和 Schema 设置并用；已可显式开启 Chat ↔ Gemini 多候选流式转换，隔离候选工具和终态，并在正常 EOF/释放后输出一次共享用量；反向数量请求仍未实现。
 
 [English](README.md) | **简体中文**
 
 SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六类；Embedding/Rerank 继续使用独立能力包及供应商分包，不并入 LLM。不做模型微调、独立文件管理、后台或计费。
+
+后续只按[唯一有限验收清单](docs/model-call-roadmap.md)收口：已有可靠转换保持支持，不再穷举协议或供应商扩展。当前确定缺口是原生 OpenAI Realtime 和视频提交/状态/结果调用；Video 仍是占位，需先确定供应商。历史审计已归档，不作为自动扩项指令。
 
 目前未实现模型微调或供应商通用文件管理（独立上传、列举、查询、下载、删除）。已有音频和图片上传，是为转写、翻译或图片编辑请求提供输入素材。
 
