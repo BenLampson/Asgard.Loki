@@ -1246,6 +1246,10 @@ The supplier now owns its complete HTTP boundary rather than the old generic nat
 
 Three full independent manifests and 104 additional offline cases verify standard Messages and explicit Runtime/Mantle native Messages root reuse, 24 direct/public JSON/SSE paths, all raw fields/frame metadata, authentication, snapshots, legacy/changed/recovered bindings and late failures. Current totals are 5794 tests (126 Anthropic) and 28 packages. No provider-to-provider reference is added: native Key-mode Messages uses the existing Anthropic package; InvokeModel/Converse and eventual Mantle SigV4 remain AWS-owned. Generic explicit Bearer transport is not proof of endpoint/model acceptance. No live account, cloud login, background worker or remote Actions run is added.
 
+### Native Messages settings and sample integrity follow-up
+
+The separate conversion test composition fixes the existing decorator to ClaudeMessages and the existing Anthropic transport, keeping production dependencies unchanged. Sixteen new public SDK tests compare independent complete final requests for high/off thinking and Schema constraints under explicit Key/Bearer modes. Schema naming loss still requires explicit consent and a diagnostic; budgets cannot override an off source, and late native errors cannot release converted finish. No algorithm/option/contract change is introduced. Full native fixtures align block indices with final array positions; an extra raw sparse-index passthrough test is kept separate from two strict conversion rejection cases. Current totals: 5811 offline cases (127 Anthropic, 1915 conversion), 28 packages.
+
 ## 7. HTTP and errors
 
 Providers own address/authentication/protocol mapping. API roots include their version path. Do not hard-code model lists or rewrite model suffixes heuristically.

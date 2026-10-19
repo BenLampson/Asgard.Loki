@@ -11,6 +11,19 @@ namespace Asgard.Loki.LLM.Anthropic.Tests;
 /// <summary>原始编码、JSON、生命周期关联和资源边界回归；损坏数据不得靠重编号修复。</summary>
 public sealed class NativeMessagesValidationTests
 {
+    /// <summary>原生扩展流可保留稀疏索引，但这不是完整 Claude content 数组合法性的认证。</summary>
+    [Fact]
+    public async Task RawSparseIndices_RemainUnchangedWithoutArrayAllocation()
+    {
+        const string start = "{\"type\":\"content_block_start\",\"index\":2147483647,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}";
+        const string delta = "{\"type\":\"content_block_delta\",\"index\":2147483647,\"delta\":{\"type\":\"text_delta\",\"text\":\"原样\"}}";
+        const string stop = "{\"type\":\"content_block_stop\",\"index\":2147483647}";
+        var wire = Frame(Start) + Frame(start) + Frame(delta) + Frame(stop) + Frame(Finish) + Frame(Stop);
+        using var handler = new StubHttpHandler((_, _) => Task.FromResult(Reply(new MemoryStream(Bytes(wire)), true))); List<ClaudeMessageEvent> seen = [];
+        await Drain(new(new AnthropicHttpFactory(handler)), TestContext.Current.CancellationToken, seen);
+        Assert.Equal(start, seen[1].Data.GetRawText()); Assert.Equal(delta, seen[2].Data.GetRawText()); Assert.Equal(stop, seen[3].Data.GetRawText()); Assert.Equal(6, seen.Count); Assert.Equal(1, handler.Calls);
+    }
+
     /// <summary>变更独立原生源而非预期值，验证每类协议关联故障都拒绝完成。</summary>
     [Theory]
     [InlineData("orphan-delta")] [InlineData("duplicate-index")] [InlineData("duplicate-tool")]

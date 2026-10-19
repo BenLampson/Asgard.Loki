@@ -382,7 +382,7 @@
     {
       "data": {
         "type": "content_block_start",
-        "index": 2,
+        "index": 1,
         "content_block": {
           "type": "redacted_thinking",
           "data": "opaque-new+/=="
@@ -395,7 +395,7 @@
     {
       "data": {
         "type": "content_block_stop",
-        "index": 2
+        "index": 1
       },
       "event": "content_block_stop",
       "id": "evt-6",
@@ -404,7 +404,7 @@
     {
       "data": {
         "type": "content_block_start",
-        "index": 7,
+        "index": 2,
         "content_block": {
           "type": "text",
           "text": ""
@@ -417,7 +417,7 @@
     {
       "data": {
         "type": "content_block_delta",
-        "index": 7,
+        "index": 2,
         "delta": {
           "type": "text_delta",
           "text": "需要查询"
@@ -430,7 +430,7 @@
     {
       "data": {
         "type": "content_block_stop",
-        "index": 7
+        "index": 2
       },
       "event": "content_block_stop",
       "id": "evt-9",
@@ -439,7 +439,7 @@
     {
       "data": {
         "type": "content_block_start",
-        "index": 12,
+        "index": 3,
         "content_block": {
           "type": "tool_use",
           "id": "call_new",
@@ -455,7 +455,7 @@
     {
       "data": {
         "type": "content_block_delta",
-        "index": 12,
+        "index": 3,
         "delta": {
           "type": "input_json_delta",
           "partial_json": "{\"n\":"
@@ -468,7 +468,7 @@
     {
       "data": {
         "type": "content_block_delta",
-        "index": 12,
+        "index": 3,
         "delta": {
           "type": "input_json_delta",
           "partial_json": "9007199254740993}"
@@ -481,7 +481,7 @@
     {
       "data": {
         "type": "content_block_stop",
-        "index": 12
+        "index": 3
       },
       "event": "content_block_stop",
       "id": "evt-13",
@@ -528,5 +528,5 @@
       "retry": 1200
     }
   ],
-  "wire": ": full native Messages fixture\r\nevent: message_start\r\nid: evt-0\r\nretry: 1200\r\ndata: {\"type\":\"message_start\",\r\ndata: \"message\":{\"id\":\"msg_native\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"anthropic.claude-sonnet-5\",\"content\":[],\"stop_reason\":null,\"usage\":{\"input_tokens\":17,\"output_tokens\":0,\"cache_read_input_tokens\":5,\"cache_creation_input_tokens\":3}}}\r\n\r\nevent: content_block_start\r\nid: evt-1\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-2\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"先查询\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-3\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"signed-new+/==\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-4\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":0}\r\n\r\nevent: content_block_start\r\nid: evt-5\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":2,\"content_block\":{\"type\":\"redacted_thinking\",\"data\":\"opaque-new+/==\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-6\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":2}\r\n\r\nevent: content_block_start\r\nid: evt-7\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":7,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-8\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":7,\"delta\":{\"type\":\"text_delta\",\"text\":\"需要查询\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-9\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":7}\r\n\r\nevent: content_block_start\r\nid: evt-10\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":12,\"content_block\":{\"type\":\"tool_use\",\"id\":\"call_new\",\"name\":\"lookup\",\"input\":{},\"future\":false}}\r\n\r\nevent: content_block_delta\r\nid: evt-11\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":12,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"n\\\":\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-12\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":12,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"9007199254740993}\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-13\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":12}\r\n\r\nevent: message_delta\r\nid: evt-14\r\nretry: 1200\r\ndata: {\"type\":\"message_delta\",\r\ndata: \"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"usage\":{\"output_tokens\":8,\"future\":0}}\r\n\r\nevent: message_stop\r\nid: evt-15\r\nretry: 1200\r\ndata: {\"type\":\"message_stop\",\r\ndata: \"future\":false}\r\n\r\nevent: vendor.future\r\nid: evt-16\r\nretry: 1200\r\ndata: {\"type\":\"vendor.future\",\r\ndata: \"error\":{\"business\":true},\"future\":{\"integer\":9007199254740993,\"nil\":null}}\r\n\r\n: real EOF follows\r\n\r\n"
+  "wire": ": full native Messages fixture\r\nevent: message_start\r\nid: evt-0\r\nretry: 1200\r\ndata: {\"type\":\"message_start\",\r\ndata: \"message\":{\"id\":\"msg_native\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"anthropic.claude-sonnet-5\",\"content\":[],\"stop_reason\":null,\"usage\":{\"input_tokens\":17,\"output_tokens\":0,\"cache_read_input_tokens\":5,\"cache_creation_input_tokens\":3}}}\r\n\r\nevent: content_block_start\r\nid: evt-1\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-2\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"先查询\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-3\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"signed-new+/==\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-4\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":0}\r\n\r\nevent: content_block_start\r\nid: evt-5\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":1,\"content_block\":{\"type\":\"redacted_thinking\",\"data\":\"opaque-new+/==\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-6\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":1}\r\n\r\nevent: content_block_start\r\nid: evt-7\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":2,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-8\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":2,\"delta\":{\"type\":\"text_delta\",\"text\":\"需要查询\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-9\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":2}\r\n\r\nevent: content_block_start\r\nid: evt-10\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":3,\"content_block\":{\"type\":\"tool_use\",\"id\":\"call_new\",\"name\":\"lookup\",\"input\":{},\"future\":false}}\r\n\r\nevent: content_block_delta\r\nid: evt-11\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":3,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"n\\\":\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-12\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":3,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"9007199254740993}\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-13\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":3}\r\n\r\nevent: message_delta\r\nid: evt-14\r\nretry: 1200\r\ndata: {\"type\":\"message_delta\",\r\ndata: \"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"usage\":{\"output_tokens\":8,\"future\":0}}\r\n\r\nevent: message_stop\r\nid: evt-15\r\nretry: 1200\r\ndata: {\"type\":\"message_stop\",\r\ndata: \"future\":false}\r\n\r\nevent: vendor.future\r\nid: evt-16\r\nretry: 1200\r\ndata: {\"type\":\"vendor.future\",\r\ndata: \"error\":{\"business\":true},\"future\":{\"integer\":9007199254740993,\"nil\":null}}\r\n\r\n: real EOF follows\r\n\r\n"
 }

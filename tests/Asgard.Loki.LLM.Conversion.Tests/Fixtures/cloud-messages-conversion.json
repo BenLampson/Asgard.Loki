@@ -1,0 +1,236 @@
+{
+  "provenance": "Independent request/native output goldens; no SDK-output capture or live endpoint verification.",
+  "sourceHigh": {
+    "model": "public",
+    "max_completion_tokens": 4096,
+    "messages": [
+      {
+        "role": "user",
+        "content": "返回 JSON"
+      }
+    ],
+    "reasoning_effort": "high",
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "result",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "n": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 9007199254740993
+            }
+          },
+          "required": [
+            "ok",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "targetHigh": {
+    "model": "cloud-model",
+    "max_tokens": 4096,
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "返回 JSON"
+          }
+        ]
+      }
+    ],
+    "output_config": {
+      "format": {
+        "type": "json_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "n": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 9007199254740993
+            }
+          },
+          "required": [
+            "ok",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "effort": "high"
+    },
+    "thinking": {
+      "type": "adaptive"
+    }
+  },
+  "sourceNone": {
+    "model": "public",
+    "max_completion_tokens": 4096,
+    "messages": [
+      {
+        "role": "user",
+        "content": "返回 JSON"
+      }
+    ],
+    "reasoning_effort": "none",
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "result",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "n": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 9007199254740993
+            }
+          },
+          "required": [
+            "ok",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "targetNone": {
+    "model": "cloud-model",
+    "max_tokens": 4096,
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "返回 JSON"
+          }
+        ]
+      }
+    ],
+    "output_config": {
+      "format": {
+        "type": "json_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "n": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 9007199254740993
+            }
+          },
+          "required": [
+            "ok",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "nativeComplete": {
+    "id": "msg_cloud",
+    "type": "message",
+    "role": "assistant",
+    "model": "cloud-model",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"ok\":false,\"n\":9007199254740993}"
+      }
+    ],
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 3
+    }
+  },
+  "nativeEvents": [
+    {
+      "type": "message_start",
+      "message": {
+        "id": "msg_cloud",
+        "type": "message",
+        "role": "assistant",
+        "model": "cloud-model",
+        "content": [],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 2,
+          "output_tokens": 0
+        }
+      }
+    },
+    {
+      "type": "content_block_start",
+      "index": 0,
+      "content_block": {
+        "type": "text",
+        "text": ""
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 0,
+      "delta": {
+        "type": "text_delta",
+        "text": "{\"ok\":false,\"n\":9007199254740993}"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 0
+    },
+    {
+      "type": "message_delta",
+      "delta": {
+        "stop_reason": "end_turn",
+        "stop_sequence": null
+      },
+      "usage": {
+        "output_tokens": 3
+      }
+    },
+    {
+      "type": "message_stop"
+    }
+  ],
+  "nativeWire": "data: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_cloud\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"cloud-model\",\"content\":[],\"stop_reason\":null,\"stop_sequence\":null,\"usage\":{\"input_tokens\":2,\"output_tokens\":0}}}\n\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\n\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"{\\\"ok\\\":false,\\\"n\\\":9007199254740993}\"}}\n\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null},\"usage\":{\"output_tokens\":3}}\n\ndata: {\"type\":\"message_stop\"}\n\n"
+}
