@@ -27,7 +27,8 @@ $packageIds = @(
     'Asgard.Loki.LLM.Conversion',
     'Asgard.Loki.Audio.Volcengine',
     'Asgard.Loki.Image.OpenAI',
-    'Asgard.Loki.Embedding.OpenAI'
+    'Asgard.Loki.Embedding.OpenAI',
+    'Asgard.Loki.Embedding.Google'
 )
 $expectedNames = @(foreach ($id in $packageIds) { "$id.$Version.nupkg"; "$id.$Version.snupkg" })
 $actualNames = @(Get-ChildItem -LiteralPath $PackageDirectory -File |
