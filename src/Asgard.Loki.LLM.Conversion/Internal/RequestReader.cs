@@ -11,7 +11,9 @@ internal static class RequestReader
     {
         var doc = new ConversionDocument { Model = Text(source["model"]), TextFileEncoding = options?.TextFileEncoding ?? LlmTextFileEncoding.Unspecified,
             MaxTextFileBytes = options?.MaxTextFileBytes ?? 1024 * 1024, ToolErrorFormat = options?.ToolErrorFormat ?? LlmToolErrorFormat.NativeOnly,
-            MaxToolErrorBytes = options?.MaxToolErrorBytes ?? 1024 * 1024 };
+            MaxToolErrorBytes = options?.MaxToolErrorBytes ?? 1024 * 1024,
+            PreserveConverseAnthropicReasoning = protocol == LlmProtocol.ClaudeMessages && target == LlmProtocol.BedrockConverse
+                && options?.BedrockConverseModelDialect == BedrockConverseModelDialect.Anthropic };
         switch (protocol)
         {
             case LlmProtocol.ChatCompletions: Chat(source, doc); break;

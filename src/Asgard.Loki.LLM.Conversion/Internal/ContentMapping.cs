@@ -69,7 +69,11 @@ internal static class ContentMapping
                     Check(block, doc, "$content[]", "type", "tool_use_id", "content", "is_error");
                     message.Blocks.Add(ToolErrorMapping.ReadClaude(block, doc));
                     break;
-                case "thinking": case "redacted_thinking": case "reasoning": case "compaction":
+                case "thinking": case "redacted_thinking":
+                    if (protocol == LlmProtocol.ClaudeMessages && doc.PreserveConverseAnthropicReasoning)
+                    { message.Blocks.Add(ConverseAnthropicReasoning.ReadClaude(block, message.Role)); break; }
+                    throw new LlmConversionException([new("opaque_state", "$content[]." + type, "签名和不透明推理项必须通过原生协议回传。")]);
+                case "reasoning": case "compaction":
                     throw new LlmConversionException([new("opaque_state", "$content[]." + type, "签名和不透明推理项必须通过原生协议回传。")]);
                 default: Loss(doc, "$content[]." + type, "unsupported_content"); break;
             }

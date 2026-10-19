@@ -8,9 +8,10 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 internal static class ConverseTextResponseReader
 {
     /// <summary>目标需要的 ID 是 SDK 合成标签，模型标签来自请求上下文而非原生返回的 model。</summary>
-    internal static ConversionDocument Read(JsonObject source, LlmConversionContext? context)
+    internal static ConversionDocument Read(JsonObject source, LlmProtocol to, LlmConversionOptions options, LlmConversionContext? context)
     {
-        var doc = new ConversionDocument { Id = "loki_" + Guid.NewGuid().ToString("N"), Model = context?.RequestedModel ?? "" };
+        var doc = new ConversionDocument { Id = "loki_" + Guid.NewGuid().ToString("N"), Model = context?.RequestedModel ?? "",
+            PreserveConverseAnthropicReasoning = to == LlmProtocol.ClaudeMessages && options.BedrockConverseModelDialect == BedrockConverseModelDialect.Anthropic };
         if (source["error"] is not null) throw new LlmConversionException([new("upstream_error", "$.error", "错误响应不能转换为成功响应。")]);
         Check(source, doc, "$", "output", "stopReason", "usage", "metrics");
         var output = Object(source["output"]); Check(output, doc, "$.output", "message");
@@ -20,6 +21,11 @@ internal static class ConverseTextResponseReader
         foreach (var node in Array(native["content"]))
         {
             var block = Object(node);
+            if (block.ContainsKey("reasoningContent"))
+            {
+                if (!doc.PreserveConverseAnthropicReasoning) BedrockConversion.Reject("$.output.message.content[]", "converse_content_not_representable");
+                message.Blocks.Add(ConverseAnthropicReasoning.ReadNative(block)); continue;
+            }
             if (new[] { "text", "toolUse" }.Count(block.ContainsKey) != 1 || NativeOnly(block))
                 BedrockConversion.Reject("$.output.message.content[]", "converse_content_not_representable");
             if (block.ContainsKey("text"))

@@ -1512,3 +1512,19 @@ flowchart LR
 ```
 
 Anthropic manual budgets remain original and below the explicit original maxTokens; adaptive/off/display and qualitative effort use their native model fields. Nova2 numeric budgets require caller-selected qualitative replacement with loss consent and diagnostics; no numeric ratio is estimated. High/limit/sampling/forced-tool/prefill/null/mode conflicts fail before acquisition, without silently deleting controls. Explicit policy changes participate in the same whole-target/session identity. Signed/reasoning/redacted response and history blocks remain hard boundaries; request-setting support does not imply full reasoning round-trip or streaming support. Those are continuing SDK requirements.
+
+## Explicit Claude / Converse Anthropic opaque complete data
+
+Private `ConverseAnthropicReasoning` wraps exact native thinking/signature/redacted branches. The existing private document carries a per-operation flag set only for Claude -> Converse requests or Converse -> Claude replies with explicit Anthropic dialect. Existing request reading/response writing accept its private block kind only under that flag. Other protocols/defaults keep their opaque-state failures. No public universal reasoning type, capability interface, package dependency edge, provider feature or business coordinator is introduced.
+
+```mermaid
+flowchart LR
+    Scope[Explicit Anthropic + Claude/Converse operation] --> Flag[Private per-call permission]
+    Claude[Claude thinking / redacted_thinking] --> Codec[Private exact-branch codec]
+    Native[Converse reasoningContent] --> Codec
+    Flag --> Codec
+    Codec --> Data[Existing ordered private message blocks]
+    Data --> Out[Native envelope writer]
+```
+
+The codec preserves text/signature strings and redacted Base64 without interpreting or authenticating them. Role/Unicode/exact union validation prevents repaired or truncated opaque content. Historical message containers are not coalesced. A request or reply containing opaque Anthropic blocks cannot bypass any diagnosed conversion loss with ordinary AllowLoss consent. Original source snapshots, request model/history context and existing tool ID validation remain in place. The application must replay the full previous history against the same actual model/complete target/session; the pure converter has no origin discovery or session store. Public SDK target binding and native transport disposal remain separate responsibilities. Same-protocol native copies remain raw and unchanged.

@@ -452,3 +452,7 @@ Core Responses complete/stream entry points no longer register converted output 
 ### Explicit Converse reasoning request settings checkpoint (2026-10-20)
 
 Anthropic and Nova2 request-setting dialects are now explicit options in the existing Conversion package. Complete independent goldens and SDK HTTP tests cover reasoning/topK, unchanged strict output Schema, honest numeric-budget replacement, known conflict rejection and bound policy identity. This is request-setting coverage, not completed reasoning round-trip. Next preserve native signed/reasoning/redacted responses and Claude history under an explicit same-model dialect contract, then complete remaining inverse/native Nova/text and mixed-stream lifecycle work. Existing four-text native calls retain their own protocol guarantees. The larger supplier/capability roadmap and SDK-only scope remain unchanged.
+
+### Claude / Converse Anthropic signed data checkpoint (2026-10-20)
+
+The explicit Anthropic complete-data path now preserves Claude thinking/signature/redacted blocks in requests, native responses and full historical replay. Independent goldens and strict negative cases verify message order, no diagnosed field loss under signed context, tool association and source ownership. Next verify actual two-call SDK HTTP replay and late native resource failures; mixed streams, other reasoning families, inverse operations and the broader supplier/capability roadmap remain active. This is a pure SDK codec, not signature verification or cross-model state migration.

@@ -152,6 +152,12 @@ internal static class ResponseMapping
                     ? new JsonObject { ["type"] = "tool_use", ["id"] = id, ["name"] = name, ["input"] = Object(JsonNode.Parse(arguments)).DeepClone() }
                     : new JsonObject { ["functionCall"] = new JsonObject { ["id"] = id, ["name"] = name, ["args"] = Object(JsonNode.Parse(arguments)).DeepClone() } });
             }
+            else if (type == ConverseAnthropicReasoning.Kind)
+            {
+                if (protocol != LlmProtocol.ClaudeMessages || !doc.PreserveConverseAnthropicReasoning)
+                    BedrockConversion.Reject("$response.content", "opaque_state");
+                blocks.Add(ConverseAnthropicReasoning.WriteClaude(block));
+            }
             else Loss(doc, "$response.content", "unsupported_content");
         }
         var usage = UsageMapping.Write(doc, protocol);

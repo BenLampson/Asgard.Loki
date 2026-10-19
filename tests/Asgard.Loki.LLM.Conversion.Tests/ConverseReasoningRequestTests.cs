@@ -67,15 +67,20 @@ public sealed class ConverseReasoningRequestTests
         Assert.Equal(original, source.ToJsonString());
     }
 
-    /// <summary>请求设置支持不能被理解为已经允许丢弃原生签名或推理内容。</summary>
+    /// <summary>只有明确 Anthropic 方言的 Claude 形状可以完整保留原生签名，其他组合仍严格拒绝。</summary>
     [Theory] [MemberData(nameof(Cases))]
-    public void ReasoningResponseRemainsAnExplicitBoundary(string name)
+    public void ReasoningResponseRequiresTheExplicitClaudeDialect(string name)
     {
         var sample = Sample(name); var request = LlmProtocolConverter.ConvertRequest(sample["source"]!.AsObject(),
             Enum.Parse<LlmProtocol>(sample["protocol"]!.GetValue<string>()), LlmProtocol.BedrockConverse, Options(sample) with { AllowLoss = true });
         var response = ConverseTextFixtures.Read(LlmProtocol.ChatCompletions, "nativeResponse");
         response["output"]!["message"]!["content"]!.AsArray().Insert(0, new JsonObject
             { ["reasoningContent"] = new JsonObject { ["reasoningText"] = new JsonObject { ["text"] = "thinking", ["signature"] = "opaque" } } });
+        if (sample["protocol"]!.GetValue<string>() == "ClaudeMessages" && Options(sample).BedrockConverseModelDialect == BedrockConverseModelDialect.Anthropic)
+        {
+            var result = LlmProtocolConverter.ConvertResponse(response, request.Context!);
+            Assert.Equal("opaque", result.Data.GetProperty("content")[0].GetProperty("signature").GetString()); return;
+        }
         var error = Assert.Throws<LlmConversionException>(() => LlmProtocolConverter.ConvertResponse(response, request.Context!));
         Assert.Equal("converse_content_not_representable", Assert.Single(error.Diagnostics).Code);
     }

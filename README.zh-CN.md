@@ -95,4 +95,6 @@ LLM 适配器新增可选 `ILlmProtocolSupport`：声明只能收窄物理适配
 
 转换后的 Responses ID 继续保留在结果中，但不再登记成原生可续传响应。完整／流式入口保留原生响应链行为，新转换 ID 的续接在再次调用上游前失败；见[归属契约](src/Asgard.Loki.LLM/README.md#native-responses-ownership-versus-converted-output-ids)。
 
-Converse 显式转换新增 Anthropic／Nova2 的推理请求设置方言，可与原生结构化输出共存；完整 JSON 金样和公共 SDK HTTP 测试验证实际报文。签名及原生推理响应／历史回传仍未完成，保持严格失败，不丢弃内容来伪装成功。见[支持矩阵和限制](src/Asgard.Loki.LLM.Conversion/README.md#explicit-converse-model-reasoning-request-settings)。
+Converse 显式转换新增 Anthropic／Nova2 的推理请求设置方言，可与原生结构化输出共存；完整 JSON 金样和公共 SDK HTTP 测试验证实际报文。显式 Claude／Converse Anthropic 签名响应及历史数据转换现已补齐；其他推理回传仍保持严格失败，不丢弃内容来伪装成功。见[支持矩阵和限制](src/Asgard.Loki.LLM.Conversion/README.md#explicit-converse-model-reasoning-request-settings)。
+
+[Claude／Converse Anthropic 完整数据转换](src/Asgard.Loki.LLM.Conversion/README.md#claude--converse-anthropic-signed-complete-data) 已保留签名文本、加密块和完整历史消息／内容顺序，仅在明确方言下启用。其他协议或模型族继续严格拒绝不透明状态；SDK 不验证签名，也不承诺跨模型可移植。

@@ -23,6 +23,11 @@ internal static class ConverseTextContent
             {
                 var type = Text(block["type"]);
                 if (type == "text") content.Add(new JsonObject { ["text"] = Text(block["text"]) });
+                else if (type == ConverseAnthropicReasoning.Kind)
+                {
+                    if (!doc.PreserveConverseAnthropicReasoning) BedrockConversion.Reject("$messages[].content", "opaque_state");
+                    content.Add(ConverseAnthropicReasoning.WriteNative(block, role));
+                }
                 else if (type == "image") { if (role != "user") BedrockConversion.Reject("$messages[].content"); content.Add(new JsonObject { ["image"] = Image(block, doc) }); }
                 else if (type == "call")
                 {
@@ -42,7 +47,7 @@ internal static class ConverseTextContent
             }
             if (content.Count == 0) continue;
             var only = content.All(item => Object(item).ContainsKey(role == "assistant" ? "toolUse" : "toolResult"));
-            if (only && messages.LastOrDefault() is JsonObject previous && Text(previous["role"]) == role
+            if (!doc.PreserveConverseAnthropicReasoning && only && messages.LastOrDefault() is JsonObject previous && Text(previous["role"]) == role
                 && Array(previous["content"]).All(item => Object(item).ContainsKey(role == "assistant" ? "toolUse" : "toolResult")))
             { foreach (var block in content) previous["content"]!.AsArray().Add(block!.DeepClone()); }
             else messages.Add(new JsonObject { ["role"] = role, ["content"] = content });
