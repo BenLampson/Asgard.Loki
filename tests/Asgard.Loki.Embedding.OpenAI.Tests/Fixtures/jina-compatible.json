@@ -1,0 +1,17 @@
+{
+  "text": {
+    "request": {"model":"public","input":"前😀é!","embedding_type":"float","task":"retrieval.query"},
+    "wire": {"model":"jina-embeddings-v3","input":"前😀é!","embedding_type":"float","task":"retrieval.query"},
+    "response": {"model":"jina-embeddings-v3","object":"list","data":[{"object":"embedding","index":0,"embedding":[0.1,-0.2]}],"usage":{"total_tokens":4,"prompt_tokens":4}}
+  },
+  "settings": {
+    "request": {"model":"public","input":["first😀","second"],"embedding_type":"float","task":"retrieval.passage","dimensions":2,"late_chunking":true,"normalized":false,"truncate":false,"future":null},
+    "wire": {"model":"jina-embeddings-v3","input":["first😀","second"],"embedding_type":"float","task":"retrieval.passage","dimensions":2,"late_chunking":true,"normalized":false,"truncate":false,"future":null},
+    "response": {"model":"jina-embeddings-v3","object":"list","data":[{"object":"embedding","index":1,"embedding":[0.3,0.4],"future":false},{"object":"embedding","index":0,"embedding":[0.1,0.2]}],"usage":{"total_tokens":8,"prompt_tokens":8,"image_tokens":null},"future":{"trace":"raw"}}
+  },
+  "base64": {
+    "request": {"model":"public","input":"example","embedding_type":"base64","dimensions":2,"normalized":false,"late_chunking":null,"truncate":null,"task":null},
+    "wire": {"model":"jina-embeddings-v3","input":"example","embedding_type":"base64","dimensions":2,"normalized":false,"late_chunking":null,"truncate":null,"task":null},
+    "response": {"model":"jina-embeddings-v3","object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPwAAAMA="}],"usage":{"total_tokens":1,"prompt_tokens":1}}
+  }
+}
