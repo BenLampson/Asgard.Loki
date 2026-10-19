@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.AWS
 
-Native Bedrock Claude `InvokeModel` JSON and `InvokeModelWithResponseStream` for the existing LLM capability. This supplier package depends only on `Asgard.Loki.LLM` and standard Microsoft HTTP components. It does not reference another supplier, Conversion, an AWS identity SDK or another capability.
+Native Bedrock Claude `InvokeModel` JSON/EventStream and explicit Converse JSON for the existing LLM capability. This supplier package depends only on `Asgard.Loki.LLM` and standard Microsoft HTTP components. It does not reference another supplier, Conversion, an AWS identity SDK or another capability.
 
 ## Support matrix
 
@@ -13,7 +13,9 @@ Native Bedrock Claude `InvokeModel` JSON and `InvokeModelWithResponseStream` for
 | Native `x-amzn-bedrock-*` request headers | Optional provider configuration, independently snapshotted, signed and bound |
 | Explicit common-subset conversion | Separate `LLM.Conversion` decorator fixed to upstream ClaudeMessages |
 | InvokeModelWithResponseStream | Native binary framing, typed headers/CRC, Claude events and delayed terminal publication |
-| Converse/ConverseStream, Nova and other model payloads | Not implemented; no model-name-based protocol selection |
+| Converse complete JSON | Explicit native `BedrockConverse` protocol/client; same borrowed SigV4 source |
+| ConverseStream | Not implemented; does not reuse Claude chunk/base64 lifecycle |
+| Nova/other native InvokeModel payloads | Not implemented; Converse-compatible models may use the explicit Converse API |
 | Bedrock/Mantle Bearer API Keys, SigV4a, presigning | Not implemented |
 | Credential discovery/login/role assumption, resource management, retries | Application-owned or unsupported |
 
@@ -92,10 +94,48 @@ Modeled exception/unmodeled error frames throw `LlmUpstreamException` with the o
 
 The new EventStream state/resource policy uses a new AWS provider binding domain. Sessions from the earlier JSON-only AWS checkpoint must be recreated. Core credential fingerprints, conversion-v24 and other providers are unchanged. Sources/factories stay borrowed; no reconnect, credential reacquisition, clock correction or generation retry occurs.
 
+## Explicit native Converse JSON
+
+Converse is an independent Bedrock wire protocol, available through `client.LLM.BedrockConverse.ConverseAsync` with `BedrockConverseRequest` / `BedrockConverseResponse`. Declare `LlmProtocol.BedrockConverse` on the target. Existing Claude routes do not silently acquire it, and the conversion decorator does not advertise it. The AWS provider implements the core `IBedrockConverseAdapter` contract without adding provider references to the capability package.
+
+```csharp
+var provider = new AwsLlmProvider(httpFactory, credentialSource,
+    new AwsLlmOptions { Region = "us-east-1" });
+await using var client = new LokiClientBuilder().AddLLM(new()
+{
+    Providers = [provider],
+    Credentials = [LlmCredential.External("aws-principal", "stable-role-principal")],
+    SessionStore = sessionStore,
+    Routes = [new()
+    {
+        Model = "public-model",
+        Targets = [new()
+        {
+            Id = "converse-target", ProviderId = provider.Id,
+            CredentialId = "aws-principal", Protocols = LlmProtocol.BedrockConverse,
+            BaseAddress = new Uri("https://bedrock-runtime.us-east-1.amazonaws.com/"),
+            UpstreamModel = "YOUR_ENABLED_CONVERSE_MODEL_OR_PROFILE_ID"
+        }]
+    }]
+}).Build();
+var request = JsonSerializer.Deserialize<BedrockConverseRequest>(
+    """{"model":"public-model","messages":[{"role":"user","content":[{"text":"Hello"}]}],"inferenceConfig":{"maxTokens":512}}""")!;
+var result = await client.LLM.BedrockConverse.ConverseAsync(request,
+    new() { SessionId = "converse-conversation" });
+```
+
+The request DTO has the logical `Model` and JSON extension `Parameters` for every native field, preserving omission versus explicit null. This supports prompt-ARN requests that omit messages, as well as messages, system/cache blocks, toolUse/toolResult IDs/results, reasoningText/signatures/redacted bytes, image/document/video references, inferenceConfig, additionalModelRequestFields, native outputConfig and unknown values. The provider posts to `model/{escaped-actual-model}/converse`, removes only the SDK model field, and injects no stream flag, Anthropic version, token default or protocol conversion. An explicit unknown stream/anthropic_version body value stays caller-owned; it does not choose the method. Native Converse JSON-schema output uses `outputConfig.textFormat.structure.jsonSchema.schema` as a string, not Claude's schema-object shape. No schema/model-specific equivalence is inferred.
+
+Complete native output/stopReason/usage/metrics/trace/additionalModelResponseFields are returned unchanged. Native trace/guardrail/service-tier data is passive JSON, without policy enforcement, storage or billing. Model compatibility/availability is caller-selected, including supported Nova models through Converse; native Nova InvokeModel is a separate unimplemented dialect. Media stays raw JSON/Base64/reference data; the SDK fetches/uploads/decodes no media.
+
+This operation reuses the same provider-private strict bounded JSON, original HTTP/root-error preservation, source/expiry/clock/headers/signing, EOF/length/disposal and final cancellation checks. Claude-only type=error event interpretation is not applied to an unknown Converse type field. All configured region/source/headers/policy still participate in full target/principal binding. Sessions cannot change protocol, even for a target explicitly declaring both ClaudeMessages and BedrockConverse. Existing numeric protocol values, core fingerprint algorithms, AWS default binding bytes, and conversion-v24 are unchanged; modifying an existing target's declared protocol flags changes that target's fingerprint as usual. No existing Session is transparently migrated.
+
+ConverseStream is a separate pending operation and fails before credentials/HTTP; Claude's working EventStream transport is not proof of the Converse inner lifecycle. Explicit cross-protocol Converse mapping remains pending. The 41 new provider cases use three authored full request/wire/result fixtures and four independent final signature vectors covering eight public/direct HTTP calls, prompt-only requests, unknown-field isolation, snapshots, credentials/target recovery, changed identity/protocol, original errors and late encoding/bounds/disposal/cancellation failures. Eleven additional core contract cases use an application-owned adapter and no AWS dependency. No real Converse/Nova model call or live field acceptance is claimed.
+
 ## Verification status
 
-188 offline xUnit v3 cases (91 complete JSON/signing and 97 additional EventStream cases) cover independent caller/wire/result JSON, eight full signature vectors (public SDK/direct adapter, model ID/ARN, long-lived/temporary credentials), the published AWS IAM signature, exact path escaping and header normalization, snapshots before acquisition, Key/Token rotation/fixed-target Session recovery, changed identities/configuration, default-header isolation, source/cancellation/expiry failures, raw bounds/encoding/EOF/disposal and explicit common-text conversion. Tests use substitute HTTP, deterministic time and `MemoryDistributedCache` with an explicit coordinator. The signature goldens were calculated independently using Python `hashlib`/HMAC against authored wire bodies, including explicitly declared public DTO property order; they are not captured provider output.
+229 offline xUnit v3 cases (91 Claude JSON/signing, 97 Claude EventStream and 41 Converse JSON cases) cover independent caller/wire/result JSON, eight full signature vectors (public SDK/direct adapter, model ID/ARN, long-lived/temporary credentials), the published AWS IAM signature, exact path escaping and header normalization, snapshots before acquisition, Key/Token rotation/fixed-target Session recovery, changed identities/configuration, default-header isolation, source/cancellation/expiry failures, raw bounds/encoding/EOF/disposal and explicit common-text conversion. Tests use substitute HTTP, deterministic time and `MemoryDistributedCache` with an explicit coordinator. The signature goldens were calculated independently using Python `hashlib`/HMAC against authored wire bodies, including explicitly declared public DTO property order; they are not captured provider output.
 
 The 97 additional cases use a 16-frame independent Python struct/zlib binary fixture, full expected native/outer header/payload manifests and eight independent stream signature vectors. They cover every header type, CRC/length/encoding/Base64, original block/tool associations and unknown fields, snapshots, cross-mode credential rotation/Session recovery, source disposal/cancellation, strict local limits, original inner/outer errors and explicit converted text streams with late-failure finish rejection. No AWS login, real Key, role refresh, model entitlement, live call, Linux execution or new GitHub Actions run is claimed. The existing Volcengine live-test environment contract is unchanged. Model-specific field acceptance and response quality remain separate live integration work.
 
-Primary references: [InvokeModelWithResponseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html), [Amazon EventStream specification](https://smithy.io/2.0/aws/amazon-eventstream.html), [InvokeModel path and headers](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html), [Bedrock Claude native request/response](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-messages-request-response.html), [SigV4 signing](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html), [AWS SDK canonicalization](https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Core/Amazon.Runtime/Internal/Auth/AWS4Signer.cs), [published IAM signing example](https://aws.amazon.com/ko/blogs/korea/aws-api-call-1/).
+Primary references: [Converse API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html), [native JSON schema definition](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_JsonSchemaDefinition.html), [InvokeModelWithResponseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html), [Amazon EventStream specification](https://smithy.io/2.0/aws/amazon-eventstream.html), [InvokeModel path and headers](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html), [Bedrock Claude native request/response](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-messages-request-response.html), [SigV4 signing](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html), [AWS SDK canonicalization](https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Core/Amazon.Runtime/Internal/Auth/AWS4Signer.cs), [published IAM signing example](https://aws.amazon.com/ko/blogs/korea/aws-api-call-1/).

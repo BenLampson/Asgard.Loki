@@ -15,6 +15,7 @@ public sealed class LlmClient
         Gemini = new GeminiClient(invocation);
         OllamaChat = new OllamaChatClient(invocation);
         OllamaGenerate = new OllamaGenerateClient(invocation);
+        BedrockConverse = new BedrockConverseClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
@@ -29,4 +30,6 @@ public sealed class LlmClient
     public IOllamaChatClient OllamaChat { get; }
     /// <summary>访问 Ollama 原生 api/generate，不自动管理 prompt/context。</summary>
     public IOllamaGenerateClient OllamaGenerate { get; }
+    /// <summary>访问 Bedrock Converse 原生协议，不隐式转换成 Claude 或 Chat。</summary>
+    public IBedrockConverseClient BedrockConverse { get; }
 }

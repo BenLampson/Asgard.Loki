@@ -7,7 +7,7 @@ using Asgard.Loki.LLM.AWS.Internal;
 namespace Asgard.Loki.LLM.AWS;
 
 /// <summary>Bedrock Claude 原生 JSON/EventStream，完整目标与 SigV4 认证属于本供应商。</summary>
-public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredentialSupport
+public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, IBedrockConverseAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _factory;
     private readonly IAwsLlmCredentialSource _source;
@@ -41,8 +41,11 @@ public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredent
     public bool SupportsCredential(LlmCredentialKind kind) => kind == LlmCredentialKind.External;
     /// <summary>完整原生结果通过 EOF、长度、释放和最终取消检查后返回。</summary>
     public async Task<ClaudeMessage> CreateAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
+        => new(await PostJsonAsync(request, context, false, cancellationToken).ConfigureAwait(false), context.Metadata);
+    /// <summary>完整 JSON 传输独立于协议正文；原生 API 由显式入口选择，不根据模型名猜测。</summary>
+    private async Task<JsonElement> PostJsonAsync(JsonObject request, LlmAdapterContext context, bool converse, CancellationToken cancellationToken)
     {
-        JsonElement result; var prepared = await PrepareAsync(request, context, false, cancellationToken).ConfigureAwait(false);
+        JsonElement result; var prepared = await PrepareAsync(request, context, false, cancellationToken, converse).ConfigureAwait(false);
         using (var message = prepared.Request)
         using (var client = _factory.CreateClient(_clientName))
         {
@@ -51,27 +54,31 @@ public sealed partial class AwsLlmProvider : IClaudeMessagesAdapter, ILlmCredent
             if (!response.IsSuccessStatusCode) throw new LlmUpstreamException("Bedrock 原生调用失败。", response.StatusCode, AwsJson.Decode(bytes));
             var media = response.Content.Headers.ContentType?.MediaType;
             if (media is not null && !string.Equals(media, "application/json", StringComparison.OrdinalIgnoreCase) && !media.EndsWith("+json", StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Bedrock 完整调用没有返回 JSON。");
-            result = AwsJson.Parse(bytes); if (result.ValueKind != JsonValueKind.Object) throw new InvalidDataException("Bedrock Claude 结果必须是原生对象。");
-            if (result.TryGetProperty("error", out var error) && error.ValueKind != JsonValueKind.Null || result.TryGetProperty("type", out var type) && type.ValueKind == JsonValueKind.String && type.GetString() == "error") throw new LlmUpstreamException("Bedrock 返回原生错误。", response.StatusCode, AwsJson.Decode(bytes));
+            result = AwsJson.Parse(bytes); if (result.ValueKind != JsonValueKind.Object) throw new InvalidDataException("Bedrock 结果必须是原生对象。");
+            if (result.TryGetProperty("error", out var error) && error.ValueKind != JsonValueKind.Null || !converse && result.TryGetProperty("type", out var type) && type.ValueKind == JsonValueKind.String && type.GetString() == "error") throw new LlmUpstreamException("Bedrock 返回原生错误。", response.StatusCode, AwsJson.Decode(bytes));
         }
-        cancellationToken.ThrowIfCancellationRequested(); return new(result, context.Metadata);
+        cancellationToken.ThrowIfCancellationRequested(); return result;
     }
     /// <summary>首次来源等待前复制原生正文，只移除路由字段并选择 Bedrock 正文版本。</summary>
-    private async Task<(HttpRequestMessage Request, byte[] Body, AwsLlmSigningCredentials Credentials)> PrepareAsync(JsonObject payload, LlmAdapterContext context, bool stream, CancellationToken token)
+    private async Task<(HttpRequestMessage Request, byte[] Body, AwsLlmSigningCredentials Credentials)> PrepareAsync(JsonObject payload, LlmAdapterContext context, bool stream, CancellationToken token, bool converse = false)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(payload); ArgumentNullException.ThrowIfNull(context); ArgumentNullException.ThrowIfNull(context.Credential);
         if (!SupportsCredential(context.Credential.Kind)) throw new ArgumentException("Bedrock SigV4 要求显式 External 主体凭据。");
         var root = context.Target.BaseAddress; ArgumentNullException.ThrowIfNull(root);
         if (!root.IsAbsoluteUri || root.Scheme is not ("http" or "https") || root.Query.Length != 0 || root.Fragment.Length != 0 || root.UserInfo.Length != 0) throw new ArgumentException("Bedrock Runtime 根地址必须是无凭据、查询和片段的 HTTP(S) 绝对地址。");
         var model = context.Target.UpstreamModel; ArgumentException.ThrowIfNullOrWhiteSpace(model); AwsJson.Text(model); if (model is "." or "..") throw new ArgumentException("Bedrock 模型 ID 不能是相对路径段。");
-        AwsJson.Input(payload); var body = payload.DeepClone().AsObject(); body.Remove("model"); body.Remove("stream");
-        if (body.TryGetPropertyValue("anthropic_version", out var supplied) && (supplied is not JsonValue scalar || !scalar.TryGetValue<string>(out var version) || version != _options.ClaudeAnthropicVersion)) throw new ArgumentException("Claude 正文版本与所选 Bedrock 版本冲突。"); body["anthropic_version"] = _options.ClaudeAnthropicVersion;
-        if (stream && _options.RequestHeaders.TryGetValue("x-amzn-bedrock-accept", out var selected) && !JsonMedia(selected)) throw new ArgumentException("Claude EventStream 的模型内容类型必须选择 application/json。");
-        var bytes = Encoding.UTF8.GetBytes(body.ToJsonString()); var message = new HttpRequestMessage(HttpMethod.Post, new Uri(new Uri(root.AbsoluteUri.TrimEnd('/') + "/"), "model/" + Uri.EscapeDataString(model) + (stream ? "/invoke-with-response-stream" : "/invoke")));
+        AwsJson.Input(payload); var body = payload.DeepClone().AsObject(); body.Remove("model");
+        if (!converse)
+        {
+            body.Remove("stream"); if (body.TryGetPropertyValue("anthropic_version", out var supplied) && (supplied is not JsonValue scalar || !scalar.TryGetValue<string>(out var version) || version != _options.ClaudeAnthropicVersion)) throw new ArgumentException("Claude 正文版本与所选 Bedrock 版本冲突。"); body["anthropic_version"] = _options.ClaudeAnthropicVersion;
+        }
+        if (stream && !converse && _options.RequestHeaders.TryGetValue("x-amzn-bedrock-accept", out var selected) && !JsonMedia(selected)) throw new ArgumentException("Claude EventStream 的模型内容类型必须选择 application/json。");
+        var operation = converse ? stream ? "/converse-stream" : "/converse" : stream ? "/invoke-with-response-stream" : "/invoke";
+        var bytes = Encoding.UTF8.GetBytes(body.ToJsonString()); var message = new HttpRequestMessage(HttpMethod.Post, new Uri(new Uri(root.AbsoluteUri.TrimEnd('/') + "/"), "model/" + Uri.EscapeDataString(model) + operation));
         try
         {
             message.Content = new ByteArrayContent(bytes); message.Content.Headers.ContentType = new("application/json"); message.Headers.Accept.Add(new(stream ? "application/vnd.amazon.eventstream" : "application/json")); foreach (var header in _options.RequestHeaders) message.Headers.Add(header.Key, header.Value);
-            if (stream && !message.Headers.Contains("x-amzn-bedrock-accept")) message.Headers.Add("x-amzn-bedrock-accept", "application/json");
+            if (stream && !converse && !message.Headers.Contains("x-amzn-bedrock-accept")) message.Headers.Add("x-amzn-bedrock-accept", "application/json");
             SourceUnchanged(); var credentials = await _source.GetCredentialsAsync(context.Credential.PrincipalIdentity, token).ConfigureAwait(false) ?? throw new InvalidOperationException("AWS 来源没有返回签名凭据。"); token.ThrowIfCancellationRequested(); SourceUnchanged();
             ValidateCredentials(credentials, context.Credential.PrincipalIdentity); return (message, bytes, credentials);
         }

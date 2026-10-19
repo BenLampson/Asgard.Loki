@@ -17,5 +17,7 @@ public enum LlmProtocol
     /// <summary>Ollama 原生 api/chat JSON 与 NDJSON 协议，不等同于 OpenAI Chat。</summary>
     OllamaChat = 16,
     /// <summary>Ollama 原生 api/generate JSON 与 NDJSON 协议。</summary>
-    OllamaGenerate = 32
+    OllamaGenerate = 32,
+    /// <summary>Amazon Bedrock Converse 原生协议，不等同于 Claude Messages。</summary>
+    BedrockConverse = 64
 }

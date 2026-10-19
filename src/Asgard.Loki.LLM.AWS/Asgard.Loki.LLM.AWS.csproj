@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><Description>Native Bedrock Claude invocation with explicit targets and borrowed SigV4 credentials.</Description></PropertyGroup>
+  <PropertyGroup><Description>Native Bedrock Claude and Converse calls with explicit targets and borrowed SigV4 credentials.</Description></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
