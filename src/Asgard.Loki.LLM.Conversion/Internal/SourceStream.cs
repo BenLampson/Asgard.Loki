@@ -24,6 +24,7 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
     {
         if (!_started) { Document.Messages.Add(_message); _started = true; }
         var changes = new List<StreamChange>();
+        Document.Diagnostics.AddRange(HostedSearchOutput.Inspect(data, protocol));
         if (data["error"] is not null || data["type"]?.GetValue<string>() is "error" or "response.failed")
             throw new LlmConversionException([new("upstream_stream_error", "$event.error", "上游错误事件不能转换为成功终态。")]);
         if (_terminal && !IsUsageTail(data))

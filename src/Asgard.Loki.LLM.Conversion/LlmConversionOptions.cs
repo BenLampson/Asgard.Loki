@@ -23,6 +23,10 @@ public sealed record LlmConversionOptions
     public bool EnableCustomToolConversion { get; init; }
     /// <summary>显式展开 Responses namespace 工具并使用请求上下文还原其原始身份。</summary>
     public bool EnableNamespacedToolConversion { get; init; }
+    /// <summary>明确声明固定转换目标的原生搜索类型；默认禁用，不执行 SDK 侧搜索。</summary>
+    public LlmHostedSearchTarget HostedSearchTarget { get; init; }
+    /// <summary>调用者声明该目标支持原生搜索与函数工具同时使用；不自动猜测模型能力。</summary>
+    public bool AllowHostedSearchWithFunctionTools { get; init; }
     /// <summary>启用可逆工具编码时，完整工具身份表及独立 namespace 分组表的容量上限。</summary>
     public int MaxToolConversionMappings { get; init; } = 128;
     /// <summary>启用可逆工具编码时，单次请求保留的历史调用 ID 总上限。</summary>

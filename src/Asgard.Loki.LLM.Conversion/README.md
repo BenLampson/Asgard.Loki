@@ -19,6 +19,7 @@ Every off-diagonal direction has independent request, complete-response, streami
 | Functions | JSON Schema or Gemini typed `parameters` input; explicit typed target parameters; named/auto/required/none choice, original call IDs, arguments and associated results |
 | Custom tools | Opt-in Responses free-text custom → Chat/Claude/Gemini functions, complete/stream restoration and history replay |
 | Namespace tools | Separate opt-in flattens Responses namespace functions/custom tools; restores namespace/name/kind through complete calls, streams and replay; group descriptions require diagnosed loss consent |
+| Hosted search | First slice: explicit Responses / classic Claude / Gemini request configuration, six directions; known result/citation diagnostics and hard native-only encrypted search state. Full result/citation mapping remains pending |
 | Gemini results | Ordinary functions require JSON object text. Opt-in custom conversion explicitly wraps its arbitrary text result as `{"output": text}` |
 | Parameters | Temperature, top-p, explicit output limits; top-k and stop where the destination supports them |
 | Structured output | JSON Schema wrappers across all four protocols; JSON Schema bodies copied unchanged by default. Gemini `responseJsonSchema`, modern `responseFormat.text` and typed `responseSchema` input supported. Explicit `LegacySchema` writes representable typed output schemas. Plain JSON/text modes map between OpenAI and Gemini |
@@ -73,7 +74,7 @@ var options = new LlmConversionOptions
 // Set TargetThinkingBudgetTokens only for a target supporting manual thinking.
 ```
 
-Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v12`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
+Summary/display intent maps to Responses `reasoning.summary`, Claude thinking `display`, and Gemini `includeThoughts` where possible. Request-setting support does not authorize conversion of signed thinking or encrypted reasoning returned by the model; those responses still require native APIs. Unsupported summary detail levels and unknown nested settings remain diagnosed. All options and the conversion algorithm version participate in Session binding identity; changed options invalidate old bindings. This checkpoint uses `conversion-v13`; Sessions from the previous conversion algorithm are rejected rather than silently rebound. Native-provider Session identities are not changed by this conversion-package version.
 
 ## Explicit free-text custom tools
 
@@ -126,6 +127,34 @@ Global `auto`/`required`/`none` modes retain the complete tool set. A named choi
 History calls keep their original IDs and distinct namespaces, including tools no longer in current definitions. A result consumes one pending call ID exactly once; function-result `name` and `namespace` are optional consistency checks, never fallback lookup keys. Mismatched metadata, duplicate/orphan results, wrong kind and historical ID reuse fail even with loss consent. Custom results still follow their string-only contract and do not gain invented namespace metadata fields. Completed item metadata stays in `OriginalData`, and the caller's history is never mutated.
 
 `Context.MappedToolCount` counts each encoded identity once; `NamespacedToolCount` and `CustomToolCount` describe overlapping subsets. `MaxToolConversionMappings` bounds the combined identity table (including root ordinary names) and separately the declared namespace-group table, so empty groups cannot evade the limit. Historical/returned-call and raw stream argument bounds apply to any active mapped context, including namespace-only functions; the raw buffer cap still derives from `MaxCustomToolInputBytes`. Contexts remain immutable and request-local. No global registry, namespace authorization policy, tool executor or gateway service is added. Independent complete/17-event goldens and public SDK HTTP/SSE/replay/concurrency tests run offline; no live namespace conversion was verified. Contracts were checked against [namespace definitions](https://developers.openai.com/api/docs/guides/function-calling#defining-namespaces) and the [Responses reference](https://developers.openai.com/api/reference/typescript/resources/responses).
+
+## Explicit hosted search request configuration
+
+`HostedSearchTarget` declares the native search tool of the fixed converting target. `None` disables cross-protocol search by default, including when ordinary loss is allowed. Supported declarations are `ResponsesWebSearch` (`web_search`), `ClaudeWebSearch20250305` (classic direct search) and `GeminiGoogleSearch` (`googleSearch`). The actual target protocol must match. No model-name lookup, automatic version upgrade, SDK query execution, separate search service or retry is added.
+
+```csharp
+var options = new LlmConversionOptions
+{
+    HostedSearchTarget = LlmHostedSearchTarget.ClaudeWebSearch20250305,
+    DefaultMaxTokens = 512
+};
+// Explicit declaration of your configured target, not certification of model/account access.
+// Set AllowHostedSearchWithFunctionTools only after verifying that target's combination support.
+```
+
+This checkpoint implements **request configuration and output boundaries**, not full hosted-search conversation conversion. The six directions between Responses, classic Claude and Gemini have independent complete request goldens and public HTTP/SSE tests. Their substitute replies contain ordinary text; these tests do not prove that a model searches, accepts a setting, or returns correctly mapped sources/citations. Native APIs already carry complete provider tools and results. Use native Claude for conversations requiring encrypted search result replay.
+
+One search declaration is supported per request. Responses GA `web_search` and its documented dated alias, Claude classic `web_search_20250305` with default/direct callers, and Gemini `googleSearch` with default or explicit text-only `webSearch` are recognized. Native/same-protocol calls preserve all versions and unknown fields. Preview/Chat-specific search models, Claude dynamic code filtering, image search, legacy Google retrieval and additional server tools remain native-only in this slice.
+
+Bare DNS allow-domain lists and explicit approximate city/region/country/timezone transfer between Responses and classic Claude without normalization or inferred locations. Unknown settings, null/empty restrictive lists, paths/wildcards/IP filters, unsupported domain/time restrictions, offline-only access, search call limits (including zero/null presence) and unverified parallel controls hard-fail even with `AllowLoss`. Google Search has no corresponding fields for these source constraints in this mapping. Explicit live access permission uses the peer's native live-search availability; this is not a freshness guarantee. Missing location/settings retain provider defaults, not a fabricated common default.
+
+`search_context_size` has no equivalent Claude/Gemini field. Explicit `AllowLoss = true` can omit it with `search_context_size_not_representable` and the complete original request retained; the SDK never turns it into token or search-count ratios. Other search access/scope/count constraints are not ordinary annotation losses. Generic `TargetSettings` checks still run on the final native request.
+
+Responses and classic Claude global auto/required/none and specific native search choices map where represented. Definitions are retained for `none`. Gemini function-calling modes cannot force or disable Google Search: unsupported trigger choices fail rather than using `functionCallingConfig` or deleting tools. Only omitted/auto intent maps to Gemini in this slice. Function mixing requires the separate `AllowHostedSearchWithFunctionTools` declaration, and native name collisions still fail. Namespace/custom options remain independent; hosted tools never enter their function identity table.
+
+Known search execution, error, citation and generateContent `groundingMetadata` receive specific diagnostics in complete/history/stream conversion. Default strict mode rejects unrepresented business output. Ordinary loss consent retains complete source JSON for complete conversions, while stream diagnostics accumulate under the existing per-event metadata contract; it does not make these results lossless or guarantee that every unsupported search transcript can complete. **Claude search result references, encrypted search content and encrypted citation indices remain hard native-only boundaries**, even with loss consent. This guard checks native content positions, not arbitrary function arguments or user JSON. Full search result/citation/offset mapping and additional trigger semantics are separate pending checkpoints.
+
+Contracts checked: [OpenAI web search](https://developers.openai.com/api/docs/guides/tools-web-search), [Claude search tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool), and [Gemini generateContent GoogleSearch](https://ai.google.dev/api/generate-content#GoogleSearch). No live hosted search verification was performed.
 
 ## Caller-declared target settings
 

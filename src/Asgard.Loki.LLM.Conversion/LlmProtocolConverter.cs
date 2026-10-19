@@ -14,10 +14,14 @@ public static class LlmProtocolConverter
         if (from == to) return new(request, request, [], new(from, to, captured));
         if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
             throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
-        var context = ToolRequestCodec.Prepare(request, from, to, captured, out var prepared, out var toolDiagnostics);
+        var searchOutputDiagnostics = HostedSearchOutput.Inspect(request, from);
+        var search = HostedSearchCodec.Prepare(request, from, to, captured, out var searchPrepared);
+        var context = ToolRequestCodec.Prepare(searchPrepared, from, to, captured, out var prepared, out var toolDiagnostics);
         var doc = RequestReader.Read(prepared, from, to);
         doc.Diagnostics.AddRange(toolDiagnostics);
+        doc.Diagnostics.AddRange(searchOutputDiagnostics);
         var target = RequestWriter.Write(doc, to, captured);
+        HostedSearchCodec.Write(target, search, to, captured, doc);
         ConversionJson.Copy(request, "stream", target, "stream");
         TargetSettingsValidator.Validate(target, to, captured.TargetSettings);
         Enforce(doc, captured);
@@ -30,7 +34,9 @@ public static class LlmProtocolConverter
         var captured = ConversionOptionsSnapshot.Capture(options);
         Validate(response, from, to, captured);
         if (from == to) return new(response, response, []);
+        var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from);
         var doc = ResponseMapping.Read(response, from);
+        doc.Diagnostics.AddRange(searchOutputDiagnostics);
         var target = ResponseMapping.Write(doc, to);
         Enforce(doc, captured);
         return new(target, response, doc.Diagnostics);
@@ -54,6 +60,7 @@ public static class LlmProtocolConverter
         if (options?.TargetThinkingBudgetTokens is < 1024) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiOutputFormat)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is not null && !Enum.IsDefined(options.GeminiFunctionSchemaFormat)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.HostedSearchTarget)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options is { MaxToolConversionMappings: <= 0 } or { MaxToolConversionHistoryCalls: <= 0 }
             or { MaxToolConversionOutputCalls: <= 0 } or { MaxCustomToolInputBytes: <= 0 })
             throw new ArgumentOutOfRangeException(nameof(options));
