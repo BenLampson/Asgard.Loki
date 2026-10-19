@@ -18,6 +18,7 @@ $packageIds = @(
     'Asgard.Loki.LLM',
     'Asgard.Loki.Audio',
     'Asgard.Loki.Image',
+    'Asgard.Loki.Embedding',
     'Asgard.Loki.Video',
     'Asgard.Loki.LLM.Volcengine',
     'Asgard.Loki.LLM.OpenAI',
@@ -31,7 +32,7 @@ $expectedNames = @(foreach ($id in $packageIds) { "$id.$Version.nupkg"; "$id.$Ve
 $actualNames = @(Get-ChildItem -LiteralPath $PackageDirectory -File |
     Where-Object { $_.Extension -in '.nupkg', '.snupkg' } | ForEach-Object Name)
 if ((@($expectedNames | Sort-Object) -join '|') -cne (@($actualNames | Sort-Object) -join '|')) {
-    throw 'Expected exactly thirteen matching NuGet packages and thirteen symbol packages. Use a clean package directory.'
+    throw "Expected exactly $($packageIds.Count) matching NuGet packages and symbol packages. Use a clean package directory."
 }
 foreach ($id in $packageIds) {
     foreach ($extension in @('nupkg', 'snupkg')) {

@@ -14,6 +14,7 @@ class Client["Asgard.Loki"]
 class LLM["Asgard.Loki.LLM"]
 class Audio["Asgard.Loki.Audio"]
 class Image["Asgard.Loki.Image"]
+class Embedding["Asgard.Loki.Embedding"]
 class Video["Asgard.Loki.Video"]
 class Ark["Asgard.Loki.LLM.Volcengine"]
 class OpenAILLM["Asgard.Loki.LLM.OpenAI"]
@@ -26,6 +27,7 @@ Client ..> Abstractions
 LLM ..> Abstractions
 Audio ..> Abstractions
 Image ..> Abstractions
+Embedding ..> Abstractions
 Video ..> Abstractions
 Ark ..> LLM
 OpenAILLM ..> LLM
@@ -51,7 +53,7 @@ participant Caller
 participant Extension as Capability extension
 participant Builder as ILokiClientBuilder
 participant Client as ILokiClient
-Caller->>Extension: AddLLM / AddAudio / AddImage
+Caller->>Extension: AddLLM / AddAudio / AddImage / AddEmbedding
 Extension->>Extension: Validate and snapshot configuration
 Extension->>Builder: AddModule(factory)
 Caller->>Builder: Build()
@@ -464,6 +466,28 @@ Images own `ImageClient`, `IImageGenerationAdapter`, image routes and image resu
 The OpenAI provider implements `POST /v1/images/generations` and its SSE generation events. Preserve partial/final image data, URLs, revised prompts, usage and unknown JSON. Public route names and actual image models are distinct. Parameters such as format, quality, size, count, compression and transparency remain caller-selected.
 
 Base64 decoding is explicit and format-preserving. Return URLs without downloading them. Image edits and variations are not implemented. Availability of streaming and individual parameters is determined by the actual upstream model/account.
+
+## 6a. Embeddings
+
+`Asgard.Loki.Embedding` is a separate capability referencing only Abstractions. `AddEmbedding(EmbeddingOptions)` validates and snapshots route/target collections at registration. The existing module factory then creates one lazy `EmbeddingClient` per client, with independent per-route selection counters. The entry package, LLM and other capabilities have no new dependency or initialization API.
+
+```mermaid
+classDiagram
+ILokiClientBuilder --> EmbeddingExtensions : AddEmbedding
+EmbeddingExtensions --> EmbeddingConfiguration : validated snapshot
+EmbeddingConfiguration --> EmbeddingClient : per-client module
+EmbeddingClient --> EmbeddingRouteState : per-route selection
+EmbeddingRouteState --> IEmbeddingAdapter : one complete target
+IEmbeddingAdapter --> EmbeddingRequest : native Parameters
+IEmbeddingAdapter --> EmbeddingResult : native Data and Metadata
+EmbeddingResult --> EmbeddingResultMetadata
+```
+
+Each borrowed `IEmbeddingAdapter` encapsulates its own server, actual model, credentials and native dialect; it exposes a stable instance `Id` and one `EmbedAsync` operation. Routes match exact public model names. A call snapshots the request parameters, selects one complete target and forwards cancellation; it never retries or fails over. A pre-cancelled call does not consume a target selection. Client disposal does not dispose caller-owned adapters or their dependencies. No conversational Session, cache or cross-capability scheduler is introduced.
+
+`EmbeddingRequest.Model` is a public routing alias. Its extension `Parameters` retain native fields such as OpenAI `input` or Google `content`; core reserves only root `model` and never assumes that different suppliers accept the same input shape. Future provider operations must preserve their own protocol and cannot silently convert those fields. `EmbeddingResult.Data` is an independent native object snapshot; metadata distinguishes public/upstream model and provider identity. Core does not sort vectors, invent indices, tokenize, infer usage, normalize dimensions or decode encodings. Each supplier adapter owns native response validation and provider-specific convenience views. `EmbeddingUpstreamException` retains raw HTTP status/body. The core-contract checkpoint includes custom in-memory adapter tests only; bundled OpenAI/Google providers and their wire validation are separate deliveries.
+
+Multi-input synchronous requests are distinct from a hosted asynchronous Batch API. Vector databases, similarity search, RAG, chunking, billing, gateway catalogs and background processing are outside this capability. No live embedding acceptance or vector quality has been verified.
 
 ## 7. HTTP and errors
 

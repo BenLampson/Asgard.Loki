@@ -106,7 +106,7 @@ jobs:
           "## NuGet trusted publishing" >> $env:GITHUB_STEP_SUMMARY
           "OIDC login succeeded for version $env:RELEASE_VERSION." >> $env:GITHUB_STEP_SUMMARY
           if ($env:RELEASE_MODE -eq 'publish') {
-            'The thirteen package push commands completed. NuGet indexing and symbol validation may finish later.' >> $env:GITHUB_STEP_SUMMARY
+            'The configured package push commands completed. NuGet indexing and symbol validation may finish later.' >> $env:GITHUB_STEP_SUMMARY
           } else {
             'Verification only: no packages were published.' >> $env:GITHUB_STEP_SUMMARY
           }
