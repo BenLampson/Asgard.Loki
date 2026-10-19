@@ -6,13 +6,14 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 /// <summary>只接受已验证的原生搜索字段，不把范围限制、离线模式或调用上限当成可删元数据。</summary>
 internal static class HostedSearchSettings
 {
-    /// <summary>读取正式 Responses、经典 Claude 或 Gemini 文本 Google Search 的配置。</summary>
+    /// <summary>读取 Chat 搜索选项、正式 Responses、经典 Claude 或 Gemini 文本 Google Search 的配置。</summary>
     internal static JsonObject Read(JsonObject tool, LlmProtocol source, string path)
     {
         var result = new JsonObject();
-        if (source == LlmProtocol.Responses)
+        if (source is LlmProtocol.Responses or LlmProtocol.ChatCompletions)
         {
-            Known(tool, path, "type", "filters", "user_location", "search_context_size", "external_web_access");
+            if (source == LlmProtocol.ChatCompletions) Known(tool, path, "user_location", "search_context_size");
+            else Known(tool, path, "type", "filters", "user_location", "search_context_size", "external_web_access");
             if (tool.ContainsKey("filters"))
             {
                 var filters = Object(tool["filters"]); Known(filters, path + ".filters", "allowed_domains");
@@ -24,7 +25,18 @@ internal static class HostedSearchSettings
                 Copy(tool, "search_context_size", result, "context");
             }
             if (tool.ContainsKey("external_web_access")) { _ = Boolean(tool["external_web_access"]); Copy(tool, "external_web_access", result, "live"); }
-            if (tool.ContainsKey("user_location")) result["location"] = Location(tool["user_location"], path + ".user_location");
+            if (tool.ContainsKey("user_location"))
+            {
+                var location = tool["user_location"]; var locationPath = path + ".user_location";
+                if (source == LlmProtocol.ChatCompletions)
+                {
+                    var wrapper = Object(location); Known(wrapper, locationPath, "type", "approximate");
+                    if (Text(wrapper["type"]) != "approximate") Reject(locationPath + ".type", "search_location_not_representable");
+                    location = Object(wrapper["approximate"]); locationPath += ".approximate";
+                    Known(Object(location), locationPath, "city", "region", "country", "timezone");
+                }
+                result["location"] = Location(location, locationPath);
+            }
         }
         else if (source == LlmProtocol.ClaudeMessages)
         {
@@ -66,12 +78,15 @@ internal static class HostedSearchSettings
             foreach (var field in new[] { "allowed", "blocked", "location" })
                 if (settings.ContainsKey(field)) Reject(search.Path, "search_constraint_not_representable");
         }
-        if (settings.ContainsKey("context") && target != LlmProtocol.Responses)
+        if (target == LlmProtocol.ChatCompletions && (settings.ContainsKey("allowed") || settings.ContainsKey("blocked")))
+            Reject(search.Path, "search_constraint_not_representable");
+        if (settings.ContainsKey("context") && target is not (LlmProtocol.Responses or LlmProtocol.ChatCompletions))
             doc.Diagnostics.Add(new("search_context_size_not_representable", search.Path + ".search_context_size", "目标没有等价搜索上下文大小；原设置保留在 OriginalData。"));
         var tool = target switch
         {
             LlmProtocol.Responses => new JsonObject { ["type"] = "web_search" },
             LlmProtocol.ClaudeMessages => new JsonObject { ["type"] = "web_search_20250305", ["name"] = "web_search" },
+            LlmProtocol.ChatCompletions => new JsonObject(),
             _ => new JsonObject { ["googleSearch"] = new JsonObject() }
         };
         if (target == LlmProtocol.Responses)
@@ -81,7 +96,16 @@ internal static class HostedSearchSettings
             Copy(settings, "context", tool, "search_context_size"); Copy(settings, "live", tool, "external_web_access");
         }
         else if (target == LlmProtocol.ClaudeMessages) Copy(settings, "allowed", tool, "allowed_domains");
-        if (target != LlmProtocol.Gemini) Copy(settings, "location", tool, "user_location");
+        if (target == LlmProtocol.ChatCompletions)
+        {
+            Copy(settings, "context", tool, "search_context_size");
+            if (settings["location"] is JsonObject location)
+            {
+                var approximate = location.DeepClone().AsObject(); approximate.Remove("type");
+                tool["user_location"] = new JsonObject { ["type"] = "approximate", ["approximate"] = approximate };
+            }
+        }
+        else if (target != LlmProtocol.Gemini) Copy(settings, "location", tool, "user_location");
         return tool;
     }
 

@@ -10,5 +10,7 @@ public enum LlmHostedSearchTarget
     /// <summary>Claude 的经典直接搜索工具，不启用动态代码过滤。</summary>
     ClaudeWebSearch20250305 = 2,
     /// <summary>Gemini generateContent 的 Google Search 文本搜索工具。</summary>
-    GeminiGoogleSearch = 3
+    GeminiGoogleSearch = 3,
+    /// <summary>Chat 的原生 web_search_options；调用者确认固定上游具备先搜索再回答的语义。</summary>
+    ChatWebSearch = 4
 }

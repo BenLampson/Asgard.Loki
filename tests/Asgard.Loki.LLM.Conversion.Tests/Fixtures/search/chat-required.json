@@ -1,0 +1,159 @@
+{
+  "ChatCompletions": {
+    "model": "model-a",
+    "max_completion_tokens": 128,
+    "messages": [
+      {
+        "role": "user",
+        "content": "start"
+      }
+    ],
+    "web_search_options": {
+      "user_location": {
+        "type": "approximate",
+        "approximate": {
+          "country": "GB",
+          "city": "London",
+          "region": "London",
+          "timezone": "Europe/London"
+        }
+      }
+    }
+  },
+  "Responses": {
+    "model": "model-a",
+    "max_output_tokens": 128,
+    "input": "start",
+    "tools": [
+      {
+        "type": "web_search",
+        "user_location": {
+          "type": "approximate",
+          "country": "GB",
+          "city": "London",
+          "region": "London",
+          "timezone": "Europe/London"
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "web_search"
+    }
+  },
+  "ClaudeMessages": {
+    "model": "model-a",
+    "max_tokens": 128,
+    "messages": [
+      {
+        "role": "user",
+        "content": "start"
+      }
+    ],
+    "tools": [
+      {
+        "type": "web_search_20250305",
+        "name": "web_search",
+        "user_location": {
+          "type": "approximate",
+          "country": "GB",
+          "city": "London",
+          "region": "London",
+          "timezone": "Europe/London"
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "tool",
+      "name": "web_search"
+    }
+  },
+  "ExpectedChatCompletions": {
+    "model": "model-a",
+    "max_completion_tokens": 128,
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "start"
+          }
+        ]
+      }
+    ],
+    "web_search_options": {
+      "user_location": {
+        "type": "approximate",
+        "approximate": {
+          "country": "GB",
+          "city": "London",
+          "region": "London",
+          "timezone": "Europe/London"
+        }
+      }
+    }
+  },
+  "ExpectedResponses": {
+    "model": "model-a",
+    "max_output_tokens": 128,
+    "input": [
+      {
+        "type": "message",
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "start"
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "type": "web_search",
+        "user_location": {
+          "type": "approximate",
+          "country": "GB",
+          "city": "London",
+          "region": "London",
+          "timezone": "Europe/London"
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "web_search"
+    }
+  },
+  "ExpectedClaudeMessages": {
+    "model": "model-a",
+    "max_tokens": 128,
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "start"
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "type": "web_search_20250305",
+        "name": "web_search",
+        "user_location": {
+          "type": "approximate",
+          "country": "GB",
+          "city": "London",
+          "region": "London",
+          "timezone": "Europe/London"
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "tool",
+      "name": "web_search"
+    }
+  }
+}

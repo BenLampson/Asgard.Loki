@@ -12,7 +12,16 @@ internal static class HostedSearchCodec
         LlmConversionOptions options, out JsonObject prepared)
     {
         prepared = request;
-        if (source == LlmProtocol.ChatCompletions && request.ContainsKey("web_search_options")) Reject("$.web_search_options", "hosted_search_source_not_supported");
+        if (source == LlmProtocol.ChatCompletions && request.ContainsKey("web_search_options"))
+        {
+            RequireTarget(target, options.HostedSearchTarget, "$.web_search_options");
+            if (request.ContainsKey("tools") && Array(request["tools"]).Count != 0)
+                Reject("$.tools", "chat_search_function_combination_not_supported");
+            var chatSearch = new HostedSearchRequest(source, "$.web_search_options", Read(Object(request["web_search_options"]), source, "$.web_search_options")) { Choice = "search" };
+            prepared = request.DeepClone().AsObject(); prepared.Remove("web_search_options");
+            ReadChoice(prepared, chatSearch);
+            return chatSearch;
+        }
         if (request["tools"] is not JsonArray tools) return null;
         var remaining = new JsonArray(); HostedSearchRequest? search = null;
         for (var i = 0; i < tools.Count; i++)
@@ -23,7 +32,7 @@ internal static class HostedSearchCodec
                 || source == LlmProtocol.Gemini && (tool.ContainsKey("googleSearch") || tool.ContainsKey("google_search") || tool.ContainsKey("googleSearchRetrieval"));
             if (!recognized) { remaining.Add(tool.DeepClone()); continue; }
             if (search is not null) Reject(path, "duplicate_hosted_search");
-            RequireTarget(target, options.HostedSearchTarget);
+            RequireTarget(target, options.HostedSearchTarget, path);
             if (source == LlmProtocol.Responses && type is not ("web_search" or "web_search_2025_08_26")
                 || source == LlmProtocol.ClaudeMessages && type != "web_search_20250305"
                 || source == LlmProtocol.Gemini && (tool.ContainsKey("google_search") || tool.ContainsKey("googleSearchRetrieval")))
@@ -53,17 +62,18 @@ internal static class HostedSearchCodec
     }
 
     /// <summary>目标由调用者明确声明，不通过模型名、后缀、在线目录或接口探测推断支持。</summary>
-    private static void RequireTarget(LlmProtocol protocol, LlmHostedSearchTarget target)
+    private static void RequireTarget(LlmProtocol protocol, LlmHostedSearchTarget target, string path)
     {
-        if (target == LlmHostedSearchTarget.None) Reject("$.tools", "hosted_search_conversion_not_enabled");
+        if (target == LlmHostedSearchTarget.None) Reject(path, "hosted_search_conversion_not_enabled");
         var matches = target switch
         {
             LlmHostedSearchTarget.ResponsesWebSearch => protocol == LlmProtocol.Responses,
             LlmHostedSearchTarget.ClaudeWebSearch20250305 => protocol == LlmProtocol.ClaudeMessages,
             LlmHostedSearchTarget.GeminiGoogleSearch => protocol == LlmProtocol.Gemini,
+            LlmHostedSearchTarget.ChatWebSearch => protocol == LlmProtocol.ChatCompletions,
             _ => false
         };
-        if (!matches) Reject("$.tools", "hosted_search_target_mismatch");
+        if (!matches) Reject(path, "hosted_search_target_mismatch");
     }
 
     /// <summary>普通函数仍由现有写入器处理，搜索声明和选择保留自己的原生类型。</summary>
@@ -74,6 +84,13 @@ internal static class HostedSearchCodec
         if ((protocol == LlmProtocol.ClaudeMessages || search.Source == LlmProtocol.ClaudeMessages) && doc.Tools.Any(t => Text(t!["name"]) == "web_search"))
             Reject("$.tools", "hosted_search_name_collision");
         var tool = HostedSearchSettings.Write(search, protocol, doc);
+        if (protocol == LlmProtocol.ChatCompletions)
+        {
+            if (doc.Tools.Count != 0) Reject("$.tools", "chat_search_function_combination_not_supported");
+            if (search.Choice is not ("search" or "required")) Reject("$.tool_choice", "hosted_search_choice_not_representable");
+            target["web_search_options"] = tool;
+            return; // Chat 搜索模型先搜索；不能将 auto/none 改为这一执行语义。
+        }
         if (target["tools"] is not JsonArray tools) { tools = []; target["tools"] = tools; }
         tools.Add(tool);
         if (search.Choice is null) return;
@@ -93,6 +110,11 @@ internal static class HostedSearchCodec
     private static void ReadChoice(JsonObject request, HostedSearchRequest search)
     {
         if (request.ContainsKey("parallel_tool_calls")) Reject("$.parallel_tool_calls", "hosted_search_parallel_not_supported");
+        if (search.Source == LlmProtocol.ChatCompletions)
+        {
+            if (request.ContainsKey("tool_choice")) Reject("$.tool_choice", "hosted_search_choice_not_representable");
+            return; // 原生函数选择器不控制 web_search_options；不猜测组合语义。
+        }
         if (search.Source == LlmProtocol.Gemini)
         {
             if (!request.ContainsKey("toolConfig")) return;
