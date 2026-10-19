@@ -1,0 +1,13 @@
+{
+  "model":"deploy.1","stream":false,"temperature":0,"max_completion_tokens":128,
+  "messages":[
+    {"role":"system","content":"rules"},
+    {"role":"user","content":[{"type":"text","text":"你好🌏"}]},
+    {"role":"assistant","content":null,"tool_calls":[{"id":"call_history","type":"function","function":{"name":"inspect","arguments":"{\"n\":9007199254740993}"}}]},
+    {"role":"tool","tool_call_id":"call_history","content":"{\"ok\":false}"}
+  ],
+  "tools":[{"type":"function","function":{"name":"inspect","parameters":{"type":"object","properties":{"n":{"type":"integer"}},"additionalProperties":false},"strict":true}}],
+  "tool_choice":"auto","reasoning_effort":"low",
+  "response_format":{"type":"json_schema","json_schema":{"name":"result","schema":{"type":"object","properties":{"x":{"type":"integer"}},"additionalProperties":false},"strict":true}},
+  "future":{"null":null,"off":false,"empty":[]}
+}

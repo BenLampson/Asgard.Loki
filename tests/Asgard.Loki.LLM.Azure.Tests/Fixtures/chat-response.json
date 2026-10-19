@@ -1,0 +1,7 @@
+{
+  "id":"chat-native","object":"chat.completion","created":1792368000,"model":"native-model-version",
+  "choices":[{"index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_output","type":"function","function":{"name":"inspect","arguments":"{\"n\":9007199254740993}"}}]},"finish_reason":"tool_calls","content_filter_results":{"hate":{"filtered":false,"severity":"safe"}}}],
+  "prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"}}}],
+  "usage":{"prompt_tokens":7,"completion_tokens":3,"total_tokens":10,"completion_tokens_details":{"reasoning_tokens":0}},
+  "future":{"null":null,"number":9007199254740993}
+}

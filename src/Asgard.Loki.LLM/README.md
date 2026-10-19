@@ -38,9 +38,9 @@ var identity = LlmCredential.External("cloud-credential", "configured-tenant/pri
 
 Providers opt in through `ILlmCredentialSupport`; legacy providers remain API-Key-only, and the existing Ollama provider does not support this kind. Converting decorators delegate their fixed upstream's declaration. The core does not acquire/refresh tokens, read environment credentials or add cloud dependencies. Direct legacy Key-only operations fail before HTTP/WebSocket dispatch instead of sending an empty credential.
 
-External fingerprints use a separate domain with structured target/principal/provider components, so newline-containing references cannot move separators and collide with implementation identities. Changing principal, authentication kind, server/model/credential identity or provider configuration rejects an old Session; stable principal identity allows a future provider to refresh short-lived tokens without putting them in this fingerprint. API Key and anonymous fingerprint bytes are unchanged and verified using independently constructed legacy cache entries. Concurrent first binding and snapshots retain the existing explicit coordination contract.
+External fingerprints use a separate domain with structured target/principal/provider components, so newline-containing references cannot move separators and collide with implementation identities. Changing principal, authentication kind, server/model/credential identity or provider configuration rejects an old Session; stable principal identity allows a provider-owned source to refresh short-lived tokens without putting them in this fingerprint. API Key and anonymous fingerprint bytes are unchanged and verified using independently constructed legacy cache entries. Concurrent first binding and snapshots retain the existing explicit coordination contract.
 
-This prerequisite has 38 new offline cases (28 core, four conversion and six direct OpenAI boundaries). It is usable by caller-owned adapters; the dedicated Azure token source/endpoint transport is a separate next checkpoint. No cloud login, actual token refresh or live model call is claimed.
+This prerequisite has 38 new offline cases (28 core, four conversion and six direct OpenAI boundaries). It is usable by caller-owned adapters and the independent [Azure provider](../Asgard.Loki.LLM.Azure/README.md), whose native complete JSON endpoint/token transport has 86 additional offline cases. Azure SSE remains pending. No cloud login, actual token refresh or live model call is claimed.
 
 ## Native Ollama operations
 
@@ -70,7 +70,7 @@ Native `.OllamaGenerate.GenerateAsync` / `StreamAsync` are separate from Chat, u
 - Native `.ClaudeMessages`, `.Gemini`, `.OllamaChat` and `.OllamaGenerate` clients, each with independent request/result/event contracts.
 - `ILlmProvider.BindingIdentity` participates in target fingerprints; old bindings created without it require a new Session or caller-managed expiration.
 
-Register providers separately, currently `Asgard.Loki.LLM.Volcengine`, `Asgard.Loki.LLM.OpenAI`, `Asgard.Loki.LLM.Anthropic`, `Asgard.Loki.LLM.Google` or `Asgard.Loki.LLM.Ollama`. This package does not reference any provider, the client implementation, or another capability.
+Register providers separately, currently `Asgard.Loki.LLM.Volcengine`, `Asgard.Loki.LLM.OpenAI`, `Asgard.Loki.LLM.Anthropic`, `Asgard.Loki.LLM.Google`, `Asgard.Loki.LLM.Ollama` or `Asgard.Loki.LLM.Azure`. This package does not reference any provider, the client implementation, or another capability.
 
 First binding must be coordinated across processes. Plain cache Get/Set is not atomic. Missing/changed bindings fail; generation is not silently retried or rerouted. Cache/coordinator ownership remains with the caller.
 

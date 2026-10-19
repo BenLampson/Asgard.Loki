@@ -30,6 +30,7 @@ class OpenAILLM["Asgard.Loki.LLM.OpenAI"]
 class AnthropicLLM["Asgard.Loki.LLM.Anthropic"]
 class GoogleLLM["Asgard.Loki.LLM.Google"]
 class OllamaLLM["Asgard.Loki.LLM.Ollama"]
+class AzureLLM["Asgard.Loki.LLM.Azure"]
 class Conversion["Asgard.Loki.LLM.Conversion"]
 class Speech["Asgard.Loki.Audio.Volcengine"]
 class OpenAISpeech["Asgard.Loki.Audio.OpenAI"]
@@ -54,6 +55,7 @@ OpenAILLM ..> LLM
 AnthropicLLM ..> LLM
 GoogleLLM ..> LLM
 OllamaLLM ..> LLM
+AzureLLM ..> LLM
 Conversion ..> LLM
 Speech ..> Audio
 OpenAISpeech ..> Audio
@@ -66,6 +68,29 @@ OpenAIImage ..> Image
 - Provider naming is `Asgard.Loki.{Capability}.{Vendor}`. Use `Volcengine` for the vendor; Ark is its LLM product.
 - Providers depend only on their own capability and necessary standard dependencies. No umbrella vendor package may force all capabilities to install together.
 - Private technical helpers such as an SSE parser may be source-linked into provider assemblies. They must remain internal; there is no public LokiTransport project or cross-capability workflow framework.
+
+## Azure native JSON provider
+
+`Asgard.Loki.LLM.Azure` implements the existing Chat/Responses complete JSON adapter contracts and references only LLM plus standard HTTP. It adds no protocol flag, public universal message format or dependency on OpenAI/Conversion/another capability. SSE remains an explicit unsupported operation at this checkpoint. See the [provider support matrix](../src/Asgard.Loki.LLM.Azure/README.md).
+
+```mermaid
+classDiagram
+IChatCompletionsAdapter <|.. AzureLlmProvider
+IResponsesAdapter <|.. AzureLlmProvider
+ILlmCredentialSupport <|.. AzureLlmProvider
+AzureLlmProvider --> AzureLlmOptions : snapshots API style/version/limit
+AzureLlmProvider --> IAzureLlmTokenSource : borrows for External only
+IAzureLlmTokenSource --> AzureLlmAccessToken : principal/token/expiry assertion
+AzureLlmProvider --> LlmAdapterContext : complete bound target and credential
+```
+
+`AzureLlmApiStyle.V1` uses the caller's `/openai/v1/` root; dated style uses `/openai/` with an explicit nonempty version and deployment path for Chat. Responses uses the selected root's `responses` endpoint. No hostname, deployment-dot removal, historical channel dates or model-suffix heuristics apply. Only deployment/model placement and method stream mode change; native reasoning, tools, schema, filters, usage and unknown fields remain untouched.
+
+External authentication is provider-owned. The borrowed source has a captured stable `BindingIdentity` (tenant/audience/auth configuration) and returns an immutable token carrying its asserted principal and expiry. Core fingerprints contain only the stable principal/configuration, never token content. The source must validate its actual principal and own login/refresh; the provider checks the assertion, source identity and expiry before sending. It calls the source once per explicit operation and adds no refresh retry, reauthentication, environment discovery or alternate-target attempt. Configuration drift requires a new provider and invalidates old Sessions; token rotation with the same principal retains complete-target affinity and original Responses ownership.
+
+Requests are snapshotted before awaiting token acquisition. Conflicting unselected authentication defaults fail before send. Complete results wait for normal bounded UTF-8 body EOF, declared-length checks, response/client disposal and cancellation. `MaximumBodyBytes` bounds raw JSON/error bodies. Duplicate properties, malformed strings/encoding, truncated JSON and unexpected SSE media fail; root native errors preserve original body and HTTP status. The factory, token source and clock remain application-owned. Conversion is an explicit separate decorator with its existing strict loss rules; native Azure filter retention does not grant automatic cross-protocol equivalence.
+
+86 independent offline cases cover native complete JSON, authentication, continuation/Session identity and transport/resource boundaries. Cloud login, actual token refresh, live model verification, Azure SSE and optional compact/WebSocket/Realtime operations are not claimed.
 
 ## 2. Registration and lifecycle
 
