@@ -13,6 +13,7 @@
     <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaHttpClient.cs" Link="OllamaHttpClient.cs" />
     <EmbeddedResource Include="Fixtures/**/*.json" />
     <EmbeddedResource Include="../Shared/Fixtures/nova-converse-conversion.json" LogicalName="BedrockConversion.Fixture" />
+    <EmbeddedResource Include="../Shared/Fixtures/nova-converse-stream-conversion.json" LogicalName="BedrockStreamConversion.Fixture" />
     <EmbeddedResource Include="Fixtures/**/*.eventstream" />
   </ItemGroup>
 </Project>

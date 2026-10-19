@@ -1,0 +1,346 @@
+{
+  "provenance": "Independent native event declarations and complete logical target goldens. No production converter/frame encoder or live output capture.",
+  "Converse": [
+    {
+      "eventName": "messageStart",
+      "data": {
+        "role": "assistant"
+      }
+    },
+    {
+      "eventName": "contentBlockDelta",
+      "data": {
+        "contentBlockIndex": 0,
+        "delta": {
+          "text": ""
+        }
+      }
+    },
+    {
+      "eventName": "contentBlockDelta",
+      "data": {
+        "contentBlockIndex": 0,
+        "delta": {
+          "text": "原生 é 🚀"
+        }
+      }
+    },
+    {
+      "eventName": "contentBlockStop",
+      "data": {
+        "contentBlockIndex": 0
+      }
+    },
+    {
+      "eventName": "contentBlockStart",
+      "data": {
+        "contentBlockIndex": 7,
+        "start": {
+          "toolUse": {
+            "toolUseId": "stream-a",
+            "name": "lookup"
+          }
+        }
+      }
+    },
+    {
+      "eventName": "contentBlockDelta",
+      "data": {
+        "contentBlockIndex": 7,
+        "delta": {
+          "toolUse": {
+            "input": "{\"n\":"
+          }
+        }
+      }
+    },
+    {
+      "eventName": "contentBlockStart",
+      "data": {
+        "contentBlockIndex": 19,
+        "start": {
+          "toolUse": {
+            "toolUseId": "stream-b",
+            "name": "lookup"
+          }
+        }
+      }
+    },
+    {
+      "eventName": "contentBlockDelta",
+      "data": {
+        "contentBlockIndex": 19,
+        "delta": {
+          "toolUse": {
+            "input": "{\"n\":0}"
+          }
+        }
+      }
+    },
+    {
+      "eventName": "contentBlockStop",
+      "data": {
+        "contentBlockIndex": 19
+      }
+    },
+    {
+      "eventName": "contentBlockDelta",
+      "data": {
+        "contentBlockIndex": 7,
+        "delta": {
+          "toolUse": {
+            "input": "9007199254740993,\"error\":{\"type\":\"error\"},\"nil\":null,\"ok\":false}"
+          }
+        }
+      }
+    },
+    {
+      "eventName": "contentBlockStop",
+      "data": {
+        "contentBlockIndex": 7
+      }
+    },
+    {
+      "eventName": "contentBlockDelta",
+      "data": {
+        "contentBlockIndex": 2147483647,
+        "delta": {
+          "text": "tail"
+        }
+      }
+    },
+    {
+      "eventName": "contentBlockStop",
+      "data": {
+        "contentBlockIndex": 2147483647
+      }
+    },
+    {
+      "eventName": "messageStop",
+      "data": {
+        "stopReason": "tool_use"
+      }
+    },
+    {
+      "eventName": "metadata",
+      "data": {
+        "usage": {
+          "inputTokens": 17,
+          "outputTokens": 8,
+          "totalTokens": 25
+        },
+        "metrics": {
+          "latencyMs": 0
+        }
+      }
+    }
+  ],
+  "Nova": [
+    {
+      "eventName": "chunk",
+      "eventType": "messageStart",
+      "data": {
+        "messageStart": {
+          "role": "assistant"
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockDelta",
+      "data": {
+        "contentBlockDelta": {
+          "contentBlockIndex": 0,
+          "delta": {
+            "text": ""
+          }
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockDelta",
+      "data": {
+        "contentBlockDelta": {
+          "contentBlockIndex": 0,
+          "delta": {
+            "text": "原生 é 🚀"
+          }
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockStop",
+      "data": {
+        "contentBlockStop": {
+          "contentBlockIndex": 0
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockStart",
+      "data": {
+        "contentBlockStart": {
+          "contentBlockIndex": 7,
+          "start": {
+            "toolUse": {
+              "toolUseId": "stream-a",
+              "name": "lookup"
+            }
+          }
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockDelta",
+      "data": {
+        "contentBlockDelta": {
+          "contentBlockIndex": 7,
+          "delta": {
+            "toolUse": {
+              "input": "{\"n\":"
+            }
+          }
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockStart",
+      "data": {
+        "contentBlockStart": {
+          "contentBlockIndex": 19,
+          "start": {
+            "toolUse": {
+              "toolUseId": "stream-b",
+              "name": "lookup"
+            }
+          }
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockDelta",
+      "data": {
+        "contentBlockDelta": {
+          "contentBlockIndex": 19,
+          "delta": {
+            "toolUse": {
+              "input": "{\"n\":0}"
+            }
+          }
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockStop",
+      "data": {
+        "contentBlockStop": {
+          "contentBlockIndex": 19
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockDelta",
+      "data": {
+        "contentBlockDelta": {
+          "contentBlockIndex": 7,
+          "delta": {
+            "toolUse": {
+              "input": "9007199254740993,\"error\":{\"type\":\"error\"},\"nil\":null,\"ok\":false}"
+            }
+          }
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockStop",
+      "data": {
+        "contentBlockStop": {
+          "contentBlockIndex": 7
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockDelta",
+      "data": {
+        "contentBlockDelta": {
+          "contentBlockIndex": 2147483647,
+          "delta": {
+            "text": "tail"
+          }
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "contentBlockStop",
+      "data": {
+        "contentBlockStop": {
+          "contentBlockIndex": 2147483647
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "messageStop",
+      "data": {
+        "messageStop": {
+          "stopReason": "tool_use"
+        }
+      }
+    },
+    {
+      "eventName": "chunk",
+      "eventType": "metadata",
+      "data": {
+        "metadata": {
+          "usage": {
+            "inputTokens": 17,
+            "outputTokens": 8,
+            "totalTokens": 25
+          },
+          "metrics": {
+            "latencyMs": 0
+          }
+        }
+      }
+    }
+  ],
+  "PreStreamOptions": {
+    "BedrockNovaRequestFormat": 2,
+    "BedrockConverseInferenceFormat": 1,
+    "AllowLoss": false,
+    "DefaultMaxTokens": null,
+    "DefaultSchemaName": null,
+    "TargetReasoningEffort": null,
+    "TargetThinkingBudgetTokens": null,
+    "GeminiOutputFormat": 0,
+    "GeminiFunctionSchemaFormat": 0,
+    "TargetSettings": null,
+    "EnableCustomToolConversion": false,
+    "EnableNamespacedToolConversion": false,
+    "ToolErrorFormat": 0,
+    "MaxToolErrorBytes": 1048576,
+    "HostedSearchTarget": 0,
+    "AllowHostedSearchWithFunctionTools": false,
+    "OpenAiCitationIndexUnit": 0,
+    "GeminiGroundingStreamMode": 0,
+    "TextFileEncoding": 0,
+    "MaxTextFileBytes": 1048576,
+    "MaxToolConversionMappings": 128,
+    "MaxToolConversionHistoryCalls": 4096,
+    "MaxToolConversionOutputCalls": 128,
+    "MaxCustomToolInputBytes": 1048576,
+    "MaxStreamAnnotations": 1024,
+    "MaxStreamAnnotationBytes": 1048576
+  }
+}
