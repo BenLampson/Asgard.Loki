@@ -1,6 +1,6 @@
 namespace Asgard.Loki.LLM.Conversion;
 
-/// <summary>调用者明确声明固定 Gemini 端点的 grounding 文本累计约定，不按模型名称推断。</summary>
+/// <summary>调用者明确声明固定源/目标 Gemini 端点的 grounding 文本累计约定，不按模型名称推断。</summary>
 public enum GeminiGroundingStreamMode
 {
     /// <summary>不转换 grounding 流；保留既有严格诊断及显式显示损耗策略。</summary>

@@ -36,12 +36,14 @@ public sealed class LlmProtocolStreamConverter
         var mapped = context?.MappedToolCount > 0;
         var grounding = from == LlmProtocol.Gemini && to == LlmProtocol.Responses
             && options.GeminiGroundingStreamMode == GeminiGroundingStreamMode.SingleTextPart;
-        if (grounding && options.OpenAiCitationIndexUnit == LlmCitationIndexUnit.Unspecified)
-            throw new ArgumentException("Gemini 引用流映射必须显式声明目标 OpenAI 索引单位。", nameof(options));
+        var citations = from == LlmProtocol.Responses && to == LlmProtocol.Gemini
+            && options.GeminiGroundingStreamMode == GeminiGroundingStreamMode.SingleTextPart;
+        if ((grounding || citations) && options.OpenAiCitationIndexUnit == LlmCitationIndexUnit.Unspecified)
+            throw new ArgumentException("Gemini 引用流映射必须显式声明 OpenAI 端点索引单位。", nameof(options));
         _source = new(from, mapped ? 6L * context!.Options.MaxCustomToolInputBytes + 64 : null,
             mapped ? context!.Options.MaxToolConversionOutputCalls : null,
-            options.OpenAiCitationIndexUnit, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes, grounding);
-        _target = new(to, mapped ? context : null); _options = options; _identity = from == to; _context = context;
+            options.OpenAiCitationIndexUnit, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes, grounding, citations);
+        _target = new(to, mapped ? context : null, citations, options.MaxStreamAnnotations, options.MaxStreamAnnotationBytes); _options = options; _identity = from == to; _context = context;
     }
 
     /// <summary>转换中已发现的累计损耗诊断快照。</summary>

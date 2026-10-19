@@ -34,7 +34,7 @@ public sealed class ConvertingLlmProvider : IChatCompletionsAdapter, IResponsesA
     public bool SupportsCredential(LlmCredentialKind kind) => _upstream is ILlmCredentialSupport declared
         ? declared.SupportsCredential(kind) : kind == LlmCredentialKind.ApiKey;
     /// <inheritdoc />
-    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v24:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
+    public string BindingIdentity => $"{GetType().AssemblyQualifiedName}:conversion-v25:{_upstream.Id}:{_upstream.BindingIdentity}:{_protocol}:{JsonSerializer.Serialize(_options)}";
 
     /// <inheritdoc />
     public async Task<ChatCompletion> CompleteAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)

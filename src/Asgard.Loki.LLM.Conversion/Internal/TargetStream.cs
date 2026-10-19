@@ -4,7 +4,8 @@ using static Asgard.Loki.LLM.Conversion.Internal.ConversionJson;
 namespace Asgard.Loki.LLM.Conversion.Internal;
 
 /// <summary>将即时文本与完整工具块编码为目标原生事件序列。</summary>
-internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? context = null)
+internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? context = null, bool mapGeminiCitations = false,
+    int maximumAnnotations = 1024, int maximumAnnotationBytes = 1024 * 1024)
 {
     private readonly HashSet<int> _started = [];
     private readonly Dictionary<int, int> _toolIndices = [];
@@ -60,7 +61,9 @@ internal sealed class TargetStream(LlmProtocol protocol, LlmConversionContext? c
         List<JsonObject> events = [];
         Initialize(doc, events);
         doc.Id = _id!;
-        var complete = ResponseMapping.Write(doc, protocol);
+        if (mapGeminiCitations) GeminiCitationStreamTarget.RequireLayout(doc);
+        var complete = ResponseMapping.Write(doc, protocol, mapGeminiCitations);
+        if (mapGeminiCitations) GeminiCitationStreamTarget.RequireLimits(complete, maximumAnnotations, maximumAnnotationBytes);
         if (protocol == LlmProtocol.ChatCompletions)
         {
             var last = Chat(new()); last["choices"]![0]!["finish_reason"] = doc.Finish;

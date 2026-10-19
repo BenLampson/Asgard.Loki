@@ -6,7 +6,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 /// <summary>聚合单条原生流的文本、函数参数与终态，不恢复或重试网络连接。</summary>
 internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumArgumentBytes = null, int? maximumToolCalls = null,
     LlmCitationIndexUnit citationIndexUnit = LlmCitationIndexUnit.Unspecified, int maximumAnnotations = 1024, int maximumAnnotationBytes = 1024 * 1024,
-    bool mapGeminiGrounding = false)
+    bool mapGeminiGrounding = false, bool mapResponseCitations = false)
 {
     private readonly Dictionary<string, int> _indices = new(StringComparer.Ordinal);
     private readonly HashSet<int> _emittedTools = [];
@@ -28,7 +28,7 @@ internal sealed partial class SourceStream(LlmProtocol protocol, long? maximumAr
     {
         if (!_started) { Document.Messages.Add(_message); _started = true; }
         var changes = new List<StreamChange>();
-        Document.Diagnostics.AddRange(HostedSearchOutput.Inspect(data, protocol, mapGeminiGrounding: mapGeminiGrounding));
+        Document.Diagnostics.AddRange(HostedSearchOutput.Inspect(data, protocol, mapUrlCitations: mapResponseCitations, mapGeminiGrounding: mapGeminiGrounding));
         if (data["error"] is not null || data["type"]?.GetValue<string>() is "error" or "response.failed")
             throw new LlmConversionException([new("upstream_stream_error", "$event.error", "上游错误事件不能转换为成功终态。")]);
         if (_terminal && !IsAllowedTail(data))

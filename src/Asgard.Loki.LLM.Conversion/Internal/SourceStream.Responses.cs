@@ -131,7 +131,7 @@ internal sealed partial class SourceStream
         if (part.ContainsKey("annotations"))
         {
             if (part["annotations"] is not JsonArray annotations) throw new InvalidDataException("原生 annotations 必须是数组。");
-            if (annotations.Count != 0) Loss(Document, "$event.part.annotations");
+            if (annotations.Count != 0 && !mapResponseCitations) Loss(Document, "$event.part.annotations");
         }
         if (start) { TextDelta(key, Text(part["text"]), changes); _responseAnnotations.Start(key, part, Document); }
         else
@@ -147,11 +147,11 @@ internal sealed partial class SourceStream
         if (Text(item["id"]) != _responseItemIds[index] || Text(item["type"]) != _responseItemTypes[index])
             throw new InvalidDataException("Responses 输出项完成时改变身份或类型。");
         _responseAnnotations.Item(index, item, Document);
-        var read = ResponseMapping.Read(new() { ["id"] = Document.Id, ["model"] = Document.Model, ["status"] = "completed", ["output"] = new JsonArray(item.DeepClone()) }, LlmProtocol.Responses, mapCitations: false);
+        var read = ResponseMapping.Read(new() { ["id"] = Document.Id, ["model"] = Document.Model, ["status"] = "completed", ["output"] = new JsonArray(item.DeepClone()) }, LlmProtocol.Responses, mapCitations: mapResponseCitations, citationIndexUnit: Document.CitationIndexUnit);
         Document.Diagnostics.AddRange(read.Diagnostics);
         var prefix = "responses-" + index;
         var actual = _indices.Where(p => p.Key == prefix || p.Key.StartsWith(prefix + "-text-", StringComparison.Ordinal)).OrderBy(p => p.Value).Select(p => _message.Blocks[p.Value]).ToArray();
-        if (!JsonNode.DeepEquals(System.Text.Json.JsonSerializer.SerializeToNode(read.Messages[0].Blocks), System.Text.Json.JsonSerializer.SerializeToNode(actual)))
+        if (!SameResponseBlocks(read.Messages[0].Blocks, actual))
             throw new InvalidDataException("Responses 输出项 done 与增量不一致。");
         _responseItemsDone.Add(index);
         if (_responseItemTypes[index] == "function_call") CompleteTool(Existing(prefix), changes);
@@ -168,13 +168,24 @@ internal sealed partial class SourceStream
         for (var i = 0; i < output.Count; i++)
             if (!_responseItemIds.TryGetValue(i, out var id) || Text(Object(output[i])["id"]) != id) throw new InvalidDataException("Responses 最终项目 ID 或索引不一致。");
         for (var i = 0; i < output.Count; i++) _responseAnnotations.Item(i, Object(output[i]), Document);
-        var complete = ResponseMapping.Read(response, LlmProtocol.Responses, mapCitations: false); Document.Diagnostics.AddRange(complete.Diagnostics);
-        if (!JsonNode.DeepEquals(System.Text.Json.JsonSerializer.SerializeToNode(complete.Messages[0].Blocks), System.Text.Json.JsonSerializer.SerializeToNode(_message.Blocks)))
+        var complete = ResponseMapping.Read(response, LlmProtocol.Responses, mapCitations: mapResponseCitations, citationIndexUnit: Document.CitationIndexUnit); Document.Diagnostics.AddRange(complete.Diagnostics);
+        if (!SameResponseBlocks(complete.Messages[0].Blocks, _message.Blocks))
             throw new InvalidDataException("Responses 最终输出与已转换的增量不一致。");
+        if (mapResponseCitations)
+            for (var i = 0; i < _message.Blocks.Count; i++)
+                if (complete.Messages[0].Blocks[i]["citations"] is { } citations) _message.Blocks[i]["citations"] = citations.DeepClone();
         Document.Finish = complete.Finish;
         Document.Usage.Clear();
         foreach (var usage in complete.Usage) Document.Usage[usage.Key] = usage.Value?.DeepClone();
         Identity(response, "id", "model"); _terminal = true;
+    }
+
+    /// <summary>引用由独立原始快照状态逐字段校验；文本/工具比较不把已验证引用当成增量文本。</summary>
+    private bool SameResponseBlocks(IEnumerable<JsonObject> expected, IEnumerable<JsonObject> actual)
+    {
+        var snapshot = System.Text.Json.JsonSerializer.SerializeToNode(expected)!.AsArray();
+        if (mapResponseCitations) foreach (var block in snapshot) block!.AsObject().Remove("citations");
+        return JsonNode.DeepEquals(snapshot, System.Text.Json.JsonSerializer.SerializeToNode(actual));
     }
 
     /// <summary>索引必须显式存在且是非负整数。</summary>

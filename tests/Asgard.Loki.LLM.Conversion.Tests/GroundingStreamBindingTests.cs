@@ -16,14 +16,14 @@ namespace Asgard.Loki.LLM.Conversion.Tests;
 public sealed class GroundingStreamBindingTests
 {
     /// <summary>旧算法会话绑定与新算法身份不匹配时在第二次 HTTP 之前拒绝。</summary>
-    [Fact]
-    public async Task PreviousAlgorithmSession_IsRejectedBeforeHttp()
+    [Theory] [InlineData("conversion-v22")] [InlineData("conversion-v24")]
+    public async Task PreviousAlgorithmSession_IsRejectedBeforeHttp(string algorithm)
     {
         var store = new DistributedCacheLlmSessionStore(new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())), new TestSessionLock());
         using var handler = new StubHttpHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
         { Content = new StringContent(ConversionFixtures.Response(LlmProtocol.Gemini).ToJsonString(), Encoding.UTF8, "application/json") }));
         var provider = new ConvertingLlmProvider(new GoogleLlmProvider(new StubHttpClientFactory(handler)), LlmProtocol.Gemini, "conversion", GroundingStreamFixtures.Options);
-        await using var old = Build(new LegacyGroundingBindingProvider(provider), store); await using var current = Build(provider, store);
+        await using var old = Build(new LegacyGroundingBindingProvider(provider, algorithm), store); await using var current = Build(provider, store);
         var request = ConversionFixtures.Request(LlmProtocol.Gemini); request["model"] = "public";
         await ConvertingProviderTests.CompleteAsync(old, LlmProtocol.Gemini, request);
         await Assert.ThrowsAsync<InvalidOperationException>(() => ConvertingProviderTests.CompleteAsync(current, LlmProtocol.Gemini, request));

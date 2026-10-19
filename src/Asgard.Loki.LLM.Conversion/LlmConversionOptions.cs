@@ -33,7 +33,7 @@ public sealed record LlmConversionOptions
     public bool AllowHostedSearchWithFunctionTools { get; init; }
     /// <summary>固定 OpenAI 端点的引用索引单位，用于完整 Web grounding、显式 Gemini 引用流映射及源引用流范围校验。</summary>
     public LlmCitationIndexUnit OpenAiCitationIndexUnit { get; init; }
-    /// <summary>显式 Gemini→Responses 引用流约定；单文本模式还需声明目标 OpenAI 索引单位。</summary>
+    /// <summary>显式 Responses↔Gemini 单文本累计引用流约定；还需声明 OpenAI 端点索引单位。</summary>
     public GeminiGroundingStreamMode GeminiGroundingStreamMode { get; init; }
     /// <summary>显式声明 text/plain 文档按 UTF-8 转换；保留文件容器，Chat 没有对应文件输入。</summary>
     public LlmTextFileEncoding TextFileEncoding { get; init; }
