@@ -1,0 +1,31 @@
+{
+  "source":"Independently authored Azure Responses compact request/result vectors before implementation. Full native windows preserve retained items, tool call/output associations, reasoning/encrypted content and unknown JSON. Route profiles are explicit; no host/model inference or availability claim is generated from a fixture.",
+  "profiles":[
+    {"style":"V1","version":null,"root":"https://azure-compact.example.invalid/proxy/openai/v1/","endpoint":"https://azure-compact.example.invalid/proxy/openai/v1/responses/compact"},
+    {"style":"V1","version":"preview","root":"https://azure-compact.example.invalid/proxy/openai/v1/","endpoint":"https://azure-compact.example.invalid/proxy/openai/v1/responses/compact?api-version=preview"},
+    {"style":"Dated","version":"2025-04-01-preview","root":"https://azure-compact.example.invalid/proxy/openai/","endpoint":"https://azure-compact.example.invalid/proxy/openai/responses/compact?api-version=2025-04-01-preview"}
+  ],
+  "requests":[
+    {"model":"deploy.compact.1","input":[
+      {"role":"user","content":[{"type":"input_text","text":" Original context 图像 😀  ","future":false}],"future":null},
+      {"id":"reasoning-old","type":"reasoning","encrypted_content":"opaque-reasoning-before","summary":[],"future":{"exact":9007199254740993}},
+      {"type":"function_call","id":"fc-original","call_id":"call-original","name":"lookup","arguments":"{\"value\":0,\"nullable\":null}"},
+      {"type":"function_call_output","call_id":"call-original","output":"{\"ok\":false,\"value\":0}","future":null},
+      {"id":"opaque-old","type":"compaction","encrypted_content":"opaque-existing-compaction","future":false}
+    ],"instructions":" Keep original associations  ","future":{"exact":9007199254740993,"nullable":null,"flag":false}},
+    {"model":"deploy.compact.1","previous_response_id":"resp-owned-fixture","instructions":null,"future":{"empty":[],"flag":false}}
+  ],
+  "response":{
+    "id":"cmp-azure-fixture","object":"response.compaction","created_at":0,
+    "output":[
+      {"role":"user","content":[{"type":"input_text","text":" Original retained context 😀  ","future":false}],"future":null},
+      {"id":"reasoning-retained","type":"reasoning","encrypted_content":"opaque-reasoning-after","summary":[],"future":{"exact":9007199254740993}},
+      {"type":"function_call","id":"fc-retained","call_id":"call-retained","name":"lookup","arguments":"{\"value\":0,\"nullable\":null}"},
+      {"type":"function_call_output","call_id":"call-retained","output":"{\"ok\":false,\"value\":0}","future":null},
+      {"id":"cp-new","type":"compaction","encrypted_content":"opaque-signed-window","future":false}
+    ],
+    "usage":{"input_tokens":0,"output_tokens":0,"total_tokens":0,"future":9007199254740993},
+    "future":{"exact":9007199254740993,"nullable":null,"flag":false}
+  },
+  "native_error":{"error":{"message":"Fictional native Azure compaction rejection","code":"fixture_error","future":9007199254740993},"future":false}
+}
