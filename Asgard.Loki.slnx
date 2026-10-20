@@ -21,6 +21,7 @@
     <Project Path="src/Asgard.Loki.LLM.AWS/Asgard.Loki.LLM.AWS.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Ali/">
+    <Project Path="src/Asgard.Loki.Image.Ali/Asgard.Loki.Image.Ali.csproj" />
     <Project Path="src/Asgard.Loki.Rerank.Ali/Asgard.Loki.Rerank.Ali.csproj" />
     <Project Path="src/Asgard.Loki.Video.Ali/Asgard.Loki.Video.Ali.csproj" />
   </Folder>
@@ -170,6 +171,7 @@
     <Project Path="tests/Asgard.Loki.Video.Vidu.Tests/Asgard.Loki.Video.Vidu.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Volcengine/">
+    <Project Path="tests/Asgard.Loki.Image.Ali.Tests/Asgard.Loki.Image.Ali.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Volcengine.Tests/Asgard.Loki.Image.Volcengine.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Audio.Volcengine.Tests/Asgard.Loki.Audio.Volcengine.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.Volcengine.Tests/Asgard.Loki.LLM.Volcengine.Tests.csproj" />

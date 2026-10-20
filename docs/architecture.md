@@ -1,5 +1,28 @@
 # Asgard.Loki Architecture Specification
 
+## Native Ali Image provider and preserved image views
+
+`Image.Ali` references only Image, Infrastructure and standard HTTP factory support. `AliImageAdapter` implements existing prompt-based generation plus directly owned native JSON/SSE calls. The fixed multimodal service stays independent of explicitly configured `AliImageTaskClient` async image-generation, text2image and image2image submission services. Task GET is one explicit call and verifies a complete target fingerprint and returned native ID; no dependency on Video, generic task coordinator or background poller is introduced. Regional/workspace root, actual model and credential identity are explicit.
+
+`ImageGenerationResult` keeps its existing constructor and original `Data`; an additive constructor accepts an independently snapshotted provider image list. `GeneratedImage` similarly offers explicit native URL/Base64 projections while retaining each original item JSON. Empty native image lists support legitimate text-only Ali output and never fall back to invented OpenAI data. No image or protocol is converted. SSE retains original cumulative usage and text/image deltas; each observed choice must stop, with indexed/positional correlation kept consistent. Intermediate finished flags do not terminate. Terminal frames wait for full EOF and owned resource disposal. Async interleave stays native JSON/task behavior and never silently starts SSE.
+
+```mermaid
+classDiagram
+class ImageCore["Asgard.Loki.Image"]
+class AliProvider["Asgard.Loki.Image.Ali"]
+class Infrastructure["Asgard.Loki.Infrastructure"]
+AliProvider ..> ImageCore
+AliProvider ..> Infrastructure
+AliImageAdapter ..|> IImageGenerationAdapter
+AliImageAdapter --> AliImageHttp
+AliImageAdapter --> AliImageSse
+AliImageTaskClient --> AliImageHttp
+AliImageTaskClient --> AliImageTaskReference : complete target binding
+AliImageTask --> GeneratedImage : original item views
+AliImageSse --> SseReader : framing only
+ImageGenerationResult --> GeneratedImage : preserved native projections
+```
+
 ## Native Ark Image provider
 
 `Image.Volcengine` references only Image, Infrastructure and standard HTTP factory support. VolcengineImageAdapter implements existing IImageGenerationAdapter for prompt-based native generation and original scalar/array image input. Separate directly owned GenerateNativeAsync/StreamNativeAsync accept VolcengineNativeImageRequest for complete supplier JSON, including the concrete native layer-decomposition operation that may omit prompt. This keeps common ImageGenerationRequest prompt validation intact and adds no generic coordinator or new route mode. Direct native PublicModel is only metadata; it does not perform public route selection. Fixed target model/root/Bearer remain bound and independent from LLM/Video.

@@ -42,6 +42,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Images | `Asgard.Loki.Image.OpenAI` | OpenAI image generations and native JSON/multipart edits; Base64 and URL results | Native generation/edit SSE partial/final events |
 | Image | `Asgard.Loki.Image.Azure` | Native dated deployment-scoped JSON generation and multipart editing; complete original images/filtering/usage | Native generation/editing SSE; original image events, no synthetic streams |
 | Image | `Asgard.Loki.Image.Volcengine` | Native Ark generation/image inputs, direct native omitted-prompt layers and original mixed JSON outcomes | Native partial successes/failures and original summary SSE; single-image EOF |
+| Image | `Asgard.Loki.Image.Ali` | Native multimodal JSON / interleaved SSE; explicit modern and legacy image task submission | Caller-driven task GET; original text/image/usage/failures |
 | Embedding | `Asgard.Loki.Embedding.OpenAI` | Native Embeddings, text/token batch inputs, Float/Base64 and indexed results | — |
 | Embedding | `Asgard.Loki.Embedding.Google` | Native embedContent / synchronous batchEmbedContents, native settings/media JSON and ordered vectors | — |
 | Embedding | `Asgard.Loki.Embedding.Ollama` | Native embed text/media batches, original settings, ordered vectors and optional native counters | — |
