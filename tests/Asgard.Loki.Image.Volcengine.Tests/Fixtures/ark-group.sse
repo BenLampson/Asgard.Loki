@@ -1,0 +1,27 @@
+: native heartbeat
+
+id: original-0
+retry: 0
+event: image_generation.partial_succeeded
+data: {"type":"image_generation.partial_succeeded","model":"actual-provider-version","created":0,"image_index":0,"url":"https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0","size":"2048x1024","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}}
+
+id: original-1
+retry: 0
+event: image_generation.partial_failed
+data: {"type":"image_generation.partial_failed","model":"actual-provider-version","created":0,"image_index":1,"error":{"code":"OutputImageSensitiveContentDetected","message":"原生单图失败 😀","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}}
+
+id: original-note
+retry: 0
+event: ark.image.notice
+data: {"type":"ark.image.notice","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}}
+
+id: original-2
+retry: 0
+event: image_generation.partial_succeeded
+data: {"type":"image_generation.partial_succeeded","model":"actual-provider-version","created":0,"image_index":2,"b64_json":"BAUG/w==","size":"1024x2048","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}}
+
+id: original-summary
+retry: 0
+event: image_generation.completed
+data: {"type":"image_generation.completed","model":"actual-provider-version","created":0,"tools":[{"type":"web_search","Future":null}],"usage":{"generated_images":2,"output_tokens":9007199254740993,"total_tokens":9007199254740993,"tool_usage":{"web_search":0,"Future":null},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}}
+

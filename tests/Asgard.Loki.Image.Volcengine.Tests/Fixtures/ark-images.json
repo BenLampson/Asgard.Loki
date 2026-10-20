@@ -1,0 +1,530 @@
+{
+  "sources": [
+    "https://console.volcengine.com/ark/region:cn-beijing/docs/image-generation-api",
+    "https://console.volcengine.com/ark/region:cn-beijing/docs/image-generation-streaming-responses",
+    "https://github.com/volcengine/ark-cli/blob/main/skills/arkcli-gen/references/image-stream.md"
+  ],
+  "note": "Authored fictional native vectors, not upstream traffic/model acceptance. Single image can have no summary; preserve partial failures. Layer decomposition has no synthetic prompt. No host task/file placeholders.",
+  "target": {
+    "root": "https://ark-images.example.invalid/prefix/api/v3/",
+    "model": "fixture-endpoint-model",
+    "authorization": "Bearer fixture-ark-image-secret"
+  },
+  "requests": [
+    {
+      "model": "fixture-endpoint-model",
+      "prompt": "原始文生图提示 😀\r\n第二行",
+      "size": "2K",
+      "seed": 0,
+      "guidance_scale": 0,
+      "watermark": false,
+      "sequential_image_generation": "disabled",
+      "response_format": "url",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原文 😀\r\n保留换行"
+      }
+    },
+    {
+      "model": "fixture-endpoint-model",
+      "prompt": "保留原图内容",
+      "image": "https://input.example.invalid/ref%2Fone.png?sig=fixture%2B1",
+      "sequential_image_generation": "auto",
+      "sequential_image_generation_options": {
+        "max_images": 3,
+        "Future": null
+      },
+      "optimize_prompt_options": null,
+      "tools": [
+        {
+          "type": "web_search",
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Text": "原文 😀\r\n保留换行"
+          }
+        }
+      ],
+      "response_format": "url",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原文 😀\r\n保留换行"
+      }
+    },
+    {
+      "model": "fixture-endpoint-model",
+      "prompt": "多参考图组图",
+      "image": [
+        "https://input.example.invalid/ref%2Fone.png?sig=fixture%2B1",
+        "data:image/png;base64,AAEC/w=="
+      ],
+      "stream": true,
+      "sequential_image_generation": "auto",
+      "sequential_image_generation_options": {
+        "max_images": 3
+      },
+      "response_format": "b64_json",
+      "watermark": false,
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原文 😀\r\n保留换行"
+      }
+    },
+    {
+      "model": "fixture-endpoint-model",
+      "image": "https://input.example.invalid/ref%2Fone.png?sig=fixture%2B1",
+      "layer_decomposition": true,
+      "background": "transparent",
+      "output_format": "png",
+      "response_format": "url",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原文 😀\r\n保留换行"
+      }
+    }
+  ],
+  "success": {
+    "model": "actual-provider-version",
+    "created": 0,
+    "data": [
+      {
+        "url": "https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0",
+        "size": "2048x1024",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      {
+        "b64_json": "BAUG/w==",
+        "size": "1024x2048",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      }
+    ],
+    "tools": [
+      {
+        "type": "web_search",
+        "Future": null
+      }
+    ],
+    "usage": {
+      "generated_images": 2,
+      "output_tokens": 9007199254740993,
+      "total_tokens": 9007199254740993,
+      "tool_usage": {
+        "web_search": 0,
+        "Future": null
+      },
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原文 😀\r\n保留换行"
+      }
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Text": "原文 😀\r\n保留换行"
+    }
+  },
+  "mixed_result": {
+    "model": "actual-provider-version",
+    "created": 0,
+    "data": [
+      {
+        "url": "https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0",
+        "size": "2048x1024",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      {
+        "error": {
+          "code": "OutputImageSensitiveContentDetected",
+          "message": "原生单图失败 😀",
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Text": "原文 😀\r\n保留换行"
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      {
+        "b64_json": "BAUG/w==",
+        "size": "1024x2048",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      }
+    ],
+    "tools": [
+      {
+        "type": "web_search",
+        "Future": null
+      }
+    ],
+    "usage": {
+      "generated_images": 2,
+      "output_tokens": 9007199254740993,
+      "total_tokens": 9007199254740993,
+      "tool_usage": {
+        "web_search": 0,
+        "Future": null
+      },
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原文 😀\r\n保留换行"
+      }
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Text": "原文 😀\r\n保留换行"
+    }
+  },
+  "layer_result": {
+    "model": "actual-provider-version",
+    "created": 0,
+    "data": [
+      {
+        "url": "https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0",
+        "size": "2048x1024",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        },
+        "z_index": 0,
+        "bounding_box": {
+          "absolute": [
+            0,
+            0,
+            2048,
+            1024
+          ],
+          "normalized": [
+            0,
+            0,
+            1000,
+            1000
+          ]
+        },
+        "name": "底图",
+        "description": "原生图层描述"
+      },
+      {
+        "url": "https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0",
+        "size": "2048x1024",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        },
+        "z_index": 1,
+        "bounding_box": {
+          "absolute": [
+            10,
+            20,
+            40,
+            80
+          ],
+          "normalized": [
+            5,
+            20,
+            20,
+            80
+          ]
+        },
+        "name": "原生图层",
+        "description": "保留描述"
+      }
+    ],
+    "tools": [
+      {
+        "type": "web_search",
+        "Future": null
+      }
+    ],
+    "usage": {
+      "generated_images": 2,
+      "output_tokens": 9007199254740993,
+      "total_tokens": 9007199254740993,
+      "tool_usage": {
+        "web_search": 0,
+        "Future": null
+      },
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原文 😀\r\n保留换行"
+      }
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Text": "原文 😀\r\n保留换行"
+    }
+  },
+  "error": {
+    "error": {
+      "code": "InvalidParameter",
+      "message": "原生请求错误 😀",
+      "type": "BadRequest",
+      "param": "image",
+      "request_id": "native-request-id",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原文 😀\r\n保留换行"
+      }
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Text": "原文 😀\r\n保留换行"
+    }
+  },
+  "group_frames": [
+    {
+      "data": {
+        "type": "image_generation.partial_succeeded",
+        "model": "actual-provider-version",
+        "created": 0,
+        "image_index": 0,
+        "url": "https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0",
+        "size": "2048x1024",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      "raw_data": "{\"type\":\"image_generation.partial_succeeded\",\"model\":\"actual-provider-version\",\"created\":0,\"image_index\":0,\"url\":\"https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0\",\"size\":\"2048x1024\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}}",
+      "event": "image_generation.partial_succeeded",
+      "id": "original-0",
+      "retry": 0
+    },
+    {
+      "data": {
+        "type": "image_generation.partial_failed",
+        "model": "actual-provider-version",
+        "created": 0,
+        "image_index": 1,
+        "error": {
+          "code": "OutputImageSensitiveContentDetected",
+          "message": "原生单图失败 😀",
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Text": "原文 😀\r\n保留换行"
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      "raw_data": "{\"type\":\"image_generation.partial_failed\",\"model\":\"actual-provider-version\",\"created\":0,\"image_index\":1,\"error\":{\"code\":\"OutputImageSensitiveContentDetected\",\"message\":\"原生单图失败 😀\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}}",
+      "event": "image_generation.partial_failed",
+      "id": "original-1",
+      "retry": 0
+    },
+    {
+      "data": {
+        "type": "ark.image.notice",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      "raw_data": "{\"type\":\"ark.image.notice\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}}",
+      "event": "ark.image.notice",
+      "id": "original-note",
+      "retry": 0
+    },
+    {
+      "data": {
+        "type": "image_generation.partial_succeeded",
+        "model": "actual-provider-version",
+        "created": 0,
+        "image_index": 2,
+        "b64_json": "BAUG/w==",
+        "size": "1024x2048",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      "raw_data": "{\"type\":\"image_generation.partial_succeeded\",\"model\":\"actual-provider-version\",\"created\":0,\"image_index\":2,\"b64_json\":\"BAUG/w==\",\"size\":\"1024x2048\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}}",
+      "event": "image_generation.partial_succeeded",
+      "id": "original-2",
+      "retry": 0
+    },
+    {
+      "data": {
+        "type": "image_generation.completed",
+        "model": "actual-provider-version",
+        "created": 0,
+        "tools": [
+          {
+            "type": "web_search",
+            "Future": null
+          }
+        ],
+        "usage": {
+          "generated_images": 2,
+          "output_tokens": 9007199254740993,
+          "total_tokens": 9007199254740993,
+          "tool_usage": {
+            "web_search": 0,
+            "Future": null
+          },
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Text": "原文 😀\r\n保留换行"
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      "raw_data": "{\"type\":\"image_generation.completed\",\"model\":\"actual-provider-version\",\"created\":0,\"tools\":[{\"type\":\"web_search\",\"Future\":null}],\"usage\":{\"generated_images\":2,\"output_tokens\":9007199254740993,\"total_tokens\":9007199254740993,\"tool_usage\":{\"web_search\":0,\"Future\":null},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}}",
+      "event": "image_generation.completed",
+      "id": "original-summary",
+      "retry": 0
+    }
+  ],
+  "single_frames": [
+    {
+      "data": {
+        "type": "image_generation.partial_succeeded",
+        "model": "actual-provider-version",
+        "created": 0,
+        "image_index": 0,
+        "url": "https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0",
+        "size": "2048x1024",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      "raw_data": "{\"type\":\"image_generation.partial_succeeded\",\"model\":\"actual-provider-version\",\"created\":0,\"image_index\":0,\"url\":\"https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0\",\"size\":\"2048x1024\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}}",
+      "event": "image_generation.partial_succeeded",
+      "id": "original-single",
+      "retry": 0
+    }
+  ],
+  "error_frame": {
+    "data": {
+      "error": {
+        "code": "InvalidParameter",
+        "message": "原生请求错误 😀",
+        "type": "BadRequest",
+        "param": "image",
+        "request_id": "native-request-id",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原文 😀\r\n保留换行"
+        }
+      },
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原文 😀\r\n保留换行"
+      }
+    },
+    "raw_data": "{\"error\":{\"code\":\"InvalidParameter\",\"message\":\"原生请求错误 😀\",\"type\":\"BadRequest\",\"param\":\"image\",\"request_id\":\"native-request-id\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原文 😀\\r\\n保留换行\"}}",
+    "event": "error",
+    "id": "original-error",
+    "retry": 9
+  }
+}

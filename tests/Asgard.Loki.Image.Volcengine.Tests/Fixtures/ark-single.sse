@@ -1,0 +1,7 @@
+: native heartbeat
+
+id: original-single
+retry: 0
+event: image_generation.partial_succeeded
+data: {"type":"image_generation.partial_succeeded","model":"actual-provider-version","created":0,"image_index":0,"url":"https://media.example.invalid/one%2Fimage.png?sig=fixture%2B1&part=0","size":"2048x1024","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}}
+
