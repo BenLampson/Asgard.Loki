@@ -401,7 +401,7 @@ HTTP requires a matching echoed request ID, native success code, negative final 
 
 `NdjsonReader` is a capability-independent raw LF record framer. Independent returned byte snapshots retain CR, blank records and arbitrary bytes; a nonempty EOF record may lack LF. Explicit positive per-record and total raw-byte limits count CR within a record and all delimiters in the total. Optional Content-Length is validated before reading and at EOF. The reader never inspects source Length/Position, disposes a borrowed stream, parses JSON, infers a supplier terminal or retries. Cancellation is checked through final enumeration. Ollama uses this shared transport while retaining its existing blank-line/strict JSON/done semantics and per-record-only stream policy (`long.MaxValue` total); provider-owned normal EOF and resource closure remain necessary for terminal publication.
 
-`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)`, `HttpBodyReader.ReadAsync/CopyToAsync`, `NdjsonReader.ReadAsync`, and `BorrowedStreamContent`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
+`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)`/`ReadBoundedAsync`, `HttpBodyReader.ReadAsync/CopyToAsync`, `NdjsonReader.ReadAsync`, and `BorrowedStreamContent`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
 
 ```mermaid
 classDiagram
@@ -414,6 +414,7 @@ class SseFrame {
 }
 class SseReader {
     +ReadAsync(Stream, CancellationToken, bool) IAsyncEnumerable~SseFrame~
+    +ReadBoundedAsync(Stream, long, CancellationToken, bool, long?) IAsyncEnumerable~SseFrame~
 }
 Infrastructure --> SseFrame : publishes
 Infrastructure --> SseReader : publishes
@@ -2771,3 +2772,24 @@ class WorkersAiTextEvent {
 The actual model remains in the selected complete target for supplier URL construction; it is never injected into the native body. Only method stream mode is set. Request snapshots preserve complete prompt/messages, native tool associations/arguments, response format, optional values, exact numbers and unknown fields before Session waits. Reserved model/stream aliases, Undefined and malformed Unicode fail before cache access. Full account/server/model/credential/adapter/protocol binding, drift rejection, no retry/failover, borrowed dependencies and final cancellation stay unchanged.
 
 The standalone native event avoids projecting non-JSON DONE into LlmJsonEvent. Data preserves original SSE data, optional Json owns a strict immutable native object, and EventName/EventId/RetryMilliseconds remain transport-only. Only literal [DONE] is terminal; business JSON type/done/response fields and event names cannot complete the call. The supplier must validate native lifecycle, bytes, EOF and resource closure before delivery. Completion retains the entire native envelope and no native ID enters Responses ownership. Core in-memory/fixture checks establish orchestration/data contracts, not native Cloudflare HTTP/service/model acceptance.
+
+### Explicit bounded SSE transport
+
+Infrastructure adds `SseReader.ReadBoundedAsync` without changing existing ReadAsync signatures/default behavior or dependency directions. The private BoundedReadStream counts whole raw bytes before decoding/frame allocation, including BOM, comments, control fields and delimiters. A positive budget and optional exact nonnegative expected length are validated without source Length/Position probes; over-budget data and short/long EOF fail. It owns only its wrapper, never the borrowed source. Cancellation is checked around reads, delivery and final enumeration; early consumer exit leaves source ownership unchanged.
+
+```mermaid
+sequenceDiagram
+participant Provider as Supplier-owned lifecycle
+participant Framer as Infrastructure SseReader.ReadBoundedAsync
+participant Budget as Internal BoundedReadStream
+participant Source as Borrowed raw stream
+Provider->>Framer: Explicit byte budget, length and UTF-8 policy
+Framer->>Budget: Read original bytes
+Budget->>Source: Bounded observation without seeking/ownership
+Source-->>Budget: Bytes or actual EOF
+Budget-->>Framer: Verified bytes or raw budget/length failure
+Framer-->>Provider: Original complete SSE frame
+Provider->>Provider: Native terminal plus full EOF/closure/cancellation validation
+```
+
+No JSON, credentials, DONE, success state, retry or business coordination enters this transport primitive. Frames already consumed can precede later EOF/length failure; providers must delay native terminal delivery through complete framing and owned outer resource closure. Twenty added offline cases bring Infrastructure to98; no live/native model acceptance is claimed.
