@@ -55,6 +55,24 @@ IVideoTaskAdapter --> VideoTaskSnapshot : submit or explicit get
 
 `GetAsync(reference)` performs exactly one caller-requested native query and returns current status, original error, output metadata/URLs and unknown fields in `VideoTaskSnapshot.Data`. Suppliers map only known lifecycle values to `VideoTaskState`; original status stays separate. HTTP success, accepted submission and unknown states do not imply generation success. There is no implicit state cache, hosted polling, retry, media download, URL refresh, asset synchronization or format conversion. Adapters/factories remain borrowed; suppliers own per-call IO resources. This shared Video contract covers JSON task operations; distinct future native upload transports require explicit contracts rather than encoding uploads into unrelated capabilities.
 
+### Native Ark video tasks
+
+`Asgard.Loki.Video.Volcengine` references Video and `Microsoft.Extensions.Http`; it has no other capability dependency. `VolcengineVideoAdapter` implements one native task submission or explicit query. `VideoTaskRequest.Snapshot()` validates and copies the public route and complete original parameters before waits, shared by the core and direct adapter entry. The configured actual model replaces only the reserved root model field. Native media/assets, tools, callback settings and unknown fields retain their structure.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. VolcengineVideoAdapter
+VolcengineVideoAdapter --> VolcengineVideoOptions : captures complete target
+VolcengineVideoAdapter --> ArkVideoHttp : private bounded JSON transport
+VolcengineVideoAdapter --> VideoTaskRequest : snapshots before IO
+VolcengineVideoAdapter --> VideoTaskSnapshot : native status and complete data
+VolcengineVideoAdapter --> VideoUpstreamException : original HTTP/API error
+```
+
+The adapter identity covers actual model, normalized root, credential digest, client name, implementation and byte policies. Queries through a persisted reference retain that binding, while the server's resolved model/version remains raw result data. HTTP 200 task failures remain snapshots with native errors. HTTP/API failures throw `VideoUpstreamException`, preserving status, content type and copied original body bytes. Known success requires its native video URL; unknown states remain nonterminal.
+
+The private JSON-only transport has no shared protocol/business state and does not require Infrastructure's SSE reader. A result is returned only after full bounded body validation, declared-length agreement, resource disposal and final cancellation checks. The factory is borrowed; created clients and per-call messages/streams are disposed. Neither path retries, polls, downloads media, hosts callbacks nor refreshes URLs. See the [provider API and limits](../src/Asgard.Loki.Video.Volcengine/README.md).
+
 ## Native OpenAI Realtime
 
 Realtime adds independent `LlmProtocol.Realtime` (256), `IRealtimeClient`, `IRealtimeAdapter`, `IRealtimeConnection` and `RealtimeEvent` contracts to LLM. Registration requires the actual adapter interface, including for alternative targets. `LlmClient.Realtime.OpenAsync` resolves one complete upstream target and wraps the native connection with its original Session binding. Reads/writes validate this binding; expiration or configuration changes cannot silently recreate or move it. Realtime IDs are not HTTP Responses continuation ownership. Entry/abstraction dependencies and all six capability boundaries stay unchanged.

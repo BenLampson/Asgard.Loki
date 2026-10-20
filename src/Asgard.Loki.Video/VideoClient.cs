@@ -12,10 +12,8 @@ public sealed class VideoClient
     /// <summary>提交一次原生任务，返回可持久化的完整目标引用；不启动后台查询。</summary>
     public Task<VideoTask> SubmitAsync(VideoTaskRequest request, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(request); ArgumentException.ThrowIfNullOrWhiteSpace(request.Model); VideoJson.Text(request.Model);
-        ArgumentNullException.ThrowIfNull(request.Parameters); cancellationToken.ThrowIfCancellationRequested();
-        if (request.Parameters.ContainsKey("model")) throw new ArgumentException("原生参数不能覆盖路由选择的实际模型。", nameof(request));
-        var snapshot = request with { Parameters = VideoJson.Snapshot(request.Parameters) };
+        ArgumentNullException.ThrowIfNull(request); cancellationToken.ThrowIfCancellationRequested();
+        var snapshot = request.Snapshot();
         var target = Route(snapshot.Model).Select(); target.Validate();
         return SubmitCoreAsync(snapshot, target, cancellationToken);
     }
