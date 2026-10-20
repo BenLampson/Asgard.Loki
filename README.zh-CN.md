@@ -149,3 +149,5 @@ DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#
 [Moonshot／Kimi Chat、Partial 与 Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-moonshot-and-kimi-coding-native-endpoints) 和[原生 Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-moonshot-and-kimi-coding-messages) 复用现有供应商封装，平台与 Coding 完整根、模型和独立凭据均由调用者选择。推理摘要、schema、缓存字段、工具关联及未知数据保持原文；Responses 终态后拒绝已知摘要生命周期重开。当前为离线验证，未宣称旧文本托管接口可用或真实模型、参数效果及 Coding 权限已验证。
 
 [MiniMax 原生 v2 Chat](src/Asgard.Loki.LLM.MiniMax/README.md) 通过已有 ChatCompletions 入口调用，完整目标、实际模型和独立 Key 均由调用者配置。保留完整原生数据和工具关联；HTTP200 内的 base_resp 错误保留原始正文、状态及媒体。结束分块和完整消息快照分别返回，成功尾部等待实际 EOF、资源关闭及最终取消检查。[原生 Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-minimax-messages) 复用现有 Anthropic 分包。当前为离线协议验证，未验证真实模型及参数效果。
+
+[Mistral 原生 Chat](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-mistral-native-chat) 复用现有 OpenAI 包，完整根、实际模型和独立凭据由调用者配置，目标仅声明 Chat。类型化思考／文本流式变化、工具关联、图片容器、schema／prefix 参数和未知字段保持原文；不重编号工具 ID，不在本地获取媒体或执行工具。完整 JSON／SSE 及实际 DONE、资源、Session 边界经过离线验证，未验证真实模型和参数效果。

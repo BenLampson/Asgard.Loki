@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.OpenAI.Tests
 
-**841 passing offline xUnit v3 cases** exercise actual SDK/provider JSON, SSE and WebSocket calls. HTTP, sockets, external token sources and clocks are substitutes. Session tests use MemoryDistributedCache plus the explicit test coordinator; no real Key, auth-file/environment lookup, network, Redis or remote CI is required. See [testing](../../docs/testing.md).
+**885 passing offline xUnit v3 cases** exercise actual SDK/provider JSON, SSE and WebSocket calls. HTTP, sockets, external token sources and clocks are substitutes. Session tests use MemoryDistributedCache plus the explicit test coordinator; no real Key, auth-file/environment lookup, network, Redis or remote CI is required. See [testing](../../docs/testing.md).
 
 | Contract | Verification |
 | --- | --- |
@@ -14,6 +14,7 @@
 | DashScope compatible native targets | 35 whole Chat/Responses/Text profile and fault cases, explicit legacy/workspace/proxy roots, native headers, tools/opaque/schema/reasoning/extensions and complete Session affinity |
 | Explicit DeepSeek native targets | 37 whole Chat/Responses/three FIM variant windows and terminal/Session cases; explicit separate roots, stateless full input, plain reasoning/custom tools and no parameter repair |
 | Explicit Moonshot/Kimi native targets | 52 whole Chat/Partial/Responses and fault cases; selected platform/Coding/proxy roots, native summary/cache/schema/tool fields, exact terminal and complete Session affinity |
+| Explicit Mistral native Chat | 44 whole reasoning/tools/prefix/JSON windows and fault cases; native/proxy roots, typed thinking→mixed→string content, original tool/image containers, actual DONE and complete Session affinity |
 
 Fixtures are independently authored native contracts, never snapshots generated from SDK output. Whole-body and per-event comparisons retain original tool/item/call associations, reversed history results, reasoning/signatures/encrypted values, schema settings, unknown fields, precise numbers and explicit null/false/zero/empty values. Returned model data remains distinct from public/actual target metadata. Native passthrough does not aggregate tool arguments; strict conversion association belongs to the separate conversion suite.
 
