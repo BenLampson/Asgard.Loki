@@ -14,3 +14,5 @@ await foreach (var frame in SseReader.ReadAsync(stream, cancellationToken, stric
 ```
 
 Provider packages reference this assembly directly. They do not compile linked copies of these types. The unified entry still references only Abstractions, which remains limited to module contracts. See [architecture](../../docs/architecture.md).
+
+`HttpBodyReader.ReadAsync(HttpContent, maximumBytes, cancellationToken)` reads a complete byte body within an explicit positive limit. It preserves arbitrary binary data and validates declared Content-Length against the bytes actually read. It disposes the content's read stream before returning and propagates late read/disposal/cancellation failures. The `HttpContent` and outer response/client remain caller-owned; providers must complete outer resource disposal and cancellation checks before reporting success. This reader parses no JSON, credentials, native error or task state and never retries.

@@ -29,9 +29,18 @@ OpenAiSpeechAdapter ..> Infrastructure
 OpenAiImageAdapter ..> Infrastructure
 ```
 
-Nine supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI and Image.OpenAI. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Ten supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI and Video.Volcengine. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all nine explicit incoming references.
+
+`HttpBodyReader.ReadAsync` is an independent .NET-only byte transport primitive. It borrows `HttpContent`, consumes and disposes its stream, validates explicit raw-byte limits and Content-Length agreement, then checks final cancellation. Arbitrary binary bytes remain unchanged. HTTP status/media type, outer request/response/client ownership, JSON and native result/error/lifecycle interpretation remain provider responsibilities. Providers report success only after outer disposal and final cancellation checks. There is no retry, scheduling or shared business state.
+
+```mermaid
+classDiagram
+ArkVideoHttp --> HttpBodyReader : bounded bytes only
+HttpBodyReader --> HttpContent : borrows content
+HttpBodyReader --> Stream : reads and disposes
+```
 
 ## Independent Video task contracts
 
@@ -57,7 +66,7 @@ IVideoTaskAdapter --> VideoTaskSnapshot : submit or explicit get
 
 ### Native Ark video tasks
 
-`Asgard.Loki.Video.Volcengine` references Video and `Microsoft.Extensions.Http`; it has no other capability dependency. `VolcengineVideoAdapter` implements one native task submission or explicit query. `VideoTaskRequest.Snapshot()` validates and copies the public route and complete original parameters before waits, shared by the core and direct adapter entry. The configured actual model replaces only the reserved root model field. Native media/assets, tools, callback settings and unknown fields retain their structure.
+`Asgard.Loki.Video.Volcengine` references Video, Infrastructure and `Microsoft.Extensions.Http`; it has no other capability dependency. `VolcengineVideoAdapter` implements one native task submission or explicit query. `VideoTaskRequest.Snapshot()` validates and copies the public route and complete original parameters before waits, shared by the core and direct adapter entry. The configured actual model replaces only the reserved root model field. Native media/assets, tools, callback settings and unknown fields retain their structure.
 
 ```mermaid
 classDiagram
@@ -71,7 +80,7 @@ VolcengineVideoAdapter --> VideoUpstreamException : original HTTP/API error
 
 The adapter identity covers actual model, normalized root, credential digest, client name, implementation and byte policies. Queries through a persisted reference retain that binding, while the server's resolved model/version remains raw result data. HTTP 200 task failures remain snapshots with native errors. HTTP/API failures throw `VideoUpstreamException`, preserving status, content type and copied original body bytes. Known success requires its native video URL; unknown states remain nonterminal.
 
-The private JSON-only transport has no shared protocol/business state and does not require Infrastructure's SSE reader. A result is returned only after full bounded body validation, declared-length agreement, resource disposal and final cancellation checks. The factory is borrowed; created clients and per-call messages/streams are disposed. Neither path retries, polls, downloads media, hosts callbacks nor refreshes URLs. See the [provider API and limits](../src/Asgard.Loki.Video.Volcengine/README.md).
+The private JSON-only transport delegates bounded byte reading to Infrastructure while retaining all native JSON/error/task interpretation. A result is returned only after full bounded body validation, declared-length agreement, resource disposal and final cancellation checks. The factory is borrowed; created clients and per-call messages/streams are disposed. Neither path retries, polls, downloads media, hosts callbacks nor refreshes URLs. See the [provider API and limits](../src/Asgard.Loki.Video.Volcengine/README.md).
 
 ### Ark inference media assets
 

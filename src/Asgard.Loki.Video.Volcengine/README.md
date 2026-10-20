@@ -1,6 +1,6 @@
 # Asgard.Loki.Video.Volcengine
 
-Native Volcengine Ark video generation for the pure .NET SDK. References the independent Video capability and `Microsoft.Extensions.Http`.
+Native Volcengine Ark video generation for the pure .NET SDK. References the independent Video capability, Infrastructure's bounded byte reader and `Microsoft.Extensions.Http`.
 
 | Operation | Native API | Result |
 | --- | --- | --- |

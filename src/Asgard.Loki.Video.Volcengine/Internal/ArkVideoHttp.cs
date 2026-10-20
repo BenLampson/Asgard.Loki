@@ -1,8 +1,8 @@
-using System.Buffers;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Asgard.Loki.Infrastructure;
 
 namespace Asgard.Loki.Video.Volcengine.Internal;
 
@@ -24,23 +24,8 @@ internal static class ArkVideoHttp
         using (var client = factory.CreateClient(name))
         using (var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false))
         {
-            var expected = response.Content.Headers.ContentLength;
-            if (expected > maximumBytes) throw new InvalidDataException("方舟正文的声明长度超过显式字节上限。");
-            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-            var bytes = new ArrayBufferWriter<byte>(); var buffer = ArrayPool<byte>.Shared.Rent(8192);
-            try
-            {
-                int count;
-                while ((count = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken).ConfigureAwait(false)) != 0)
-                {
-                    var length = (long)bytes.WrittenCount + count;
-                    if (length > maximumBytes || expected is { } declared && length > declared) throw new InvalidDataException("方舟正文超过字节上限或声明长度。");
-                    bytes.Write(buffer.AsSpan(0, count));
-                }
-                if (expected is { } size && bytes.WrittenCount != size) throw new InvalidDataException("方舟正文未达到声明长度。");
-                result = (response.StatusCode, bytes.WrittenMemory.ToArray(), response.Content.Headers.ContentType?.ToString());
-            }
-            finally { ArrayPool<byte>.Shared.Return(buffer); }
+            var bytes = await HttpBodyReader.ReadAsync(response.Content, maximumBytes, cancellationToken).ConfigureAwait(false);
+            result = (response.StatusCode, bytes, response.Content.Headers.ContentType?.ToString());
         }
         cancellationToken.ThrowIfCancellationRequested(); return result;
     }
