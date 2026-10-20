@@ -22,7 +22,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | LLM | `Asgard.Loki.LLM.Anthropic` | Claude Messages 原生 JSON/SSE，保留工具、推理签名及未知字段 |
 | LLM | `Asgard.Loki.LLM.Google` | Gemini generateContent 原生 JSON/SSE，保留原生多模态与工具结构 |
 | LLM | `Asgard.Loki.LLM.Ollama` | 原生 Chat/generate JSON/NDJSON，保留工具关联、prompt/context、thinking、format；显式匿名或 Bearer 身份 |
-| LLM | `Asgard.Loki.LLM.Azure` | 显式 v1/日期版本 Chat、Responses JSON/SSE；原生 Responses 压缩保留完整窗口，需目标显式声明能力；独立 Realtime JSON WebSocket；api-key 或借用外部主体令牌；过滤/用量尾帧及终态校验 |
+| LLM | `Asgard.Loki.LLM.Azure` | 显式 v1/日期版本 Chat、Responses 及原生文本补全 JSON/SSE；原生 Responses 压缩保留完整窗口，需目标显式声明能力；独立 Realtime JSON WebSocket；api-key 或借用外部主体令牌；过滤/用量尾帧及终态校验 |
 | LLM | `Asgard.Loki.LLM.GoogleVertex` | 标准 Vertex Gemini/Claude JSON/SSE 与借用 External；独立 Express Gemini JSON/SSE 与显式 API Key；MaaS Chat JSON/SSE 与借用令牌 |
 | LLM | `Asgard.Loki.LLM.AWS` | Bedrock Claude、独立 Converse 与 Nova JSON/二进制 EventStream；显式目标，借用 SigV4 或显式 Bedrock API Key/Bearer |
 | 显式转换 | `Asgard.Loki.LLM.Conversion` | 四种文本协议间十二个方向的公共子集请求、响应和流；另支持 Nova ↔ Converse 原生完整 JSON 显式转换 |
@@ -99,4 +99,4 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题见 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
 
-原生文本补全契约使用 `loki.LLM.TextCompletions.CompleteAsync`／`.StreamAsync`，目标需声明 `LlmProtocol.TextCompletions` 且供应商实现 `ITextCompletionsAdapter`。`TextCompletionRequest.Parameters` 保留原生 prompt 文本／token 批次、suffix、echo、logprobs 和未知字段，不生成 Chat 消息或隐式转换。原始 choices 顺序、索引、过滤／用量及 SSE 元数据保持，仍使用完整 Session 目标绑定。具体端点及输入能力由供应商实现校验，见[原生契约](src/Asgard.Loki.LLM/README.md#native-text-completions)。
+原生文本补全契约使用 `loki.LLM.TextCompletions.CompleteAsync`／`.StreamAsync`，目标需声明 `LlmProtocol.TextCompletions` 且供应商实现 `ITextCompletionsAdapter`。`TextCompletionRequest.Parameters` 保留原生 prompt 文本／token 批次、suffix、echo、logprobs 和未知字段，不生成 Chat 消息或隐式转换。原始 choices 顺序、索引、过滤／用量及 SSE 元数据保持，仍使用完整 Session 目标绑定。Azure 包已实现原生 JSON/SSE；具体端点及输入能力由供应商实现校验，见[原生契约](src/Asgard.Loki.LLM/README.md#native-text-completions)。

@@ -13,9 +13,12 @@ public sealed record AzureLlmOptions
     public int MaximumBodyBytes { get; init; } = 32 * 1024 * 1024;
     /// <summary>首次可能终态起暂存的原生事件数上限，包含过滤与用量尾帧。</summary>
     public int MaximumBufferedTerminalEvents { get; init; } = 128;
-    /// <summary>单次 Chat 流允许关联的原始 choice 索引数，不重编号。</summary>
+    /// <summary>单次 Chat／文本补全流允许关联的原始 choice 索引数，不重编号。</summary>
     public int MaximumTrackedChoices { get; init; } = 128;
     /// <summary>原生压缩请求的 UTF-8 字节上限；省略有效为 32 MiB，省略字段保持已有绑定字节。</summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? MaximumCompactionRequestBytes { get; init; }
+    /// <summary>原生文本补全请求的 UTF-8 字节上限；省略有效为 32 MiB，不改变既有默认绑定字节。</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaximumTextCompletionRequestBytes { get; init; }
 }
