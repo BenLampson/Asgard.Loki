@@ -101,6 +101,8 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题见 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
 
+星火原生契约提供 `loki.LLM.Spark.CompleteAsync`／`.StreamAsync`，要求目标显式声明 `LlmProtocol.Spark` 并提供 `ISparkAdapter`。`SparkRequest.Model` 只选择公共路由，原生 Parameters 在首次会话等待前冻结，选定实际模型仅映射至 `parameter.chat.domain`，不补根 model／stream、AppID 或消息历史。`SparkEvent.Data` 保留每条完整原生消息，`SparkCompletion.Events` 保留有序消息窗口中的插件、全部文本项、状态及用量，不合成首项文本响应或累计分片用量。原生认证、分片、终态和连接关闭验证由适配器负责，见[原生契约](src/Asgard.Loki.LLM/README.md#native-spark-contract)。
+
 混元原生契约提供 `loki.LLM.Hunyuan.CompleteAsync`／`.StreamAsync`，要求目标显式声明 `LlmProtocol.Hunyuan` 并提供 `IHunyuanAdapter`。`HunyuanRequest.Parameters` 保留原生 PascalCase 消息、工具 schema／参数字符串、工具关联、推理、多模态及未知字段；方法只控制原生 `Model`／`Stream`，继续使用完整 Session 目标绑定。完整结果保留 `Response` 信封，流事件保留原始平铺 JSON 和 SSE 元数据，不转换原生 ID、终态或省略的索引。[腾讯供应商包](src/Asgard.Loki.LLM.Tencent/README.md)已实现原生 TC3 JSON／SSE，并记录显式 TokenHub 兼容调用方式；原生传输、认证和终态验证由适配器负责，见[原生契约](src/Asgard.Loki.LLM/README.md#native-hunyuan-contract)。
 
 原生文本补全契约使用 `loki.LLM.TextCompletions.CompleteAsync`／`.StreamAsync`，目标需声明 `LlmProtocol.TextCompletions` 且供应商实现 `ITextCompletionsAdapter`。`TextCompletionRequest.Parameters` 保留原生 prompt 文本／token 批次、suffix、echo、logprobs 和未知字段，不生成 Chat 消息或隐式转换。原始 choices 顺序、索引、过滤／用量及 SSE 元数据保持，仍使用完整 Session 目标绑定。Azure 包已实现原生 JSON/SSE；具体端点及输入能力由供应商实现校验，见[原生契约](src/Asgard.Loki.LLM/README.md#native-text-completions)。

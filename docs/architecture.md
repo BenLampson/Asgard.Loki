@@ -2631,3 +2631,25 @@ Native-->>Caller: Release original terminal and metadata tail in order
 A failure at EOF, async source/HTTP/client disposal, actual-wire mutation, source/principal/expiry or final cancellation prevents the whole pending terminal tail from being released. Late known generation for a finished choice and duplicate/missing/ambiguous terminals fail; other unfinished choices may continue and remain in that same ordered buffer. Byte/length/UTF8, maximum buffered-tail count and tracked-choice count are bounded; limit failures never truncate records. Native Hunyuan requires no OpenAI sentinel and rejects non-JSON DONE frames. Optional stream policy fields are omitted when null, retaining prior default complete-call identity bytes; explicit limits enter the identity.
 
 TokenHub compatible calls use a separately configured existing OpenAI supplier, API Key and explicit Chat target/root. Test-only references verify full JSON/SSE and opaque Bearer keys including `|`; production Tencent still references only its own capability and Infrastructure. There is no credential-shape dispatcher, automatic TC3/OpenAI conversion, host migration or claimed live service acceptance.
+
+### Native Spark core contract
+
+The LLM capability adds `Spark = 4096`, `LlmClient.Spark`, `ISparkClient`/`ISparkAdapter`, `SparkRequest`, `SparkEvent` and `SparkCompletion`. Existing protocol numbers, target defaults and dependency directions stay unchanged. The explicit protocol flag requires the actual adapter interface; optional support claims cannot bypass it. No supplier dependency, WebSocket authentication/framing implementation or normalized Chat representation is added to the core. Converting suppliers do not implicitly acquire Spark support.
+
+```mermaid
+classDiagram
+LlmClient --> ISparkClient : Spark
+ISparkClient <|.. SparkClient
+SparkClient --> SparkRequest : freeze native Parameters
+SparkClient --> LlmInvocation : same complete target and Session coordination
+SparkClient --> ISparkAdapter : explicit native protocol
+ISparkAdapter --|> ILlmProvider
+ISparkAdapter --> SparkEvent : each complete native JSON message
+ISparkAdapter --> SparkCompletion : complete ordered native message window
+SparkCompletion --> SparkEvent : immutable Events collection
+SparkEvent --|> LlmJsonResult
+```
+
+`SparkRequest.Model` remains public SDK route metadata. The wire snapshot serializes only Parameters and writes the bound actual model to `parameter.chat.domain`; it never injects root model/stream, AppID, default settings or history. Only missing parameter/chat objects are created for that routing path. Explicit null/scalar paths, casing ambiguities, native domain/app_id overrides, Undefined values and invalid original Unicode fail before asynchronous cache/target work. Supplier configuration owns native header.app_id. Other native/unknown JSON remains unchanged, including similarly named nested business fields.
+
+Spark complete calls return `SparkCompletion.Events`, a read-only copy of the whole ordered native message window with independent route metadata. Each immutable `SparkEvent.Data` retains the entire original message, all text/plugin entries, native sequence/status/SID, usage and extensions. There is no synthetic full-response envelope, first-text projection, usage accumulation, role rewrite or SSE metadata. A completion cannot be empty, contain null events or mix target metadata. Native sid is not projected onto the inherited lowercase Id accessor and does not enter Responses continuation ownership. The supplier owns actual WebSocket message assembly, byte/encoding limits, native errors, terminal validation and resource closure. Existing full server/model/credential/provider Session binding, final cancellation, borrowed dependency and no-retry/failover rules apply.

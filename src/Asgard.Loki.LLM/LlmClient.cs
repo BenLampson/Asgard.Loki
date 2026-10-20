@@ -21,6 +21,7 @@ public sealed class LlmClient
         Moderations = new ModerationsClient(invocation);
         TextCompletions = new TextCompletionsClient(invocation);
         Hunyuan = new HunyuanClient(invocation);
+        Spark = new SparkClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
@@ -47,5 +48,7 @@ public sealed class LlmClient
     public ITextCompletionsClient TextCompletions { get; }
     /// <summary>访问混元原生 PascalCase JSON/SSE，不隐式转换工具或消息。</summary>
     public IHunyuanClient Hunyuan { get; }
+    /// <summary>访问星火原生消息流及完整消息窗口，不隐式转为 Chat 或 SSE。</summary>
+    public ISparkClient Spark { get; }
 
 }

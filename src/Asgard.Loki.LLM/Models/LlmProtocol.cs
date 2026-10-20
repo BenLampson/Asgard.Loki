@@ -29,5 +29,7 @@ public enum LlmProtocol
     /// <summary>原生文本补全 JSON/SSE 协议，使用 prompt 而非 Chat messages。</summary>
     TextCompletions = 1024,
     /// <summary>腾讯混元原生 PascalCase ChatCompletions JSON/SSE 协议。</summary>
-    Hunyuan = 2048
+    Hunyuan = 2048,
+    /// <summary>讯飞星火原生 WebSocket JSON 消息协议，独立于 Chat/SSE。</summary>
+    Spark = 4096
 }

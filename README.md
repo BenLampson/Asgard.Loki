@@ -261,7 +261,11 @@ A route may contain any valid combination of server, actual model, credential an
 
 Custom LLM providers can explicitly support `LlmCredential.Anonymous("local-instance")` through `ILlmCredentialSupport`. It retains a stable credential identity in the complete Session binding; a missing Key never selects this mode automatically. Existing providers without that optional contract remain API-Key-only. The separate [Ollama LLM provider](src/Asgard.Loki.LLM.Ollama/README.md) now implements native Chat/generate JSON/NDJSON and explicit header isolation; cloud token refresh/signing remains pending; see the [LLM credential contract](src/Asgard.Loki.LLM/README.md#explicit-credential-kinds).
 
-### Native Hunyuan contract
+### Native Spark contract
+
+`loki.LLM.Spark.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.Spark` target and `ISparkAdapter`. `SparkRequest.Model` selects the public route; only native Parameters reach the adapter, with the selected actual model mapped to `parameter.chat.domain`. The SDK adds no root model/stream, AppID or message history. `SparkEvent.Data` retains complete native messages; `SparkCompletion.Events` retains their entire ordered window, including plugins, all text items, native statuses and usage. It does not synthesize a single text completion or sum incremental usage. Native authentication/framing/terminal/close validation belongs to the adapter. See the [native contract and ownership rules](src/Asgard.Loki.LLM/README.md#native-spark-contract).
+
+## Native Hunyuan contract
 
 `loki.LLM.Hunyuan.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.Hunyuan` target and `IHunyuanAdapter`. `HunyuanRequest.Parameters` retains native PascalCase messages, tool schema/argument strings, tool associations, reasoning, multimodal and unknown fields. The methods own native `Model`/`Stream` and use the existing complete Session binding. Complete results retain the entire `Response` envelope; stream records retain their original flat JSON and SSE metadata. Native IDs, finish reasons, optional indices and trailing metadata are not converted into another protocol. The [Tencent supplier](src/Asgard.Loki.LLM.Tencent/README.md) implements native TC3 JSON/SSE and documents explicit TokenHub-compatible reuse. See the [native contract and adapter responsibilities](src/Asgard.Loki.LLM/README.md#native-hunyuan-contract).
 
