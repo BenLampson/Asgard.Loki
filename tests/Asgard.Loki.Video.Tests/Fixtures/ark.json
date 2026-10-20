@@ -1,0 +1,39 @@
+{
+  "provenance": {
+    "kind": "independently authored offline contract sample; not live model output",
+    "create": "https://docs.volcengine.com/docs/ark/create-video-generation-task-api?lang=zh",
+    "get": "https://docs.volcengine.com/docs/ark/get-video-generation-task-api?lang=zh",
+    "new_api": "058c8231b68c51ee02abee15befcd720fee9f4a2/plugins/tasks/doubao/plugin.js",
+    "checked": "2026-10-20"
+  },
+  "submit_path": "/api/v3/contents/generations/tasks",
+  "wire_request": {
+    "model": "configured-seedance-model",
+    "content": [
+      {"type":"text","text":"镜头缓缓拉远，保留风声","future":false},
+      {"type":"image_url","image_url":{"url":"asset://asset_figure"},"role":"reference_image"},
+      {"type":"video_url","video_url":{"url":"https://input.invalid/reference.mp4?signature=opaque"},"role":"reference_video"},
+      {"type":"audio_url","audio_url":{"url":"asset://asset_voice"},"role":"reference_audio"}
+    ],
+    "generate_audio": true,
+    "duration": 5,
+    "ratio": "16:9",
+    "seed": 0,
+    "watermark": false,
+    "return_last_frame": true,
+    "callback_url": "https://application.invalid/video-notification",
+    "tools": [{"type":"web_search"}],
+    "future": {"zero":0,"disabled":false,"optional":null,"unicode":"𐐀"}
+  },
+  "submitted": {"id":"task_ark_one","future":{"accepted":true}},
+  "queries": [
+    {"id":"task_ark_one","model":"resolved-seedance-version","status":"queued","created_at":1,"updated_at":1,"content":null,"error":null,"future":false},
+    {"id":"task_ark_one","model":"resolved-seedance-version","status":"running","created_at":1,"updated_at":2,"content":null,"error":null,"future":{"progress":0}},
+    {"id":"task_ark_one","model":"resolved-seedance-version","status":"failed","error":{"code":"InputRejected","message":"Native rejection","future":null},"usage":{"completion_tokens":0,"total_tokens":0}},
+    {"id":"task_ark_one","status":"expired","error":{"code":"ExecutionExpired","message":"Expired native task"}},
+    {"id":"task_ark_one","status":"cancelled","error":null},
+    {"id":"task_ark_one","status":"future_status","future":{"keep":true}},
+    {"id":"task_ark_one","model":"resolved-seedance-version","status":"succeeded","content":{"video_url":"https://output.invalid/result.mp4?signature=opaque","last_frame_url":"https://output.invalid/last.png?signature=opaque","future":null},"created_at":1,"updated_at":3,"generate_audio":true,"duration":5,"ratio":"16:9","resolution":"720p","framespersecond":24,"seed":0,"error":null,"usage":{"completion_tokens":17,"total_tokens":17,"future_tokens":0},"future":{"disabled":false,"unicode":"你好"}}
+  ],
+  "http_error": {"error":{"code":"AuthenticationError","message":"Native authentication failure","future":false},"request_id":"request_ark_error"}
+}
