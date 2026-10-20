@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><Description>Native Perplexity Responses JSON and SSE provider for Asgard.Loki.</Description></PropertyGroup>
+  <PropertyGroup><Description>Native Perplexity Responses and Sonar Chat JSON and SSE providers for Asgard.Loki.</Description></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
     <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />

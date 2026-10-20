@@ -73,8 +73,10 @@ public sealed class PerplexityResponsesProvider : IResponsesAdapter, ILlmCredent
                     await foreach (var frame in SseReader.ReadBoundedAsync(source, _options.MaximumStreamBytes, cancellationToken, strictUtf8: true, expectedLength: expected).ConfigureAwait(false))
                     {
                         cancellationToken.ThrowIfCancellationRequested(); call.Verify(response);
+                        var bytes = PerplexityJson.Utf8.GetBytes(frame.Data);
+                        if (frame.EventName == "error") throw new LlmUpstreamException("Perplexity 返回原生 SSE 连接错误。", response.StatusCode, bytes, type);
                         if (frame.Data == "[DONE]") { state.Done(); continue; }
-                        var bytes = PerplexityJson.Utf8.GetBytes(frame.Data); var data = PerplexityJson.Parse(bytes); NativeError(data, response.StatusCode, bytes, type, frame.EventName); state.Push(data, frame.EventName);
+                        var data = PerplexityJson.Parse(bytes); NativeError(data, response.StatusCode, bytes, type, frame.EventName); state.Push(data, frame.EventName);
                         var item = new ResponseEvent(data, context.Metadata, frame.EventName, frame.EventId, frame.RetryMilliseconds);
                         if (state.Finishing) { if (tail.Count >= _options.MaximumBufferedTerminalEvents) throw new InvalidDataException("Perplexity 终态尾部事件超过上限。"); tail.Add(item); }
                         else { cancellationToken.ThrowIfCancellationRequested(); yield return item; }

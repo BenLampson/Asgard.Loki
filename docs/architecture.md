@@ -3167,3 +3167,26 @@ The explicit complete root appends only responses. Original input strings/arrays
 Native response.failed carries top-level error.message and may omit response/ID. response.completed may contain a partial or absent snapshot. Both are original protocol outcomes. Full JSON retains its reported native status, including failed, incomplete, queued and cancelled. Strictly increasing int64 sequences and any provided original response IDs belong to known native events; unknown business event fields are not interpreted as lifecycle. No terminal, output, response ID or status is manufactured. An optional actual DONE follows a semantic terminal and cannot replace it. Native endings and following metadata remain buffered through EOF, length/UTF-8 checks, all owned-resource closure and final cancellation; late failures discard that tail.
 
 Positive byte/tail limits and named client enter implementation identity. Cache, coordinator and HTTP factory remain borrowed; call resources are owned. Generation is a single exchange with no retry, background polling, downloads or billing calculation. See the [supplier initialization, support matrix, limits and live status](../src/Asgard.Loki.LLM.Perplexity/README.md).
+
+### Native Perplexity Sonar Chat
+
+PerplexitySonarProvider belongs to the existing LLM.Perplexity package and implements IChatCompletionsAdapter with explicit Chat-only protocol and independent ApiKey support. Responses and Sonar retain separate supplier-owned state machines; their common request freezer and strict JSON boundary are private to this supplier. No supplier-peer reference, new core protocol or cross-capability business coordinator is introduced.
+
+```mermaid
+classDiagram
+IChatCompletionsAdapter <|.. PerplexitySonarProvider
+ChatCompletionsClient --> PerplexitySonarProvider : complete bound target
+PerplexitySonarProvider --> PerplexitySonarOptions : explicit endpoint / local limits
+PerplexitySonarOptions --> PerplexitySonarEndpoint : ChatCompletions or SonarV1
+PerplexitySonarProvider --> PerplexityCall : frozen messages / selected Bearer
+PerplexitySonarProvider --> PerplexitySonarState : choice / native global end / metadata
+PerplexitySonarProvider --> SseReader : strict bounded framing only
+PerplexitySonarProvider --> HttpBodyReader : strict bounded raw bytes only
+PerplexitySonarProvider --> ChatCompletionEvent : original JSON / transport identity
+```
+
+The complete root appends chat/completions by default or explicit v1/sonar. Endpoint selection, named client and positive local limits enter implementation identity; no hostname/model inference or silent path migration occurs. Native messages, cumulative snapshots/deltas, reasoning_steps, tool associations, native schema/regex/search settings, citations and unknown exact values remain unchanged apart from selected model and method stream. Complete JSON keeps original PENDING/COMPLETED data without background work.
+
+Native message/info/end_of_stream are distinct from unknown business metadata. End_of_stream supplies a global terminal; actual DONE is a control terminal after observed native data. Otherwise EOF requires original finishes for all observed choices. Bounded exact int64 associations allow sparse indices and unfinished choices after another ends, without merging arguments or renumbering tools. Ended choices cannot regenerate; a global final message snapshot may retain the same original finish. Native info/unknown tails stay raw. From the first ending, delivery waits for actual EOF, complete resource closure and final cancellation. No finish, message, ID, end_of_stream or DONE is fabricated.
+
+Both Perplexity providers recognize explicit SSE event:error before interpreting JSON or DONE. Original UTF-8 error data becomes LlmUpstreamException with actual status/media, including non-JSON text and text equal to a control marker. Late connection errors discard buffered endings. Shared Infrastructure still contains only pure IO; supplier state/error semantics stay here. See the [supplier support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.Perplexity/README.md).

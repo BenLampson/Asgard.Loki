@@ -32,7 +32,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM | `Asgard.Loki.LLM.Tencent` | Native Hunyuan complete JSON; TC3 and caller-owned External principal credentials | Native SSE, unchanged tools and all-choice terminal/metadata tails |
 | LLM | `Asgard.Loki.LLM.Xunfei` | Native Spark signed WebSocket; complete ordered native message window | Original JSON messages; text/global terminal and normal-close validation |
 | LLM | `Asgard.Loki.LLM.MiniMax` | Native v2 Chat JSON, original reasoning/tool/sensitivity data and HTTP200 business errors | SSE with native choice finishes and complete snapshots |
-| LLM | `Asgard.Loki.LLM.Perplexity` | Native Responses JSON with original status and tool/search data | SSE with sparse failed and partial completed outcomes |
+| LLM | `Asgard.Loki.LLM.Perplexity` | Native Responses and Sonar Chat JSON with original tool/search/citation data | SSE with native sparse failures, partial snapshots and Sonar global endings |
 | LLM | `Asgard.Loki.LLM.Cohere` | Native v1 Chat JSON; full history, references and call-plus-parameters tool results | Native NDJSON; unchanged tool fragments and delayed stream-end |
 | LLM | `Asgard.Loki.LLM.Cloudflare` | Explicit native ai/run text JSON; full native envelope and tools | Original SSE JSON and actual DONE control frame; delayed terminal |
 | LLM | `Asgard.Loki.LLM.Coze` | Native v3 bot chat acknowledgement, explicit status/messages queries; complete-target references | Native two-level Chat/Message SSE, raw future events and actual done |
@@ -145,7 +145,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.LLM.Tencent` | Native Hunyuan JSON/SSE with supplier-local TC3 authentication |
 | `Asgard.Loki.LLM.Xunfei` | Native Spark WebSocket authentication and complete message windows |
 | `Asgard.Loki.LLM.MiniMax` | Native MiniMax v2 Chat JSON/SSE; supplier-owned base_resp and ending state |
-| `Asgard.Loki.LLM.Perplexity` | Native Perplexity Responses JSON/SSE and supplier-owned sparse terminal handling |
+| `Asgard.Loki.LLM.Perplexity` | Native Perplexity Responses and Sonar Chat JSON/SSE; explicit endpoints and supplier-owned endings |
 | `Asgard.Loki.LLM.Cohere` | Native Cohere v1 Chat JSON/NDJSON; independent from Rerank |
 | `Asgard.Loki.LLM.Cloudflare` | Native Workers AI text ai/run JSON/SSE; independent from compatible OpenAI profile |
 | `Asgard.Loki.LLM.Coze` | Explicit Coze v3 JSON/SSE and status/messages; no polling or fake model route |
@@ -469,3 +469,5 @@ Explicit [Moonshot/Kimi Chat, Partial and Responses](src/Asgard.Loki.LLM.OpenAI/
 Explicit [Mistral native Chat](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-mistral-native-chat) reuses the existing OpenAI package with a selected complete root/model/credential and Chat-only target. Native typed thinking/text transitions, tool associations, image containers, schema/prefix settings and unknown fields remain original; no ID remapping or local media/tool execution occurs. Full JSON/SSE windows and actual DONE/resource/Session boundaries are verified offline, without a real model/setting acceptance claim.
 
 [Perplexity native Responses](src/Asgard.Loki.LLM.Perplexity/README.md) uses the existing Responses client with a complete explicit target/model/Key. Sparse native failures, partial terminal snapshots, search/reasoning events, tool associations and native response_format remain original, without fabricated IDs or endings. Terminal delivery waits for EOF, owned-resource closure and final cancellation. Root models/preset/profile selectors that override the bound model are explicitly rejected. Verification is offline; live model/setting acceptance is unverified.
+
+[Perplexity native Sonar Chat](src/Asgard.Loki.LLM.Perplexity/README.md#sonar-chat-initialization) uses PerplexitySonarProvider in the same supplier package. Explicit chat/completions or v1/sonar selection joins complete Session binding. Original messages/reasoning/tools, native schema/search settings, citations, media references and unknown values remain intact. Native end_of_stream, choice endings and actual DONE retain their own semantics; plain-text SSE errors preserve original bytes and suppress buffered endings. The SDK does not migrate calls, execute tools, fetch results, poll or compute billing. Verification remains offline.

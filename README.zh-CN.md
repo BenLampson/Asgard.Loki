@@ -23,7 +23,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | LLM | `Asgard.Loki.LLM.Google` | Gemini generateContent 原生 JSON/SSE，保留原生多模态与工具结构 |
 | LLM | `Asgard.Loki.LLM.Ollama` | 原生 Chat/generate JSON/NDJSON，保留工具关联、prompt/context、thinking、format；显式匿名或 Bearer 身份 |
 | LLM | `Asgard.Loki.LLM.MiniMax` | 原生 v2 Chat JSON/SSE，保留推理、工具关联、敏感标记和用量；原生 base_resp 错误及终态完整性 |
-| LLM | `Asgard.Loki.LLM.Perplexity` | 原生 Responses JSON/SSE，保留稀疏失败、原生搜索推理事件、完整工具关联及未知字段 |
+| LLM | `Asgard.Loki.LLM.Perplexity` | 原生 Responses／Sonar Chat JSON/SSE，保留稀疏失败、全局终态、引用搜索信息及完整工具关联 |
 | LLM | `Asgard.Loki.LLM.Cohere` | 原生 v1 Chat JSON/NDJSON，完整历史、引用、工具参数/结果与分片；独立于 Rerank |
 | LLM | `Asgard.Loki.LLM.Cloudflare` | 显式原生 ai/run 文本 JSON/SSE；完整结果封装、工具数据与实际 DONE 帧；独立于兼容 OpenAI 配置 |
 | LLM | `Asgard.Loki.LLM.Coze` | 原生 v3 Bot 回执/双层 Chat-Message SSE、显式状态/消息查询和完整目标引用；无自动轮询或伪造模型路由 |
@@ -154,3 +154,5 @@ DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#
 [Mistral 原生 Chat](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-mistral-native-chat) 复用现有 OpenAI 包，完整根、实际模型和独立凭据由调用者配置，目标仅声明 Chat。类型化思考／文本流式变化、工具关联、图片容器、schema／prefix 参数和未知字段保持原文；不重编号工具 ID，不在本地获取媒体或执行工具。完整 JSON／SSE 及实际 DONE、资源、Session 边界经过离线验证，未验证真实模型和参数效果。
 
 [Perplexity 原生 Responses](src/Asgard.Loki.LLM.Perplexity/README.md) 使用已有 Responses 入口，显式绑定完整地址、实际模型和独立 Key。保留顶层 error 的稀疏失败、部分终态快照、搜索推理事件、工具关联及原生 response_format；不补造 ID 或终态。结束事件等待 EOF、资源关闭和最终取消检查。会覆盖绑定模型的 models/preset/profile 根选择器明确拒绝。当前仅完成离线协议验证，未验证真实模型及参数效果。
+
+[Perplexity 原生 Sonar Chat](src/Asgard.Loki.LLM.Perplexity/README.md#sonar-chat-initialization) 通过同一供应商包内的 PerplexitySonarProvider 调用。chat/completions 或 v1/sonar 显式选择参与完整 Session 绑定；消息、推理／工具历史、原生 schema／搜索参数、引用、媒体参考及未知值保持原文。支持原生 end_of_stream、choice 结束及实际 DONE；文本 SSE 错误保留原始字节并撤回暂存的终态。不自动迁移调用、执行工具、下载结果、轮询或计算计费；当前仍为离线验证。
