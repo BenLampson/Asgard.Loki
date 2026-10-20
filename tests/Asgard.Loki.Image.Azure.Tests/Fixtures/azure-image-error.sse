@@ -1,0 +1,7 @@
+: original heartbeat
+
+id: original-error-id
+retry: 7
+event: error
+data: {"type":"error","code":"content_policy_violation","message":"原生错误 😀","innererror":{"code":"ResponsibleAIPolicyViolation","content_filter_results":{"violence":{"filtered":true,"severity":"high"}},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}}
+
