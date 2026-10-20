@@ -2835,3 +2835,20 @@ CreateAsync is one POST, immediately returning native code/msg/data/detail and s
 The reference contains only target fingerprint and native Conversation/Chat IDs, never an arbitrary URL or secret. It binds root/Bot/credential identity/key/version/implementation/policies and rejects wrong targets before I/O. Native Chat/Conversation/Bot echoes must match; message.id stays independent of chat_id. Fixed clients cannot reselect an upstream. Binding metadata does not authorize users; native permissions remain authoritative. Complete native success/error data is retained through strict JSON/bytes/length/actual URI/method/EOF/resource closure and final cancellation. All owned call resources close, the factory stays borrowed and no local cache or app workflow is introduced. Bot administration, model discovery, conversation CRUD, file/media transfer, training, billing and backend hosting remain outside scope. Offline native protocol checks establish no live region/Bot/option/model quality guarantee.
 
 The initial Coze JSON contract executes101 offline cases with independent full request/ack/status/messages windows and local fault-injected HTTP. This is neither stream verification nor live Bot/model acceptance; no ordinary model Session/core interface change is involved.
+
+### Native Coze two-level SSE
+
+The same supplier-native CozeChatClient adds StreamAsync without changing model core/protocols/dependency directions or fixed-target reference identity. Infrastructure ReadBoundedAsync supplies only strict raw framing/byte/length checks; CozeChatStreamState owns native Chat/Message domains and real done. CozeChatEvent preserves raw Data/EventName/EventId/RetryMilliseconds, immutable known JSON, fixed Bot metadata and actual native references. Unknown opaque event data stays raw without an invented JSON object.
+
+```mermaid
+classDiagram
+CozeChatClient --> CozeChatStreamState : call-local two-level lifecycle
+CozeChatClient --> SseReader : Infrastructure ReadBoundedAsync only
+CozeChatStreamState --> CozeChatEvent : native data and independent transport identity
+CozeChatEvent --> CozeChatReference : actual native Chat/Conversation target binding
+CozeChatEvent --> CozeChatMetadata : fixed Bot service identity
+```
+
+Chat.id and Message.id are distinct identity domains; message.chat_id/conversation_id/bot_id associate records, while opaque tool content and transport IDs remain untouched. Explicit identity/type/status drift fails. Repeated associations may be omitted within an established unambiguous chat without synthesizing payload fields. Multiple native answers/intermediate/tool/audio records stay separate; no content aggregation, tool execution, media decoding or workflow resume occurs. Known text-message deltas require message.completed before successful chat.completed; failed/requires_action may interrupt and remain original native outcomes.
+
+Message completion is not global completion. Native Chat completed/failed/requires_action begins a bounded held tail; real done requires the documented bare or quoted DONE data with the actual done event name. Terminal/tail publication waits for full framing/EOF, declared lengths, owned stream/response/client disposal, unchanged actual HTTP target and final cancellation. Missing/duplicate/late/mismatched/encoding/framing/resource/error tails cannot first expose global terminals. Raw error events even after held done preserve actual status/type/data. Unknown future events remain raw; control-only tails create no synthetic frames. State message counts and held tail are explicitly bounded and fingerprinted. HTTP/native JSON errors remain errors; JSON acknowledgements do not trigger a poll fallback. The161-case complete supplier suite validates public native JSON/SSE locally; no live Bot/model/option/output quality claim or new global test-total claim is made.

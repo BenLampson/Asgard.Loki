@@ -24,7 +24,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | LLM | `Asgard.Loki.LLM.Ollama` | 原生 Chat/generate JSON/NDJSON，保留工具关联、prompt/context、thinking、format；显式匿名或 Bearer 身份 |
 | LLM | `Asgard.Loki.LLM.Cohere` | 原生 v1 Chat JSON/NDJSON，完整历史、引用、工具参数/结果与分片；独立于 Rerank |
 | LLM | `Asgard.Loki.LLM.Cloudflare` | 显式原生 ai/run 文本 JSON/SSE；完整结果封装、工具数据与实际 DONE 帧；独立于兼容 OpenAI 配置 |
-| LLM | `Asgard.Loki.LLM.Coze` | 原生 v3 Bot 对话回执、显式状态/消息查询与完整目标引用；不自动轮询或伪造模型路由 |
+| LLM | `Asgard.Loki.LLM.Coze` | 原生 v3 Bot 回执/双层 Chat-Message SSE、显式状态/消息查询和完整目标引用；无自动轮询或伪造模型路由 |
 | LLM | `Asgard.Loki.LLM.Azure` | 显式 v1/日期版本 Chat、Responses 及原生文本补全 JSON/SSE；原生 Responses 压缩保留完整窗口，需目标显式声明能力；独立 Realtime JSON WebSocket；api-key 或借用外部主体令牌；过滤/用量尾帧及终态校验 |
 | LLM | `Asgard.Loki.LLM.DeepSeek` | 原生 Search／Fetch 完整 JSON；独立固定服务及凭据；保留原生排序、评分、完整页面内容和空结果，无需模型／Session |
 | LLM | `Asgard.Loki.LLM.Tencent` | 混元原生 JSON／SSE；供应商专属 TC3 和应用拥有的 External 主体凭据；保留工具分片、多候选终态及完整尾帧 |
@@ -119,4 +119,4 @@ Cloudflare Workers AI 的账号级兼容 Chat JSON/SSE 和当前支持的非流�
 
 原生 `.LLM.WorkersAiText` 要求显式 `LlmProtocol.WorkersAiText` 目标与 `IWorkersAiTextAdapter`。公共模型只作路由信息，实际模型由原生 URL 拥有；prompt/messages 和未知参数保持原生正文，完整结果保留原始封装。流事件保留 SSE JSON 或实际 `[DONE]` 数据及独立传输身份，不虚构 JSON 终态。[Cloudflare 供应商包](src/Asgard.Loki.LLM.Cloudflare/README.md)提供原生 HTTP/SSE，详见[契约与适配器职责](src/Asgard.Loki.LLM/README.md#native-workers-ai-text-contract)。
 
-[CozeChatClient](src/Asgard.Loki.LLM.Coze/README.md) 每个方法只发起一次原生提交/状态/Chat 消息请求，保留完整回执、多条回答、中间消息和工具/推理数据。Bot ID 是远端服务配置，不冒充底层实际模型；引用绑定完整服务器/Bot/凭据/实现与原生 ID，不加入自动轮询、工具执行或 Bot/工作流管理。离线协议测试不代表真实 Bot 访问或回答质量验证。
+[CozeChatClient](src/Asgard.Loki.LLM.Coze/README.md) 每个方法只发起一次原生提交/SSE/状态/Chat 消息请求，保留完整回执、多条回答、中间消息、工具/推理和原生 done；Message 完成与 Chat 终态分别处理。Bot ID 是远端服务配置，不冒充底层实际模型；引用绑定完整服务器/Bot/凭据/实现与原生 ID，不加入自动轮询、工具执行或 Bot/工作流管理。离线协议测试不代表真实 Bot 访问或回答质量验证。

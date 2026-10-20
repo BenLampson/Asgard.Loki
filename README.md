@@ -33,7 +33,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM | `Asgard.Loki.LLM.Xunfei` | Native Spark signed WebSocket; complete ordered native message window | Original JSON messages; text/global terminal and normal-close validation |
 | LLM | `Asgard.Loki.LLM.Cohere` | Native v1 Chat JSON; full history, references and call-plus-parameters tool results | Native NDJSON; unchanged tool fragments and delayed stream-end |
 | LLM | `Asgard.Loki.LLM.Cloudflare` | Explicit native ai/run text JSON; full native envelope and tools | Original SSE JSON and actual DONE control frame; delayed terminal |
-| LLM | `Asgard.Loki.LLM.Coze` | Native v3 bot chat acknowledgement, explicit status/messages queries; complete-target references | — |
+| LLM | `Asgard.Loki.LLM.Coze` | Native v3 bot chat acknowledgement, explicit status/messages queries; complete-target references | Native two-level Chat/Message SSE, raw future events and actual done |
 | LLM | `Asgard.Loki.LLM.GoogleVertex` | Vertex Gemini/Claude JSON/SSE with borrowed tokens; separate Express Gemini JSON/SSE with explicit API Key; MaaS Chat JSON/SSE with borrowed tokens | Native events with delayed terminal checks |
 | LLM | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and explicit Converse JSON/EventStream with borrowed SigV4 or explicit Bedrock API Key credentials | Native binary EventStream with independent protocol lifecycles |
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
@@ -143,7 +143,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.LLM.Xunfei` | Native Spark WebSocket authentication and complete message windows |
 | `Asgard.Loki.LLM.Cohere` | Native Cohere v1 Chat JSON/NDJSON; independent from Rerank |
 | `Asgard.Loki.LLM.Cloudflare` | Native Workers AI text ai/run JSON/SSE; independent from compatible OpenAI profile |
-| `Asgard.Loki.LLM.Coze` | Explicit Coze v3 bot chat acknowledgement/status/messages; no polling or fake model route |
+| `Asgard.Loki.LLM.Coze` | Explicit Coze v3 JSON/SSE and status/messages; no polling or fake model route |
 | `Asgard.Loki.LLM.GoogleVertex` | Native Vertex Gemini, Claude, Express and MaaS target identity/authentication |
 | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and Converse JSON/EventStream with borrowed External SigV4 or explicit Bedrock API Key credentials |
 | `Asgard.Loki.LLM.Conversion` | Optional explicit conversion; references only LLM |
@@ -431,4 +431,4 @@ Licensed under the [Apache License, Version 2.0](LICENSE).
 
 ### Explicit Coze v3 bot chat
 
-[CozeChatClient](src/Asgard.Loki.LLM.Coze/README.md) sends one native create/status/chat-messages request per method and retains complete original acknowledgements and message arrays. Bot ID is service configuration, not an underlying model selection. Native references keep server/Bot/credential/implementation/ID affinity without a fabricated model Session, automatic polling, tool execution or bot/workflow administration. Offline protocol support does not establish live Bot access or answer quality.
+[CozeChatClient](src/Asgard.Loki.LLM.Coze/README.md) sends one native create/SSE/status/chat-messages request per method and retains complete acknowledgements, message arrays and original two-level stream events with actual done. Bot ID is service configuration, not an underlying model selection. Native references keep server/Bot/credential/implementation/ID affinity without a fabricated model Session, automatic polling, tool execution or bot/workflow administration. Offline protocol support does not establish live Bot access or answer quality.

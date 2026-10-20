@@ -7,6 +7,7 @@ Explicit Coze v3 **bot chat** calls in a supplier-owned native client. Each meth
 | Operation | Support |
 | --- | --- |
 | `CozeChatClient.CreateAsync` | One native non-streaming POST; full acknowledgement/state, not a synchronous model answer |
+| `StreamAsync` | One native SSE POST; original Chat/Message/raw future events and actual quoted/unquoted done |
 | `RetrieveAsync` | One native GET using a complete-target-bound Conversation/Chat reference |
 | `GetMessagesAsync` | One native chat-scoped GET; all ordered native messages, including multiple answers/intermediates |
 | Native history, tool/required_action content, reasoning, metadata and future fields | Original JSON; no execution, aggregation, default user or last-answer projection |
@@ -62,3 +63,15 @@ LlmUpstreamException keeps actual HTTP status, original body bytes and content t
 References: [create](https://docs.coze.cn/developer_guides_chat_v3), [retrieve](https://docs.coze.cn/developer_guides_retrieve_chat), [chat messages](https://docs.coze.cn/developer_guides_list_chat_messages), [official SDK](https://github.com/coze-dev/coze-py/blob/main/cozepy/chat/__init__.py). Region/root/Bot availability and actual native option acceptance must be validated by the application; fixtures do not establish live service/model quality.
 
 Offline JSON evidence: 101 cases compare independent full native request/response windows and injected binding/transport faults. They do not verify live Bot/account access, option effects or model answer quality.
+
+## Native stream lifecycle
+
+`StreamAsync(request, cancellationToken)` preserves original event names/data/IDs/retry and full known native Chat/Message JSON. It also retains opaque unknown events without pretending their data is object JSON. CozeChatEvent.Json owns known Chat/Message JSON and the documented quoted DONE string; unknown data and bare DONE remain null. CozeChatEvent.Reference appears only after actual native Chat identity is known and can later be used for an explicit one-call query. No query is appended by the stream itself.
+
+Chat.id, Message.id, message.chat_id, Conversation ID, tool IDs and SSE transport ID are separate. Known associations stay stable where provided; absent repeated association fields use already-established single-chat state without adding fields to Data. Multiple answers, tool/intermediate messages and raw audio/reference fields remain separate and are never assembled, decoded or executed. Text message deltas require their native message.completed before successful chat.completed. A completed Message is not a completed Chat. Chat completed/failed/requires_action remain native outcomes; the latter two are not mapped to stop or automatically resumed. Native Chat status must agree with its known event name when present.
+
+Actual `event: done` accepts the documented bare `[DONE]` and JSON-string `"[DONE]"` data forms without changing original lexical data. Business done/type fields or data without the real event name cannot terminate the stream. First Chat terminal plus all subsequent metadata/done frames are held through actual complete SSE/EOF, strict UTF-8/known unique JSON, byte/declared-length limits, source/response/client disposal and final cancellation. Missing message/chat/done completion, changed identities/types, duplicate/late known generation, any data after done, raw error events, truncated/bad encoding and read/disposal/cancellation failures cannot first publish those terminal frames. Earlier delivered prefixes, including independently completed messages, may remain after a later failure. Control-only tails create no synthetic message.
+
+Default stream policies are 64 MiB original total bytes, 128 held terminal/tail frames and 4096 tracked messages; explicit positive changes participate in target fingerprint. The shared Infrastructure ReadBoundedAsync frames raw transport only; Coze owns its separate two-level lifecycle. Error events retain actual HTTP status/content type and original data bytes, including opaque errors after held done. A JSON acknowledgement on the streaming path is refused rather than polled; HTTP/native JSON errors stay original errors. Early consumer disposal closes owned resources without reading/retrying the remainder.
+
+The complete suite now passes **161 offline cases**, including 60 native stream cases beyond the JSON checkpoint. Independent literal SSE/expected windows and public-client fault injection cover both DONE forms, message/chat/transport identity domains, full raw tools/answers/reasoning/unknown data, incomplete/late/faulted tails and explicit post-stream queries. No live Bot/account/model/option or audio/answer-quality verification is claimed.
