@@ -1,0 +1,3 @@
+# OpenAI-compatible rerank protocol tests
+
+Independent complete request/result fixtures precede implementation. These describe an explicitly configured model/query/documents -> results/index/relevance_score wire, not an official hosted-service entitlement or model guarantee. Native scores may exceed one or be negative; root identity/usage may be absent. Text and opaque JSON candidates remain original. String echoes, text-wrapped original JSON and original object fields are checked against the actual native index without flattening or fabricating values. No source host normalization, usage estimation, model catalog or protocol guess builds expectations. No real HTTP/model/media service is called.
