@@ -144,3 +144,5 @@ Ollama 兼容接口复用现有 [OpenAI 包](src/Asgard.Loki.LLM.OpenAI/README.m
 
 
 DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-deepseek-native-endpoints) 和[原生 Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-deepseek-messages) 复用现有分包，分别配置完整根、实际模型和独立凭据。原生思考、工具关联、结构化参数及未知字段完整保留；Responses 每次发送完整无状态输入并保留语义终态，FIM 要求真实 DONE。当前验证均为离线协议测试，未验证真实模型及可选参数效果。
+
+[Moonshot／Kimi Chat、Partial 与 Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-moonshot-and-kimi-coding-native-endpoints) 和[原生 Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-moonshot-and-kimi-coding-messages) 复用现有供应商封装，平台与 Coding 完整根、模型和独立凭据均由调用者选择。推理摘要、schema、缓存字段、工具关联及未知数据保持原文；Responses 终态后拒绝已知摘要生命周期重开。当前为离线验证，未宣称旧文本托管接口可用或真实模型、参数效果及 Coding 权限已验证。

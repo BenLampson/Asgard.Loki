@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.OpenAI.Tests
 
-**789 passing offline xUnit v3 cases** exercise actual SDK/provider JSON, SSE and WebSocket calls. HTTP, sockets, external token sources and clocks are substitutes. Session tests use MemoryDistributedCache plus the explicit test coordinator; no real Key, auth-file/environment lookup, network, Redis or remote CI is required. See [testing](../../docs/testing.md).
+**841 passing offline xUnit v3 cases** exercise actual SDK/provider JSON, SSE and WebSocket calls. HTTP, sockets, external token sources and clocks are substitutes. Session tests use MemoryDistributedCache plus the explicit test coordinator; no real Key, auth-file/environment lookup, network, Redis or remote CI is required. See [testing](../../docs/testing.md).
 
 | Contract | Verification |
 | --- | --- |
@@ -13,12 +13,13 @@
 | Native text/FIM | 140 cases over the existing public TextCompletions client and explicit adapter, complete JSON/raw SSE/expected frames, text/logprobs/sparse indices and independent choices/DONE |
 | DashScope compatible native targets | 35 whole Chat/Responses/Text profile and fault cases, explicit legacy/workspace/proxy roots, native headers, tools/opaque/schema/reasoning/extensions and complete Session affinity |
 | Explicit DeepSeek native targets | 37 whole Chat/Responses/three FIM variant windows and terminal/Session cases; explicit separate roots, stateless full input, plain reasoning/custom tools and no parameter repair |
+| Explicit Moonshot/Kimi native targets | 52 whole Chat/Partial/Responses and fault cases; selected platform/Coding/proxy roots, native summary/cache/schema/tool fields, exact terminal and complete Session affinity |
 
 Fixtures are independently authored native contracts, never snapshots generated from SDK output. Whole-body and per-event comparisons retain original tool/item/call associations, reversed history results, reasoning/signatures/encrypted values, schema settings, unknown fields, precise numbers and explicit null/false/zero/empty values. Returned model data remains distinct from public/actual target metadata. Native passthrough does not aggregate tool arguments; strict conversion association belongs to the separate conversion suite.
 
 Boundary matrices cover original UTF-8/Unicode/duplicates/reserved ownership before dispatch, unsupported credential modes, raw HTTP200/native/binary errors, byte/declared-length/media/framing policies, exact selected wire and real EOF. Terminal/usage/unknown tails wait through async/sync/client/request disposal and final cancellation. Early exit releases only owned call resources. Native text additionally bounds distinct indices, requires all observed choice finishes plus actual DONE, and refuses repeated/late text or logprobs. Unknown native data never substitutes a missing terminal.
 
-Responses known reasoning_text/custom_tool_call_input/web_search_call lifecycle cannot reopen after completed. Chat unknown nonstring type/business IDs and response.failed-named business metadata remain raw; actual native errors stay failures. Full independent DashScope windows demonstrate legitimate preterminal events and unchanged optional fields without gateway parameter repair.
+Responses known reasoning_text/reasoning_summary_part/reasoning_summary_text/custom_tool_call_input/web_search_call lifecycle cannot reopen after completed. Chat unknown nonstring type/business IDs and response.failed-named business metadata remain raw; actual native errors stay failures. Full independent DashScope windows demonstrate legitimate preterminal events and unchanged optional fields without gateway parameter repair.
 
 Cache/coordinator tests validate whole root/model/key/principal/account/source/implementation/policy/client/version binding, source rotation under a stable principal, native response ownership, concurrent/stale first binding and cross-instance recovery. Moderation/text/compaction/search IDs do not acquire generated Responses ownership. Default nullable policy omission preserves earlier binding bytes; explicit semantic changes reject old Sessions before another send.
 

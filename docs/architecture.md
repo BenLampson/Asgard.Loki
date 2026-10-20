@@ -3038,7 +3038,7 @@ Only configured actual model and method stream mode are owned. Native prompt/FIM
 
 Native text state tracks exact distinct nonnegative indices, bounds association count and keeps original sparse indices. One choice finish starts bounded held-tail processing while other choices continue. Repeated/late known choice generation, malformed carriers, early/missing/repeated DONE and post-DONE data fail. Unknown business type/ID remains data, independent from Responses state. Initial native errors retain their original event; late errors prevent held success. The existing shared HTTP loop accepts this supplier-owned text state without changing the other protocol branches or their original error policies.
 
-Text request/body/errors/whole-SSE limits, actual wire and native media/UTF-8/framing/length, full owned-resource closure and final cancellation precede result/end delivery. Nullable MaximumTextCompletionRequestBytes and MaximumTrackedTextChoices are omitted from default identity serialization, preserving old default binding bytes; explicit policies enter existing binding normally. Borrowed HTTP factories/cache/coordinators are not released. Production graph remains63/45/125/63inventory, no capability or supplier peer reference. Current OpenAI executable passes717 offline cases including140 text cases; protocol fidelity does not prove live model/setting acceptance or full-solution/all-package validation.
+Text request/body/errors/whole-SSE limits, actual wire and native media/UTF-8/framing/length, full owned-resource closure and final cancellation precede result/end delivery. Nullable MaximumTextCompletionRequestBytes and MaximumTrackedTextChoices are omitted from default identity serialization, preserving old default binding bytes; explicit policies enter existing binding normally. Borrowed HTTP factories/cache/coordinators are not released. Production graph remains63/45/125/63inventory, no capability or supplier peer reference. Current OpenAI executable passes841 offline cases including140 text cases; protocol fidelity does not prove live model/setting acceptance or full-solution/all-package validation.
 
 ### Explicit DashScope compatible native profiles
 
@@ -3059,7 +3059,7 @@ Original reasoning/schema/search settings, FIM prompt and tool call/result/item 
 
 Supplier-private Responses classification includes documented reasoning_text/custom_tool_call_input/web_search_call lifecycle events, allowing them before terminal and rejecting reopens afterward. Unknown typed metadata remains raw. Chat uses choices-bearing frames for generated identity, preserves unknown nonstring type/business IDs and does not classify response.failed as a Responses failure. Actual native error event semantics remain intact. This corrects native fidelity within existing strict HTTP v2 behavior; identity serialization and default policy bytes stay unchanged.
 
-Independent whole-window tests cover35 OpenAI profile/fault cases and15 Messages profile cases. Current scoped executables pass752 OpenAI and167 Anthropic offline cases. Exact raw framing/resource/cancellation/terminal and Session association remain supplier/core responsibilities as before. Native text state remains separate from Chat and Responses. Production graph stays63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. No live model/optional-setting or full-suite/all-package verification is claimed.
+Independent whole-window tests cover35 OpenAI profile/fault cases and15 Messages profile cases. Current scoped executables pass841 OpenAI and207 Anthropic offline cases. Exact raw framing/resource/cancellation/terminal and Session association remain supplier/core responsibilities as before. Native text state remains separate from Chat and Responses. Production graph stays63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. No live model/optional-setting or full-suite/all-package verification is claimed.
 
 
 ### Explicit DeepSeek native profiles
@@ -3081,4 +3081,25 @@ LlmOptions --> "DeepSeek anthropic/v1 target" : selected Messages model / auth
 
 Whole native input/output remains supplier data: Chat reasoning_content, Responses plain reasoning and custom apply_patch IDs/input, Messages unsigned thinking and remote/client tool links, and separate valid FIM suffix/logprobs/echo variants. No automatic response history, previous_response_id, model suffix stripping, effort mapping, signature invention, parameter repair or code/tool execution occurs. Responses requires native completed/incomplete/failed without DONE; text requires actual DONE with usage allowed on the last content choice; Messages requires message_stop. Existing complete-target Session binding and bounded closure/final-cancellation gates apply unchanged.
 
-Thirty-seven OpenAI and twelve Anthropic independent-profile/fault cases pass, bringing current scoped totals to789 and179 respectively. The production graph remains63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. These offline results do not establish live model/setting effectiveness, Linux, full-repository tests or all-package verification.
+Thirty-seven OpenAI and twelve Anthropic independent-profile/fault cases pass, bringing current scoped totals to841 and207 respectively. The production graph remains63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. These offline results do not establish live model/setting effectiveness, Linux, full-repository tests or all-package verification.
+
+### Explicit Moonshot and Kimi native profiles
+
+Existing OpenAiLlmProvider owns compatible Chat/Partial/Responses and AnthropicLlmProvider independently owns native Messages. Platform and Coding roots, selected actual models, credentials and supported protocols are explicit complete-target data. No new package, capability protocol, public option, supplier-peer reference, region/plan inference or model-specific temperature/effort mapping is introduced. Partial remains an original assistant message with partial:true; it is not converted to TextCompletions.
+
+```plantuml
+@startuml
+LlmOptions --> "platform or Coding v1 target" : explicit model / credential / protocol
+"platform or Coding v1 target" --> OpenAiLlmProvider : Chat / Partial / stateless Responses
+LlmOptions --> "anthropic/v1 or coding/v1 target" : explicit model / Key or Bearer
+"anthropic/v1 or coding/v1 target" --> AnthropicLlmProvider : native Messages
+OpenAiHttpStreamState --> "Responses summary part/text lifecycle" : before terminal only
+OpenAiHttpStreamState --> "unknown future metadata" : preserve original business JSON
+@enduml
+```
+
+Native tools and reverse result associations, reasoning summaries and optional original signatures, schema/effort/cache settings, exact/unknown/null/false/zero values and usage retain supplier meaning. Messages input_tokens excludes cache read/write counters; Chat/Responses input is already a native total. No calculated usage, encrypted reasoning, history, signature or tool output is synthesized. Native Responses outcomes, Chat DONE and Messages message_stop remain separate lifecycle contracts; held endings require normal EOF and all existing disposal/final-cancellation checks.
+
+Supplier-private HTTP classification recognizes the four documented response.reasoning_summary_part.added/done and response.reasoning_summary_text.delta/done events. These retain their original frames before terminal and cannot restart generation afterward. Similar unknown names remain raw business metadata, without claiming their nested response IDs. Existing strict HTTP v2 binding domain, default option serialization and native text/Chat classification are unchanged.
+
+Fifty-two OpenAI and twenty-eight Messages independent-window/fault cases pass; current scoped totals are841 and207. Conversion regression passes2535 cases. The production graph remains63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. Model/setting/Coding entitlement, current hosted legacy text, full-repository tests, Linux and all-package verification are not established by these offline scopes.
