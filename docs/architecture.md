@@ -2999,3 +2999,20 @@ AnthropicLlmProvider --> LlmTarget : existing complete-target Session
 ```
 
 Fourteen Ark and16 Messages profile cases verify full native windows, immutable requests, explicit route/auth, tool/signature/schema/unknown-field fidelity and Session binding/recovery. Messages missing-stop/late-error/resource/final-cancellation faults cannot release held success. Scoped executables pass258 Ark and143 Anthropic offline cases; no live Coding Plan or full-solution/all-package verification is claimed. Graph remains63 production projects,45 Infrastructure consumers and125 unique solution paths.
+
+### Ollama compatible native endpoint profiles
+
+Existing OpenAiLlmProvider and AnthropicLlmProvider independently implement the source-compatible native wire under explicit roots/models/credentials. Local placeholder Bearer follows documented external SDK usage; cloud Bearer uses a separate actual credential. Native Ollama Anonymous/API Key and NDJSON remain owned by OllamaLlmProvider. No production API, package, protocol, identity algorithm or dependency direction changes are needed; default supplier behavior stays unchanged.
+
+```plantuml
+@startuml
+LlmOptions --> "explicit compatible OpenAI target"
+"explicit compatible OpenAI target" --> OpenAiLlmProvider : Chat / stateless Responses / explicit compact
+LlmOptions --> "explicit compatible Messages target"
+"explicit compatible Messages target" --> AnthropicLlmProvider : native Messages / selected Bearer
+LlmOptions --> "explicit native Ollama target"
+"explicit native Ollama target" --> OllamaLlmProvider : native JSON / NDJSON
+@enduml
+```
+
+Stateless Responses replays complete input; SDK Session affinity does not add remote storage. Compact raw output is opaque data; its ID is not a generated Responses ID. Independent full native windows verify28 OpenAI and9 Messages profile cases with offline HTTP, native terminal/EOF and binding guards; current scoped totals577 OpenAI and152 Anthropic cases pass. Local compact route support is distinct from unverified hosted compact availability. No server/CLI/login/model management/tool execution or native NDJSON conversion is added. Production graph remains63/45/125/63inventory. No live optional-setting/model or full-suite/all-package verification is claimed.

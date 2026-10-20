@@ -135,3 +135,5 @@ Cloudflare Workers AI 的账号级兼容 Chat JSON/SSE 和当前支持的非流�
 同一[火山分包](src/Asgard.Loki.LLM.Volcengine/README.md#published-bot-native-calls) 提供 VolcengineBotClient，用于已发布应用的原生 JSON/SSE。Bot 身份与返回的底层模型/接入点数据分开保留，插件、引用、群聊、用量和实际 DONE 不丢弃；不引入模型 Session、应用管理、Agent 运行时、执行循环或 URL 下载器。
 
 方舟 Coding Plan 使用现有[火山包](src/Asgard.Loki.LLM.Volcengine/README.md#explicit-coding-plan-configuration) 的 `coding/v3/` Chat/Responses，以及现有[Anthropic 包](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-ark-coding-plan-messages) 的完整 `coding/v1/` 根和显式 Bearer 原生 Messages。完整目标、实际模型及独立凭据由调用者配置；不新增品牌包装或供应商互相引用。完整协议窗口和 Session 绑定通过离线验证，未验证真实 Coding Plan 权限、模型或可选参数效果。
+
+Ollama 兼容接口复用现有 [OpenAI 包](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-ollama-compatible-endpoints) 的 Chat、无状态 Responses 和本地 compact，以及现有 [Anthropic 包](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-ollama-messages) 的显式 Bearer 原生 Messages。完整根、实际模型、本地占位凭据或云端独立 Key 均由调用者明确配置；原生 `/api/chat`、`/api/generate` 留在 Ollama 包。完整窗口经过离线验证，不代表真实模型、可选参数效果或云端 compact 可用性验证。

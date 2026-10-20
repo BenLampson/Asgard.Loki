@@ -270,7 +270,7 @@ Each call uses explicit Bearer/account headers and exact application/json withou
 
 Defaults: 1 MiB request, 32 MiB complete/error/whole-SSE bytes and 128 held terminal-tail records. Factories, token source, clock and Session dependencies stay borrowed. Configure named transports with no automatic redirects/retries/hedging and appropriate timeouts. There is no token-triggered retry, failover, background polling or local tool/workflow/media execution.
 
-Validation uses independent full native JSON/compact/SSE resources and fake HTTP. The complete OpenAI supplier test executable passes549 offline cases, including127 Codex cases covering separate parallel tool IDs, native opaque fields, original wire/settings, source snapshots, complete Session drift/rotation/ownership and late transport/resource/auth failures. This is not live backend/model acceptance or a new full-repository suite result.
+Validation uses independent full native JSON/compact/SSE resources and fake HTTP. The complete OpenAI supplier test executable passes577 offline cases, including127 Codex cases covering separate parallel tool IDs, native opaque fields, original wire/settings, source snapshots, complete Session drift/rotation/ownership and late transport/resource/auth failures. This is not live backend/model acceptance or a new full-repository suite result.
 
 ### Native Codex alpha search
 
@@ -293,3 +293,28 @@ Search sends one POST to alpha/search after freezing the entire original JSON be
 The fixed target/account/External principal/source and precise request headers remain checked through full bounded EOF/length/owned-resource closure and final cancellation. Defaults are 1 MiB request and 32 MiB complete response/error body. Application-owned factory/source/clock stay borrowed. Search results and URLs remain data; there is no browser/CDN downloader, webpage proxy, file manager or background workflow.
 
 Forty offline search cases cover the independent full request/result, immutable raw body copies, optional native fields/snapshots, exact/unknown data, binary/text/JSON-error/SSE/empty windows, one-call HTTP errors, invalid configuration/Unicode/duplicates/budgets, account/principal/source/expiry failures and EOF/length/disposal/target/final-cancellation boundaries. No backend/account/search/model result has been validated live.
+
+## Explicit Ollama compatible endpoints
+
+Reuse this provider for compatible Chat/Responses JSON/SSE and explicit local-server compaction. Native Ollama `/api/chat` and `/api/generate` remain in [LLM.Ollama](../Asgard.Loki.LLM.Ollama/README.md). This provider sends the selected native protocol without converting Ollama NDJSON.
+
+```csharp
+var provider = new OpenAiLlmProvider(httpClientFactory, id: "ollama-compatible",
+    httpClientName: "Explicit.Ollama.Compatible");
+var target = new LlmTarget
+{
+    Id = "my-ollama", ProviderId = provider.Id,
+    BaseAddress = new Uri("http://localhost:11434/v1/"),
+    UpstreamModel = selectedModel, CredentialId = "local-placeholder",
+    Protocols = LlmProtocol.ChatCompletions | LlmProtocol.Responses,
+    Features = LlmTargetFeatures.ResponsesCompaction // explicitly opt in only when supported
+};
+// Credentials = [new LlmCredential("local-placeholder", "explicit-ignored-placeholder")]
+// Register provider and target through ordinary LlmOptions with a caller-owned SessionStore.
+```
+
+The [official compatibility guide](https://docs.ollama.com/api/openai-compatibility) documents an ignored placeholder Key for local external SDK clients; local Ollama does not require authentication. This is an explicit request-local Bearer value, with no missing-Key fallback or host inference. A hosted `https://ollama.com/v1/` target instead needs its own real API Key, as documented in [authentication](https://docs.ollama.com/api/authentication). Configure a distinct complete target/credential for each service and select only its supported protocols/features. No login, model installation/discovery or server management is performed.
+
+Responses is stateless upstream: replay complete input; do not use previous_response_id or conversation expecting remote storage. SDK Sessions keep only the existing complete-target affinity and response ownership checks. The current local server implements [responses/compact](https://github.com/ollama/ollama/blob/main/server/routes.go); hosted compact availability is not established here. Compact output remains opaque native data, including encrypted_content, without decoding, local summarization or automatic compaction. Its ID does not acquire generated Responses ownership. Native Messages uses the [existing Anthropic provider](../Asgard.Loki.LLM.Anthropic/README.md#explicit-ollama-messages); neither production supplier references the other.
+
+Twenty-eight additional offline tests verify independently authored full native caller/wire/result/SSE windows, explicit local/proxy/hosted configuration, tools and reversed results, original reasoning/schema/unknown values, precise numbers, transport metadata, missing terminal/late read failure, raw native errors and complete Session identity drift/recovery. Total executable: 577 passing offline cases. Configured-host wire tests do not establish hosted compact access, real model availability, optional field acceptance or generated quality. In particular, SDK field passthrough does not add upstream support for tool_choice, URL images or other unsupported settings.
