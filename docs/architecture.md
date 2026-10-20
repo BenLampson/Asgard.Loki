@@ -1,5 +1,23 @@
 # Asgard.Loki Architecture Specification
 
+## Native xAI JSON image editing
+
+`Image.XAI` references only Image, Infrastructure and standard HTTP factory support. XaiImageEditAdapter implements existing IImageEditAdapter and uses existing independent EditRoutes. It has no generation implementation or Image.OpenAI dependency: xAI complete generation is an independently verified compatible configuration of the existing adapter. This avoids a generation-only brand wrapper while giving the genuinely distinct xAI edit JSON its own supplier implementation.
+
+Model/prompt remain bound and raw image.url or ordered images[].url/file_id references preserve optional type/extensions without renaming them to OpenAI image_url. Exactly one explicit root carrier and one source per reference are required, so no source is discarded or chosen by priority. Opaque existing file IDs are model inputs only; the SDK does not resolve/manage files or fetch/convert image data. Target model/endpoint/key are explicit, parameters freeze before factory creation, and no native defaults are invented. Complete original data[]/MIME/revision/usage/null/unknown values survive. Raw HTTP/API errors use the editing exception and retain arbitrary error bytes. Byte/length/encoding checks and disposal finish before returning results. Multipart and optional editing SSE fail without I/O or touching borrowed uploads. No capability interfaces or coordination layers change.
+
+```mermaid
+classDiagram
+XaiImageEditAdapter ..|> IImageEditAdapter
+XaiImageEditAdapter --> XaiImageEditOptions : fixed native edit endpoint/model/key
+XaiImageEditAdapter --> XaiImageEditPayload : original single/multiple references
+XaiImageEditAdapter --> XaiImageJson : original data and edit errors
+XaiImageEditAdapter --> HttpBodyReader : raw bytes and EOF
+XaiImageEditAdapter --> ImageGenerationResult : full native result
+class ExistingGeneration["Image.OpenAI compatible xAI generation profile"]
+ExistingGeneration ..|> IImageGenerationAdapter
+```
+
 ## Explicit compatible xAI image-generation profile
 
 Complete xAI generations use the existing Image.OpenAI adapter with an independently configured native root/model/Bearer identity, no organization/project headers and no body defaults or field mapping. Independent offline whole-wire/result/error vectors cover URL/Base64, nullable fields, original MIME/revision/usage and exact integers. There is no new generation wrapper, provider dependency or automatic upstream detection. This profile establishes complete JSON generation only; xAI edits have a distinct image.url/images[].url JSON input contract and cannot reuse the existing OpenAI reference/multipart validation unchanged. Image SSE and deferred image operations are not implied by this compatibility profile.

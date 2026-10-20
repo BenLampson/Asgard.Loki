@@ -92,6 +92,7 @@
     <Project Path="src/Asgard.Loki.Video.Volcengine/Asgard.Loki.Video.Volcengine.csproj" />
   </Folder>
   <Folder Name="/src/Providers/XAI/">
+    <Project Path="src/Asgard.Loki.Image.XAI/Asgard.Loki.Image.XAI.csproj" />
     <Project Path="src/Asgard.Loki.Video.XAI/Asgard.Loki.Video.XAI.csproj" />
   </Folder>
   <Folder Name="/tests/Foundation/">
@@ -186,6 +187,7 @@
     <Project Path="tests/Asgard.Loki.Video.Volcengine.Tests/Asgard.Loki.Video.Volcengine.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/XAI/">
+    <Project Path="tests/Asgard.Loki.Image.XAI.Tests/Asgard.Loki.Image.XAI.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Video.XAI.Tests/Asgard.Loki.Video.XAI.Tests.csproj" />
   </Folder>
 </Solution>
