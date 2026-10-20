@@ -1,0 +1,2002 @@
+{
+  "source": [
+    "https://docs.siliconflow.cn/docs/api/chat-completions-post",
+    "https://docs.siliconflow.cn/docs/userguide/guides/fim",
+    "https://docs.siliconflow.cn/docs/userguide/guides/prefix",
+    "https://docs.siliconflow.cn/docs/userguide/capabilities/multimodal-vision"
+  ],
+  "profiles": [
+    {
+      "root": "https://api.siliconflow.cn/v1/",
+      "key": "native-sf-fixture"
+    },
+    {
+      "root": "https://proxy.invalid/siliconflow/v1/",
+      "key": "proxy-sf-fixture"
+    }
+  ],
+  "path": "chat/completions",
+  "modes": {
+    "reasoning": {
+      "model": "deepseek-ai/DeepSeek-V4-Flash",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "system",
+            "content": "Compare the supplied values."
+          },
+          {
+            "role": "user",
+            "content": "比较 20 和 22。"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "enable_thinking": true,
+        "thinking_budget": 1024,
+        "reasoning_effort": "high"
+      },
+      "wire": {
+        "model": "deepseek-ai/DeepSeek-V4-Flash",
+        "stream": false,
+        "messages": [
+          {
+            "role": "system",
+            "content": "Compare the supplied values."
+          },
+          {
+            "role": "user",
+            "content": "比较 20 和 22。"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "enable_thinking": true,
+        "thinking_budget": 1024,
+        "reasoning_effort": "high"
+      },
+      "wire_stream": {
+        "model": "deepseek-ai/DeepSeek-V4-Flash",
+        "stream": true,
+        "messages": [
+          {
+            "role": "system",
+            "content": "Compare the supplied values."
+          },
+          {
+            "role": "user",
+            "content": "比较 20 和 22。"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "enable_thinking": true,
+        "thinking_budget": 1024,
+        "reasoning_effort": "high"
+      },
+      "result": {
+        "id": "sf-reasoning-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-sf-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "20 小于 22。",
+              "reasoning_content": "Compare the two supplied values."
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "completion_tokens_details": {
+            "reasoning_tokens": 9
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 41,
+          "native_exact": 9007199254740993
+        },
+        "system_fingerprint": "",
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "sf-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "reasoning_content": "Compare the two supplied values."
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "20 小于 22。"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop"
+            }
+          ]
+        },
+        {
+          "id": "sf-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "completion_tokens_details": {
+              "reasoning_tokens": 9
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 41,
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "id": "ordinary",
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "ordinary-business-id",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": native SiliconFlow stream\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning_content\":\"Compare the two supplied values.\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"20 小于 22。\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"completion_tokens_details\":{\"reasoning_tokens\":9},\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":41,\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"id\":\"ordinary\",\"error\":{\"business\":true}}}}\n\nid: sf-transport\nretry: 1500\ndata: {\"type\":\"vendor.trace\",\"id\":\"ordinary-business-id\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "tools": {
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Compare the city results."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call-A",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"北京\"}"
+                }
+              },
+              {
+                "id": "call-B",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"上海\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-B",
+            "content": "{\"value\":22}"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-A",
+            "content": "{\"value\":20}"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "description": "Lookup a city",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "city"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "auto",
+        "enable_thinking": false,
+        "min_p": 0
+      },
+      "wire": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Compare the city results."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call-A",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"北京\"}"
+                }
+              },
+              {
+                "id": "call-B",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"上海\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-B",
+            "content": "{\"value\":22}"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-A",
+            "content": "{\"value\":20}"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "description": "Lookup a city",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "city"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "auto",
+        "enable_thinking": false,
+        "min_p": 0
+      },
+      "wire_stream": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": true,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Compare the city results."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call-A",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"北京\"}"
+                }
+              },
+              {
+                "id": "call-B",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"上海\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-B",
+            "content": "{\"value\":22}"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-A",
+            "content": "{\"value\":20}"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "description": "Lookup a city",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "city"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "auto",
+        "enable_thinking": false,
+        "min_p": 0
+      },
+      "result": {
+        "id": "sf-tools-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-sf-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "tool_calls": [
+                {
+                  "id": "call-C",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup",
+                    "arguments": "{\"city\":\"杭州\"}"
+                  }
+                },
+                {
+                  "id": "call-D",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup",
+                    "arguments": "{\"city\":\"苏州\"}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": "tool_calls"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 41,
+          "native_exact": 9007199254740993
+        },
+        "system_fingerprint": "",
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "sf-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "tool_calls": [
+                  {
+                    "index": 0,
+                    "id": "call-C",
+                    "type": "function",
+                    "function": {
+                      "name": "lookup",
+                      "arguments": "{\"city\":"
+                    }
+                  },
+                  {
+                    "index": 1,
+                    "id": "call-D",
+                    "type": "function",
+                    "function": {
+                      "name": "lookup",
+                      "arguments": "{\"city\":"
+                    }
+                  }
+                ]
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "tool_calls": [
+                  {
+                    "index": 1,
+                    "function": {
+                      "arguments": "\"苏州\"}"
+                    }
+                  },
+                  {
+                    "index": 0,
+                    "function": {
+                      "arguments": "\"杭州\"}"
+                    }
+                  }
+                ]
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "tool_calls"
+            }
+          ]
+        },
+        {
+          "id": "sf-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 41,
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "id": "ordinary",
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "ordinary-business-id",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": native SiliconFlow stream\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call-C\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"city\\\":\"}},{\"index\":1,\"id\":\"call-D\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"city\\\":\"}}]},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"\\\"苏州\\\"}\"}},{\"index\":0,\"function\":{\"arguments\":\"\\\"杭州\\\"}\"}}]},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":41,\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"id\":\"ordinary\",\"error\":{\"business\":true}}}}\n\nid: sf-transport\nretry: 1500\ndata: {\"type\":\"vendor.trace\",\"id\":\"ordinary-business-id\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "schema": {
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "system",
+            "content": "Return JSON with an answer string."
+          },
+          {
+            "role": "user",
+            "content": "给出确认结果。"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "answer",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answer": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "wire": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": false,
+        "messages": [
+          {
+            "role": "system",
+            "content": "Return JSON with an answer string."
+          },
+          {
+            "role": "user",
+            "content": "给出确认结果。"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "answer",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answer": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "wire_stream": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": true,
+        "messages": [
+          {
+            "role": "system",
+            "content": "Return JSON with an answer string."
+          },
+          {
+            "role": "user",
+            "content": "给出确认结果。"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "answer",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answer": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "result": {
+        "id": "sf-schema-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-sf-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\"answer\":\"确认\"}"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 41,
+          "native_exact": 9007199254740993
+        },
+        "system_fingerprint": "",
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "sf-schema-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-schema-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "{\"answer\":\"确认\"}"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-schema-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop"
+            }
+          ]
+        },
+        {
+          "id": "sf-schema-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 41,
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "id": "ordinary",
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "ordinary-business-id",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": native SiliconFlow stream\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-schema-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-schema-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"answer\\\":\\\"确认\\\"}\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-schema-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-schema-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":41,\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"id\":\"ordinary\",\"error\":{\"business\":true}}}}\n\nid: sf-transport\nretry: 1500\ndata: {\"type\":\"vendor.trace\",\"id\":\"ordinary-business-id\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "json": {
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "system",
+            "content": "Return JSON with an answer string."
+          },
+          {
+            "role": "user",
+            "content": "给出确认结果。"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "wire": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": false,
+        "messages": [
+          {
+            "role": "system",
+            "content": "Return JSON with an answer string."
+          },
+          {
+            "role": "user",
+            "content": "给出确认结果。"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "wire_stream": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": true,
+        "messages": [
+          {
+            "role": "system",
+            "content": "Return JSON with an answer string."
+          },
+          {
+            "role": "user",
+            "content": "给出确认结果。"
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "result": {
+        "id": "sf-json-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-sf-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\"answer\":\"确认\"}"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 41,
+          "native_exact": 9007199254740993
+        },
+        "system_fingerprint": "",
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "sf-json-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-json-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "{\"answer\":\"确认\"}"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-json-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop"
+            }
+          ]
+        },
+        {
+          "id": "sf-json-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 41,
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "id": "ordinary",
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "ordinary-business-id",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": native SiliconFlow stream\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-json-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-json-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"answer\\\":\\\"确认\\\"}\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-json-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-json-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":41,\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"id\":\"ordinary\",\"error\":{\"business\":true}}}}\n\nid: sf-transport\nretry: 1500\ndata: {\"type\":\"vendor.trace\",\"id\":\"ordinary-business-id\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "media": {
+      "model": "Qwen/Qwen3-Omni-30B-A3B-Instruct",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Describe the supplied references."
+              },
+              {
+                "type": "image_url",
+                "image_url": {
+                  "url": "https://example.invalid/input.png",
+                  "detail": "high"
+                }
+              },
+              {
+                "type": "video_url",
+                "video_url": {
+                  "url": "https://example.invalid/input.mp4",
+                  "detail": "high",
+                  "max_frames": 16,
+                  "fps": 1
+                }
+              },
+              {
+                "type": "audio_url",
+                "audio_url": {
+                  "url": "https://example.invalid/input.mp3"
+                }
+              }
+            ]
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "wire": {
+        "model": "Qwen/Qwen3-Omni-30B-A3B-Instruct",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Describe the supplied references."
+              },
+              {
+                "type": "image_url",
+                "image_url": {
+                  "url": "https://example.invalid/input.png",
+                  "detail": "high"
+                }
+              },
+              {
+                "type": "video_url",
+                "video_url": {
+                  "url": "https://example.invalid/input.mp4",
+                  "detail": "high",
+                  "max_frames": 16,
+                  "fps": 1
+                }
+              },
+              {
+                "type": "audio_url",
+                "audio_url": {
+                  "url": "https://example.invalid/input.mp3"
+                }
+              }
+            ]
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "wire_stream": {
+        "model": "Qwen/Qwen3-Omni-30B-A3B-Instruct",
+        "stream": true,
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Describe the supplied references."
+              },
+              {
+                "type": "image_url",
+                "image_url": {
+                  "url": "https://example.invalid/input.png",
+                  "detail": "high"
+                }
+              },
+              {
+                "type": "video_url",
+                "video_url": {
+                  "url": "https://example.invalid/input.mp4",
+                  "detail": "high",
+                  "max_frames": 16,
+                  "fps": 1
+                }
+              },
+              {
+                "type": "audio_url",
+                "audio_url": {
+                  "url": "https://example.invalid/input.mp3"
+                }
+              }
+            ]
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "result": {
+        "id": "sf-media-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-sf-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "原始多模态参考已保留。"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 41,
+          "native_exact": 9007199254740993
+        },
+        "system_fingerprint": "",
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "sf-media-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-media-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "原始多模态参考已保留。"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-media-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop"
+            }
+          ]
+        },
+        {
+          "id": "sf-media-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 41,
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "id": "ordinary",
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "ordinary-business-id",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": native SiliconFlow stream\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-media-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-media-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"原始多模态参考已保留。\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-media-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-media-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":41,\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"id\":\"ordinary\",\"error\":{\"business\":true}}}}\n\nid: sf-transport\nretry: 1500\ndata: {\"type\":\"vendor.trace\",\"id\":\"ordinary-business-id\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "prefix": {
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Complete a Python function."
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "prefix": "def sort_values(values):\n"
+      },
+      "wire": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Complete a Python function."
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "prefix": "def sort_values(values):\n"
+      },
+      "wire_stream": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": true,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Complete a Python function."
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "prefix": "def sort_values(values):\n"
+      },
+      "result": {
+        "id": "sf-prefix-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-sf-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "    return sorted(values)\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 41,
+          "native_exact": 9007199254740993
+        },
+        "system_fingerprint": "",
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "sf-prefix-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-prefix-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "    return sorted(values)\n"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-prefix-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop"
+            }
+          ]
+        },
+        {
+          "id": "sf-prefix-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 41,
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "id": "ordinary",
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "ordinary-business-id",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": native SiliconFlow stream\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-prefix-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-prefix-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"    return sorted(values)\\n\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-prefix-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-prefix-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":41,\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"id\":\"ordinary\",\"error\":{\"business\":true}}}}\n\nid: sf-transport\nretry: 1500\ndata: {\"type\":\"vendor.trace\",\"id\":\"ordinary-business-id\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "fim": {
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Fill only the middle of the Python code."
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "prefix": "def sort_values(values):\n",
+        "suffix": "\nprint(sort_values([2, 1]))\n"
+      },
+      "wire": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Fill only the middle of the Python code."
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "prefix": "def sort_values(values):\n",
+        "suffix": "\nprint(sort_values([2, 1]))\n"
+      },
+      "wire_stream": {
+        "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "stream": true,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Fill only the middle of the Python code."
+          }
+        ],
+        "max_tokens": 96,
+        "temperature": 0,
+        "top_p": 1,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "prefix": "def sort_values(values):\n",
+        "suffix": "\nprint(sort_values([2, 1]))\n"
+      },
+      "result": {
+        "id": "sf-fim-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-sf-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "    return sorted(values)\n"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 41,
+          "native_exact": 9007199254740993
+        },
+        "system_fingerprint": "",
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "id": "ordinary",
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "sf-fim-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-fim-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "    return sorted(values)\n"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "sf-fim-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop"
+            }
+          ]
+        },
+        {
+          "id": "sf-fim-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-sf-model",
+          "system_fingerprint": "",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 41,
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "id": "ordinary",
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "ordinary-business-id",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": native SiliconFlow stream\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-fim-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-fim-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"    return sorted(values)\\n\"},\"finish_reason\":null}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-fim-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\nid: sf-transport\nretry: 1500\ndata: {\"id\":\"sf-fim-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-sf-model\",\"system_fingerprint\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":41,\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"id\":\"ordinary\",\"error\":{\"business\":true}}}}\n\nid: sf-transport\nretry: 1500\ndata: {\"type\":\"vendor.trace\",\"id\":\"ordinary-business-id\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    }
+  },
+  "error": {
+    "code": 20012,
+    "message": "Original native request rejected",
+    "data": null
+  },
+  "overloaded": {
+    "code": 50505,
+    "message": "Native model service overloaded",
+    "data": null
+  }
+}
