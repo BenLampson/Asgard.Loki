@@ -1,5 +1,15 @@
 # Asgard.Loki Architecture Specification
 
+## Bounded borrowed uploads
+
+Infrastructure additionally exposes `BorrowedStreamContent(Stream, long maximumBytes)`. Its existing constructor remains compatible. A positive bound counts raw bytes from the current position without inspecting length, buffering, rewinding or closing the caller's input. Exceeding it cannot write a block beyond the bound or trigger replay; partial output and one consumed source block can remain. Protocol framing, encoding, field names and native success remain supplier-owned.
+
+```mermaid
+classDiagram
+BorrowedStreamContent --> Stream : borrows single-use source and destination
+BorrowedStreamContent --> UploadByteLimit : explicit transport policy
+```
+
 ## MiniMax native synchronous speech
 
 `Audio.MiniMax` references only Audio, Infrastructure and the standard HTTP factory package. `MiniMaxSpeechAdapter` implements the existing `INativeSpeechAdapter`; no new common contract or capability dependency is introduced. Fixed server/model/credentials belong to the supplier target. Original request parameters are snapshotted before factory execution; root model is the configured upstream model, while the public model remains a route name. No model catalog, voice remapping or stream-flag rewrite occurs.

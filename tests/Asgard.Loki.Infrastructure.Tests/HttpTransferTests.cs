@@ -62,4 +62,36 @@ public sealed class HttpTransferTests
         else Assert.IsType<IOException>((await Assert.ThrowsAsync<HttpRequestException>(() => content.CopyToAsync(destination, TestContext.Current.CancellationToken))).InnerException);
         Assert.False(source.Disposed); await Assert.ThrowsAsync<InvalidOperationException>(() => content.CopyToAsync(destination, TestContext.Current.CancellationToken));
     }
+
+    /// <summary>字节上限只约束当前位置之后的内容，不预读、不检查长度且不关闭借用输入。</summary>
+    [Theory] [InlineData(3)] [InlineData(4)] [InlineData(long.MaxValue)]
+    public async Task BorrowedUpload_BoundedRemainingBytes(long maximum)
+    {
+        using var source = new UploadProbeStream([9, 1, 2, 3]); var prefix = new byte[1]; await source.ReadExactlyAsync(prefix, TestContext.Current.CancellationToken);
+        using var target = new MemoryStream();
+        using (var content = new BorrowedStreamContent(source, maximum))
+        {
+            Assert.Equal(1, source.Consumed); Assert.Null(content.Headers.ContentLength);
+            await content.CopyToAsync(target, TestContext.Current.CancellationToken);
+        }
+        Assert.Equal(new byte[] { 1, 2, 3 }, target.ToArray()); Assert.False(source.Disposed); Assert.True(target.CanWrite);
+    }
+    /// <summary>超限失败保留已写入的有限前缀，不能重试、回卷或释放上传源。</summary>
+    [Theory] [InlineData(1)] [InlineData(2)] [InlineData(3)] [InlineData(5)]
+    public async Task BorrowedUpload_OverflowCannotReplay(int maximum)
+    {
+        using var source = new UploadProbeStream([1, 2, 3, 4, 5, 6]); using var target = new MemoryStream();
+        using var content = new BorrowedStreamContent(source, maximum);
+        var error = await Record.ExceptionAsync(() => content.CopyToAsync(target, TestContext.Current.CancellationToken));
+        Assert.True(error is InvalidDataException || error is HttpRequestException { InnerException: InvalidDataException });
+        Assert.InRange(target.Length, 0, maximum); Assert.False(source.Disposed);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => content.CopyToAsync(target, TestContext.Current.CancellationToken));
+    }
+    /// <summary>无效上限在读取输入之前拒绝。</summary>
+    [Theory] [InlineData(0)] [InlineData(-1)]
+    public void BorrowedUpload_RejectsInvalidLimit(long maximum)
+    {
+        using var source = new UploadProbeStream([1]);
+        Assert.Throws<ArgumentOutOfRangeException>(() => new BorrowedStreamContent(source, maximum)); Assert.Equal(0, source.Consumed);
+    }
 }
