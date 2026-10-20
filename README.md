@@ -28,6 +28,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
 | LLM | `Asgard.Loki.LLM.Ollama` | Native Chat/generate JSON/NDJSON, native thinking/schema/tool history and prompt/context; explicit anonymous or Bearer identity | — |
 | LLM | `Asgard.Loki.LLM.Azure` | Native v1/dated Chat, Responses and text Completions JSON; explicit native Responses compaction and independent Realtime; api-key or borrowed external tokens | Native SSE with delayed filter/usage tails; native Realtime JSON WebSocket |
+| LLM | `Asgard.Loki.LLM.DeepSeek` | Native Search / Fetch JSON; explicit fixed service credentials; complete ranked results and page content | — |
 | LLM | `Asgard.Loki.LLM.GoogleVertex` | Vertex Gemini/Claude JSON/SSE with borrowed tokens; separate Express Gemini JSON/SSE with explicit API Key; MaaS Chat JSON/SSE with borrowed tokens | Native events with delayed terminal checks |
 | LLM | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and explicit Converse JSON/EventStream with borrowed SigV4 or explicit Bedrock API Key credentials | Native binary EventStream with independent protocol lifecycles |
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
@@ -89,6 +90,8 @@ LLM additionally exposes an explicit [external authentication identity](src/Asga
 
 The independent [Azure LLM provider](src/Asgard.Loki.LLM.Azure/README.md) now implements complete native Chat/Responses/text Completions JSON and SSE with explicit v1/dated routing and API Key or borrowed external token authentication. Stable principal Sessions survive token rotation; configuration/principal changes fail. Native SSE preserves delayed filter/usage tails and holds terminal events through EOF/disposal; explicit native compaction preserves complete windows under a target feature declaration. Independent native Realtime uses explicit v1/preview deployment handshakes and preserves raw events under per-I/O authentication/byte guards. Responses WebSocket is unsupported; no live Azure authentication or model validation is claimed.
 
+The independent [DeepSeek native tools client](src/Asgard.Loki.LLM.DeepSeek/README.md) exposes explicit Search/Fetch JSON calls with an application-supplied Key and fixed service root. Native query/page content and ranked results stay complete; these model-free auxiliary APIs require no model route or Session. Applications choose each call and own any retrieval/model workflow.
+
 The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md) implements native Gemini/Claude JSON/SSE with explicit full project/location/model resources and borrowed external authentication. It preserves native fields and fixed-target Sessions through token rotation. Express Gemini API Key JSON/SSE is now available through a separate provider in the same package; MaaS Chat JSON/SSE is also delivered; wire fixtures do not establish live acceptance of Developer API-only fields.
 
 ## Packages and dependencies
@@ -130,6 +133,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.LLM.Google` | Native Gemini Developer API provider |
 | `Asgard.Loki.LLM.Ollama` | Native Ollama Chat/generate JSON/NDJSON; explicit anonymous or Bearer authentication |
 | `Asgard.Loki.LLM.Azure` | Native Azure endpoints and provider-owned external token source |
+| `Asgard.Loki.LLM.DeepSeek` | Native model-free Search / Fetch auxiliary calls with fixed service credentials |
 | `Asgard.Loki.LLM.GoogleVertex` | Native Vertex Gemini, Claude, Express and MaaS target identity/authentication |
 | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and Converse JSON/EventStream with borrowed External SigV4 or explicit Bedrock API Key credentials |
 | `Asgard.Loki.LLM.Conversion` | Optional explicit conversion; references only LLM |

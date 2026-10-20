@@ -2538,3 +2538,24 @@ TextCompletionEvent --|> LlmJsonEvent
 ```
 
 `TextCompletionRequest` exposes only the public Model and native extension Parameters, including prompt. Absence/null, original text/token batch boundaries, suffix, echo, logprobs and unknown fields stay native; there is no canonical prompt/message conversion. The method owns stream mode; model/stream overrides and Undefined/malformed Unicode fail before cache work. The full request is frozen before the first asynchronous binding wait; actual-model mapping occurs only after selection. Result/event JSON, original indices and transport metadata are independent immutable snapshots; upstream text IDs are not indexed for Responses continuation. Provider-specific HTTP/SSE/body/terminal validation belongs to that supplier, with no new cross-capability coordinator, package dependency or shared business layer.
+
+## DeepSeek native auxiliary tools
+
+`Asgard.Loki.LLM.DeepSeek` references only LLM, Infrastructure and standard HTTP support. `DeepSeekToolsClient` is a supplier-only native extension for the model-free Search/Fetch APIs. It captures a fixed tools root, explicit Key, named client and byte policies, following the existing supplier-native client pattern. It is independent of generation adapters: these endpoints have no model selector, remote conversation or response continuation, so no fake LLM protocol, model route, Session binding, unified tool-execution abstraction or seventh capability is introduced. Existing LLM complete-target/model/credential/adapter Session contracts stay unchanged.
+
+```mermaid
+classDiagram
+DeepSeekToolsClient --> DeepSeekToolsOptions : captures fixed service and explicit credential
+DeepSeekToolsClient --> DeepSeekToolsPayload : native snapshot before transport awaits
+DeepSeekToolsClient --> IHttpClientFactory : borrowed named client factory
+DeepSeekToolsClient --> HttpBodyReader : bounded raw body and async source closure
+DeepSeekToolsClient --> DeepSeekToolsResponse : native result structure only
+DeepSeekToolsClient --> DeepSeekToolsResult : immutable full JSON and actual HTTP metadata
+DeepSeekToolsClient --> LlmUpstreamException : original error bytes status and type
+DeepSeekToolsPayload --> DeepSeekToolsJson : strict original Unicode and JSON
+DeepSeekToolsClient --> DeepSeekToolsJson : strict native response parsing
+```
+
+Only fixed `search`/`fetch` POST endpoints are built under the configured root. The input page URL stays a JSON field sent to that root; neither it nor returned links/icons create local SDK requests. Native fields/unknown members, nullable metadata presence, empty results/content, ranked order, duplicate URLs, score values and original Markdown remain unchanged. Request validation covers documented types and Unicode scalar limits without adding defaults, trimming or guessing IP/model metadata. Response validation checks core structure and finite/integral numeric types without ranking thresholds or content interpretation.
+
+The client owns per-operation messages/clients/responses/source streams but borrows the factory/handler. It selects exactly the configured Bearer credential, rejects other default authentication headers, captures actual URI/method before I/O and waits for bounded strict body EOF, async source and outer resource closure plus final cancellation before publication. Root native and HTTP failures retain raw bytes/status/type. Explicit new client construction changes fixed configuration; no credential discovery, cache, retry, failover, background reader or tool/model loop exists. The entry still references only Abstractions, and capabilities/supplier peers remain independent. The package adds one production project and one matching offline test project in DeepSeek solution groups.

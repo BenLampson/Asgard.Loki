@@ -218,4 +218,10 @@
   <Folder Name="/tests/Providers/OpenAICompatible/">
     <Project Path="tests/Asgard.Loki.Rerank.OpenAICompatible.Tests/Asgard.Loki.Rerank.OpenAICompatible.Tests.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/DeepSeek/">
+    <Project Path="src/Asgard.Loki.LLM.DeepSeek/Asgard.Loki.LLM.DeepSeek.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/DeepSeek/">
+    <Project Path="tests/Asgard.Loki.LLM.DeepSeek.Tests/Asgard.Loki.LLM.DeepSeek.Tests.csproj" />
+  </Folder>
 </Solution>
