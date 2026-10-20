@@ -1,0 +1,64 @@
+{
+  "requests": [
+    {
+      "model": "vendor/image-fixture",
+      "prompt": "原生图片请求",
+      "image_size": "1024x1024",
+      "batch_size": 2,
+      "seed": 0,
+      "num_inference_steps": 20,
+      "guidance_scale": 0,
+      "cfg": 0,
+      "negative_prompt": "blur",
+      "future": {
+        "integer": 9007199254740993,
+        "flag": false,
+        "none": null
+      }
+    },
+    {
+      "model": "vendor/image-fixture",
+      "prompt": "reference images",
+      "image": "https://input.example.invalid/a%2Fb.png?sig=A%2BB",
+      "image2": "data:image/png;base64,AQID",
+      "image3": "https://input.example.invalid/third.png",
+      "image_size": "1024x768",
+      "batch_size": 1,
+      "seed": 4294967295,
+      "future": null
+    }
+  ],
+  "response": {
+    "images": [
+      {
+        "url": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+        "seed": 0,
+        "future": false
+      },
+      {
+        "url": "https://result.example.invalid/second.png",
+        "future": null
+      }
+    ],
+    "timings": {
+      "inference": 0.125,
+      "future": 9007199254740993
+    },
+    "seed": 0,
+    "future": false
+  },
+  "empty": {
+    "images": [],
+    "timings": {
+      "inference": 0
+    },
+    "seed": 0,
+    "future": null
+  },
+  "error": {
+    "code": 50505,
+    "message": "fixture overloaded",
+    "data": "fixture trace",
+    "future": 9007199254740993
+  }
+}
