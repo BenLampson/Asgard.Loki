@@ -21,7 +21,7 @@ internal sealed class ArkStreamState(bool responses, int maximumChoices)
     internal static bool Failure(JsonElement data, string? name, bool responses)
     {
         var type = Type(data, name, responses);
-        return type is "error" or "response.failed" || (string.IsNullOrEmpty(type) || type == "message" && !data.TryGetProperty("type", out _)) && ArkJson.Error(data);
+        return type == "error" || responses && type == "response.failed" || (string.IsNullOrEmpty(type) || type == "message" && !data.TryGetProperty("type", out _)) && ArkJson.Error(data);
     }
     /// <summary>DONE 后仍读传输以发现迟到错误，但不接受重复 DONE 或后续数据。</summary>
     internal void Done()

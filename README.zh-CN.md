@@ -131,3 +131,5 @@ Cloudflare Workers AI 的账号级兼容 Chat JSON/SSE 和当前支持的非流�
 ### 方舟原生 HTTP 边界
 
 [火山供应商](src/Asgard.Loki.LLM.Volcengine/README.md#native-http-fidelity) 的 Chat/Responses JSON/SSE 使用明确的字节、尾部及 choice 关联上限，工厂/异步边界之前冻结完整请求。Chat 的实际 DONE 后继续校验 EOF 与晚到错误，结束帧等待完整资源关闭及最终绑定/取消检查。工具、推理、结构化输出、加密与未知字段保持原生；HTTP 策略和命名客户端参与现有完整目标 Session 绑定，不增加模型名路由、自动重试或能力依赖。
+
+同一[火山分包](src/Asgard.Loki.LLM.Volcengine/README.md#published-bot-native-calls) 提供 VolcengineBotClient，用于已发布应用的原生 JSON/SSE。Bot 身份与返回的底层模型/接入点数据分开保留，插件、引用、群聊、用量和实际 DONE 不丢弃；不引入模型 Session、应用管理、Agent 运行时、执行循环或 URL 下载器。

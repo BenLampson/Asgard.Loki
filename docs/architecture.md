@@ -2962,3 +2962,23 @@ Chat per-choice finish begins bounded tail retention but cannot replace native g
 All ending-stage frames and JSON results wait until complete owned-resource closure, actual method/full URI/Host/auth/content validation and final cancellation. Async/sync/client disposal failures cannot first release terminal data. HTTP/native/binary errors preserve full original bytes/status/media. Borrowed factory/cache/explicit coordinator ownership stays with the application; generated calls are not retried or retargeted. The ark-http-v2 identity includes all policies and named client so old early-completion bindings cannot silently continue under new semantics. A full target/configuration change requires a new Session.
 
 The supplier executable passes207 offline cases (93 retained plus114 new independent snapshot/fault/Session cases), with no new live model/parameter or full-suite/all-package claim. Historical standard-Ark integration results and the strict tool_choice=none failure remain independently recorded. Production graph remains63/45/125; no dependency direction changes.
+
+### Fixed-service Ark published Bot calls
+
+VolcengineBotClient resides in existing LLM.Volcengine and reuses ArkRequest/ArkHttpTransport/ArkStreamState. It owns no model routing/cache or Responses continuation. The API's input model is a published application selector; actual returned model and model_usage can describe remote underlying model/endpoint choices. VolcengineBotMetadata labels only fixed server/Bot/target/credential/version, with the API Key held separately and privately. Caller-visible original data is never overwritten with a guessed model identity. No core protocol, capability dependency or common business coordinator is added.
+
+```plantuml
+@startuml
+VolcengineBotClient --> VolcengineBotOptions : immutable published-app target/policies
+VolcengineBotClient --> ArkRequest : original native history and reserved model/stream
+VolcengineBotClient --> ArkHttpTransport : existing supplier-native Chat transport
+VolcengineBotClient --> VolcengineBotResult : complete original JSON
+VolcengineBotClient --> VolcengineBotEvent : raw frame/optional JSON and actual DONE
+VolcengineBotResult --> VolcengineBotMetadata : honest application identity
+VolcengineBotEvent --> VolcengineBotMetadata
+@enduml
+```
+
+Each method makes one native chat/completions POST against an explicit complete Bots root. Original messages/group-chat/opaque user data, endpoint references, multiple model/plugin counters, references and tool associations remain native without execution, aggregation, retrieval or default injection. Model/stream root fields belong only to fixed Bot/method. Native error or actual DONE marks global termination after bounded EOF/length/UTF-8/owned closure/final target/cancellation checks; a choice finish or Responses-named business event cannot substitute it. The original DONE has no fabricated JSON. Factory ownership stays with the application. No Bot creation/admin, managed-agent migration, Session host, polling or file management occurs.
+
+The supplier executable passes244 offline cases (207 model-HTTP plus37 Bot cases) with independent whole windows and failure-injected local transport. No live app/model/plugin acceptance or new full-suite/all-package validation is claimed. Graph63/45/125 and own-capability/Infrastructure dependency directions remain unchanged.
