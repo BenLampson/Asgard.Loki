@@ -2471,3 +2471,26 @@ Native-->>Caller: Complete native Moderation.Data and metadata
 ```
 
 The client retains original input and extension JSON without defining category thresholds, fetching media or turning model output into an application content policy. Only body model is mapped to the actual selected model. Native input/output shape validation remains supplier-owned; core guarantees object snapshot/identity and complete-target binding. Reserved model/stream controls and Undefined fail before selection; native parameters are frozen before cache/selection awaits. Existing Session protocol isolation, server/model/credential/adapter fingerprint drift rejection, no retries/failover and borrowed resource rules remain in effect. Twenty additional offline core cases establish these behaviors and stable enum values, bringing the core to 247 cases at this contract.
+
+### Native OpenAI Moderations HTTP
+
+`OpenAiLlmProvider` implements IModerationsAdapter explicitly inside the existing LLM.OpenAI package. Supplier-owned OpenAiModerationPayload/Response helpers validate native text batches and combined text/image_url input groups without invoking media services or changing other protocols' transport. Only the fixed target's actual model maps to body model; no stream switch or default model is added. Original positional results, native id/model/flagged/categories/scores/applied-input types and unknown/null/false/exact-number fields remain independent raw JSON. Present known labels/types are validated while absent/future data stays native. No category threshold or application content policy is implemented.
+
+```mermaid
+classDiagram
+class IModerationsAdapter
+class OpenAiLlmProvider
+class OpenAiModerationPayload
+class OpenAiModerationResponse
+class HttpBodyReader
+class Moderation
+OpenAiLlmProvider ..|> IModerationsAdapter
+OpenAiLlmProvider --> OpenAiModerationPayload : freeze native bytes and input boundaries
+OpenAiLlmProvider --> HttpBodyReader : Infrastructure bounded raw read
+OpenAiLlmProvider --> OpenAiModerationResponse : complete native association and fields
+OpenAiLlmProvider --> Moderation : original data and complete-target metadata
+```
+
+The nullable MaximumModerationRequestBytes policy defaults effectively to 32 MiB and is JsonIgnore-WhenNull, preserving previous default HTTP/WebSocket binding bytes. Explicit values participate in the existing provider fingerprint; zero/negative fail at construction. MaximumBodyBytes bounds response/error bytes. Native API-Key credentials and actual model/root are fixed before factory creation, unrelated auth defaults are removed and caller-owned named-client organization/project policies remain explicit application configuration. No anonymous/external fallback occurs.
+
+Raw HTTP/HTTP200 errors retain bytes/type/status through the additive core error contract. Request snapshots, byte/declared-length/actual-target checks, strict unknown-field JSON/Unicode/duplicates, normal EOF, owned resource closure and final cancellation gate publication. Native SSE fails before body reading. Classification ids do not enter Responses continuation ownership. Ninety-one supplier cases bring OpenAI to 408 offline cases; core remains 247, with 2535 conversion regressions at this contract. No provider-peer or cross-capability reference, new package, content enforcement, media download, workflow/background host or billing feature is introduced. Actual model/service/label accuracy remains unverified.

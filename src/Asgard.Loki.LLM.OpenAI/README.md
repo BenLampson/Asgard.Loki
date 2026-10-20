@@ -1,12 +1,13 @@
 # Asgard.Loki.LLM.OpenAI
 
-Authentication remains API-Key-only. `LlmCredential.External` is an explicit core identity for providers that implement their own token/signing source; this OpenAI adapter does not opt into it. Direct Chat/Responses JSON/SSE, compaction and WebSocket operations reject both anonymous and external identities before dispatch, rather than using an empty Key.
+Authentication remains API-Key-only. `LlmCredential.External` is an explicit core identity for providers that implement their own token/signing source; this OpenAI adapter does not opt into it. Direct Chat/Responses JSON/SSE, native Moderations, compaction and WebSocket operations reject both anonymous and external identities before dispatch, rather than using an empty Key.
 
 OpenAI LLM provider for Asgard.Loki.
 
 | API | Complete result | Streaming |
 | --- | --- | --- |
 | Chat Completions | Yes | SSE |
+| Native Moderations | Complete native JSON; text/batch/multimodal input groups | No |
 | Responses creation / continuation | Yes | SSE |
 | Native Responses compaction | Yes, explicit target feature | No |
 | Native Responses WebSocket | Explicit duplex connection | Native JSON events; named lanes |
@@ -142,3 +143,51 @@ Only explicit Responses lifecycle events register native response IDs; typed/SSE
 ## Transport dependency
 
 This package references `Asgard.Loki.LLM`, `Asgard.Loki.Infrastructure` and standard HTTP support. Shared SSE framing is provided by Infrastructure; native requests, authentication, results and lifecycle remain supplier-owned.
+
+## Native Moderations
+
+Declare `Protocols = LlmProtocol.Moderations` on an explicit complete target and call the existing LLM module's native client. No moderation model is chosen by the SDK. Register the configured model, credential, root and target separately from conversational routes.
+
+```csharp
+using Asgard.Loki;
+using Asgard.Loki.LLM;
+using Asgard.Loki.LLM.OpenAI;
+using System.Text.Json;
+
+// httpClientFactory, sessionStore, apiRoot, apiKey and configuredModerationModel are caller-owned.
+var provider = new OpenAiLlmProvider(httpClientFactory, new OpenAiHttpOptions
+{
+    MaximumBodyBytes = 32 * 1024 * 1024,
+    MaximumModerationRequestBytes = 32 * 1024 * 1024
+});
+var target = new LlmTarget
+{
+    Id = "moderation-primary", ProviderId = provider.Id, BaseAddress = apiRoot,
+    UpstreamModel = configuredModerationModel, CredentialId = "moderation-key",
+    Protocols = LlmProtocol.Moderations
+};
+await using var loki = new LokiClientBuilder().AddLLM(new LlmOptions
+{
+    SessionStore = sessionStore, Providers = [provider],
+    Credentials = [new LlmCredential("moderation-key", apiKey)],
+    Routes = [new LlmRoute { Model = "classification", Targets = [target] }]
+}).Build();
+var result = await loki.LLM.Moderations.CreateAsync(new ModerationRequest
+{
+    Model = "classification",
+    Parameters = new() { ["input"] = JsonSerializer.SerializeToElement(new[] { "first text", "second text" }) }
+}, new LlmCallOptions { SessionId = "caller-classification-target-1" }, cancellationToken);
+// Inspect original result.Data; the SDK does not make an application enforcement decision.
+```
+
+The provider appends only `moderations` under the configured HTTP(S) API root, preserving version/proxy prefixes. The public model maps to the target's actual model, while the native returned model/id remain unchanged. The required caller SessionId binds the full server/model/credential/adapter through the existing cache/coordinator; it does not store input text or implement conversational history. Classified result IDs are not registered as Responses continuation IDs. No conversion from Chat/Responses is performed.
+
+`input` retains a scalar string, a nonempty string batch, or one nonempty array of native text/image_url parts. A text batch expects one positional result per string; a multimodal content array is one combined input and expects one result. URL and data-URL strings remain native; the SDK does not fetch media. Empty text remains empty, original whitespace/order/unknown fields are preserved and mixed/nested forms fail explicitly. No stream switch, input filter, model default, label or score is injected.
+
+Results retain native flagged/categories/category_scores and optional category_applied_input_types, null/false fields, unknown categories/metadata and exact JSON numbers. Native id/model and complete result count are required. Known present labels are validated without filling missing ones; illicit and illicit/violent flags can be null. Known scores must be finite, without thresholding, normalization or score recalculation. Optional input-type metadata stays absent/null/native, and future label fields or input-type strings remain raw. Protocol correctness does not certify classification accuracy or opaque media interpretation.
+
+MaximumModerationRequestBytes is optional and defaults effectively to 32 MiB; when omitted it is absent from serialized options, preserving previous default provider binding bytes. An explicit positive policy participates in the complete binding and invalidates incompatible old Sessions normally. MaximumBodyBytes bounds the entire native response/error (32 MiB by default). Both request bytes and target/model/credential are fixed before client creation. Authentication is API-Key-only; direct anonymous/external calls fail before dispatch. Unrelated default authentication headers are removed; caller-configured organization/project/other named-client headers remain available. Update the target Version if changing a named client's identity-affecting policy under the same name.
+
+Native HTTP/HTTP200 errors retain actual StatusCode, complete Body bytes and raw ContentType through LlmUpstreamException, including binary errors or JSON errors labeled as plain text. ResponseBody is strict UTF-8 for byte errors; use Body for invalid binary text. Valid success requires complete strict UTF-8 JSON (application/json or a +json media type when supplied), unique members including unknown nested fields, compatible declared length and unchanged actual target/method. SSE is refused before reading a successful body. EOF, stream/response/client disposal and final cancellation precede result publication. No retry or target fallback is added.
+
+The supplier has **408 offline cases**, including **91 native moderation cases**; the core has 20 additional moderation binding/protocol cases. Four independently authored full wire/result fixtures cover scalar, text batch, multimodal group and empty text. Boundary cases cover input/result association, label/null/unknown fidelity, binary/native errors, Unicode/duplicates/media/byte/length constraints, actual target/auth, resource closure/final cancellation and unchanged default binding identity. No real model/server/Key/media interpretation or classification-quality verification has been performed. Native contract references: [Moderations create](https://developers.openai.com/api/reference/resources/moderations/methods/create), [official request types](https://github.com/openai/openai-python/blob/main/src/openai/types/moderation_create_params.py) and [official result types](https://github.com/openai/openai-python/blob/main/src/openai/types/moderation.py).

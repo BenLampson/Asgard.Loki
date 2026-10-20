@@ -23,7 +23,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Capability | Provider package | Implemented APIs | Streaming |
 | --- | --- | --- | --- |
 | LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat Completions; Responses creation and continuation | SSE |
-| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation/continuation; explicit native compaction, Responses WebSocket and independent Realtime | SSE; JSON compaction; native JSON WebSocket events |
+| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation/continuation; native Moderations; explicit compaction, Responses WebSocket and independent Realtime | SSE; JSON compaction; native JSON WebSocket events |
 | LLM | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages | SSE |
 | LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
 | LLM | `Asgard.Loki.LLM.Ollama` | Native Chat/generate JSON/NDJSON, native thinking/schema/tool history and prompt/context; explicit anonymous or Bearer identity | — |
