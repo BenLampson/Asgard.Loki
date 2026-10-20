@@ -1,12 +1,12 @@
 # Asgard.Loki
 
-New API 对齐范围已[收紧为有源码依据的 SDK 缺口](docs/model-call-roadmap.md#scope-correction-after-the-source-recheck-2026-10-20)，供应商额外能力与穷举协议组合不再自动进入补齐队列。完整 Gemini ↔ Chat 响应现保留全部候选的原始索引及顺序，各候选的工具、引用和终态独立，usage 只转换一次。Gemini candidateCount → Chat n 已支持完整 SDK 调用，可与推理和 Schema 设置并用；已可显式开启 Chat ↔ Gemini 多候选流式转换，隔离候选工具和终态，并在正常 EOF/释放后输出一次共享用量；反向数量请求仍未实现。
+纯 .NET 模型调用 SDK。六类能力内覆盖固定 New API 版本实际实现的供应商原生调用，具体操作以[唯一覆盖清单](docs/model-call-roadmap.md)为准，查齐任务插件；可靠的才转换，不穷举协议组合。
 
 [English](README.md) | **简体中文**
 
 SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六类；Embedding/Rerank 继续使用独立能力包及供应商分包，不并入 LLM。不做模型微调、独立文件管理、后台或计费。
 
-后续只按[唯一有限验收清单](docs/model-call-roadmap.md)收口：已有可靠转换保持支持，不再穷举协议或供应商扩展。当前确定缺口是原生 OpenAI Realtime 和视频提交/状态/结果调用；Video 仍是占位，需先确定供应商。历史审计已归档，不作为自动扩项指令。
+后续只按[唯一有限验收清单](docs/model-call-roadmap.md)收口：已有可靠转换保持支持，不再穷举协议或供应商扩展。原生 OpenAI Realtime 已补齐独立 JSON 双工连接；视频供应商已选定火山方舟，接下来补原生提交、状态和结果。火山视频是首个接入项，不代表供应商覆盖完成。用户另指定火山资产库为独立文件管理排除的有限例外，正在核实具体官方接口；不扩展为通用存储或后台。历史审计已归档，不自动扩项。
 
 目前未实现模型微调或供应商通用文件管理（独立上传、列举、查询、下载、删除）。已有音频和图片上传，是为转写、翻译或图片编辑请求提供输入素材。
 
@@ -17,7 +17,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 能力 | 供应商包 | 支持内容 |
 | --- | --- | --- |
 | LLM | `Asgard.Loki.LLM.Volcengine` | 方舟 Chat Completions、Responses，JSON/SSE，响应链与完整 Session 目标绑定 |
-| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions、Responses，JSON/SSE；显式原生 compaction（JSON）与 Responses WebSocket 多 lane 原生事件 |
+| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions、Responses，JSON/SSE；显式原生 compaction（JSON）、Responses WebSocket 与独立 Realtime 原生事件 |
 | LLM | `Asgard.Loki.LLM.Anthropic` | Claude Messages 原生 JSON/SSE，保留工具、推理签名及未知字段 |
 | LLM | `Asgard.Loki.LLM.Google` | Gemini generateContent 原生 JSON/SSE，保留原生多模态与工具结构 |
 | LLM | `Asgard.Loki.LLM.Ollama` | 原生 Chat/generate JSON/NDJSON，保留工具关联、prompt/context、thinking、format；显式匿名或 Bearer 身份 |
@@ -57,54 +57,13 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 初始化、调用、支持矩阵及验证命令请参阅 [英文 README](README.md)。CI 在 Windows/Linux 上执行构建、测试及二十八个 NuGet 包的依赖与元数据检查，打包产物作为运行附件保存。独立的 `Publish NuGet` 工作流使用 OIDC 可信发布，默认仅验证登录；正式发布需手动选择 `publish` 并填写准确版本，步骤见 [发布说明](docs/releasing.md)。
 
-已于 2026-10-19 再次对照 New API `058c8231`，按本库 `5403f1d` 更新[模型调用补齐计划](docs/model-call-roadmap.md#remaining-sdk-work-at-the-current-checkpoint)。原生 Claude/Gemini、已声明范围的四协议转换、OpenAI compaction/Responses WebSocket、OpenAI/Google Embedding 和独立 Rerank 核心已实现。[Cohere Rerank](src/Asgard.Loki.Rerank.Cohere/README.md) 已补显式 v1/v2，[Jina Rerank](src/Asgard.Loki.Rerank.Jina/README.md) 已补原生文本/多模态/listwise 和独立离线样本，下一步收口转换字段/模式清单，再补剩余原生供应商；Responses 引用源流已补原始索引、Unicode 范围、done/最终快照与有界状态校验，允许显示损耗也不能绕过；Gemini 源流也已补跨帧累计来源索引、metadata 尾帧和硬资源边界校验；Responses ↔ Gemini 已补显式单一累计文本 part、OpenAI 端点索引单位声明下的双向引用流映射，源正常结束后才公开原生注解或 grounding，并验证 done/最终快照一致性；另有显式 `ConcatenatedTextParts` 可将 Responses 的顺序纯文本 part/消息拼接到一个累计目标，并精确平移引用；原单文本模式不变，工具混排、逆序 part 和交错正文仍明确拒绝；其他引用流布局和方向仍待补；已声明 UTF-8 的纯文本文件也已支持 Responses/Claude/Gemini 六向转换并保留文档容器，Chat 非 PDF 文件明确拒绝。转换继续收口搜索执行/结果、文档媒体、工具结果/错误及复杂输出。Ollama 原生 Embedding、Jina dense/per-token 和 DashScope Rerank 已补齐各自声明范围；[SiliconFlow Rerank](src/Asgard.Loki.Rerank.SiliconFlow/README.md) 也已补标量/文本/图片原生调用及独立索引/结果校验；Jina PDF/packed/sparse 等形态仍待补。OpenAI Speech 已补原生二进制及显式 SSE，文件识别/翻译、转录 SSE 和图像原生 JSON/multipart/SSE 编辑也已补离线协议验证；原有图像生成 SSE 也已补终态/错误/EOF/释放边界回归，原始完成项等待完整传输结束后才公开。
+当前本地检查点共 6943 项离线测试通过，28 个包完成本地依赖与元数据检查。原生协议、显式可靠转换和真实模型验收分别记录；离线样本不代表供应商真实接受参数。历史扩项队列仅保留于[归档](docs/archive/model-call-roadmap-history.md)。GitHub CI 只在面向 main 的 PR 或显式发布流程执行；本轮不推送、不建 PR、不触发远端 CI。
 
-后续继续补搜索/引用转换、其他原生音频供应商、云认证及其他原生供应商、Realtime 和 Video；旧式 completion、moderation、原生模型发现和可独立调用的搜索/fetch 保留为低优先级清单。每个小检查点附独立协议样本、本地公共 SDK 测试和分包/架构文档；Windows/Linux GitHub CI 留到 PR 和显式发布门禁执行，经授权的远端推送只面向 dev。原生传递、显式转换、真实模型验证分别验收；后台、计费、代理服务、工具执行和任务托管不纳入 SDK。
 
-本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题请参阅 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
+原生 Realtime 通过 `loki.LLM.Realtime.OpenAsync` 使用，目标声明 `LlmProtocol.Realtime`。调用者负责原生事件、音频数据和工具结果的收发；SDK 保留所有状态与未知字段，正常关闭不表示生成成功，不自动执行工具、播放音频或重连。初始化、资源限制和离线验证见[OpenAI 包](src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket)。
 
-当前火山 LLM 真实联调只需要四个环境变量：启用开关、API Key、Chat 模型、Responses 模型，详见 [测试配置规范](docs/testing.md) 和 [.env.example](.env.example)。运行 `pwsh -File eng/Test-Live.ps1`；Windows 下支持读取本机当前用户变量，不自动加载 `.env`。
 
-[Anthropic 原生传输](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-authentication-and-http-policy) 现支持显式 Key/Bearer 选择和有界终态校验，标准、Runtime、Mantle Messages 分别有完整离线样本。旧 Anthropic Session 需要新 ID 或到期。显式转换另验证推理 high/off、完整 Schema 约束、损耗许可和迟到错误；这是协议测试；[AWS 包的独立 Mantle 适配器](src/Asgard.Loki.LLM.AWS/README.md#explicit-mantle-sigv4-messages) 现已补原生 SigV4 JSON/SSE，Nova InvokeModel 完整 JSON 和原生二进制流均通过独立 `.LLM.BedrockNova` 入口调用；Nova 显式转换和其他计划缺口仍待补齐。
+火山 LLM 真实联调仅使用[测试规范](docs/testing.md)及 [.env.example](.env.example) 的四个变量。运行 `pwsh -File eng/Test-Live.ps1`，扩展参数用 `-Suite Parameters` 或 `-Suite All`。两种协议的 `tool_choice=none` 严格失败断言仍保留，详见[实测记录](docs/llm-parameter-verification.md)。本轮 Realtime、Video 及其他供应商没有新增真实模型验收。
 
-离线测试共 6483 项通过：Bedrock Claude 与 Converse JSON/EventStream 与 Mantle Messages 与 Nova JSON/EventStream 625 项、Vertex 原生 JSON/SSE 451 项、Azure 原生 JSON/SSE 155 项、Ollama Chat/generate 167 项、SiliconFlow Rerank 143 项、OpenAI Image 350 项、Image 核心 96 项、OpenAI Audio 378 项、Jina Embedding 134 项、Ali Rerank 124 项、Ollama Embedding 125 项、Jina Rerank 133 项、Cohere Rerank 120 项、Rerank 核心 34 项、Embedding 核心 34 项、Embedding.OpenAI 106 项、Embedding.Google 114 项、显式转换 1917 项、OpenAI 284 项、火山 93 项、Claude 127 项、Gemini 36 项、LLM 核心 191 项、音频核心 122 项及其他 10 项；完整 Chat/Responses URL 引用与 Gemini Web grounding 已支持显式单位声明下的双向转换；转换回归覆盖嵌套字段损耗、待回填工具关联、ID 冲突、完整及截断流生命周期、done 与最终快照一致性，以及缓存和用量口径。原有 OpenAI/火山协议用例继续保留，并增加原生压缩与功能绑定验证。标准方舟 API 的 `doubao-seed-evolving` 已实测通过普通/流式调用、工具调用与结果回填、严格 JSON Schema、推理开关、输出截断、响应链续接及加密推理项原样回传。**两种协议的 `tool_choice=none` 严格测试仍失败**：最终请求参数正确，但上游仍返回工具调用。失败断言保留，详见 [参数与协议验证记录](docs/llm-parameter-verification.md)。OpenAI、Claude、Gemini、Embedding/Rerank 供应商及显式转换当前只有离线验证。
 
-运行 `pwsh -File eng/Test-Live.ps1 -Suite Parameters` 或 `-Suite All` 执行扩展联调；增加 `-Scenario Structured`、`Tools`、`ToolChoice`、`Reasoning`、`Limits` 或 `Replay` 可单独选组。默认冒烟五次请求，参数套件计划 26 次，全部计划 31 次，单进程硬上限 32 次。上述工具禁用问题存在期间，参数及全部套件会返回失败。其他模型、供应商、能力和 Redis 跨进程联调仍需单独验证；普通单元测试和自动 CI 保持离线。
-
-日常开发检查点只做本地构建、测试和打包检查。GitHub CI 仅由面向 main 的 PR 或显式 NuGet 发布流程复用触发，不因普通 push 运行，也不提供独立手动 CI 入口；PR 合并和发布仍保留 Windows/Linux 双平台门禁。
-
-[Ollama 原生 Chat/generate](src/Asgard.Loki.LLM.Ollama/README.md) 已有 167 个离线用例（Chat 97、generate 62、公共快照编码 8）：独立完整请求/响应/事件样本、工具关联、大整数、请求快照、完整 Session、认证隔离和终态/资源故障。入口为 `loki.LLM.OllamaChat`，目标显式声明 `LlmProtocol.OllamaChat`。仅固定实际模型和方法流标志，其他原生字段保留；流式 done/error 等待 EOF 与资源释放成功。原生 generate 通过独立的 `.LLM.OllamaGenerate` 和 `LlmProtocol.OllamaGenerate` 调用，context 仅由调用者显式回传，不自动缓存或转换成 Chat。Ollama 跨协议转换、云身份刷新及真实模型验证仍未实现；四协议转换范围保持原有声明。当前全仓 6483 个离线测试，28 个生产分包。本地检查点不运行 GitHub Actions。
-
-Claude/Gemini 工具错误回填已支持两种显式格式：`LlmToolErrorFormat.GeminiResponseObject` 保留完整原生 response JSON，`GeminiErrorText` 保留原始错误文本。默认仍拒绝跨协议错误；Chat/Responses 无等价失败标志时继续拒绝，普通结果的根级 error 键也不会被隐式升级成 Gemini 错误。原始调用 ID、逆序同名回填、内容上限、旧 Session 和晚到流错误都有回归；该检查点新增 84 个离线用例，当时算法身份为 `conversion-v24`；当前引用流扩展使用 `conversion-v25`。详见[格式说明](src/Asgard.Loki.LLM.Conversion/README.md#explicit-claudegemini-tool-errors)。媒体错误数组、持续回填/异步调度及更广协议对齐仍待补齐。
-
-公共 LLM 快照已在序列化和 Session 等待之前检查原生 DOM/扩展 JSON 的字符串及属性名，防止非法 Unicode 被替换后改变工具 ID、错误文本和未知字段。压缩及双工发送同样检查；模型/目标/凭据/实现和调用身份进入指纹前也检查编码。合法 Unicode、原生数据及既有有效指纹不变。本轮新增 65 个离线回归，其中最初 8 个公共转换用例已先复现失败再修复；自定义 JsonValue/转换器仍由调用者负责其序列化策略，不反射执行应用对象属性。见[快照编码说明](src/Asgard.Loki.LLM/README.md#native-json-snapshot-encoding)。
-
-LLM 已新增显式 `LlmCredential.External(id, principalIdentity)`：核心只保存稳定主体引用，不持有短期令牌或认证源。供应商必须明确声明支持；旧 Key-only 适配器直接调用也会提前失败。外部指纹分量采用独立结构化边界，主体/认证种类变化拒绝旧 Session，原 Key/匿名指纹字节保持兼容。新增 38 个离线回归；[Azure 原生端点及借用式令牌源](src/Asgard.Loki.LLM.Azure/README.md) 已实现完整 JSON 和原生 SSE；155 个离线用例验证两类路由、两类认证、原生字段、主体/配置绑定、过滤/用量尾帧、终态和资源生命周期，尚未进行真实云端认证。见[主体契约](src/Asgard.Loki.LLM/README.md#external-authentication-identity)。
-
-[Vertex 原生 Gemini/Claude JSON/SSE](src/Asgard.Loki.LLM.GoogleVertex/README.md) 已接入完整资源名和借用令牌源；451 项离线用例验证完整报文/流事件、资源/主体绑定、认证、候选/提示拦截终态、ProtoJSON 数值、用量及 EOF/释放边界。原生字段与调用者提供的工具 ID 不静默删除，但不据此声称上游接受 Developer API 特有字段。MaaS Chat 原生 JSON/SSE 已交付，真实云端验证仍待完成。
-
-Vertex Claude JSON 已通过既有 `.LLM.ClaudeMessages` 接入 `rawPredict`，正文版本与工具/签名/结构化输出保持原生；新增 40 项离线回归。默认省略版本选项保持既有 Gemini 绑定身份，显式版本、主体或协议变化则拒绝旧 Session。
-
-Vertex Claude SSE 已接入 `streamRawPredict`，保留原生内容块/工具关联、推理签名、部分 JSON 参数、累计用量与未知事件。新增 58 项离线测试覆盖终态暂存、块关联、平台/原生错误、编码/资源故障及显式文本转换流；默认省略内容块策略保持旧绑定，显式变更策略拒绝旧 Session。
-
-同一 Vertex 包新增 `GoogleVertexExpressLlmProvider`，显式使用 `publishers/google/models/{model}` 短资源及 `x-goog-api-key`，支持 Gemini JSON/SSE；不需要令牌源，也不隐式借用标准模式项目/主体。新增 67 项离线回归，验证报文/流事件、Key/目标绑定、默认头隔离和释放边界；未使用真实 Express 账户。
-
-Claude／Responses 流式转换现在按本协议事件类型识别错误。未知类型或已知事件扩展中的 `error` 仍受严格损耗诊断约束；显式允许损耗后，可转换已知内容而不误判业务元数据。新增独立完整源流／目标快照和 56 项离线回归，通过公共 SDK 验证工具 ID、参数大整数、真实错误及 EOF／释放／取消终态边界。见[转换说明](src/Asgard.Loki.LLM.Conversion/README.md#typed-source-stream-errors)。
-
-转换包新增 `ConvertingBedrockLlmProvider`，显式固定 Nova／Converse 原生上游，支持完整 JSON 双向转换。外壳与模型参数包装位置由调用者选择；保留工具关联、错误结果、媒体、Schema 和明确推理模式。四协议装饰器声明不变；原生逻辑流支持已确认的文本／普通工具子集，不生成目标二进制帧，文档／签名／输出约束等未证明等价的内容继续明确拒绝。初始化及限制见[说明](src/Asgard.Loki.LLM.Conversion/README.md#explicit-nova--converse-complete-json)。
-
-Nova／Converse 显式逻辑流现已接入公共 SDK：保留索引、调用 ID、交错参数分片和原始计数，源枚举／异步释放／取消检查成功后才交付消息结束与用量尾帧。新增 153 项转换测试和 58 项 AWS 测试，覆盖独立完整事件快照、关联／终态／状态上限、HTTP 原生错误及异步释放故障。原生身份流仍返回原始事件及二进制附件；转换事件不伪造帧。见[流接入说明](src/Asgard.Loki.LLM.Conversion/README.md#public-sdk-native-stream-composition)。
-
-LLM 适配器新增可选 `ILlmProtocolSupport`：声明只能收窄物理适配接口的范围，不能代替实现、联网探测模型或自动选上游。所有目标（含备用目标）在注册时校验，旧适配器按原接口规则继续工作。新增 17 项核心测试、5 项转换测试；当前协议转换矩阵不因此扩大。见[协议声明](src/Asgard.Loki.LLM/README.md#optional-protocol-support-declaration)。
-
-转换数据 API 新增四种文本请求到原生 Converse 的通用完整调用子集，以及上下文绑定的反向响应。独立完整 JSON 金样验证工具 ID、JSON／文本结果及 Schema 约束。固定 Converse 的 SDK 接入已完成；反向调用、混合流和模型推理方言仍单独推进，见[转换说明](src/Asgard.Loki.LLM.Conversion/README.md#four-text-requests-to-native-converse-complete-data-conversion)。
-
-既有 Bedrock 转换装饰器已将这些文本完整调用接入公共 SDK：显式固定 Converse 上游，沿用原生认证和完整目标／Session 绑定。固定 Nova 仍只支持原生协议对；混合文本流在获取凭据／HTTP 之前拒绝，禁止装饰器互相嵌套。见[初始化及限制](src/Asgard.Loki.LLM.Conversion/README.md#public-sdk-text-calls-over-native-converse)。
-
-转换后的 Responses ID 继续保留在结果中，但不再登记成原生可续传响应。完整／流式入口保留原生响应链行为，新转换 ID 的续接在再次调用上游前失败；见[归属契约](src/Asgard.Loki.LLM/README.md#native-responses-ownership-versus-converted-output-ids)。
-
-Converse 显式转换新增 Anthropic／Nova2 的推理请求设置方言，可与原生结构化输出共存；完整 JSON 金样和公共 SDK HTTP 测试验证实际报文。显式 Claude／Converse Anthropic 签名响应及历史数据转换现已补齐；其他推理回传仍保持严格失败，不丢弃内容来伪装成功。见[支持矩阵和限制](src/Asgard.Loki.LLM.Conversion/README.md#explicit-converse-model-reasoning-request-settings)。
-
-[Claude／Converse Anthropic 完整数据转换](src/Asgard.Loki.LLM.Conversion/README.md#claude--converse-anthropic-signed-complete-data) 已保留签名文本、加密块和完整历史消息／内容顺序，仅在明确方言下启用。其他协议或模型族继续严格拒绝不透明状态；SDK 不验证签名，也不承诺跨模型可移植。
-
-[签名历史回传 SDK 检查点](src/Asgard.Loki.LLM.Conversion/README.md#public-sdk-claude--converse-signed-historical-replay) 已通过替代原生 HTTP 验证连续两次公共调用：第一次的完整内容与既有历史原样回传，沿用完整目标／Session 绑定。原生读取／释放／取消错误及未声明方言都不会被伪装成成功或触发降级。
+本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题见 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
