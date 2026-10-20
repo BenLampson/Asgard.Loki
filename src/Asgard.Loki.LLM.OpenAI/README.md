@@ -415,7 +415,7 @@ var target = new LlmTarget
 
 [Chat](https://api-docs.deepseek.com/api/create-chat-completion/) preserves reasoning_content, selected thinking/effort, JSON mode, original tool IDs and argument fragments. [Beta FIM](https://api-docs.deepseek.com/api/create-completion/) preserves caller prompt/suffix, logprobs or echo: the service forbids combining echo with suffix or logprobs. For streaming include_usage, usage accompanies the final content choice; no separate usage-only frame is required. Actual `[DONE]` remains required. The SDK does not insert FIM markers, normalize effort, strip model suffixes or repair unsupported parameter combinations.
 
-Thirty-seven independently authored whole-window/fault cases verify native and proxy roots, full JSON/SSE for Chat/Responses and three mutually valid FIM variants, exact unknown values, reversed tool outputs, original metadata, terminal loss, stateless Session recovery and root/key drift. Current supplier total:885 passing offline cases. No real DeepSeek account/model, optional-setting effectiveness or beta availability was tested. Protocol/model/parameter support is caller-declared per target; preserving optional fields does not certify acceptance.
+Thirty-seven independently authored whole-window/fault cases verify native and proxy roots, full JSON/SSE for Chat/Responses and three mutually valid FIM variants, exact unknown values, reversed tool outputs, original metadata, terminal loss, stateless Session recovery and root/key drift. Current supplier total:943 passing offline cases. No real DeepSeek account/model, optional-setting effectiveness or beta availability was tested. Protocol/model/parameter support is caller-declared per target; preserving optional fields does not certify acceptance.
 
 ## Explicit Moonshot and Kimi Coding native endpoints
 
@@ -450,7 +450,7 @@ Known response.reasoning_summary_part.added/done and response.reasoning_summary_
 
 Native [Messages](../Asgard.Loki.LLM.Anthropic/README.md#explicit-moonshot-and-kimi-coding-messages) uses the existing separate package. No CLI configuration, client impersonation, model discovery, automatic tool/patch execution, retry or gateway orchestration is performed. [Coding service access](https://www.kimi.com/code/docs/en/) and optional model/setting support remain upstream-owned and caller-selected. This package's native TextCompletions client supports explicitly configured compatible services; no current hosted Moonshot legacy `/v1/completions` availability is claimed. Partial Mode is the separately documented Chat operation above.
 
-Fifty-two independent-profile/fault cases verify all configured roots, full Chat/Partial/Responses JSON/SSE, exact unknown values, original tool/reasoning/schema/cache data, missing and late native endings, stateless Session recovery and complete root/key/model/client/policy affinity. Current supplier total:885 passing offline cases. No real account/model, Coding entitlement, optional-setting effect or hosted legacy text operation has been tested.
+Fifty-two independent-profile/fault cases verify all configured roots, full Chat/Partial/Responses JSON/SSE, exact unknown values, original tool/reasoning/schema/cache data, missing and late native endings, stateless Session recovery and complete root/key/model/client/policy affinity. Current supplier total:943 passing offline cases. No real account/model, Coding entitlement, optional-setting effect or hosted legacy text operation has been tested.
 
 ## Explicit Mistral native Chat
 
@@ -476,4 +476,59 @@ The [native Chat contract](https://docs.mistral.ai/api/endpoint/chat) preserves 
 
 Actual `[DONE]` is required. Finish-bearing chunks and subsequent metadata wait through normal source EOF, owned resource closure and final cancellation; missing/repeated DONE, appended events and late IO failures cannot release successful endings. Native finish_reason values such as length or error remain original outcomes for the caller to inspect, without synthetic stop/completed labels. Unknown typed business metadata and business IDs remain raw. HTTP errors retain their original status/body; there is no automatic retry, target switch, local tool executor or history manager.
 
-Forty-four independent-window/fault cases verify native/proxy roots, complete JSON/SSE for reasoning/tools/prefix/JSON modes, original caller snapshots, mixed content types, exact large integers, unknown values, tool links, native outcomes, HTTP errors, late/truncated ends, early exit and root/key/model/client/policy/version Session affinity/recovery. Current supplier total:885 passing offline cases. No production package/API/dependency change is required for these profiles. Real Mistral account/model, optional-setting support/effectiveness and live tool/media behavior remain unverified. The [official OpenAPI](https://docs.mistral.ai/openapi.yaml) describes native message and content fields; SDK event wrapper objects are not added as a new JSON envelope to SSE payloads.
+Forty-four independent-window/fault cases verify native/proxy roots, complete JSON/SSE for reasoning/tools/prefix/JSON modes, original caller snapshots, mixed content types, exact large integers, unknown values, tool links, native outcomes, HTTP errors, late/truncated ends, early exit and root/key/model/client/policy/version Session affinity/recovery. Current supplier total:943 passing offline cases. No production package/API/dependency change is required for these profiles. Real Mistral account/model, optional-setting support/effectiveness and live tool/media behavior remain unverified. The [official OpenAPI](https://docs.mistral.ai/openapi.yaml) describes native message and content fields; SDK event wrapper objects are not added as a new JSON envelope to SSE payloads.
+
+## Explicit xAI native Chat and Responses
+
+Use this provider with an explicit complete `https://api.x.ai/v1/` root, selected actual model and independent API Key. Proxy prefixes remain explicit configuration. Native Chat appends `chat/completions`; native Responses appends `responses`. There is no hostname inference or automatic protocol migration.
+
+| Native operation | Data and limits |
+| --- | --- |
+| Chat JSON/SSE | Full messages/image references, original tool IDs/reversed results/argument strings, reasoning_content, citations and original usage |
+| Responses JSON/SSE | Full input/output items, opaque encrypted reasoning/tool history, original call_id/item_id, annotations, native status and usage |
+| Native settings | Chat response_format and reasoning_effort; Responses text.format and reasoning/alternate reasoning_effort stay in their original locations |
+| Server search/tool data | Original request definitions and returned search/usage/encrypted data; no local tool loop, execution or result download |
+| Verification | Offline protocol tests only; actual model availability, settings and encrypted-content acceptance remain unverified |
+
+```csharp
+using Asgard.Loki;
+using Asgard.Loki.LLM;
+using Asgard.Loki.LLM.OpenAI;
+using System.Text.Json.Nodes;
+
+// factory, sessionStore, selectedXaiModel and selectedXaiKey are caller-owned.
+var provider = new OpenAiLlmProvider(factory,
+    id: "xai-native", httpClientName: "Explicit.XAI.Native");
+await using var loki = new LokiClientBuilder().AddLLM(new LlmOptions
+{
+    SessionStore = sessionStore, Providers = [provider],
+    Credentials = [new LlmCredential("xai-key", selectedXaiKey)],
+    Routes = [new LlmRoute
+    {
+        Model = "xai-responses", Targets = [new LlmTarget
+        {
+            Id = "xai-selected", ProviderId = provider.Id,
+            BaseAddress = new Uri("https://api.x.ai/v1/"),
+            UpstreamModel = selectedXaiModel, CredentialId = "xai-key",
+            Protocols = LlmProtocol.Responses
+        }]
+    }]
+}).Build();
+var response = await loki.LLM.Responses.CreateAsync(new ResponseRequest
+{
+    Model = "xai-responses", Input = JsonValue.Create("Hello")
+}, new LlmCallOptions { SessionId = "xai-responses-1" }, cancellationToken);
+// response.Data is complete native JSON; Responses.StreamAsync returns original events.
+```
+
+For native Chat, declare a ChatCompletions target and call `LLM.ChatCompletions.CompleteAsync` / `StreamAsync` with ChatCompletionRequest. The [native Chat reference](https://docs.x.ai/developers/rest-api-reference/inference/chat-completions) still documents this legacy operation; [Responses](https://docs.x.ai/developers/rest-api-reference/inference/responses) is the upstream's primary text interface. Choose actual models and settings explicitly. The SDK does not strip search/high/low suffixes, inject search_parameters, rename max_tokens or repair unsupported reasoning parameters. Native search settings are forwarded unchanged; a deprecated/unsupported model or field may be rejected upstream without a retry or alternate target.
+
+Both nested reasoning and the native flat reasoning_effort alternative are forwarded as supplied, including both when explicitly present; their precedence and effect belong to the upstream. Chat response_format and Responses text.format are not translated on native calls. Native prompt_cache_key remains a request field, with no synthesized headers. There is no automatic store/include default, response retrieval, hidden conversation history or compaction. Use explicit store:true and previous_response_id when selecting stored upstream continuation; replay complete original input/output items when managing stateless history. Encrypted reasoning and server-tool outputs remain opaque JSON and are never decrypted, reconstructed or discarded. Media URLs remain remote references.
+
+All original usage fields remain native, including context_details, server_side_tool_usage_details, cost ticks, exact large integers and token counts. The SDK does not recompute totals/text/reasoning tokens or calculate billing. Forwarding or replaying data is not proof that the upstream accepted it or applied a parameter.
+
+Native first SSE error/response.failed frames are returned as original protocol events with their complete payloads; consumers inspect their native type/status/error. They are not rewritten to completed. Native response.incomplete retains its own status/details. An error after a possible terminal raises LlmUpstreamException with the original error payload and discards the buffered ending. Full HTTP/JSON errors retain the existing LlmUpstreamException/status/UTF-8 ResponseBody contract.
+
+Chat requires an actual DONE. Responses requires its native completed/incomplete/failed/error terminal; an optional actual DONE follows it and cannot substitute for it. Native known reasoning/function/search/image-generation events cannot reopen a terminal response. The three exact image_generation_call in_progress/generating/completed event names are native lifecycle data; similar business-event prefixes remain raw unknown metadata. No tool/image operation is executed by the SDK. Endings and following metadata wait through actual EOF, owned-resource closure and final cancellation; late failures discard the ending. Local OpenAiHttpOptions byte/tail limits and named-client identity apply unchanged. Cache, explicit binding coordinator and factory are borrowed; returned call resources are owned. Reflect semantic named-client configuration changes in target Version and disable generation retry/hedging in the caller-owned pipeline.
+
+Independent native/proxy JSON and literal-SSE windows verify the public SDK, complete caller/wire/result/events, encrypted replay, reverse tool associations, exact native settings/usage, raw errors, incomplete/failed outcomes, known post-terminal generation, unknown metadata, late read/final cancellation, early exit and complete Session affinity. No real xAI Key/model, parameter effect, native search execution or ciphertext validity has been tested.

@@ -82,5 +82,6 @@ internal sealed class OpenAiHttpStreamState(bool responses)
         or "response.reasoning_summary_part.added" or "response.reasoning_summary_part.done"
         or "response.reasoning_summary_text.delta" or "response.reasoning_summary_text.done"
         or "response.custom_tool_call_input.delta" or "response.custom_tool_call_input.done"
-        or "response.web_search_call.in_progress" or "response.web_search_call.searching" or "response.web_search_call.completed";
+        or "response.web_search_call.in_progress" or "response.web_search_call.searching" or "response.web_search_call.completed"
+        or "response.image_generation_call.in_progress" or "response.image_generation_call.generating" or "response.image_generation_call.completed";
 }

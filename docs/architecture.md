@@ -446,7 +446,7 @@ XaiVideoAdapter ..> Infrastructure
 MidjourneyVideoAdapter ..> Infrastructure
 ```
 
-Twenty-two supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Audio.Volcengine, Audio.MiniMax, Audio.Cloudflare, Audio.Azure, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Forty-seven production projects directly reference this package. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 
@@ -3126,7 +3126,7 @@ Only selected actual model and method stream flag are owned. Native history, tho
 
 Supplier state distinguishes finish-bearing deltas from an optional later complete message snapshot repeating the same native reason. Every observed exact sparse choice must finish; interleaved unfinished choices can continue. Late generation, duplicate chunk finishes, identity/reason changes, duplicate snapshots and missing native endings fail. Optional actual DONE cannot replace native finishes, repeat or permit more events. All ending-stage frames wait through bounded normal EOF, exact length, owned async/sync source/HTTP/client/request closure and final cancellation. Even replaced request content retains explicit original-content disposal ownership.
 
-MiniMaxLlmOptions positive request/response/whole-stream bytes, ending-stage count and tracked-choice count, plus named client, participate in provider identity. Existing complete-target Session coordination/cache contracts apply unchanged. The entry still references only Abstractions; production graph now64 projects/46 Infrastructure consumers/127 unique solution paths/64 package IDs. New native117 and existing Messages223 offline cases pass at their project scopes. No live model/setting, Linux, full-repository or all-package result is established.
+MiniMaxLlmOptions positive request/response/whole-stream bytes, ending-stage count and tracked-choice count, plus named client, participate in provider identity. Existing complete-target Session coordination/cache contracts apply unchanged. The entry still references only Abstractions; production graph has65 projects/47 Infrastructure consumers/129 unique solution paths/65 package IDs. New native117 and existing Messages223 offline cases pass at their project scopes. No live model/setting, Linux, full-repository or all-package result is established.
 
 ### Explicit Mistral native Chat profile
 
@@ -3190,3 +3190,21 @@ The complete root appends chat/completions by default or explicit v1/sonar. Endp
 Native message/info/end_of_stream are distinct from unknown business metadata. End_of_stream supplies a global terminal; actual DONE is a control terminal after observed native data. Otherwise EOF requires original finishes for all observed choices. Bounded exact int64 associations allow sparse indices and unfinished choices after another ends, without merging arguments or renumbering tools. Ended choices cannot regenerate; a global final message snapshot may retain the same original finish. Native info/unknown tails stay raw. From the first ending, delivery waits for actual EOF, complete resource closure and final cancellation. No finish, message, ID, end_of_stream or DONE is fabricated.
 
 Both Perplexity providers recognize explicit SSE event:error before interpreting JSON or DONE. Original UTF-8 error data becomes LlmUpstreamException with actual status/media, including non-JSON text and text equal to a control marker. Late connection errors discard buffered endings. Shared Infrastructure still contains only pure IO; supplier state/error semantics stay here. See the [supplier support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.Perplexity/README.md).
+
+### Explicit xAI native Chat and Responses
+
+Existing OpenAiLlmProvider implements the explicit xAI Chat/Responses profiles against a complete selected v1 root/model/credential. Native JSON/SSE, opaque reasoning/server-tool replay, original function result order/call IDs, native schema/search/reasoning settings and usage stay in the existing raw contracts. No package, public interface, core protocol, provider-peer dependency or cross-capability coordinator is introduced.
+
+```mermaid
+classDiagram
+LlmOptions --> "Explicit xAI target" : complete root / actual model / credential / protocol
+"Explicit xAI target" --> OpenAiLlmProvider : original Chat or Responses
+OpenAiLlmProvider --> OpenAiHttpStreamState : native terminal / exact known generation
+OpenAiLlmProvider --> ChatCompletionEvent : original Chat data / transport identity
+OpenAiLlmProvider --> ResponseEvent : original response / encrypted items / usage
+OpenAiLlmProvider --> SseReader : strict bounded framing only
+```
+
+The SDK does not infer a model from suffixes, inject search, rewrite token/reasoning settings, supply store/include defaults, retrieve history or normalize native usage/billing. Nested and native flat reasoning alternatives remain caller data. Stored continuation uses explicit store/previous_response_id and the existing response-ownership binding; stateless calls send their complete native input without local history. Returned media references and encrypted data remain opaque and are not fetched, decrypted or executed.
+
+The exact known response.image_generation_call.in_progress/generating/completed event names share the existing Responses generation-after-terminal guard, alongside reasoning/function/search events. This is native lifecycle validation, not a local image/tool operation. Unknown similar prefixes/business IDs remain raw. First native failed/error events, incomplete outcomes and complete payloads retain their existing protocol contracts; late native/IO/cancellation failures discard buffered endings. Complete target/client/policy/version Session affinity, ownership and EOF/closure rules remain unchanged. See the [native support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-xai-native-chat-and-responses).
