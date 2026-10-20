@@ -1,0 +1,1675 @@
+{
+  "provenance": "Independent complete native windows, authored before tests. Plain reasoning, complete stateless input and separate mutually compatible FIM variants follow documented contracts. Unknown fields only test fidelity; no model or remote tool acceptance claim.",
+  "sources": [
+    "https://api-docs.deepseek.com/api/create-chat-completion/",
+    "https://api-docs.deepseek.com/guides/responses_api/",
+    "https://api-docs.deepseek.com/api/create-completion/"
+  ],
+  "model": "selected-deepseek-model",
+  "profiles": [
+    {
+      "origin": "https://api.deepseek.com/",
+      "key": "fixture-deepseek-key"
+    },
+    {
+      "origin": "https://proxy.invalid/tenant/",
+      "key": "fixture-deepseek-proxy-key"
+    }
+  ],
+  "chat": {
+    "base_path": "v1/",
+    "path": "chat/completions",
+    "caller": {
+      "model": "public",
+      "messages": [
+        {
+          "role": "user",
+          "content": "保留历史并返回 JSON"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "old reasoning",
+          "tool_calls": [
+            {
+              "id": "old-a",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "old-b",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-a",
+          "content": "A"
+        }
+      ],
+      "thinking": {
+        "type": "enabled"
+      },
+      "reasoning_effort": "max",
+      "response_format": {
+        "type": "json_object"
+      },
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "top_p": 1,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "caller_stream": {
+      "model": "public",
+      "messages": [
+        {
+          "role": "user",
+          "content": "保留历史并返回 JSON"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "old reasoning",
+          "tool_calls": [
+            {
+              "id": "old-a",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "old-b",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-a",
+          "content": "A"
+        }
+      ],
+      "thinking": {
+        "type": "enabled"
+      },
+      "reasoning_effort": "max",
+      "response_format": {
+        "type": "json_object"
+      },
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "top_p": 1,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream_options": {
+        "include_usage": true
+      }
+    },
+    "wire": {
+      "model": "selected-deepseek-model",
+      "messages": [
+        {
+          "role": "user",
+          "content": "保留历史并返回 JSON"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "old reasoning",
+          "tool_calls": [
+            {
+              "id": "old-a",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "old-b",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-a",
+          "content": "A"
+        }
+      ],
+      "thinking": {
+        "type": "enabled"
+      },
+      "reasoning_effort": "max",
+      "response_format": {
+        "type": "json_object"
+      },
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "top_p": 1,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-deepseek-model",
+      "messages": [
+        {
+          "role": "user",
+          "content": "保留历史并返回 JSON"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "old reasoning",
+          "tool_calls": [
+            {
+              "id": "old-a",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "old-b",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-a",
+          "content": "A"
+        }
+      ],
+      "thinking": {
+        "type": "enabled"
+      },
+      "reasoning_effort": "max",
+      "response_format": {
+        "type": "json_object"
+      },
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "top_p": 1,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream_options": {
+        "include_usage": true
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "chatcmpl-ds-a",
+      "object": "chat.completion",
+      "created": 0,
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "native reasoning",
+            "tool_calls": [
+              {
+                "id": "new-a",
+                "type": "function",
+                "function": {
+                  "name": "lookup_a",
+                  "arguments": "{\"n\":9007199254740993}"
+                }
+              },
+              {
+                "id": "new-b",
+                "type": "function",
+                "function": {
+                  "name": "lookup_b",
+                  "arguments": "{\"enabled\":false}"
+                }
+              }
+            ]
+          },
+          "finish_reason": "tool_calls",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 9,
+        "total_tokens": 9,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 0,
+        "completion_tokens_details": {
+          "reasoning_tokens": 3
+        }
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "chatcmpl-ds-a",
+        "object": "chat.completion.chunk",
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "reasoning_content": "native reasoning"
+            },
+            "finish_reason": null
+          }
+        ],
+        "usage": null
+      },
+      {
+        "id": "chatcmpl-ds-a",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "new-a",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_a",
+                    "arguments": "{\"n\":"
+                  }
+                },
+                {
+                  "index": 1,
+                  "id": "new-b",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_b",
+                    "arguments": "{\"enabled\":"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ],
+        "usage": null
+      },
+      {
+        "id": "chatcmpl-ds-a",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "false}"
+                  }
+                },
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "9007199254740993}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ],
+        "usage": null
+      },
+      {
+        "id": "chatcmpl-ds-a",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 9,
+          "total_tokens": 9,
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 0,
+          "completion_tokens_details": {
+            "reasoning_tokens": 3
+          }
+        },
+        "future": {
+          "exact": 9007199254740993,
+          "zero": 0,
+          "false": false,
+          "null": null,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: deepseek-transport\nretry: 0\ndata: {\"id\":\"chatcmpl-ds-a\",\"object\":\"chat.completion.chunk\",\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning_content\":\"native reasoning\"},\"finish_reason\":null}],\"usage\":null}\n\ndata: {\"id\":\"chatcmpl-ds-a\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"new-a\",\"type\":\"function\",\"function\":{\"name\":\"lookup_a\",\"arguments\":\"{\\\"n\\\":\"}},{\"index\":1,\"id\":\"new-b\",\"type\":\"function\",\"function\":{\"name\":\"lookup_b\",\"arguments\":\"{\\\"enabled\\\":\"}}]},\"finish_reason\":null}],\"usage\":null}\n\ndata: {\"id\":\"chatcmpl-ds-a\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"false}\"}},{\"index\":0,\"function\":{\"arguments\":\"9007199254740993}\"}}]},\"finish_reason\":null}],\"usage\":null}\n\ndata: {\"id\":\"chatcmpl-ds-a\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":0,\"completion_tokens\":9,\"total_tokens\":9,\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":0,\"completion_tokens_details\":{\"reasoning_tokens\":3}},\"future\":{\"exact\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "responses": {
+    "base_path": "",
+    "path": "responses",
+    "caller": {
+      "model": "public",
+      "instructions": "保留原生上下文并按 schema 回答",
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "old-reason",
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "old plain reasoning"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-a",
+          "call_id": "old-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-b",
+          "call_id": "old-b",
+          "name": "lookup_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "old-custom-item",
+          "call_id": "old-patch",
+          "name": "apply_patch",
+          "input": "*** Begin Patch\n*** Update File: example.txt\n@@\n-old\n+new\n*** End Patch"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-b",
+          "output": "B"
+        },
+        {
+          "type": "custom_tool_call_output",
+          "call_id": "old-patch",
+          "output": "original remote tool result"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-a",
+          "output": "A"
+        }
+      ],
+      "reasoning": {
+        "effort": "max"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "answer",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "ok"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "custom",
+          "name": "apply_patch",
+          "format": {
+            "type": "text"
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "max_output_tokens": 2048,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "caller_stream": {
+      "model": "public",
+      "instructions": "保留原生上下文并按 schema 回答",
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "old-reason",
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "old plain reasoning"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-a",
+          "call_id": "old-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-b",
+          "call_id": "old-b",
+          "name": "lookup_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "old-custom-item",
+          "call_id": "old-patch",
+          "name": "apply_patch",
+          "input": "*** Begin Patch\n*** Update File: example.txt\n@@\n-old\n+new\n*** End Patch"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-b",
+          "output": "B"
+        },
+        {
+          "type": "custom_tool_call_output",
+          "call_id": "old-patch",
+          "output": "original remote tool result"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-a",
+          "output": "A"
+        }
+      ],
+      "reasoning": {
+        "effort": "max"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "answer",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "ok"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "custom",
+          "name": "apply_patch",
+          "format": {
+            "type": "text"
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "max_output_tokens": 2048,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "wire": {
+      "model": "selected-deepseek-model",
+      "instructions": "保留原生上下文并按 schema 回答",
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "old-reason",
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "old plain reasoning"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-a",
+          "call_id": "old-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-b",
+          "call_id": "old-b",
+          "name": "lookup_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "old-custom-item",
+          "call_id": "old-patch",
+          "name": "apply_patch",
+          "input": "*** Begin Patch\n*** Update File: example.txt\n@@\n-old\n+new\n*** End Patch"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-b",
+          "output": "B"
+        },
+        {
+          "type": "custom_tool_call_output",
+          "call_id": "old-patch",
+          "output": "original remote tool result"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-a",
+          "output": "A"
+        }
+      ],
+      "reasoning": {
+        "effort": "max"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "answer",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "ok"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "custom",
+          "name": "apply_patch",
+          "format": {
+            "type": "text"
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "max_output_tokens": 2048,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-deepseek-model",
+      "instructions": "保留原生上下文并按 schema 回答",
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "old-reason",
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "old plain reasoning"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-a",
+          "call_id": "old-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-b",
+          "call_id": "old-b",
+          "name": "lookup_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "old-custom-item",
+          "call_id": "old-patch",
+          "name": "apply_patch",
+          "input": "*** Begin Patch\n*** Update File: example.txt\n@@\n-old\n+new\n*** End Patch"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-b",
+          "output": "B"
+        },
+        {
+          "type": "custom_tool_call_output",
+          "call_id": "old-patch",
+          "output": "original remote tool result"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-a",
+          "output": "A"
+        }
+      ],
+      "reasoning": {
+        "effort": "max"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "answer",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "ok"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "custom",
+          "name": "apply_patch",
+          "format": {
+            "type": "text"
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "max_output_tokens": 2048,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "resp-ds-a",
+      "object": "response",
+      "created_at": 0,
+      "status": "completed",
+      "model": "reported-native-model",
+      "output": [
+        {
+          "type": "reasoning",
+          "id": "reason-ds",
+          "status": "completed",
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "native plain reasoning"
+            }
+          ],
+          "summary": []
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "custom-ds",
+          "call_id": "patch-new",
+          "name": "apply_patch",
+          "input": "*** Begin Patch\n*** Update File: example.txt\n@@\n-old\n+new\n*** End Patch",
+          "status": "completed"
+        },
+        {
+          "type": "function_call",
+          "id": "fc-ds",
+          "call_id": "new-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}",
+          "status": "completed"
+        }
+      ],
+      "store": false,
+      "previous_response_id": null,
+      "usage": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 9,
+        "output_tokens_details": {
+          "reasoning_tokens": 3
+        },
+        "total_tokens": 9
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "type": "response.created",
+        "response": {
+          "id": "resp-ds-a",
+          "status": "in_progress",
+          "output": [],
+          "model": "reported-native-model"
+        },
+        "sequence_number": 0
+      },
+      {
+        "type": "response.output_item.added",
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "reason-ds",
+          "content": []
+        },
+        "sequence_number": 1
+      },
+      {
+        "type": "response.reasoning_text.delta",
+        "item_id": "reason-ds",
+        "output_index": 0,
+        "delta": "native plain reasoning",
+        "sequence_number": 2
+      },
+      {
+        "type": "response.reasoning_text.done",
+        "item_id": "reason-ds",
+        "output_index": 0,
+        "text": "native plain reasoning",
+        "sequence_number": 3
+      },
+      {
+        "type": "response.output_item.done",
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "reason-ds",
+          "status": "completed",
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "native plain reasoning"
+            }
+          ],
+          "summary": []
+        },
+        "sequence_number": 4
+      },
+      {
+        "type": "response.output_item.added",
+        "output_index": 1,
+        "item": {
+          "type": "custom_tool_call",
+          "id": "custom-ds",
+          "call_id": "patch-new",
+          "name": "apply_patch",
+          "input": "",
+          "status": "in_progress"
+        },
+        "sequence_number": 5
+      },
+      {
+        "type": "response.custom_tool_call_input.delta",
+        "item_id": "custom-ds",
+        "output_index": 1,
+        "delta": "*** Begin Patch\n*** Update File: example.txt\n@@\n-old\n+new\n*** End Patch",
+        "sequence_number": 6
+      },
+      {
+        "type": "response.custom_tool_call_input.done",
+        "item_id": "custom-ds",
+        "output_index": 1,
+        "input": "*** Begin Patch\n*** Update File: example.txt\n@@\n-old\n+new\n*** End Patch",
+        "sequence_number": 7
+      },
+      {
+        "type": "response.output_item.done",
+        "output_index": 1,
+        "item": {
+          "type": "custom_tool_call",
+          "id": "custom-ds",
+          "call_id": "patch-new",
+          "name": "apply_patch",
+          "input": "*** Begin Patch\n*** Update File: example.txt\n@@\n-old\n+new\n*** End Patch",
+          "status": "completed"
+        },
+        "sequence_number": 8
+      },
+      {
+        "type": "response.output_item.added",
+        "output_index": 2,
+        "item": {
+          "type": "function_call",
+          "id": "fc-ds",
+          "call_id": "new-a",
+          "name": "lookup_a",
+          "arguments": "",
+          "status": "in_progress"
+        },
+        "sequence_number": 9
+      },
+      {
+        "type": "response.function_call_arguments.delta",
+        "item_id": "fc-ds",
+        "output_index": 2,
+        "delta": "{\"n\":9007199254740993}",
+        "sequence_number": 10
+      },
+      {
+        "type": "response.function_call_arguments.done",
+        "item_id": "fc-ds",
+        "output_index": 2,
+        "arguments": "{\"n\":9007199254740993}",
+        "sequence_number": 11
+      },
+      {
+        "type": "response.output_item.done",
+        "output_index": 2,
+        "item": {
+          "type": "function_call",
+          "id": "fc-ds",
+          "call_id": "new-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}",
+          "status": "completed"
+        },
+        "sequence_number": 12
+      },
+      {
+        "type": "response.completed",
+        "response": {
+          "id": "resp-ds-a",
+          "object": "response",
+          "created_at": 0,
+          "status": "completed",
+          "model": "reported-native-model",
+          "output": [
+            {
+              "type": "reasoning",
+              "id": "reason-ds",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "reasoning_text",
+                  "text": "native plain reasoning"
+                }
+              ],
+              "summary": []
+            },
+            {
+              "type": "custom_tool_call",
+              "id": "custom-ds",
+              "call_id": "patch-new",
+              "name": "apply_patch",
+              "input": "*** Begin Patch\n*** Update File: example.txt\n@@\n-old\n+new\n*** End Patch",
+              "status": "completed"
+            },
+            {
+              "type": "function_call",
+              "id": "fc-ds",
+              "call_id": "new-a",
+              "name": "lookup_a",
+              "arguments": "{\"n\":9007199254740993}",
+              "status": "completed"
+            }
+          ],
+          "store": false,
+          "previous_response_id": null,
+          "usage": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 9,
+            "output_tokens_details": {
+              "reasoning_tokens": 3
+            },
+            "total_tokens": 9
+          },
+          "future": {
+            "exact": 9007199254740993,
+            "zero": 0,
+            "false": false,
+            "null": null,
+            "empty": []
+          }
+        },
+        "sequence_number": 13
+      }
+    ],
+    "sse": "id: deepseek-transport\nretry: 0\nevent: response.created\ndata: {\"type\":\"response.created\",\"response\":{\"id\":\"resp-ds-a\",\"status\":\"in_progress\",\"output\":[],\"model\":\"reported-native-model\"},\"sequence_number\":0}\n\nevent: response.output_item.added\ndata: {\"type\":\"response.output_item.added\",\"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"reason-ds\",\"content\":[]},\"sequence_number\":1}\n\nevent: response.reasoning_text.delta\ndata: {\"type\":\"response.reasoning_text.delta\",\"item_id\":\"reason-ds\",\"output_index\":0,\"delta\":\"native plain reasoning\",\"sequence_number\":2}\n\nevent: response.reasoning_text.done\ndata: {\"type\":\"response.reasoning_text.done\",\"item_id\":\"reason-ds\",\"output_index\":0,\"text\":\"native plain reasoning\",\"sequence_number\":3}\n\nevent: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"reason-ds\",\"status\":\"completed\",\"content\":[{\"type\":\"reasoning_text\",\"text\":\"native plain reasoning\"}],\"summary\":[]},\"sequence_number\":4}\n\nevent: response.output_item.added\ndata: {\"type\":\"response.output_item.added\",\"output_index\":1,\"item\":{\"type\":\"custom_tool_call\",\"id\":\"custom-ds\",\"call_id\":\"patch-new\",\"name\":\"apply_patch\",\"input\":\"\",\"status\":\"in_progress\"},\"sequence_number\":5}\n\nevent: response.custom_tool_call_input.delta\ndata: {\"type\":\"response.custom_tool_call_input.delta\",\"item_id\":\"custom-ds\",\"output_index\":1,\"delta\":\"*** Begin Patch\\n*** Update File: example.txt\\n@@\\n-old\\n+new\\n*** End Patch\",\"sequence_number\":6}\n\nevent: response.custom_tool_call_input.done\ndata: {\"type\":\"response.custom_tool_call_input.done\",\"item_id\":\"custom-ds\",\"output_index\":1,\"input\":\"*** Begin Patch\\n*** Update File: example.txt\\n@@\\n-old\\n+new\\n*** End Patch\",\"sequence_number\":7}\n\nevent: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"output_index\":1,\"item\":{\"type\":\"custom_tool_call\",\"id\":\"custom-ds\",\"call_id\":\"patch-new\",\"name\":\"apply_patch\",\"input\":\"*** Begin Patch\\n*** Update File: example.txt\\n@@\\n-old\\n+new\\n*** End Patch\",\"status\":\"completed\"},\"sequence_number\":8}\n\nevent: response.output_item.added\ndata: {\"type\":\"response.output_item.added\",\"output_index\":2,\"item\":{\"type\":\"function_call\",\"id\":\"fc-ds\",\"call_id\":\"new-a\",\"name\":\"lookup_a\",\"arguments\":\"\",\"status\":\"in_progress\"},\"sequence_number\":9}\n\nevent: response.function_call_arguments.delta\ndata: {\"type\":\"response.function_call_arguments.delta\",\"item_id\":\"fc-ds\",\"output_index\":2,\"delta\":\"{\\\"n\\\":9007199254740993}\",\"sequence_number\":10}\n\nevent: response.function_call_arguments.done\ndata: {\"type\":\"response.function_call_arguments.done\",\"item_id\":\"fc-ds\",\"output_index\":2,\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"sequence_number\":11}\n\nevent: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"output_index\":2,\"item\":{\"type\":\"function_call\",\"id\":\"fc-ds\",\"call_id\":\"new-a\",\"name\":\"lookup_a\",\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"status\":\"completed\"},\"sequence_number\":12}\n\nevent: response.completed\ndata: {\"type\":\"response.completed\",\"response\":{\"id\":\"resp-ds-a\",\"object\":\"response\",\"created_at\":0,\"status\":\"completed\",\"model\":\"reported-native-model\",\"output\":[{\"type\":\"reasoning\",\"id\":\"reason-ds\",\"status\":\"completed\",\"content\":[{\"type\":\"reasoning_text\",\"text\":\"native plain reasoning\"}],\"summary\":[]},{\"type\":\"custom_tool_call\",\"id\":\"custom-ds\",\"call_id\":\"patch-new\",\"name\":\"apply_patch\",\"input\":\"*** Begin Patch\\n*** Update File: example.txt\\n@@\\n-old\\n+new\\n*** End Patch\",\"status\":\"completed\"},{\"type\":\"function_call\",\"id\":\"fc-ds\",\"call_id\":\"new-a\",\"name\":\"lookup_a\",\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"status\":\"completed\"}],\"store\":false,\"previous_response_id\":null,\"usage\":{\"input_tokens\":0,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":9,\"output_tokens_details\":{\"reasoning_tokens\":3},\"total_tokens\":9},\"future\":{\"exact\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}},\"sequence_number\":13}\n\n"
+  },
+  "fim": {
+    "base_path": "beta/",
+    "path": "completions",
+    "caller": {
+      "model": "public",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "suffix": "    return x"
+    },
+    "caller_stream": {
+      "model": "public",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "suffix": "    return x",
+      "stream_options": {
+        "include_usage": true
+      }
+    },
+    "wire": {
+      "model": "selected-deepseek-model",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "suffix": "    return x",
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-deepseek-model",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "suffix": "    return x",
+      "stream_options": {
+        "include_usage": true
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "cmpl-ds-a",
+      "object": "text_completion",
+      "created": 0,
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "text": "    x += 1\n",
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 9,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 0,
+        "total_tokens": 9
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "cmpl-ds-a",
+        "object": "text_completion",
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "text": "    x += 1\n",
+            "logprobs": null,
+            "finish_reason": null
+          }
+        ],
+        "usage": null
+      },
+      {
+        "id": "cmpl-ds-a",
+        "object": "text_completion",
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "text": "",
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 9,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 0,
+          "total_tokens": 9
+        },
+        "future": {
+          "exact": 9007199254740993,
+          "zero": 0,
+          "false": false,
+          "null": null,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: deepseek-transport\nretry: 0\ndata: {\"id\":\"cmpl-ds-a\",\"object\":\"text_completion\",\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"text\":\"    x += 1\\n\",\"logprobs\":null,\"finish_reason\":null}],\"usage\":null}\n\ndata: {\"id\":\"cmpl-ds-a\",\"object\":\"text_completion\",\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":0,\"completion_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":0,\"total_tokens\":9},\"future\":{\"exact\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "fim_logprobs": {
+    "base_path": "beta/",
+    "path": "completions",
+    "caller": {
+      "model": "public",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "logprobs": 2
+    },
+    "caller_stream": {
+      "model": "public",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "logprobs": 2,
+      "stream_options": {
+        "include_usage": true
+      }
+    },
+    "wire": {
+      "model": "selected-deepseek-model",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "logprobs": 2,
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-deepseek-model",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "logprobs": 2,
+      "stream_options": {
+        "include_usage": true
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "cmpl-ds-a",
+      "object": "text_completion",
+      "created": 0,
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "text": "    x += 1\n",
+          "logprobs": {
+            "tokens": [
+              "    x += 1\n"
+            ],
+            "token_logprobs": [
+              -0.1
+            ],
+            "top_logprobs": [
+              {
+                "    x += 1\n": -0.1
+              }
+            ],
+            "text_offset": [
+              0
+            ]
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 9,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 0,
+        "total_tokens": 9
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "cmpl-ds-a",
+        "object": "text_completion",
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "text": "    x += 1\n",
+            "logprobs": {
+              "tokens": [
+                "    x += 1\n"
+              ],
+              "token_logprobs": [
+                -0.1
+              ],
+              "top_logprobs": [
+                {
+                  "    x += 1\n": -0.1
+                }
+              ],
+              "text_offset": [
+                0
+              ]
+            },
+            "finish_reason": null
+          }
+        ],
+        "usage": null
+      },
+      {
+        "id": "cmpl-ds-a",
+        "object": "text_completion",
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "text": "",
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 9,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 0,
+          "total_tokens": 9
+        },
+        "future": {
+          "exact": 9007199254740993,
+          "zero": 0,
+          "false": false,
+          "null": null,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: deepseek-transport\nretry: 0\ndata: {\"id\":\"cmpl-ds-a\",\"object\":\"text_completion\",\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"text\":\"    x += 1\\n\",\"logprobs\":{\"tokens\":[\"    x += 1\\n\"],\"token_logprobs\":[-0.1],\"top_logprobs\":[{\"    x += 1\\n\":-0.1}],\"text_offset\":[0]},\"finish_reason\":null}],\"usage\":null}\n\ndata: {\"id\":\"cmpl-ds-a\",\"object\":\"text_completion\",\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":0,\"completion_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":0,\"total_tokens\":9},\"future\":{\"exact\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "fim_echo": {
+    "base_path": "beta/",
+    "path": "completions",
+    "caller": {
+      "model": "public",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "echo": true
+    },
+    "caller_stream": {
+      "model": "public",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "echo": true,
+      "stream_options": {
+        "include_usage": true
+      }
+    },
+    "wire": {
+      "model": "selected-deepseek-model",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "echo": true,
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-deepseek-model",
+      "prompt": "def 原生(x):\n",
+      "max_tokens": 32,
+      "temperature": 0,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "echo": true,
+      "stream_options": {
+        "include_usage": true
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "cmpl-ds-a",
+      "object": "text_completion",
+      "created": 0,
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "text": "def 原生(x):\n    x += 1\n",
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 9,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 0,
+        "total_tokens": 9
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "cmpl-ds-a",
+        "object": "text_completion",
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "text": "def 原生(x):\n    x += 1\n",
+            "logprobs": null,
+            "finish_reason": null
+          }
+        ],
+        "usage": null
+      },
+      {
+        "id": "cmpl-ds-a",
+        "object": "text_completion",
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "text": "",
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 9,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 0,
+          "total_tokens": 9
+        },
+        "future": {
+          "exact": 9007199254740993,
+          "zero": 0,
+          "false": false,
+          "null": null,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: deepseek-transport\nretry: 0\ndata: {\"id\":\"cmpl-ds-a\",\"object\":\"text_completion\",\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"text\":\"def 原生(x):\\n    x += 1\\n\",\"logprobs\":null,\"finish_reason\":null}],\"usage\":null}\n\ndata: {\"id\":\"cmpl-ds-a\",\"object\":\"text_completion\",\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":0,\"completion_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":0,\"total_tokens\":9},\"future\":{\"exact\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "error": {
+    "error": {
+      "type": "invalid_request_error",
+      "message": "native fixture error",
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    }
+  }
+}
