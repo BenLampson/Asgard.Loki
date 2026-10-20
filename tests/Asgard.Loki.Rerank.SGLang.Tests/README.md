@@ -1,0 +1,3 @@
+# Native SGLang rerank protocol tests
+
+Independent full native request/response vectors are prepared before implementation. The v0.5.19 serving schema returns a root score/index array, with optional document/meta_info, not a Jina results envelope. Original order, raw score precision, native document indices, top_n subset, missing metadata and error JSON remain independent expectations. Text and native text/image_url/video_url content-part arrays are distinct inputs; no image/video fetching or server/tokenizer/template execution is performed. These synthetic fixtures do not verify a running SGLang server, model acceptance or relevance quality.

@@ -1,0 +1,16 @@
+{
+  "source": "Independently authored SGLang v0.5.19 /v1/rerank request/response vectors from its public V1RerankReqInput and RerankResponse schema. Expected payloads are not generated with SDK production code or captured from live inference.",
+  "requests": [
+    {"query":"  Query 原文 😀  ","documents":["Original first","Second\ntext"," Third  "],"instruct":"Rank without changing input","top_n":2,"return_documents":true,"future":{"exact":9007199254740993,"nullable":null,"flag":false}},
+    {"query":"Original query","documents":["First","Second"],"top_n":null,"return_documents":false,"instruct":null,"future":[]},
+    {"query":[{"type":"text","text":"Multimodal query"},{"type":"image_url","image_url":{"url":"https://media.example.invalid/query.png","detail":"low","future":false}}],"documents":["Text document",[{"type":"text","text":"Original video"},{"type":"video_url","video_url":{"url":"https://media.example.invalid/input.mp4","future":null}}]],"top_n":1,"return_documents":false,"future":{"exact":9007199254740993}}
+  ],
+  "responses": [
+    [{"index":2,"score":4.123456789012345678901,"document":" Third  ","meta_info":{"prompt_tokens":0,"future":9007199254740993},"future":false},{"index":0,"score":-2.5,"document":"Original first","meta_info":null,"future":{"nullable":null}}],
+    [{"index":1,"score":0,"future":null},{"index":0,"score":-0.25,"meta_info":null}],
+    [{"index":1,"score":0.875,"meta_info":{"future":9007199254740993},"future":false}]
+  ],
+  "native_error": {"object":"error","message":"Fictional invalid server configuration","type":"BadRequestError","param":null,"code":400,"future":{"exact":9007199254740993,"flag":false}},
+  "enveloped_error": {"error":{"object":"error","message":"Fictional error envelope","type":"BadRequestError","code":400,"future":null}},
+  "foreign_jina_envelope": {"model":"foreign","results":[{"index":0,"relevance_score":0.9}],"usage":{"total_tokens":0}}
+}
