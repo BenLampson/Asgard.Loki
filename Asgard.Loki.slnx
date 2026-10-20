@@ -95,6 +95,9 @@
     <Project Path="src/Asgard.Loki.Image.XAI/Asgard.Loki.Image.XAI.csproj" />
     <Project Path="src/Asgard.Loki.Video.XAI/Asgard.Loki.Video.XAI.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/Zhipu/">
+    <Project Path="src/Asgard.Loki.Image.Zhipu/Asgard.Loki.Image.Zhipu.csproj" />
+  </Folder>
   <Folder Name="/tests/Foundation/">
     <Project Path="tests/Asgard.Loki.Tests/Asgard.Loki.Tests.csproj" />
   </Folder>
@@ -189,5 +192,8 @@
   <Folder Name="/tests/Providers/XAI/">
     <Project Path="tests/Asgard.Loki.Image.XAI.Tests/Asgard.Loki.Image.XAI.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Video.XAI.Tests/Asgard.Loki.Video.XAI.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Zhipu/">
+    <Project Path="tests/Asgard.Loki.Image.Zhipu.Tests/Asgard.Loki.Image.Zhipu.Tests.csproj" />
   </Folder>
 </Solution>

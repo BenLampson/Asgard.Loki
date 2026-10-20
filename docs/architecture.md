@@ -1,5 +1,22 @@
 # Asgard.Loki Architecture Specification
 
+## Native Zhipu v4 Image
+
+`Image.Zhipu` depends only on Image, Infrastructure and standard HTTP factory support. ZhipuImageAdapter implements existing generation routes with an explicit complete v4 endpoint/model/independent Bearer key. It snapshots native root parameters before I/O and preserves quality/size/false watermark/user identity and unknown fields without a model catalog or defaults. It does not reference another provider or capability, perform v3 signing, infer async/SSE operations or download result URLs.
+
+The original result retains created zero/null/absence, content_filter, request_id, extendParam, usage and image aliases. Explicit GeneratedImage views prefer nonempty url over image_url and b64_json over b64_image while keeping every canonical/alias field unchanged in item Data. Empty arrays and native filter-only omitted/null data retain their exact original shape and produce no invented images/timestamps. Native errors and HTTP failures keep complete original bytes. UTF-8/duplicate-field, byte/declared-length and owned disposal checks precede result delivery; borrowed factory stays application-owned. No filtering pipeline, billing arithmetic, target fallback or generic coordinator is added.
+
+```mermaid
+classDiagram
+ZhipuImageAdapter ..|> IImageGenerationAdapter
+ZhipuImageAdapter --> ZhipuImageOptions : explicit native v4 target
+ZhipuImageAdapter --> ZhipuImagePayload : frozen native root values
+ZhipuImageAdapter --> ZhipuImageJson : original carriers and filter metadata
+ZhipuImageAdapter --> HttpBodyReader : original complete bytes
+ZhipuImageAdapter --> ImageGenerationResult : full native JSON
+ImageGenerationResult --> GeneratedImage : preserved canonical/alias views
+```
+
 ## Native xAI JSON image editing
 
 `Image.XAI` references only Image, Infrastructure and standard HTTP factory support. XaiImageEditAdapter implements existing IImageEditAdapter and uses existing independent EditRoutes. It has no generation implementation or Image.OpenAI dependency: xAI complete generation is an independently verified compatible configuration of the existing adapter. This avoids a generation-only brand wrapper while giving the genuinely distinct xAI edit JSON its own supplier implementation.

@@ -75,6 +75,10 @@
     "created": null,
     "future": 0
   },
+  "canonical_base64": {
+    "data": [{"url": "https://result.example.invalid/canonical.png", "b64_json": "AQID", "future": false}],
+    "request_id": "canonical-request", "future": null
+  },
   "empty": {
     "data": [],
     "content_filter": [
