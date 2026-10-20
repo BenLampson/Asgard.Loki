@@ -1,0 +1,409 @@
+{
+  "sources": [
+    "https://platform.minimax.cn/docs/api-reference/speech-t2a-http",
+    "https://platform.minimax.io/docs/api-reference/speech-t2a-http"
+  ],
+  "authorization": "Bearer fixture-native-access",
+  "requests": [
+    {
+      "model": "fixture-native-speech",
+      "text": "原始发音 <#0.15#> (laughs) 😀\n保留换行",
+      "stream": false,
+      "voice_setting": {
+        "voice_id": "fixture-original-voice",
+        "speed": 1.125,
+        "vol": 0,
+        "pitch": 0,
+        "emotion": "fixture-native-emotion",
+        "text_normalization": false,
+        "latex_read": false,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "audio_setting": {
+        "sample_rate": 24000,
+        "bitrate": 64000,
+        "format": "flac",
+        "channel": 1,
+        "force_cbr": false,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "pronunciation_dict": {
+        "tone": [
+          "处理/(chu3)(li3)",
+          "SDK/SDK"
+        ],
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "timbre_weights": [
+        {
+          "voice_id": "fixture-mixed-voice",
+          "weight": 0,
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Text": "保留 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "language_boost": "Chinese,Yue",
+      "voice_modify": {
+        "pitch": 0,
+        "intensity": 0,
+        "timbre": 0,
+        "sound_effects": "fixture-effect",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "subtitle_enable": true,
+      "output_format": "hex",
+      "aigc_watermark": false,
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Text": "保留 😀"
+          }
+        ]
+      }
+    },
+    {
+      "model": "fixture-native-speech",
+      "text": "原始发音 <#0.15#> (laughs) 😀\n保留换行",
+      "stream": false,
+      "voice_setting": {
+        "voice_id": "fixture-original-voice",
+        "speed": 1.125,
+        "vol": 0,
+        "pitch": 0,
+        "emotion": "fixture-native-emotion",
+        "text_normalization": false,
+        "latex_read": false,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "audio_setting": {
+        "sample_rate": 24000,
+        "bitrate": 64000,
+        "format": "flac",
+        "channel": 1,
+        "force_cbr": false,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "pronunciation_dict": {
+        "tone": [
+          "处理/(chu3)(li3)",
+          "SDK/SDK"
+        ],
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "timbre_weights": [
+        {
+          "voice_id": "fixture-mixed-voice",
+          "weight": 0,
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Text": "保留 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "language_boost": "Chinese,Yue",
+      "voice_modify": {
+        "pitch": 0,
+        "intensity": 0,
+        "timbre": 0,
+        "sound_effects": "fixture-effect",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "subtitle_enable": true,
+      "output_format": "url",
+      "aigc_watermark": false,
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Text": "保留 😀"
+          }
+        ]
+      }
+    },
+    {
+      "model": "fixture-native-speech",
+      "text": "原始文本 😀",
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Text": "保留 😀"
+          }
+        ]
+      }
+    }
+  ],
+  "responses": {
+    "hex": {
+      "data": {
+        "audio": "0001aBff02",
+        "status": 2,
+        "subtitle_file": "https://media.example.invalid/subtitle.json?signature=fixture%2B1",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "extra_info": {
+        "audio_length": 125,
+        "audio_sample_rate": 24000,
+        "audio_size": 5,
+        "bitrate": 64000,
+        "word_count": 0,
+        "invisible_character_ratio": 0,
+        "usage_characters": 9007199254740993,
+        "audio_format": "flac",
+        "audio_channel": 1,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "trace_id": "fixture-native-trace-hex",
+      "base_resp": {
+        "status_code": 0,
+        "status_msg": "success",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Text": "保留 😀"
+          }
+        ]
+      }
+    },
+    "url": {
+      "data": {
+        "audio": "https://media.example.invalid/voice%2Fraw.flac?signature=fixture%2B1&part=0",
+        "status": 2,
+        "subtitle_file": "https://media.example.invalid/subtitle.json?signature=fixture%2B1",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "extra_info": {
+        "audio_length": 125,
+        "audio_sample_rate": 24000,
+        "audio_size": 5,
+        "bitrate": 64000,
+        "word_count": 0,
+        "invisible_character_ratio": 0,
+        "usage_characters": 9007199254740993,
+        "audio_format": "flac",
+        "audio_channel": 1,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "trace_id": "fixture-native-trace-url",
+      "base_resp": {
+        "status_code": 0,
+        "status_msg": "success",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Text": "保留 😀"
+          }
+        ]
+      }
+    },
+    "error": {
+      "data": null,
+      "trace_id": "fixture-error",
+      "base_resp": {
+        "status_code": 1004,
+        "status_msg": "fixture business failure",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Text": "保留 😀"
+            }
+          ]
+        }
+      },
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Text": "保留 😀"
+          }
+        ]
+      }
+    }
+  },
+  "expected_audio_base64": "AAGr/wI="
+}
