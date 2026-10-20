@@ -19,6 +19,7 @@ public sealed class LlmClient
         BedrockConverse = new BedrockConverseClient(invocation);
         BedrockNova = new BedrockNovaClient(invocation);
         Moderations = new ModerationsClient(invocation);
+        TextCompletions = new TextCompletionsClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
@@ -41,5 +42,7 @@ public sealed class LlmClient
     public IBedrockNovaClient BedrockNova { get; }
     /// <summary>访问原生 Moderations 模型接口，输入/分类结果不成为应用内容策略。</summary>
     public IModerationsClient Moderations { get; }
+    /// <summary>访问原生文本补全，不将 prompt/token 输入转换成 Chat 消息。</summary>
+    public ITextCompletionsClient TextCompletions { get; }
 
 }

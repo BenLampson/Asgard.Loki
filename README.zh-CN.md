@@ -98,3 +98,5 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 
 本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题见 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
+
+原生文本补全契约使用 `loki.LLM.TextCompletions.CompleteAsync`／`.StreamAsync`，目标需声明 `LlmProtocol.TextCompletions` 且供应商实现 `ITextCompletionsAdapter`。`TextCompletionRequest.Parameters` 保留原生 prompt 文本／token 批次、suffix、echo、logprobs 和未知字段，不生成 Chat 消息或隐式转换。原始 choices 顺序、索引、过滤／用量及 SSE 元数据保持，仍使用完整 Session 目标绑定。具体端点及输入能力由供应商实现校验，见[原生契约](src/Asgard.Loki.LLM/README.md#native-text-completions)。

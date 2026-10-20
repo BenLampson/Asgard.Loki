@@ -107,7 +107,7 @@ internal sealed class LlmConfiguration
         var supported = provider is ILlmCredentialSupport declared ? declared.SupportsCredential(credential.Kind) : credential.Kind == LlmCredentialKind.ApiKey;
         if (!supported) throw new ArgumentException("目标供应商未声明支持所选认证方式，不允许自动降级或借用凭据。");
         if (target.Protocols == LlmProtocol.None || (target.Protocols & ~(LlmProtocol.ChatCompletions | LlmProtocol.Responses
-            | LlmProtocol.ClaudeMessages | LlmProtocol.Gemini | LlmProtocol.OllamaChat | LlmProtocol.OllamaGenerate | LlmProtocol.BedrockConverse | LlmProtocol.BedrockNova | LlmProtocol.Realtime | LlmProtocol.Moderations)) != 0)
+            | LlmProtocol.ClaudeMessages | LlmProtocol.Gemini | LlmProtocol.OllamaChat | LlmProtocol.OllamaGenerate | LlmProtocol.BedrockConverse | LlmProtocol.BedrockNova | LlmProtocol.Realtime | LlmProtocol.Moderations | LlmProtocol.TextCompletions)) != 0)
             throw new ArgumentException("目标协议能力无效。");
         if (provider is ILlmProtocolSupport protocolSupport)
             foreach (var protocol in Enum.GetValues<LlmProtocol>())
@@ -130,7 +130,8 @@ internal sealed class LlmConfiguration
             || target.Protocols.HasFlag(LlmProtocol.BedrockConverse) && provider is not IBedrockConverseAdapter
             || target.Protocols.HasFlag(LlmProtocol.BedrockNova) && provider is not IBedrockNovaAdapter
             || target.Protocols.HasFlag(LlmProtocol.Realtime) && provider is not IRealtimeAdapter
-            || target.Protocols.HasFlag(LlmProtocol.Moderations) && provider is not IModerationsAdapter)
+            || target.Protocols.HasFlag(LlmProtocol.Moderations) && provider is not IModerationsAdapter
+            || target.Protocols.HasFlag(LlmProtocol.TextCompletions) && provider is not ITextCompletionsAdapter)
             throw new ArgumentException("目标声明的协议没有对应适配实现。");
         return target;
     }

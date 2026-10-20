@@ -25,5 +25,7 @@ public enum LlmProtocol
     /// <summary>原生 Realtime JSON 双工协议，独立于 Responses WebSocket。</summary>
     Realtime = 256,
     /// <summary>原生 Moderations 完整 JSON 模型调用，不执行应用内容处置策略。</summary>
-    Moderations = 512
+    Moderations = 512,
+    /// <summary>原生文本补全 JSON/SSE 协议，使用 prompt 而非 Chat messages。</summary>
+    TextCompletions = 1024
 }

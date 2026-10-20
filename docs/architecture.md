@@ -2510,3 +2510,23 @@ OpenAiLlmProvider --> Moderation : original data and complete-target metadata
 The nullable MaximumModerationRequestBytes policy defaults effectively to 32 MiB and is JsonIgnore-WhenNull, preserving previous default HTTP/WebSocket binding bytes. Explicit values participate in the existing provider fingerprint; zero/negative fail at construction. MaximumBodyBytes bounds response/error bytes. Native API-Key credentials and actual model/root are fixed before factory creation, unrelated auth defaults are removed and caller-owned named-client organization/project policies remain explicit application configuration. No anonymous/external fallback occurs.
 
 Raw HTTP/HTTP200 errors retain bytes/type/status through the additive core error contract. Request snapshots, byte/declared-length/actual-target checks, strict unknown-field JSON/Unicode/duplicates, normal EOF, owned resource closure and final cancellation gate publication. Native SSE fails before body reading. Classification ids do not enter Responses continuation ownership. Ninety-one supplier cases bring OpenAI to 408 offline cases; core remains 247, with 2535 conversion regressions at this contract. No provider-peer or cross-capability reference, new package, content enforcement, media download, workflow/background host or billing feature is introduced. Actual model/service/label accuracy remains unverified.
+
+## Native text Completions contract
+
+The LLM capability adds `TextCompletions = 1024` without changing prior protocol values or default target serialization. `LlmClient.TextCompletions` uses the existing `LlmInvocation` for complete-target routing and coordinated Session affinity. Registration requires both the explicit target flag and an `ITextCompletionsAdapter`; a protocol-support claim alone is insufficient. Other providers and the conversion decorator acquire no implicit text-completion capability.
+
+```mermaid
+classDiagram
+LlmClient --> ITextCompletionsClient
+ITextCompletionsClient <|.. TextCompletionsClient
+TextCompletionsClient --> TextCompletionRequest : native parameters snapshot
+TextCompletionsClient --> LlmInvocation : same complete target binding
+TextCompletionsClient --> ITextCompletionsAdapter : explicit provider implementation
+ITextCompletionsAdapter --|> ILlmProvider
+ITextCompletionsAdapter --> TextCompletion : full native JSON
+ITextCompletionsAdapter --> TextCompletionEvent : native SSE JSON and metadata
+TextCompletion --|> LlmJsonResult
+TextCompletionEvent --|> LlmJsonEvent
+```
+
+`TextCompletionRequest` exposes only the public Model and native extension Parameters, including prompt. Absence/null, original text/token batch boundaries, suffix, echo, logprobs and unknown fields stay native; there is no canonical prompt/message conversion. The method owns stream mode; model/stream overrides and Undefined/malformed Unicode fail before cache work. The full request is frozen before the first asynchronous binding wait; actual-model mapping occurs only after selection. Result/event JSON, original indices and transport metadata are independent immutable snapshots; upstream text IDs are not indexed for Responses continuation. Provider-specific HTTP/SSE/body/terminal validation belongs to that supplier, with no new cross-capability coordinator, package dependency or shared business layer.

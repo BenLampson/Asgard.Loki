@@ -249,11 +249,15 @@ await foreach (var item in loki.LLM.Responses.StreamAsync(
 }
 ```
 
-`loki.LLM.ChatCompletions.CompleteAsync(...)` and `.StreamAsync(...)` use `ChatCompletionRequest`, whose `Messages` is an unmodified JSON array. Both text protocols expose an extension parameter dictionary for fields such as tools, reasoning and caching. `stream` is controlled by the selected method.
+`loki.LLM.ChatCompletions.CompleteAsync(...)` and `.StreamAsync(...)` use `ChatCompletionRequest`, whose `Messages` is an unmodified JSON array. Chat and Responses expose an extension parameter dictionary for fields such as tools, reasoning and caching. `stream` is controlled by the selected method.
 
 A route may contain any valid combination of server, actual model, credential and provider. New Sessions use the configured selector; existing Sessions always reuse the stored complete binding. Switching protocol or public model within a Session is rejected.
 
 Custom LLM providers can explicitly support `LlmCredential.Anonymous("local-instance")` through `ILlmCredentialSupport`. It retains a stable credential identity in the complete Session binding; a missing Key never selects this mode automatically. Existing providers without that optional contract remain API-Key-only. The separate [Ollama LLM provider](src/Asgard.Loki.LLM.Ollama/README.md) now implements native Chat/generate JSON/NDJSON and explicit header isolation; cloud token refresh/signing remains pending; see the [LLM credential contract](src/Asgard.Loki.LLM/README.md#explicit-credential-kinds).
+
+### Native text Completions contract
+
+Providers implementing `ITextCompletionsAdapter` can register explicit `LlmProtocol.TextCompletions` targets and expose `loki.LLM.TextCompletions.CompleteAsync` / `.StreamAsync`. `TextCompletionRequest.Parameters` retains native prompt text/token batches, suffix, echo, logprobs and unknown fields; it is not converted into Chat messages. Complete JSON and `TextCompletionEvent` retain original choices, indices, native fields and SSE metadata. Method-owned `stream` and actual-model mapping use the same complete Session binding, with no history management, automatic conversion or retry. See the [native contract](src/Asgard.Loki.LLM/README.md#native-text-completions).
 
 ### Native Responses compaction
 

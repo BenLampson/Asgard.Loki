@@ -12,7 +12,15 @@ Every send validates the original cached binding without creating a replacement.
 
 Native optional operations are advertised independently of protocol families. `loki.LLM.Responses.CompactAsync` uses `ResponseCompactionRequest` / `ResponseCompaction`; it requires a target declaring `LlmTargetFeatures.ResponsesCompaction` and a provider implementing `IResponsesCompactionAdapter`. The complete returned window stays opaque and caller-controlled. Optional `PreviousResponseId` is checked against Session ownership; a compaction result ID is not registered as a generated-response ID. Unsupported existing targets fail without rerouting. The default interface method keeps older custom `IResponsesClient` implementations usable and reports compaction as unsupported. See the [root compaction example](../../README.md#native-responses-compaction).
 
-Independent SDK contracts and orchestration for Chat Completions, Responses, Claude Messages, Gemini generateContent, Ollama Chat, Ollama generate and Bedrock Converse.
+Independent SDK contracts and complete-target routing for Chat Completions, Responses, Claude Messages, Gemini generateContent, Ollama Chat/generate, Bedrock Converse/Nova, Realtime, Moderations and native text Completions.
+
+## Native text Completions
+
+`loki.LLM.TextCompletions.CompleteAsync` and `.StreamAsync` use `TextCompletionRequest`, `TextCompletion` and `TextCompletionEvent`. A configured target must explicitly declare `LlmProtocol.TextCompletions`, and its provider must implement `ITextCompletionsAdapter`; merely claiming the protocol cannot replace an implementation. This native prompt-based protocol is separate from Chat Completions and from Ollama generate. The conversion decorator does not advertise it.
+
+`TextCompletionRequest.Model` is the public route name. `Parameters` contains the native `prompt` and all endpoint parameters, preserving absent/null values, text/text batches, token/token batches, suffix, echo, logprobs, stop, filters and future fields without templates or message synthesis. The provider owns endpoint-specific validation and may reject unsupported shapes/options. The selected method owns `stream`; case-insensitive `model`/`stream` extension overrides, Undefined values and malformed original Unicode fail before cache/target work. A complete snapshot precedes asynchronous Session resolution, then only the fixed actual model and transport mode are written.
+
+The result and each event retain full native JSON, original choice order/indices, text, logprobs, filter/usage data, unknown fields and reported upstream model, with public/actual target metadata kept separately. `TextCompletionEvent` additionally retains SSE event name, ID and retry hint without reconnecting. Providers own native byte/EOF/terminal/resource validation; the core does not aggregate text, infer completion, execute tools or retry. Existing complete-target/credential/provider binding and explicit first-binding coordination apply. Text completion IDs do not enter Responses continuation ownership, and an existing Session cannot switch protocol. `TextCompletions = 1024` is additive; previous protocol values and ordinary target fingerprints remain unchanged.
 
 ## Explicit credential kinds
 
