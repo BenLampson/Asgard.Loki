@@ -117,7 +117,7 @@ public sealed class InputFileBoundaryTests
         Assert.Equal("media_resolution_required", Assert.Single(error.Diagnostics).Code);
     }
 
-    /// <summary>Claude URL 的源协议语义虽明确，但 Chat/Gemini 仍没有此检查点的直接对应 URL 输入。</summary>
+    /// <summary>Claude URL 的源协议语义虽明确，但 Chat/Gemini 仍没有直接对应的 URL 输入。</summary>
     [Theory] [InlineData(LlmProtocol.ChatCompletions)] [InlineData(LlmProtocol.Gemini)]
     public void ClaudeUrl_RequiresResolutionForOtherTargets(LlmProtocol target)
     {

@@ -27,8 +27,7 @@ var target = new AliRerankAdapter(applicationHttpClientFactory, new()
 {
     Id = "workspace-ranking",
     Model = "qwen3-rerank",
-    BaseAddress = callerSelectedDashScopeApiRoot, // Explicit workspace/region root including /api/v1/.
-    ApiKey = callerProvidedApiKey
+    BaseAddress = callerSelectedDashScopeApiRoot, // Explicit workspace/region root including /api/v1/. ApiKey = callerProvidedApiKey
 });
 await using var loki = new LokiClientBuilder().AddRerank(new()
 {
@@ -62,7 +61,7 @@ var rankings = result.AliRankings; // Use each original Index, not its array pos
 
 The SDK accepts the native HTTP envelope, not DashScope Python SDK's flattened call arguments or its additional response wrapper. Known flat `query`, `documents`, `top_n`, `return_documents`, `instruct` and `fps` fields are rejected rather than moved or silently ignored. Omitted options remain omitted: the native default returns all documents without their text. Positive `top_n` expects `min(top_n, input count)` results; it is never changed to 1 or injected into a request. Null, zero, negative and fractional top-n values are outside this provider's validated request contract. Explicit nested options must have their documented JSON types. Exact integer/score checks inspect raw decimal semantics, avoiding rounding near zero/one or integer boundaries. Large JSON integers are preserved rather than narrowed; model/server limits still apply upstream.
 
-String and object document containers, Unicode and unknown fields remain unchanged. The SDK does not tokenize, truncate, serialize objects into text/YAML, fetch a URL, render media, change encodings or infer which model supports a modality. Image references/Data URIs and video references are passed as caller-provided strings; formats, accessibility and model-specific acceptance are checked upstream. Unknown fields are forwarded without certifying acceptance. Media support in this current contract may exceed the pinned New API gateway's text-oriented mapping.
+String and object document containers, Unicode and unknown fields remain unchanged. The SDK does not tokenize, truncate, serialize objects into text/YAML, fetch a URL, render media, change encodings or infer which model supports a modality. Image references/Data URIs and video references are passed as caller-provided strings; formats, accessibility and model-specific acceptance are checked upstream. Unknown fields are forwarded without certifying acceptance.
 
 Each result must retain a unique original index within the input documents. A returned document is checked even when `return_documents` is false. When explicitly requested, it cannot be absent/null. Text echoes are matched exactly to the indexed source content; the documented native `document.text` wrapper can echo that content for a media input, using this request's source index context. An explicitly returned image/video modality must match the source modality and value. Missing and explicit null optional documents remain distinct in the provider view; other native fields remain in `Data`. Such checks establish protocol association, not media interpretation or relevance quality. The SDK never sorts/recalculates returned scores, compares them across requests or treats them as calibrated probabilities.
 

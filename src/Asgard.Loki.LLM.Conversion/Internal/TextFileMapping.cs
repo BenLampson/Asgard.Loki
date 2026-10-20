@@ -8,7 +8,7 @@ namespace Asgard.Loki.LLM.Conversion.Internal;
 /// <summary>只转换声明 UTF-8 的 text/plain 文件；文件语义独立于普通消息文本。</summary>
 internal static class TextFileMapping
 {
-    /// <summary>本检查点唯一明确映射的纯文本 MIME。</summary>
+    /// <summary>支持显式映射的纯文本 MIME。</summary>
     internal const string Mime = "text/plain";
     private static readonly UTF8Encoding StrictUtf8 = new(false, true);
 

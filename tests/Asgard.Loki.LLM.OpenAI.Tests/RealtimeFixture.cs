@@ -18,7 +18,7 @@ internal static class RealtimeFixture
         return CompactionFixture.Build(handler, store, targets ?? [Target()], selector,
             new OpenAiLlmProvider(new StubHttpClientFactory(handler), options ?? new(), factory));
     }
-    /// <summary>读取在生产实现之前提交的完整原生样本。</summary>
+    /// <summary>读取完整独立原生样本。</summary>
     internal static JsonElement Transcript()
     {
         using var source = typeof(RealtimeFixture).Assembly.GetManifestResourceStream("Asgard.Loki.LLM.OpenAI.Tests.Fixtures.realtime.json")!;

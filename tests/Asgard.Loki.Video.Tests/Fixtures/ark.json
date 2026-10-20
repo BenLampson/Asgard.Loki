@@ -3,7 +3,6 @@
     "kind": "independently authored offline contract sample; not live model output",
     "create": "https://docs.volcengine.com/docs/ark/create-video-generation-task-api?lang=zh",
     "get": "https://docs.volcengine.com/docs/ark/get-video-generation-task-api?lang=zh",
-    "new_api": "058c8231b68c51ee02abee15befcd720fee9f4a2/plugins/tasks/doubao/plugin.js",
     "checked": "2026-10-20"
   },
   "submit_path": "/api/v3/contents/generations/tasks",

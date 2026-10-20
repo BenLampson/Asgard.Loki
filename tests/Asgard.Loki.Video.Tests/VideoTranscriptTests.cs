@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Asgard.Loki.Video.Tests;
 
-/// <summary>在生产实现之前独立固定原生素材引用、任务身份、状态和结果窗口。</summary>
+/// <summary>验证原生素材引用、任务身份、状态和结果的完整窗口。</summary>
 public sealed class VideoTranscriptTests
 {
     /// <summary>状态、失败和带签名结果保留完整原生语义，不能把 HTTP 成功当任务成功。</summary>

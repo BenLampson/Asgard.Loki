@@ -4,7 +4,7 @@ Verified locally on **2026-10-16 (Asia/Shanghai)** with `doubao-seed-evolving`, 
 
 ## Protocol contract
 
-Loki exposes two native protocols. It maps the public model alias to the selected target's actual model, selects the endpoint and authentication, and sets `stream` from the public method. It preserves the remaining caller JSON and upstream JSON/events. It does not translate Chat Completions into Responses or compensate for upstream behavior by changing parameters.
+These live cases exercise the native Chat Completions and Responses protocols. It maps the public model alias to the selected target's actual model, selects the endpoint and authentication, and sets `stream` from the public method. It preserves the remaining caller JSON and upstream JSON/events. It does not translate Chat Completions into Responses or compensate for upstream behavior by changing parameters.
 
 | Concern | Chat Completions | Responses |
 | --- | --- | --- |

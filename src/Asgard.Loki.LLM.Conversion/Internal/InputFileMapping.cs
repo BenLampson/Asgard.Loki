@@ -109,7 +109,7 @@ internal static class InputFileMapping
     /// <summary>仅识别明确的 text/plain，不从扩展名或其他 text/* 推断同义类型/字符集。</summary>
     private static bool IsText(string mime) => string.Equals(mime, TextFileMapping.Mime, StringComparison.OrdinalIgnoreCase);
 
-    /// <summary>此检查点只支持用户输入文件，不把生成文件或系统指令移到用户消息中。</summary>
+    /// <summary>只支持用户输入文件，不把生成文件或系统指令移到用户消息中。</summary>
     private static void RequireUser(ConversionMessage message)
     {
         if (message.Role != "user") Reject("unsupported_file_role", "$content[].file");
