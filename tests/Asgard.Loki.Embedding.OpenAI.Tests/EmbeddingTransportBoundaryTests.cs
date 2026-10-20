@@ -9,17 +9,17 @@ namespace Asgard.Loki.Embedding.OpenAI.Tests;
 public sealed class EmbeddingTransportBoundaryTests
 {
     /// <summary>HTTP 二进制错误保留字节和内容类型，既不替换字符也不重新发送。</summary>
-    [Fact]
-    public async Task BinaryErrorKeepsOriginalBytesAndContentType()
+    [Theory] [InlineData(false)] [InlineData(true)]
+    public async Task BinaryErrorKeepsOriginalBytesAndContentType(bool malformedType)
     {
         byte[] bytes = [255, 0, 254]; using var factory = M3eProfileFixture.Factory(); factory.OnSend = (_, _) =>
-        { var content = new ByteArrayContent(bytes); content.Headers.ContentType = new("application/octet-stream"); return Task.FromResult(new HttpResponseMessage(HttpStatusCode.BadGateway) { Content = content }); };
+        { var content = new ByteArrayContent(bytes); content.Headers.ContentType = new("application/octet-stream"); if (malformedType) { content.Headers.Remove("Content-Type"); content.Headers.TryAddWithoutValidation("Content-Type", "not a media type"); } return Task.FromResult(new HttpResponseMessage(HttpStatusCode.BadGateway) { Content = content }); };
         var error = await Assert.ThrowsAsync<EmbeddingUpstreamException>(() => new OpenAiEmbeddingAdapter(factory, M3eProfileFixture.Options()).EmbedAsync(M3eProfileFixture.Request(1), TestContext.Current.CancellationToken));
-        Assert.Equal(bytes, error.Body.ToArray()); Assert.Equal("application/octet-stream", error.ContentType); Assert.Throws<DecoderFallbackException>(() => error.ResponseBody); Assert.Equal(1, factory.Calls); Assert.Equal(1, factory.Disposals);
+        Assert.Equal(bytes, error.Body.ToArray()); Assert.Equal(malformedType ? "not a media type" : "application/octet-stream", error.ContentType); Assert.Throws<DecoderFallbackException>(() => error.ResponseBody); Assert.Equal(1, factory.Calls); Assert.Equal(1, factory.Disposals);
     }
     /// <summary>未知字段中的坏编码也不能被解码器有损替换，原始字节和声明长度均有界。</summary>
     [Theory]
-    [InlineData("limit")] [InlineData("length")] [InlineData("utf8")] [InlineData("unicode")] [InlineData("charset")] [InlineData("type")]
+    [InlineData("limit")] [InlineData("length")] [InlineData("utf8")] [InlineData("unicode")] [InlineData("charset")] [InlineData("type")] [InlineData("invalid-type")]
     public async Task FullRawResponseMustMeetByteEncodingAndMediaContract(string kind)
     {
         var bytes = Encoding.UTF8.GetBytes(M3eProfileFixture.Part("responses")[1].GetRawText());
@@ -28,7 +28,8 @@ public sealed class EmbeddingTransportBoundaryTests
         using var source = new EmbeddingTransportReadStream(bytes); using var factory = M3eProfileFixture.Factory(); factory.OnSend = (_, _) =>
         {
             var content = new StreamContent(source); content.Headers.ContentType = new(kind == "type" ? "text/plain" : "application/json");
-            if (kind == "charset") content.Headers.ContentType.CharSet = "utf-16"; if (kind == "length") content.Headers.ContentLength = bytes.Length + 1;
+            if (kind == "invalid-type") { content.Headers.Remove("Content-Type"); content.Headers.TryAddWithoutValidation("Content-Type", "not a media type"); }
+            if (kind == "charset") content.Headers.ContentType!.CharSet = "utf-16"; if (kind == "length") content.Headers.ContentLength = bytes.Length + 1;
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
         };
         await Assert.ThrowsAsync<InvalidDataException>(() => new OpenAiEmbeddingAdapter(factory, M3eProfileFixture.Options(responseLimit: kind == "limit" ? bytes.Length - 1 : bytes.Length + 100)).EmbedAsync(M3eProfileFixture.Request(1), TestContext.Current.CancellationToken));

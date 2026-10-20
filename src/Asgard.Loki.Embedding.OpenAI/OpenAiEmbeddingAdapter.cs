@@ -58,7 +58,7 @@ public sealed class OpenAiEmbeddingAdapter : IEmbeddingAdapter
             var length = response.Content.Headers.ContentLength;
             if (response.Content.Headers.Contains("Content-Length") && length is null || length < 0) throw new InvalidDataException("嵌入响应声明长度无效。");
             body = await HttpBodyReader.ReadAsync(response.Content, _options.MaxResponseBytes, cancellationToken).ConfigureAwait(false);
-            status = (int)response.StatusCode; type = response.Content.Headers.ContentType?.ToString();
+            status = (int)response.StatusCode; type = response.Content.Headers.TryGetValues("Content-Type", out var types) ? string.Join(", ", types) : null;
         }
         cancellationToken.ThrowIfCancellationRequested();
         if (status is < 200 or >= 300) throw new EmbeddingUpstreamException("OpenAI 嵌入调用失败。", status, body, type);
