@@ -1,0 +1,3 @@
+# Asgard.Loki.Image.Replicate.Tests
+
+Independent fictional protocol fixtures follow [model predictions](https://replicate.com/docs/reference/http#models.predictions.create), [sync mode](https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode) and the native model-input multipart upload contract. They are authored before production implementation. Complete original prediction/input-upload JSON, scalar/array image outputs, pending/failed/canceled/unknown/removed data and exact numbers are retained. No source proxy conversion, production-generated expected result, real network, credentials or media downloads are involved.
