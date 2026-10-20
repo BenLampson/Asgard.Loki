@@ -1,0 +1,170 @@
+{
+  "source": "Independent hand-authored native New API/Sub2API alpha/search vectors. Pinned adaptor, AlphaSearchRequest and raw AlphaSearchHelper contract; no SDK output capture or live service/model proof. SDK options explicitly select the owned model field; caller parameters exclude model.",
+  "path": "alpha/search",
+  "profiles": [
+    {
+      "root": "https://newapi.invalid/v1/",
+      "model": "selected-search-A",
+      "key": "fixture-search-key-A",
+      "target": "newapi-A",
+      "version": "A-1",
+      "client": "Explicit.NewAPI.A"
+    },
+    {
+      "root": "https://sub2api.invalid/v1/",
+      "model": "selected-search-B",
+      "key": "fixture-search-key-B",
+      "target": "sub2api-B",
+      "version": "B-1",
+      "client": "Explicit.Sub2API.B"
+    },
+    {
+      "root": "https://proxy.invalid/selected-search/api/v1/",
+      "model": "selected-search-C",
+      "key": "fixture-search-key-C",
+      "target": "proxy-C",
+      "version": "C-1",
+      "client": "Explicit.Proxy.C"
+    }
+  ],
+  "requests": {
+    "omitted": {
+      "query": "原生查询，保持输入",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business field"
+        }
+      }
+    },
+    "null": {
+      "query": {
+        "text": "opaque query",
+        "urls": [
+          "https://source.invalid/a?sig=opaque"
+        ]
+      },
+      "id": null,
+      "stream": null,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business field"
+        }
+      }
+    },
+    "false": {
+      "query": [
+        "a",
+        "b"
+      ],
+      "id": "original-associated-id",
+      "stream": false,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business field"
+        }
+      }
+    },
+    "true": {
+      "query": "原始请求",
+      "id": "原始关联",
+      "stream": true,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business field"
+        }
+      }
+    }
+  },
+  "responses": [
+    {
+      "name": "json",
+      "status": 200,
+      "type": "application/json; profile=\"native\"",
+      "body": "{\"id\":\"upstream-search\",\"results\":[{\"url\":\"https://source.invalid/a?sig=opaque\",\"title\":\"原始资料\",\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business field\"}}}],\"usage\":null,\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business field\"}}}"
+    },
+    {
+      "name": "text",
+      "status": 201,
+      "type": "text/plain; charset=utf-8",
+      "body": "  原始文本\n保持空行\n\n"
+    },
+    {
+      "name": "binary",
+      "status": 200,
+      "type": "application/octet-stream",
+      "base64": "AP+AQQ=="
+    },
+    {
+      "name": "empty",
+      "status": 204,
+      "type": null,
+      "base64": ""
+    },
+    {
+      "name": "json-array",
+      "status": 200,
+      "type": "application/json",
+      "body": "[1,null,false,{\"exact\":9007199254740993}]"
+    },
+    {
+      "name": "sse",
+      "status": 200,
+      "type": "text/event-stream",
+      "body": ": original source\n\nevent: vendor.partial\ndata: {\"raw\":true}\n\n"
+    },
+    {
+      "name": "missing-type",
+      "status": 202,
+      "type": null,
+      "body": "  {\"pending\":true,\"unknown\":null}\n"
+    },
+    {
+      "name": "json-error",
+      "status": 200,
+      "type": "application/json",
+      "body": "{\"error\":{\"message\":\"原始业务结果\",\"code\":123},\"unknown\":false}"
+    }
+  ],
+  "errors": [
+    {
+      "status": 400,
+      "type": "application/problem+json",
+      "body": "{\"error\":{\"message\":\"原生参数拒绝\"},\"exact\":9007199254740993}"
+    },
+    {
+      "status": 401,
+      "type": "text/plain",
+      "body": "Original authentication failure"
+    },
+    {
+      "status": 429,
+      "type": "application/octet-stream",
+      "base64": "AP+AQQ=="
+    },
+    {
+      "status": 503,
+      "type": null,
+      "base64": ""
+    }
+  ]
+}
