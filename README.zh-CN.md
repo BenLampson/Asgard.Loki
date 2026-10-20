@@ -10,6 +10,8 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 
 `Asgard.Loki.Infrastructure` 提供共享的底层 SSE 解析和有界 HTTP 字节读取；入口仍只引用统一抽象，六类能力各自维护协议、结果和状态。Video 提供原生提交/查询与持久化完整目标引用契约；[方舟视频包](src/Asgard.Loki.Video.Volcengine/README.md) 和[万相视频包](src/Asgard.Loki.Video.Ali/README.md) 支持各自原生视频任务。
 
+Video 核心还提供可选的原生 multipart 提交、沿原目标 remix 和显式内容复制契约，上传流与目标流由调用者持有。具体供应商是否实现这些契约见各包支持矩阵。
+
 ## 已实现
 
 | 能力 | 供应商包 | 支持内容 |
