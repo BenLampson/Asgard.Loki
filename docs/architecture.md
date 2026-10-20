@@ -1,5 +1,22 @@
 # Asgard.Loki Architecture Specification
 
+## Native MiniMax Image
+
+`Image.MiniMax` depends only on Image, Infrastructure and standard HTTP factory support. MiniMaxImageAdapter implements existing generation routes against one explicit native image_generation endpoint, model and independent Bearer key. Native prompt/extra root parameters, subject references and exact scalar values are snapshotted before factory creation/await. There is no cross-capability provider reference, native-default model, size/aspect conversion, response-format alias rewrite, download or generic task coordinator.
+
+The original complete result preserves metadata, base_resp, image arrays and extensions. Nonzero native status is an ImageUpstreamException even on HTTP 200; malformed/missing native status/data cannot succeed. Explicit GeneratedImage views retain each original JSON string item: URL entries followed by Base64 entries, independently ordered and never zipped or guessed to represent the same image. Empty native output remains empty with original failure counts. Decode is caller-driven. Original JSON is never replaced by an invented data array, timestamp, usage or arithmetic. Only complete JSON is supported; stream entry/stream=true fail before I/O. Raw byte/length/encoding and owned disposal checks precede result publication; borrowed factory remains caller-owned.
+
+```mermaid
+classDiagram
+MiniMaxImageAdapter ..|> IImageGenerationAdapter
+MiniMaxImageAdapter --> MiniMaxImageOptions : fixed native endpoint/model/key
+MiniMaxImageAdapter --> MiniMaxImagePayload : frozen prompt and native extras
+MiniMaxImageAdapter --> MiniMaxImageJson : native status and original carriers
+MiniMaxImageAdapter --> HttpBodyReader : original complete bytes and EOF
+MiniMaxImageAdapter --> ImageGenerationResult : complete original JSON
+ImageGenerationResult --> GeneratedImage : independent original string views
+```
+
 ## Native resource-scoped Vertex Image
 
 `Image.GoogleVertex` references only Image, Infrastructure and standard HTTP support. It has no reference to Image.Google, LLM.GoogleVertex or Video.GoogleVertex. GoogleVertexImageAdapter uses existing generation routes plus directly owned complete native requests. The API-Key constructor explicitly accepts a full Google project/location resource or Express publisher resource; the token-source constructor requires a full project resource and stable principal. Root/version/region/resource are explicit and never selected from model names. Mixed key/principal options fail before I/O. The application owns authentication discovery/login/refresh, token source, factory and optional clock.

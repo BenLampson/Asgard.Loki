@@ -61,6 +61,7 @@
     <Project Path="src/Asgard.Loki.Audio.Cloudflare/Asgard.Loki.Audio.Cloudflare.csproj" />
   </Folder>
   <Folder Name="/src/Providers/MiniMax/">
+    <Project Path="src/Asgard.Loki.Image.MiniMax/Asgard.Loki.Image.MiniMax.csproj" />
     <Project Path="src/Asgard.Loki.Audio.MiniMax/Asgard.Loki.Audio.MiniMax.csproj" />
     <Project Path="src/Asgard.Loki.Video.MiniMax/Asgard.Loki.Video.MiniMax.csproj" />
   </Folder>
@@ -173,6 +174,7 @@
     <Project Path="tests/Asgard.Loki.Video.Vidu.Tests/Asgard.Loki.Video.Vidu.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Volcengine/">
+    <Project Path="tests/Asgard.Loki.Image.MiniMax.Tests/Asgard.Loki.Image.MiniMax.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.GoogleVertex.Tests/Asgard.Loki.Image.GoogleVertex.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Google.Tests/Asgard.Loki.Image.Google.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Ali.Tests/Asgard.Loki.Image.Ali.Tests.csproj" />
