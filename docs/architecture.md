@@ -3060,3 +3060,25 @@ Original reasoning/schema/search settings, FIM prompt and tool call/result/item 
 Supplier-private Responses classification includes documented reasoning_text/custom_tool_call_input/web_search_call lifecycle events, allowing them before terminal and rejecting reopens afterward. Unknown typed metadata remains raw. Chat uses choices-bearing frames for generated identity, preserves unknown nonstring type/business IDs and does not classify response.failed as a Responses failure. Actual native error event semantics remain intact. This corrects native fidelity within existing strict HTTP v2 behavior; identity serialization and default policy bytes stay unchanged.
 
 Independent whole-window tests cover35 OpenAI profile/fault cases and15 Messages profile cases. Current scoped executables pass752 OpenAI and167 Anthropic offline cases. Exact raw framing/resource/cancellation/terminal and Session association remain supplier/core responsibilities as before. Native text state remains separate from Chat and Responses. Production graph stays63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. No live model/optional-setting or full-suite/all-package verification is claimed.
+
+
+### Explicit DeepSeek native profiles
+
+Existing OpenAiLlmProvider implements native Chat, Responses and TextCompletions with three separately configured complete roots. AnthropicLlmProvider independently handles native Messages and selected ApiKey/Bearer authentication. No new package, protocol, public option, dependency edge, brand wrapper or endpoint/model heuristic is introduced. DeepSeekToolsClient remains the separate model-free Search/Fetch operation; it does not supply model Sessions or execute returned tools.
+
+```plantuml
+@startuml
+LlmOptions --> "DeepSeek v1 target" : selected Chat model / credential
+LlmOptions --> "DeepSeek origin target" : selected Responses model / credential
+LlmOptions --> "DeepSeek beta target" : selected TextCompletions model / credential
+"DeepSeek v1 target" --> OpenAiLlmProvider : native Chat
+"DeepSeek origin target" --> OpenAiLlmProvider : native stateless Responses
+"DeepSeek beta target" --> OpenAiLlmProvider : native text / FIM
+LlmOptions --> "DeepSeek anthropic/v1 target" : selected Messages model / auth
+"DeepSeek anthropic/v1 target" --> AnthropicLlmProvider : native Messages
+@enduml
+```
+
+Whole native input/output remains supplier data: Chat reasoning_content, Responses plain reasoning and custom apply_patch IDs/input, Messages unsigned thinking and remote/client tool links, and separate valid FIM suffix/logprobs/echo variants. No automatic response history, previous_response_id, model suffix stripping, effort mapping, signature invention, parameter repair or code/tool execution occurs. Responses requires native completed/incomplete/failed without DONE; text requires actual DONE with usage allowed on the last content choice; Messages requires message_stop. Existing complete-target Session binding and bounded closure/final-cancellation gates apply unchanged.
+
+Thirty-seven OpenAI and twelve Anthropic independent-profile/fault cases pass, bringing current scoped totals to789 and179 respectively. The production graph remains63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. These offline results do not establish live model/setting effectiveness, Linux, full-repository tests or all-package verification.
