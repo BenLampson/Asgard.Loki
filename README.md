@@ -40,6 +40,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Music / lyrics tasks | `Asgard.Loki.Audio.SunoAPI` | Explicit native MUSIC/LYRICS submit, status/batch POST and separate raw result GET on an application-configured proxy | One-shot native JSON; no background polling or media download |
 | File transcription / translation | `Asgard.Loki.Audio.OpenAI` | Native multipart, complete JSON/verbose/diarized or text/subtitle results | Native transcription delta/segment/done SSE |
 | Images | `Asgard.Loki.Image.OpenAI` | OpenAI image generations and native JSON/multipart edits; Base64 and URL results | Native generation/edit SSE partial/final events |
+| Compatible image generation | `Asgard.Loki.Image.OpenAI` | Explicit xAI native complete JSON profile with independent root/model/key and original data[] results | Verified offline; xAI editing uses a distinct native JSON contract |
 | Image | `Asgard.Loki.Image.Azure` | Native dated deployment-scoped JSON generation and multipart editing; complete original images/filtering/usage | Native generation/editing SSE; original image events, no synthetic streams |
 | Image | `Asgard.Loki.Image.Volcengine` | Native Ark generation/image inputs, direct native omitted-prompt layers and original mixed JSON outcomes | Native partial successes/failures and original summary SSE; single-image EOF |
 | Image | `Asgard.Loki.Image.Ali` | Native multimodal JSON / interleaved SSE; explicit modern and legacy image task submission | Caller-driven task GET; original text/image/usage/failures |

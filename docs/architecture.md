@@ -1,5 +1,9 @@
 # Asgard.Loki Architecture Specification
 
+## Explicit compatible xAI image-generation profile
+
+Complete xAI generations use the existing Image.OpenAI adapter with an independently configured native root/model/Bearer identity, no organization/project headers and no body defaults or field mapping. Independent offline whole-wire/result/error vectors cover URL/Base64, nullable fields, original MIME/revision/usage and exact integers. There is no new generation wrapper, provider dependency or automatic upstream detection. This profile establishes complete JSON generation only; xAI edits have a distinct image.url/images[].url JSON input contract and cannot reuse the existing OpenAI reference/multipart validation unchanged. Image SSE and deferred image operations are not implied by this compatibility profile.
+
 ## Native SiliconFlow Image
 
 `Image.SiliconFlow` references only Image, Infrastructure and HTTP factory support. SiliconFlowImageAdapter implements existing generation routes with an explicit native endpoint/model/Bearer key. Original image_size, batch_size, image references and settings pass unchanged, including explicit zero and unknown fields; no OpenAI size/n or model-default inference occurs. The independent native images/timings/seed envelope remains in complete Data, with original images[].url item views. It is not replaced by an OpenAI data array, created timestamp or usage estimate. The native result shape is why this provider cannot be represented by merely relabeling the existing OpenAI response adapter.

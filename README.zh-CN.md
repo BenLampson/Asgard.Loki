@@ -35,6 +35,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 音乐／歌词任务 | `Asgard.Loki.Audio.SunoAPI` | 应用显式配置代理；原生 MUSIC/LYRICS 提交、状态／批量 POST 与独立结果 GET | 单次原生 JSON；无后台轮询或媒体下载 |
 | 文件转录/翻译 | `Asgard.Loki.Audio.OpenAI` | 原生 multipart、完整 JSON/字幕结果及转录 delta/segment/done SSE |
 | 图片 | `Asgard.Loki.Image.OpenAI` | Images Generations、原生 JSON/multipart 编辑、Base64/URL、生成/编辑部分与最终图像 SSE |
+| 兼容图片生成 | `Asgard.Loki.Image.OpenAI` | 显式 xAI 原生完整 JSON 配置，独立地址／模型／凭据并保留 data[] | 已做离线协议验证；xAI 编辑使用不同的原生 JSON 契约 |
 | 图片 | `Asgard.Loki.Image.Azure` | 原生日期版本部署路径；JSON 生成及 multipart 编辑；保留完整图片、过滤信息和用量 | 原生生成／编辑 SSE；保留逐图事件与整次编辑完成标志 |
 | 图片 | `Asgard.Loki.Image.Volcengine` | 原生方舟生成／图像输入、无提示词图层原生入口；保留混合结果 | 保留逐图成功／失败与汇总 SSE；支持单图原生 EOF |
 | 图片 | `Asgard.Loki.Image.Ali` | 原生多模态 JSON／图文 SSE；显式现代与旧版图片异步提交 | 单次任务查询，保留文本／图片／用量／失败 |
