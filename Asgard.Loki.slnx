@@ -254,4 +254,10 @@
   <Folder Name="/tests/Providers/DeepSeek/">
     <Project Path="tests/Asgard.Loki.LLM.DeepSeek.Tests/Asgard.Loki.LLM.DeepSeek.Tests.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/Perplexity/">
+    <Project Path="src/Asgard.Loki.LLM.Perplexity/Asgard.Loki.LLM.Perplexity.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Perplexity/">
+    <Project Path="tests/Asgard.Loki.LLM.Perplexity.Tests/Asgard.Loki.LLM.Perplexity.Tests.csproj" />
+  </Folder>
 </Solution>

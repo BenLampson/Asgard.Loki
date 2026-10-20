@@ -3145,3 +3145,25 @@ ChatCompletionsClient --> LlmInvocation : existing complete-target Session bindi
 Thinking content retains nested text parts, original closed/signature fields and mixed-to-plain-string transitions. The SDK neither flattens reasoning nor regenerates IDs, reconstructs request subsets, renames token parameters, clamps settings or executes tools/media. Nonstandard caller data may be rejected upstream and is not silently repaired. Native finish_reason:error/length remains original; actual DONE is mandatory and cannot replace normal EOF/resource/final-cancellation checks.
 
 Forty-four independent native/proxy whole-window/fault cases pass; current OpenAI project total885 offline cases. The production graph remains64 projects/46 Infrastructure consumers/127 solution paths/64 package IDs. No production source changed for this profile; prior scoped conversion tests are unchanged rather than described as newly run. These checks do not establish live model/setting behavior, Linux, full-repository or all-package validation.
+
+### Native Perplexity Responses
+
+Asgard.Loki.LLM.Perplexity implements the existing IResponsesAdapter with explicit Responses-only protocol support and ApiKey authentication. It references its own LLM capability, Infrastructure and standard HTTP factory support. The supplier owns the responses path, sparse native failure semantics, event sequence and response identity. No common protocol enum, supplier-peer dependency or shared business coordinator is added.
+
+```mermaid
+classDiagram
+IResponsesAdapter <|.. PerplexityResponsesProvider
+ResponsesClient --> PerplexityResponsesProvider : complete bound target
+PerplexityResponsesProvider --> PerplexityCall : frozen original request / selected Bearer
+PerplexityResponsesProvider --> PerplexityStreamState : sparse terminal / sequence / response ID
+PerplexityResponsesProvider --> SseReader : bounded strict UTF-8 framing only
+PerplexityResponsesProvider --> HttpBodyReader : bounded raw JSON / error bytes only
+PerplexityResponsesProvider --> Response : full native status and output
+PerplexityResponsesProvider --> ResponseEvent : original JSON and transport metadata
+```
+
+The explicit complete root appends only responses. Original input strings/arrays, tool calls/reversed results/call IDs, opaque signatures, native root response_format/reasoning, continuation and unknown values remain unchanged except selected model and method stream. Root models/preset/profile selectors cannot override the complete bound model; they fail before factory creation. Caller-driven previous_response_id uses the existing Session response-ownership contract, including explicit continuation with store=false. There is no model-name/hostname inference, automatic migration, fallback, local search/tool execution or history injection.
+
+Native response.failed carries top-level error.message and may omit response/ID. response.completed may contain a partial or absent snapshot. Both are original protocol outcomes. Full JSON retains its reported native status, including failed, incomplete, queued and cancelled. Strictly increasing int64 sequences and any provided original response IDs belong to known native events; unknown business event fields are not interpreted as lifecycle. No terminal, output, response ID or status is manufactured. An optional actual DONE follows a semantic terminal and cannot replace it. Native endings and following metadata remain buffered through EOF, length/UTF-8 checks, all owned-resource closure and final cancellation; late failures discard that tail.
+
+Positive byte/tail limits and named client enter implementation identity. Cache, coordinator and HTTP factory remain borrowed; call resources are owned. Generation is a single exchange with no retry, background polling, downloads or billing calculation. See the [supplier initialization, support matrix, limits and live status](../src/Asgard.Loki.LLM.Perplexity/README.md).
