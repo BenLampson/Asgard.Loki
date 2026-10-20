@@ -11,7 +11,7 @@ The SDK scope is six capability families: **LLM, Audio, Video, Image, Embedding 
 
 The architecture contract, UML, dependency rules and provider extension requirements live in [docs/architecture.md](docs/architecture.md). All namespaces start with `Asgard`.
 
-Native protocols preserve original parameters, results and unknown fields. Explicit [protocol conversion](src/Asgard.Loki.LLM.Conversion/README.md) supports its documented reliable subset, including bounded opt-in Chat/Gemini candidate streams; unsupported mappings fail explicitly. [Realtime](src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket) is caller-driven. [Video](src/Asgard.Loki.Video/README.md) provides independent native task contracts and persistent complete-target references; the [Ark](src/Asgard.Loki.Video.Volcengine/README.md) and [DashScope](src/Asgard.Loki.Video.Ali/README.md) providers submit and query native video generation tasks.
+Native protocols preserve original parameters, results and unknown fields. Explicit [protocol conversion](src/Asgard.Loki.LLM.Conversion/README.md) supports its documented reliable subset, including bounded opt-in Chat/Gemini candidate streams; unsupported mappings fail explicitly. [Realtime](src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket) is caller-driven. [Video](src/Asgard.Loki.Video/README.md) provides independent native task contracts and persistent complete-target references; the [Ark](src/Asgard.Loki.Video.Volcengine/README.md), [DashScope](src/Asgard.Loki.Video.Ali/README.md) and [Gemini Veo](src/Asgard.Loki.Video.Google/README.md) providers submit and query native video generation tasks.
 
 
 ## Supported capabilities
@@ -43,6 +43,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Rerank | `Asgard.Loki.Rerank.SiliconFlow` | Native scalar/text/image requests, original indices/documents, optional native token metadata | — |
 | Video | `Asgard.Loki.Video.Volcengine` | Ark native task submission/query, original media/asset references and result URLs | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Ali` | DashScope native video-generation/image2video submission and task-query results | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.Google` | Native Gemini Veo predictLongRunning, operation query and explicit output copy; previews retire 2026-10-22 | Caller-driven task snapshots/content |
 | Video media assets | `Asgard.Loki.Video.Volcengine` | Ark native Asset/AssetGroup create/get/list/update/delete with independent AK/SK signing | One explicit native operation or page |
 
 Audio exposes an optional [native JSON speech contract](src/Asgard.Loki.Audio/README.md), with independent snapshots and delayed success until source enumeration/disposal finishes. [OpenAI speech](src/Asgard.Loki.Audio.OpenAI/README.md) implements native binary HTTP and explicit SSE aggregation/streaming, including custom voice objects and preserved audio/event data. Binary frames are SDK HTTP records; SSE envelopes retain native JSON/raw text, event identity and original usage.
@@ -84,6 +85,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Video` | Native video tasks and complete-target reference binding |
 | `Asgard.Loki.Video.Volcengine` | Ark native video generation provider |
 | `Asgard.Loki.Video.Ali` | Native DashScope video task provider with explicit service selection |
+| `Asgard.Loki.Video.Google` | Native Gemini Veo operations and explicit content transfer |
 | `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
 | `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider |
 | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |

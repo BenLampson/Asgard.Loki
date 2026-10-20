@@ -8,7 +8,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 
 纯 .NET 10 / C# 14 类库：统一 `LokiClient` 入口，能力及供应商按需安装。英文 README 是完整使用说明，结构规则见 [架构规范](docs/architecture.md)。
 
-`Asgard.Loki.Infrastructure` 提供共享的底层 SSE 解析和有界 HTTP 字节读取；入口仍只引用统一抽象，六类能力各自维护协议、结果和状态。Video 提供原生提交/查询与持久化完整目标引用契约；[方舟视频包](src/Asgard.Loki.Video.Volcengine/README.md) 和[万相视频包](src/Asgard.Loki.Video.Ali/README.md) 支持各自原生视频任务。
+`Asgard.Loki.Infrastructure` 提供共享的底层 SSE 解析和有界 HTTP 字节读取；入口仍只引用统一抽象，六类能力各自维护协议、结果和状态。Video 提供原生提交/查询与持久化完整目标引用契约；[方舟视频包](src/Asgard.Loki.Video.Volcengine/README.md) 、[万相视频包](src/Asgard.Loki.Video.Ali/README.md)和[Gemini Veo 视频包](src/Asgard.Loki.Video.Google/README.md) 支持各自原生视频任务。
 
 
 ## 已实现
@@ -38,6 +38,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 重排 | `Asgard.Loki.Rerank.SiliconFlow` | 原生标量/文本/图片请求、原始索引/文档及可选 token 元数据 |
 | 视频 | `Asgard.Loki.Video.Volcengine` | 方舟原生任务提交/查询、原始媒体/资产引用与结果地址，持久化完整目标绑定 |
 | 视频 | `Asgard.Loki.Video.Ali` | 百炼万相原生 video-generation/image2video 提交与任务查询，完整目标绑定及原始结果 |
+| 视频 | `Asgard.Loki.Video.Google` | Gemini Veo 原生长操作提交、查询与显式结果复制；预览模型公告于 2026-10-22 下线 |
 | 视频素材库 | `Asgard.Loki.Video.Volcengine` | 方舟 Asset/AssetGroup 十个原生操作，独立 AK/SK 签名，显式分页和状态查询 |
 
 供应商包仅引用所属能力，不会带入其他能力包。入口只引用统一抽象。音频核心的可选原生 JSON 调用契约保留 voice 对象和未知参数，并在源枚举及释放成功后才发出完成块；[OpenAI 语音](src/Asgard.Loki.Audio.OpenAI/README.md) 已接入二进制和显式 SSE 聚合/流式读取；SSE 信封保留原生 JSON、原始 data 文本、事件身份及原始用量，done 在尾部读取和释放成功后才交付。

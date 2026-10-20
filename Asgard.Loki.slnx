@@ -36,6 +36,7 @@
   <Folder Name="/src/Providers/Google/">
     <Project Path="src/Asgard.Loki.Embedding.Google/Asgard.Loki.Embedding.Google.csproj" />
     <Project Path="src/Asgard.Loki.LLM.Google/Asgard.Loki.LLM.Google.csproj" />
+    <Project Path="src/Asgard.Loki.Video.Google/Asgard.Loki.Video.Google.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Google/Vertex/">
     <Project Path="src/Asgard.Loki.LLM.GoogleVertex/Asgard.Loki.LLM.GoogleVertex.csproj" />
@@ -98,6 +99,7 @@
   <Folder Name="/tests/Providers/Google/">
     <Project Path="tests/Asgard.Loki.Embedding.Google.Tests/Asgard.Loki.Embedding.Google.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.Google.Tests/Asgard.Loki.LLM.Google.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.Google.Tests/Asgard.Loki.Video.Google.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Google/Vertex/">
     <Project Path="tests/Asgard.Loki.LLM.GoogleVertex.Tests/Asgard.Loki.LLM.GoogleVertex.Tests.csproj" />
