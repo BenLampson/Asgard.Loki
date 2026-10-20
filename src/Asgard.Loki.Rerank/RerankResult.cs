@@ -8,7 +8,7 @@ public sealed class RerankResult
     /// <summary>保存独立 JSON 快照；供应商负责校验自身的原生成功、错误与排序结果结构。</summary>
     public RerankResult(JsonElement data, RerankResultMetadata metadata)
     {
-        if (data.ValueKind != JsonValueKind.Object) throw new ArgumentException("重排响应必须为原生 JSON 对象。", nameof(data));
+        if (data.ValueKind is not (JsonValueKind.Object or JsonValueKind.Array)) throw new ArgumentException("重排响应必须为原生 JSON 对象或数组。", nameof(data));
         ArgumentNullException.ThrowIfNull(metadata);
         Data = data.Clone(); Metadata = metadata;
     }

@@ -2332,3 +2332,26 @@ AzureEmbeddingAdapter --> EmbeddingUpstreamException : original error bytes/stat
 ```
 
 Text and token scalar/batch boundaries remain original, without tokenization, trimming, splitting or inferred defaults. Response vectors retain original order and indices; all request input indices must be covered exactly once. Explicit dimensions/encoding and consistent finite float/Base64 width are validated without converting raw values or inventing usage/model metadata. HTTP/API errors retain complete bytes, including HTTP 200 native errors and binary HTTP failures. Complete byte/length/read/strict-JSON/EOF/disposal/final-cancellation checks precede delivery. The factory remains borrowed and each call owns its HTTP resources, with no retry, provider switch, stream conversion or shared LLM/Audio/Image/Video state.
+
+### Native Rerank JSON containers and errors
+
+`RerankResult` accepts native object or array JSON and clones it without adding a normalized envelope. Supplier adapters retain responsibility for native success/error detection, complete index/document association and empty-result rules. Existing object constructors/results remain valid. `RerankUpstreamException` preserves its existing text constructor, StatusCode and ResponseBody while adding copied raw Body bytes and optional ContentType; byte-constructed errors use strict UTF-8 only when the text projection is requested. No dependency or cross-capability coordinator is added.
+
+```mermaid
+classDiagram
+class RerankResult {
+  +JsonElement Data : native object or array
+  +RerankResultMetadata Metadata
+}
+class IRerankAdapter {
+  +RerankAsync(request)
+}
+class RerankUpstreamException {
+  +int StatusCode
+  +string ResponseBody
+  +ReadOnlyMemory~byte~ Body
+  +string ContentType
+}
+IRerankAdapter --> RerankResult : validated native snapshot
+IRerankAdapter --> RerankUpstreamException : original native failure
+```

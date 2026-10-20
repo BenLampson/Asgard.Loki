@@ -57,9 +57,9 @@ public sealed class RerankContractTests
         Assert.False(result.Data.TryGetProperty("invented_tokens", out _));
     }
 
-    /// <summary>公共结果必须为原生对象，不把空值或非对象伪装成空排序结果集合。</summary>
-    [Theory] [InlineData("null")] [InlineData("[]")] [InlineData("1")] [InlineData("\"text\"")]
-    public void Result_RejectsNonObject(string json)
+    /// <summary>公共结果必须为原生对象或数组，不把空值或标量伪装成排序结果集合。</summary>
+    [Theory] [InlineData("null")] [InlineData("1")] [InlineData("\"text\"")]
+    public void Result_RejectsScalarOrNull(string json)
     {
         using var document = JsonDocument.Parse(json);
         Assert.Throws<ArgumentException>(() => new RerankResult(document.RootElement, new("public", "actual", "native")));
