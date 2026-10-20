@@ -1,0 +1,144 @@
+{
+  "sources": [
+    "https://docs.siliconflow.cn/docs/api/audio-speech-post",
+    "https://docs.siliconflow.cn/docs/api/audio-transcriptions-post"
+  ],
+  "base_address": "https://api.siliconflow.cn/v1/",
+  "speech_authorization": "Bearer fixture-compatible-speech",
+  "file_authorization": "Bearer fixture-compatible-file",
+  "speech_requests": [
+    {
+      "model": "fixture-native-tts",
+      "input": "原始输入 <|endofprompt|> [laughter] 😀\n下一行",
+      "voice": "fixture-native-tts:original-voice",
+      "response_format": "pcm",
+      "speed": 1.25,
+      "instructions": "literal instruction",
+      "metadata": {
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Big": 9007199254740993,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      },
+      "gain": 0,
+      "sample_rate": 16000,
+      "stream": false,
+      "Future": {
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Big": 9007199254740993,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    {
+      "model": "fixture-native-tts",
+      "input": "原样输入",
+      "voice": "fixture-native-tts:original-voice"
+    }
+  ],
+  "audio_base64": "AP+ADQoqAP4=",
+  "file_base64": "UklGRioAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQYAAAAAAAEA/38=",
+  "multipart_requests": [
+    [
+      {
+        "headers": [
+          "Content-Type: text/plain; charset=utf-8",
+          "Content-Disposition: form-data; name=model"
+        ],
+        "text": "fixture-native-asr"
+      },
+      {
+        "headers": [
+          "Content-Type: audio/wav",
+          "Content-Disposition: form-data; name=file; filename=original.wav; filename*=utf-8''original.wav"
+        ],
+        "base64": "UklGRioAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQYAAAAAAAEA/38="
+      }
+    ],
+    [
+      {
+        "headers": [
+          "Content-Type: text/plain; charset=utf-8",
+          "Content-Disposition: form-data; name=model"
+        ],
+        "text": "fixture-native-asr"
+      },
+      {
+        "headers": [
+          "Content-Type: audio/wav",
+          "Content-Disposition: form-data; name=file; filename=original.wav; filename*=utf-8''original.wav"
+        ],
+        "base64": "UklGRioAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQYAAAAAAAEA/38="
+      },
+      {
+        "headers": [
+          "Content-Type: text/plain; charset=utf-8",
+          "Content-Disposition: form-data; name=language"
+        ],
+        "text": "zh"
+      },
+      {
+        "headers": [
+          "Content-Type: text/plain; charset=utf-8",
+          "Content-Disposition: form-data; name=\"future[]\""
+        ],
+        "text": "0"
+      },
+      {
+        "headers": [
+          "Content-Type: text/plain; charset=utf-8",
+          "Content-Disposition: form-data; name=\"future[]\""
+        ],
+        "text": "false"
+      },
+      {
+        "headers": [
+          "Content-Type: text/plain; charset=utf-8",
+          "Content-Disposition: form-data; name=empty"
+        ],
+        "text": ""
+      }
+    ]
+  ],
+  "transcription_response": {
+    "text": "原始识别结果 😀",
+    "Future": {
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Big": 9007199254740993,
+      "Nested": [
+        {
+          "Text": "原始 😀"
+        }
+      ]
+    }
+  },
+  "error_response": {
+    "code": 20012,
+    "message": "fixture native failure",
+    "data": {
+      "original": {
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Big": 9007199254740993,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    }
+  }
+}

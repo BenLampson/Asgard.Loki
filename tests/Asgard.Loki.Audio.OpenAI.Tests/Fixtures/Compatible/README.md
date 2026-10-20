@@ -1,0 +1,5 @@
+# Explicit compatible audio fixtures
+
+`siliconflow-audio.json` independently describes native JSON speech requests, multipart transcription part headers/body bytes, binary audio and complete JSON result/errors. The source contracts are the official [speech](https://docs.siliconflow.cn/docs/api/audio-speech-post) and [transcription](https://docs.siliconflow.cn/docs/api/audio-transcriptions-post) references. Python standard-library wave/Base64 checks original bytes without a production serializer. Credentials, target models and media content are fictional; no real model acceptance or quality is claimed.
+
+Minimal requests establish the concrete voice-based binary speech and file/model transcription profiles. Rich samples additionally test SDK retention of explicit native/custom fields, repeated literal parts, zero/false/null and exact integers; their presence is not proof every field is supported by a particular native model. Reference-only/empty-voice TTS, native provider voice management, and provider translation/SSE contracts are outside this verified profile. They are not silently mapped or supplied with invented voices.
