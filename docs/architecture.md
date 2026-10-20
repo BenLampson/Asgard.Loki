@@ -1664,7 +1664,7 @@ EmbeddingResult --> EmbeddingResultMetadata
 
 Each borrowed `IEmbeddingAdapter` encapsulates its own server, actual model, credentials and native dialect; it exposes a stable instance `Id` and one `EmbedAsync` operation. Routes match exact public model names. A call snapshots the request parameters, selects one complete target and forwards cancellation; it never retries or fails over. A pre-cancelled call does not consume a target selection. Client disposal does not dispose caller-owned adapters or their dependencies. No conversational Session, cache or cross-capability scheduler is introduced.
 
-`EmbeddingRequest.Model` is a public routing alias. Its extension `Parameters` retain native fields such as OpenAI `input` or Google `content`; core reserves only root `model` and never assumes that different suppliers accept the same input shape. Future provider operations must preserve their own protocol and cannot silently convert those fields. `EmbeddingResult.Data` is an independent native object snapshot; metadata distinguishes public/upstream model and provider identity. Core does not sort vectors, invent indices, tokenize, infer usage, normalize dimensions or decode encodings. Each supplier adapter owns native response validation and provider-specific convenience views. `EmbeddingUpstreamException` retains raw HTTP status/body. Core tests use custom in-memory adapters; the separately packaged native OpenAI and Google providers are described below.
+`EmbeddingRequest.Model` is a public routing alias. Its extension `Parameters` retain native fields such as OpenAI `input` or Google `content`; core reserves only root `model` and never assumes that different suppliers accept the same input shape. Future provider operations must preserve their own protocol and cannot silently convert those fields. `EmbeddingResult.Data` is an independent native object snapshot; metadata distinguishes public/upstream model and provider identity. Core does not sort vectors, invent indices, tokenize, infer usage, normalize dimensions or decode encodings. Each supplier adapter owns native response validation and provider-specific convenience views. `EmbeddingUpstreamException` retains its original text constructor and adds copied original Body bytes/ContentType with strict opt-in UTF-8 ResponseBody decoding for byte errors. HTTP 200 native errors and binary bodies remain failures without status rewriting or lossy substitution. Core tests use custom in-memory adapters; the separately packaged native OpenAI and Google providers are described below.
 
 Multi-input synchronous requests are distinct from a hosted asynchronous Batch API. Vector databases, similarity search, RAG, chunking, billing, gateway catalogs and background processing are outside this capability. No live embedding acceptance or vector quality has been verified.
 
@@ -2294,3 +2294,15 @@ sequenceDiagram
 ```
 
 Independent native request/reply/follow-up goldens verify actual two-call composition, both auth paths, unchanged opaque data and tool associations. Wrong declared scope, field loss, late native faults and changed policies cannot release success or cause another implicit invocation. Signature-origin/cryptographic validity and real model acceptance remain upstream concerns; other families, inverse complete mapping and mixed stream state machines stay pending.
+
+## Embedding upstream error ownership
+
+```mermaid
+classDiagram
+EmbeddingUpstreamException --> ReadOnlyMemory : copied original Body bytes
+EmbeddingUpstreamException : +int StatusCode
+EmbeddingUpstreamException : +string ResponseBody
+EmbeddingUpstreamException : +string ContentType
+```
+
+The existing text constructor/property contract remains available; the additive byte constructor is capability-local and carries no retry, conversion, supplier field interpretation or cross-capability dependency. Native adapters determine error outcomes after their own HTTP ownership boundaries.
