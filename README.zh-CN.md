@@ -47,6 +47,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 图片 | `Asgard.Loki.Image.GoogleVertex` | 显式 Vertex 项目／Express 资源及 Bearer／API Key 认证；保留图片与安全结果 | 原生 Gemini JSON／SSE，保留终态与用量 |
 | 图片 | `Asgard.Loki.Image.MiniMax` | 原生 image_generation JSON、参考图及 URL／Base64 数组 | 完整结果，保留计数与原生业务错误 |
 | 图片 | `Asgard.Loki.Image.SiliconFlow` | 原生 image_size／batch_size／参考图与 images／timings／seed 结果 | 完整原始 JSON，不隐式转换 OpenAI 字段 |
+| 嵌入 | `Asgard.Loki.Embedding.Azure` | 原生部署式嵌入，显式版本／api-key，保留文本／token 输入及 float／Base64 向量 | 保留批量顺序并验证索引覆盖；完整错误与有界 HTTP 生命周期 |
 | 嵌入 | `Asgard.Loki.Embedding.OpenAI` | 原生 Embeddings、文本/token 批输入、Float/Base64、原始索引及完整 JSON |
 | 嵌入 | `Asgard.Loki.Embedding.Google` | 原生单条/同步批嵌入、原生配置与多模态 JSON、按原顺序返回向量 |
 | 嵌入 | `Asgard.Loki.Embedding.Ollama` | 原生文本/媒体混合批输入、设置与可选计数、按原顺序返回向量 |

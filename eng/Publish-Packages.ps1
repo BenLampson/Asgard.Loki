@@ -58,6 +58,7 @@ $packageIds = @(
     'Asgard.Loki.Image.Google',
     'Asgard.Loki.Image.Ali',
     'Asgard.Loki.Image.Volcengine',
+    'Asgard.Loki.Embedding.Azure',
     'Asgard.Loki.Embedding.OpenAI',
     'Asgard.Loki.Embedding.Google',
     'Asgard.Loki.Embedding.Ollama',

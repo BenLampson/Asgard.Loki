@@ -2306,3 +2306,21 @@ EmbeddingUpstreamException : +string ContentType
 ```
 
 The existing text constructor/property contract remains available; the additive byte constructor is capability-local and carries no retry, conversion, supplier field interpretation or cross-capability dependency. Native adapters determine error outcomes after their own HTTP ownership boundaries.
+
+## Native deployment-scoped Azure Embedding
+
+`Embedding.Azure` depends only on Embedding, Infrastructure and standard HTTP support. It implements the existing IEmbeddingAdapter with a complete resource/deployment/version/API Key target. Public routing Model stays metadata; optional native BodyModel is explicit and otherwise absent. Deployment dots and root prefixes remain intact, the deployment is a single escaped segment and api-version one escaped query value. No v1 migration, login, discovery or provider-peer/other-capability reference is added.
+
+```mermaid
+classDiagram
+IEmbeddingAdapter <|.. AzureEmbeddingAdapter
+AzureEmbeddingAdapter --> AzureEmbeddingOptions : complete native target
+AzureEmbeddingAdapter --> AzureEmbeddingPayload : original input and request snapshot
+AzureEmbeddingAdapter --> AzureEmbeddingJson : strict complete native JSON
+AzureEmbeddingAdapter --> AzureEmbeddingResponse : actual input count and native index association
+AzureEmbeddingAdapter --> HttpBodyReader : raw byte/length/EOF boundaries
+AzureEmbeddingAdapter --> EmbeddingResult : unchanged native object
+AzureEmbeddingAdapter --> EmbeddingUpstreamException : original error bytes/status/type
+```
+
+Text and token scalar/batch boundaries remain original, without tokenization, trimming, splitting or inferred defaults. Response vectors retain original order and indices; all request input indices must be covered exactly once. Explicit dimensions/encoding and consistent finite float/Base64 width are validated without converting raw values or inventing usage/model metadata. HTTP/API errors retain complete bytes, including HTTP 200 native errors and binary HTTP failures. Complete byte/length/read/strict-JSON/EOF/disposal/final-cancellation checks precede delivery. The factory remains borrowed and each call owns its HTTP resources, with no retry, provider switch, stream conversion or shared LLM/Audio/Image/Video state.

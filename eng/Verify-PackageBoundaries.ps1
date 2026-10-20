@@ -18,6 +18,7 @@ $expectedDependencies = [ordered]@{
     'Asgard.Loki.Image' = @('Asgard.Loki.Abstractions')
     'Asgard.Loki.Embedding' = @('Asgard.Loki.Abstractions')
     'Asgard.Loki.Rerank' = @('Asgard.Loki.Abstractions')
+    'Asgard.Loki.Embedding.Azure' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Embedding', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Embedding.OpenAI' = @('Asgard.Loki.Embedding', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Embedding.Google' = @('Asgard.Loki.Embedding', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Embedding.Ollama' = @('Asgard.Loki.Embedding', 'Microsoft.Extensions.Http')

@@ -52,6 +52,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Image | `Asgard.Loki.Image.GoogleVertex` | Explicit Vertex project/Express resources and Bearer/API-Key authentication; original image parts and safety outcomes | Native Gemini JSON/SSE; terminal and usage preservation |
 | Image | `Asgard.Loki.Image.MiniMax` | Native image_generation JSON and subject-reference inputs; original URL/Base64 arrays and metadata | Complete result; native business errors retained |
 | Image | `Asgard.Loki.Image.SiliconFlow` | Native image_size/batch_size/reference fields and images/timings/seed result envelope | Complete original JSON; no implicit OpenAI field conversion |
+| Embedding | `Asgard.Loki.Embedding.Azure` | Native deployment-scoped embeddings with explicit API version/api-key, original text/token inputs and float/Base64 vectors | Original batch order and index coverage; complete errors and bounded HTTP ownership |
 | Embedding | `Asgard.Loki.Embedding.OpenAI` | Native Embeddings, text/token batch inputs, Float/Base64 and indexed results | — |
 | Embedding | `Asgard.Loki.Embedding.Google` | Native embedContent / synchronous batchEmbedContents, native settings/media JSON and ordered vectors | — |
 | Embedding | `Asgard.Loki.Embedding.Ollama` | Native embed text/media batches, original settings, ordered vectors and optional native counters | — |
@@ -104,6 +105,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Rerank.Jina` | Native Jina text/multimodal/listwise reranking and provider-owned views |
 | `Asgard.Loki.Rerank.Ali` | Native DashScope nested reranking and provider-owned ranking views |
 | `Asgard.Loki.Rerank.SiliconFlow` | Native SiliconFlow scalar/text/image reranking and provider-owned views |
+| `Asgard.Loki.Embedding.Azure` | Native deployment-scoped Azure embeddings and original batch vectors |
 | `Asgard.Loki.Embedding.OpenAI` | Native OpenAI embeddings provider; provider-owned vector views |
 | `Asgard.Loki.Embedding.Google` | Native Google single/synchronous-batch embeddings and provider-owned views |
 | `Asgard.Loki.Embedding.Ollama` | Native Ollama embedding inputs/settings, ordered vectors and provider-owned views |
