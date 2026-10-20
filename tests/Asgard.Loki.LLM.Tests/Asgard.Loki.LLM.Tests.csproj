@@ -7,4 +7,7 @@
     <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="../Asgard.Loki.LLM.Tencent.Tests/Fixtures/hunyuan.json" Link="Fixtures/hunyuan.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

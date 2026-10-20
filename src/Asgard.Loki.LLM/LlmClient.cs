@@ -20,6 +20,7 @@ public sealed class LlmClient
         BedrockNova = new BedrockNovaClient(invocation);
         Moderations = new ModerationsClient(invocation);
         TextCompletions = new TextCompletionsClient(invocation);
+        Hunyuan = new HunyuanClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
@@ -44,5 +45,7 @@ public sealed class LlmClient
     public IModerationsClient Moderations { get; }
     /// <summary>访问原生文本补全，不将 prompt/token 输入转换成 Chat 消息。</summary>
     public ITextCompletionsClient TextCompletions { get; }
+    /// <summary>访问混元原生 PascalCase JSON/SSE，不隐式转换工具或消息。</summary>
+    public IHunyuanClient Hunyuan { get; }
 
 }

@@ -27,5 +27,7 @@ public enum LlmProtocol
     /// <summary>原生 Moderations 完整 JSON 模型调用，不执行应用内容处置策略。</summary>
     Moderations = 512,
     /// <summary>原生文本补全 JSON/SSE 协议，使用 prompt 而非 Chat messages。</summary>
-    TextCompletions = 1024
+    TextCompletions = 1024,
+    /// <summary>腾讯混元原生 PascalCase ChatCompletions JSON/SSE 协议。</summary>
+    Hunyuan = 2048
 }

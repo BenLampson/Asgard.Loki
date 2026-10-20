@@ -259,7 +259,11 @@ A route may contain any valid combination of server, actual model, credential an
 
 Custom LLM providers can explicitly support `LlmCredential.Anonymous("local-instance")` through `ILlmCredentialSupport`. It retains a stable credential identity in the complete Session binding; a missing Key never selects this mode automatically. Existing providers without that optional contract remain API-Key-only. The separate [Ollama LLM provider](src/Asgard.Loki.LLM.Ollama/README.md) now implements native Chat/generate JSON/NDJSON and explicit header isolation; cloud token refresh/signing remains pending; see the [LLM credential contract](src/Asgard.Loki.LLM/README.md#explicit-credential-kinds).
 
-### Native text Completions contract
+### Native Hunyuan contract
+
+`loki.LLM.Hunyuan.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.Hunyuan` target and `IHunyuanAdapter`. `HunyuanRequest.Parameters` retains native PascalCase messages, tool schema/argument strings, tool associations, reasoning, multimodal and unknown fields. The methods own native `Model`/`Stream` and use the existing complete Session binding. Complete results retain the entire `Response` envelope; stream records retain their original flat JSON and SSE metadata. Native IDs, finish reasons, optional indices and trailing metadata are not converted into another protocol. See the [native contract and adapter responsibilities](src/Asgard.Loki.LLM/README.md#native-hunyuan-contract).
+
+## Native text Completions contract
 
 Providers implementing `ITextCompletionsAdapter` can register explicit `LlmProtocol.TextCompletions` targets and expose `loki.LLM.TextCompletions.CompleteAsync` / `.StreamAsync`. `TextCompletionRequest.Parameters` retains native prompt text/token batches, suffix, echo, logprobs and unknown fields; it is not converted into Chat messages. Complete JSON and `TextCompletionEvent` retain original choices, indices, native fields and SSE metadata. Method-owned `stream` and actual-model mapping use the same complete Session binding, with no history management, automatic conversion or retry. The [Azure provider](src/Asgard.Loki.LLM.Azure/README.md#native-text-completions) supplies native JSON/SSE transport. See the [native contract](src/Asgard.Loki.LLM/README.md#native-text-completions).
 

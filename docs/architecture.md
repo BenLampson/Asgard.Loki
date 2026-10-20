@@ -2559,3 +2559,25 @@ DeepSeekToolsClient --> DeepSeekToolsJson : strict native response parsing
 Only fixed `search`/`fetch` POST endpoints are built under the configured root. The input page URL stays a JSON field sent to that root; neither it nor returned links/icons create local SDK requests. Native fields/unknown members, nullable metadata presence, empty results/content, ranked order, duplicate URLs, score values and original Markdown remain unchanged. Request validation covers documented types and Unicode scalar limits without adding defaults, trimming or guessing IP/model metadata. Response validation checks core structure and finite/integral numeric types without ranking thresholds or content interpretation.
 
 The client owns per-operation messages/clients/responses/source streams but borrows the factory/handler. It selects exactly the configured Bearer credential, rejects other default authentication headers, captures actual URI/method before I/O and waits for bounded strict body EOF, async source and outer resource closure plus final cancellation before publication. Root native and HTTP failures retain raw bytes/status/type. Explicit new client construction changes fixed configuration; no credential discovery, cache, retry, failover, background reader or tool/model loop exists. The entry still references only Abstractions, and capabilities/supplier peers remain independent. The package adds one production project and one matching offline test project in DeepSeek solution groups.
+
+### Native Hunyuan core contract
+
+The LLM capability adds `LlmProtocol.Hunyuan = 2048`, `LlmClient.Hunyuan`, `IHunyuanClient`/`IHunyuanAdapter` and native request/result/event types. Prior protocol numbers and target defaults stay unchanged. Registration requires both an explicit flag and the actual native adapter; support declarations cannot bypass implementation validation. The core introduces no provider dependency, authentication implementation, cross-capability reference or canonical message representation. Converting providers do not implicitly advertise this protocol.
+
+```mermaid
+classDiagram
+LlmClient --> IHunyuanClient : Hunyuan
+IHunyuanClient <|.. HunyuanClient
+HunyuanClient --> HunyuanRequest : freeze native PascalCase parameters
+HunyuanClient --> LlmInvocation : complete target and Session binding
+HunyuanClient --> IHunyuanAdapter : explicit native protocol
+IHunyuanAdapter --|> ILlmProvider
+IHunyuanAdapter --> HunyuanCompletion : complete Response envelope
+IHunyuanAdapter --> HunyuanEvent : flat native SSE JSON
+HunyuanCompletion --|> LlmJsonResult
+HunyuanEvent --|> LlmJsonEvent
+```
+
+`HunyuanRequest.Model` serializes as PascalCase `Model`, while native extension parameters retain original Messages, tool schema/argument strings, tool associations, multimodal/reasoning/search data and unknown fields. Case-insensitive Model/Stream overrides, Undefined values and malformed Unicode fail before cache resolution. The whole body is frozen before the first asynchronous Session wait. The chosen method writes PascalCase Stream, and selection changes only Model to the bound actual model; the lowercase payload helper is not used.
+
+Complete results own the full native Response envelope; flat streaming records and SSE metadata remain independent immutable snapshots. `Response.Id` is not projected onto the inherited lowercase Id accessor or Responses continuation ownership. Optional native indices, native finish reasons, disclaimer/search/usage tail fields and raw tool deltas remain unmodified. Native signing, framing, terminal/EOF/error and resource validation belong to the supplier adapter. The core neither infers completion nor executes, aggregates, converts or retries generation. Existing full server/model/credential/provider fingerprint, coordinated initial binding and borrowed dependency rules apply unchanged.
