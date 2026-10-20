@@ -1,0 +1,116 @@
+{
+  "requests": [
+    {
+      "model": "image-fixture",
+      "prompt": "原生提示词",
+      "aspect_ratio": "16:9",
+      "response_format": "url",
+      "n": 2,
+      "prompt_optimizer": false,
+      "aigc_watermark": false,
+      "seed": 9007199254740993,
+      "future": {
+        "zero": 0,
+        "none": null
+      }
+    },
+    {
+      "model": "image-fixture",
+      "prompt": "reference character",
+      "response_format": "base64",
+      "n": 1,
+      "subject_reference": [
+        {
+          "type": "character",
+          "image_file": "https://input.example.invalid/a%2Fb.png?sig=A%2BB",
+          "future": false
+        }
+      ],
+      "future": null
+    }
+  ],
+  "url": {
+    "id": "native-image-id",
+    "data": {
+      "image_urls": [
+        "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+        "https://result.example.invalid/two.png"
+      ],
+      "future": false
+    },
+    "metadata": {
+      "failed_count": "1",
+      "success_count": "2",
+      "future": 9007199254740993
+    },
+    "base_resp": {
+      "status_code": 0,
+      "status_msg": "success",
+      "future": null
+    },
+    "future": false
+  },
+  "base64": {
+    "id": "native-base64-id",
+    "data": {
+      "image_base64": [
+        "AQID"
+      ],
+      "future": null
+    },
+    "metadata": {
+      "failed_count": "0",
+      "success_count": "1"
+    },
+    "base_resp": {
+      "status_code": 0,
+      "status_msg": "success"
+    }
+  },
+  "mixed": {
+    "id": "native-dual-carrier",
+    "data": {
+      "image_urls": [
+        "https://result.example.invalid/original.png"
+      ],
+      "image_base64": [
+        "AQID",
+        "BAUG"
+      ]
+    },
+    "metadata": {
+      "future": false
+    },
+    "base_resp": {
+      "status_code": 0,
+      "status_msg": "success"
+    }
+  },
+  "empty": {
+    "id": "native-filtered",
+    "data": {
+      "image_urls": []
+    },
+    "metadata": {
+      "failed_count": "2",
+      "success_count": "0",
+      "reason": "fixture filtered"
+    },
+    "base_resp": {
+      "status_code": 0,
+      "status_msg": "success"
+    }
+  },
+  "error": {
+    "base_resp": {
+      "status_code": 1008,
+      "status_msg": "fixture insufficient balance",
+      "future": false
+    },
+    "metadata": {
+      "trace": "original"
+    },
+    "id": "native-error-id",
+    "future": 9007199254740993
+  }
+}
