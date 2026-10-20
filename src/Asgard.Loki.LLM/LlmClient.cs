@@ -22,6 +22,7 @@ public sealed class LlmClient
         TextCompletions = new TextCompletionsClient(invocation);
         Hunyuan = new HunyuanClient(invocation);
         Spark = new SparkClient(invocation);
+        CohereChat = new CohereChatClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
@@ -50,5 +51,7 @@ public sealed class LlmClient
     public IHunyuanClient Hunyuan { get; }
     /// <summary>访问星火原生消息流及完整消息窗口，不隐式转为 Chat 或 SSE。</summary>
     public ISparkClient Spark { get; }
+    /// <summary>访问 Cohere v1 原生 Chat JSON/NDJSON，不隐式迁移到 v2。</summary>
+    public ICohereChatClient CohereChat { get; }
 
 }

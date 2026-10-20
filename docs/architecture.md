@@ -2683,3 +2683,24 @@ SparkState --> XunfeiSparkUpstreamException : native code and raw message, no HT
 The receiver joins only WebSocket fragments within a complete JSON message. Per-message/total bytes, logical message/fragment counts and terminal-window counts are bounded. Native sid remains fixed; choice sequence increases with gaps allowed. Header/text statuses are distinct, permitting plugin prefixes and a text-finished metadata window before global completion. Reserved text indices do not select or collapse candidates; all original plugin/text/usage/unknown fields remain in immutable events. Whole messages are buffered from first finish until both native completion states, explicitly initiated CloseOutput/normal peer acknowledgement, socket disposal and final identity/expiry/cancellation checks. CloseAsync is not used to silently consume late JSON. Extra/early/abnormal/absent close or data, errors and resource failures prevent the pending terminal window from being published. Complete mode collects this same operation once without text projection or usage accumulation.
 
 Clock-driven per-call handshake and close deadlines are owned, while source/factory/clock/cache/coordinators remain borrowed. Errors retain native code/bytes/JSON without a manufactured HTTP status. Default handshake failure messages exclude the signed URL, and custom factories must keep it private and honor exact target/cancellation/no retry. No credential discovery/refresh, background receive, reconnect, conversion, tool execution, server-side conversation recovery or cross-capability coordinator is introduced. Actual service/model availability remains separate from offline protocol verification.
+
+### Native Cohere v1 Chat capability contract
+
+The LLM capability adds `CohereChat = 8192`, `LlmClient.CohereChat`, `ICohereChatClient`/`ICohereChatAdapter`, `CohereChatRequest`, `CohereChatCompletion` and `CohereChatEvent`. Prior flags and target defaults remain stable. A declared target requires the actual adapter interface; support declarations cannot manufacture native capability. No supplier reference, conversion pair, peer-capability dependency or generic business coordinator enters the core.
+
+```mermaid
+classDiagram
+ICohereChatClient <|.. CohereChatClient
+CohereChatClient --> LlmInvocation : complete target and explicit Session coordination
+CohereChatClient --> CohereChatRequest : snapshot before cache await
+CohereChatClient --> ICohereChatAdapter
+ICohereChatAdapter --|> ILlmProvider
+ICohereChatAdapter --> CohereChatCompletion : full native JSON
+ICohereChatAdapter --> CohereChatEvent : original event_type and tool fragments
+CohereChatCompletion --|> LlmJsonResult
+CohereChatEvent --|> LlmJsonEvent
+```
+
+Only configured actual model and method stream mode replace root fields. Unknown fields, every history turn, native repeated-name tool call parameters/results, documents/citations, exact numbers and optional values retain their native structures. No generation settings, tool IDs, normalized messages, usage totals or defaults are synthesized. Reserved root routing fields, Undefined and malformed original Unicode fail before Session/cache selection; the immutable snapshot precedes its first asynchronous wait.
+
+Native response_id and generation_id are separate optional identities, not inherited id or Responses continuation ownership. Events derive Type only from event_type, never a business type field or legacy is_finished flag; they carry no synthetic SSE metadata. IsTerminal denotes stream-end without asserting successful generation or tool execution. The supplier owns native transport/state/EOF/resource validation. Core tests use an in-memory adapter and independent whole native fixtures, so they establish no real service/model acceptance. Existing full-target drift, protocol affinity, borrowed ownership, no-retry and final cancellation guarantees apply to this additive entry.

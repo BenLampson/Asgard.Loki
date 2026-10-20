@@ -31,5 +31,7 @@ public enum LlmProtocol
     /// <summary>腾讯混元原生 PascalCase ChatCompletions JSON/SSE 协议。</summary>
     Hunyuan = 2048,
     /// <summary>讯飞星火原生 WebSocket JSON 消息协议，独立于 Chat/SSE。</summary>
-    Spark = 4096
+    Spark = 4096,
+    /// <summary>Cohere v1 Chat 原生 JSON/NDJSON 协议，独立于 OpenAI Chat。</summary>
+    CohereChat = 8192
 }

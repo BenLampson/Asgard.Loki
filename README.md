@@ -410,3 +410,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SE
 ## License
 
 Licensed under the [Apache License, Version 2.0](LICENSE).
+
+### Native Cohere v1 Chat contract
+
+`loki.LLM.CohereChat.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.CohereChat` target and `ICohereChatAdapter`. Only actual target model and method stream mode change; full message/history, native tools/results, references and unknown JSON stay intact. Results keep response_id and generation_id distinct, while NDJSON events use event_type without synthetic SSE metadata. Supplier adapters own transport and terminal integrity; the core makes no live-service or automatic conversion claim. See the [native contract](src/Asgard.Loki.LLM/README.md#native-cohere-v1-chat-contract).
