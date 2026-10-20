@@ -40,7 +40,7 @@ Solution folders separate Foundation, Infrastructure, Capabilities and Conversio
 
 ```mermaid
 classDiagram
-ArkVideoHttp --> HttpBodyReader : bounded bytes only
+VolcengineVideoHttp --> HttpBodyReader : bounded bytes only
 HttpBodyReader --> HttpContent : borrows content
 HttpBodyReader --> Stream : reads and disposes
 ```
@@ -85,7 +85,7 @@ IVideoTaskAdapter --> VideoTaskSnapshot : submit or explicit get
 classDiagram
 IVideoTaskAdapter <|.. VolcengineVideoAdapter
 VolcengineVideoAdapter --> VolcengineVideoOptions : captures complete target
-VolcengineVideoAdapter --> ArkVideoHttp : private bounded JSON transport
+VolcengineVideoAdapter --> VolcengineVideoHttp : private bounded JSON transport
 VolcengineVideoAdapter --> VideoTaskRequest : snapshots before IO
 VolcengineVideoAdapter --> VideoTaskSnapshot : native status and complete data
 VolcengineVideoAdapter --> VideoUpstreamException : original HTTP/API error
@@ -102,9 +102,9 @@ The private JSON-only transport delegates bounded byte reading to Infrastructure
 ```mermaid
 classDiagram
 VolcengineAssetClient --> VolcengineAssetOptions : captures independent AK/SK configuration
-VolcengineAssetClient --> ArkAssetSigner : signs actual JSON bytes
+VolcengineAssetClient --> VolcengineRequestSigner : signs actual JSON bytes
 VolcengineAssetClient --> ArkAssetJson : snapshots native parameters
-VolcengineAssetClient --> ArkVideoHttp : shared private bounded IO
+VolcengineAssetClient --> VolcengineVideoHttp : shared private bounded IO
 VolcengineAssetClient --> VolcengineAssetResult : complete native envelope
 VolcengineAssetClient --> TimeProvider : borrows signing clock
 VolcengineAssetResult --> JsonElement : owns immutable data

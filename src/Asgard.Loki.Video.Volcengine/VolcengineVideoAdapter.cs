@@ -21,7 +21,7 @@ public sealed class VolcengineVideoAdapter : IVideoTaskAdapter
     {
         ArgumentNullException.ThrowIfNull(factory); ArgumentNullException.ThrowIfNull(options);
         foreach (var value in new[] { options.Id, options.Model, options.ApiKey, options.HttpClientName })
-        { ArgumentException.ThrowIfNullOrWhiteSpace(value); ArkVideoHttp.Text(value); }
+        { ArgumentException.ThrowIfNullOrWhiteSpace(value); VolcengineVideoHttp.Text(value); }
         if (options.ApiKey.Any(char.IsControl)) throw new ArgumentException("方舟凭据不能包含控制字符。", nameof(options));
         ArgumentNullException.ThrowIfNull(options.BaseAddress);
         if (!options.BaseAddress.IsAbsoluteUri || options.BaseAddress.Scheme is not ("http" or "https")
@@ -57,7 +57,7 @@ public sealed class VolcengineVideoAdapter : IVideoTaskAdapter
     /// <inheritdoc />
     public Task<VideoTaskSnapshot> GetAsync(string taskId, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(taskId); ArkVideoHttp.Text(taskId); cancellationToken.ThrowIfCancellationRequested();
+        ArgumentException.ThrowIfNullOrWhiteSpace(taskId); VolcengineVideoHttp.Text(taskId); cancellationToken.ThrowIfCancellationRequested();
         if (taskId is "." or "..") throw new ArgumentException("任务 ID 不能是路径跳转段。", nameof(taskId));
         return SendAsync(Message(HttpMethod.Get, "contents/generations/tasks/" + Uri.EscapeDataString(taskId)), taskId, cancellationToken);
     }
@@ -69,18 +69,18 @@ public sealed class VolcengineVideoAdapter : IVideoTaskAdapter
     /// <summary>提交确认和任务失败分别建模，只有原生成功及结果共同出现才标记成功。</summary>
     private async Task<VideoTaskSnapshot> SendAsync(HttpRequestMessage request, string? expectedId, CancellationToken cancellationToken)
     {
-        var reply = await ArkVideoHttp.SendAsync(_factory, _client, request, _responseLimit, cancellationToken).ConfigureAwait(false);
+        var reply = await VolcengineVideoHttp.SendAsync(_factory, _client, request, _responseLimit, cancellationToken).ConfigureAwait(false);
         if ((int)reply.Status is < 200 or >= 300) throw new VideoUpstreamException("方舟视频 HTTP 调用失败。", reply.Status, reply.Body, reply.ContentType);
-        if (!ArkVideoHttp.IsJson(reply.ContentType))
+        if (!VolcengineVideoHttp.IsJson(reply.ContentType))
             throw new InvalidDataException("方舟视频调用未返回原生 JSON。");
-        var data = ArkVideoHttp.Parse(reply.Body);
+        var data = VolcengineVideoHttp.Parse(reply.Body);
         var hasStatus = data.TryGetProperty("status", out var statusValue) && statusValue.ValueKind != JsonValueKind.Null;
         if (data.TryGetProperty("error", out var error) && error.ValueKind != JsonValueKind.Null && (!hasStatus || !data.TryGetProperty("id", out _)))
             throw new VideoUpstreamException("方舟视频返回原生 API 错误。", reply.Status, reply.Body, reply.ContentType);
-        var id = ArkVideoHttp.RequiredText(data, "id");
+        var id = VolcengineVideoHttp.RequiredText(data, "id");
         if (id is "." or "..") throw new InvalidDataException("方舟返回了不能用于查询的任务 ID。");
         if (expectedId is not null && id != expectedId) throw new InvalidDataException("方舟返回了其他任务的结果。");
-        var status = hasStatus ? ArkVideoHttp.RequiredText(data, "status") : null;
+        var status = hasStatus ? VolcengineVideoHttp.RequiredText(data, "status") : null;
         if (expectedId is not null && status is null) throw new InvalidDataException("方舟任务查询缺少原生状态。");
         var state = status switch
         {

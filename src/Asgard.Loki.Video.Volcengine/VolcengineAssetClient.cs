@@ -23,11 +23,11 @@ public sealed class VolcengineAssetClient
     {
         ArgumentNullException.ThrowIfNull(factory); ArgumentNullException.ThrowIfNull(options);
         foreach (var text in new[] { options.AccessKeyId, options.SecretAccessKey, options.Region, options.HttpClientName })
-        { ArgumentException.ThrowIfNullOrWhiteSpace(text); ArkVideoHttp.Text(text); }
+        { ArgumentException.ThrowIfNullOrWhiteSpace(text); VolcengineVideoHttp.Text(text); }
         if (!options.AccessKeyId.All(IsIdentityCharacter) || !options.Region.All(IsIdentityCharacter)
             || options.SecretAccessKey.Any(char.IsControl) || options.SecurityToken is { } token && (token.Length == 0 || token.Any(char.IsWhiteSpace) || token.Any(char.IsControl)))
             throw new ArgumentException("素材签名凭据或区域格式无效。", nameof(options));
-        if (options.SecurityToken is { } securityToken) ArkVideoHttp.Text(securityToken);
+        if (options.SecurityToken is { } securityToken) VolcengineVideoHttp.Text(securityToken);
         ArgumentNullException.ThrowIfNull(options.BaseAddress);
         if (!options.BaseAddress.IsAbsoluteUri || options.BaseAddress.Scheme is not ("http" or "https") || options.BaseAddress.AbsolutePath != "/"
             || options.BaseAddress.Query.Length != 0 || options.BaseAddress.Fragment.Length != 0 || options.BaseAddress.UserInfo.Length != 0)
@@ -78,7 +78,7 @@ public sealed class VolcengineAssetClient
         try
         {
             message.Content = new ByteArrayContent(bytes); message.Content.Headers.ContentType = new("application/json");
-            ArkAssetSigner.Sign(message, bytes, _accessKey, _secret, _token, _region, _clock.GetUtcNow());
+            VolcengineRequestSigner.Sign(message, bytes, _accessKey, _secret, _token, _region, "ark", _clock.GetUtcNow());
         }
         catch { message.Dispose(); throw; }
         var expectedId = action.StartsWith("Get", StringComparison.Ordinal) || action.StartsWith("Update", StringComparison.Ordinal) ? snapshot["Id"]!.GetValue<string>() : null;
@@ -87,15 +87,15 @@ public sealed class VolcengineAssetClient
     /// <summary>区分原生 API 错误与素材自身处理失败，最终释放和取消检查完成后才交付结果。</summary>
     private async Task<VolcengineAssetResult> SendAsync(HttpRequestMessage request, string action, string? expectedId, CancellationToken cancellationToken)
     {
-        var reply = await ArkVideoHttp.SendAsync(_factory, _client, request, _responseLimit, cancellationToken).ConfigureAwait(false);
+        var reply = await VolcengineVideoHttp.SendAsync(_factory, _client, request, _responseLimit, cancellationToken).ConfigureAwait(false);
         if ((int)reply.Status is < 200 or >= 300) throw new VideoUpstreamException("方舟素材 HTTP 调用失败。", reply.Status, reply.Body, reply.ContentType);
-        if (!ArkVideoHttp.IsJson(reply.ContentType)) throw new InvalidDataException("素材服务未返回原生 JSON。");
-        var data = ArkVideoHttp.Parse(reply.Body);
+        if (!VolcengineVideoHttp.IsJson(reply.ContentType)) throw new InvalidDataException("素材服务未返回原生 JSON。");
+        var data = VolcengineVideoHttp.Parse(reply.Body);
         if (!data.TryGetProperty("ResponseMetadata", out var metadata) || metadata.ValueKind != JsonValueKind.Object) throw new InvalidDataException("素材响应缺少原生元数据。");
         if (metadata.TryGetProperty("Error", out var error) && error.ValueKind != JsonValueKind.Null)
             throw new VideoUpstreamException("方舟素材返回原生 API 错误。", reply.Status, reply.Body, reply.ContentType);
-        if (ArkVideoHttp.RequiredText(metadata, "Action") != action || ArkVideoHttp.RequiredText(metadata, "Version") != Version
-            || ArkVideoHttp.RequiredText(metadata, "Service") != "ark" || ArkVideoHttp.RequiredText(metadata, "Region") != _region)
+        if (VolcengineVideoHttp.RequiredText(metadata, "Action") != action || VolcengineVideoHttp.RequiredText(metadata, "Version") != Version
+            || VolcengineVideoHttp.RequiredText(metadata, "Service") != "ark" || VolcengineVideoHttp.RequiredText(metadata, "Region") != _region)
             throw new InvalidDataException("素材响应不属于本次原生操作或区域。");
         if (!data.TryGetProperty("Result", out var result) || result.ValueKind != JsonValueKind.Object) throw new InvalidDataException("素材响应缺少原生 Result 对象。");
         if (action.StartsWith("List", StringComparison.Ordinal))
@@ -104,14 +104,14 @@ public sealed class VolcengineAssetClient
             foreach (var item in items.EnumerateArray())
             {
                 if (item.ValueKind != JsonValueKind.Object) throw new InvalidDataException("素材列表成员必须是原生对象。");
-                _ = ArkVideoHttp.RequiredText(item, "Id");
+                _ = VolcengineVideoHttp.RequiredText(item, "Id");
             }
         }
         else if (!action.StartsWith("Delete", StringComparison.Ordinal))
         {
-            var id = ArkVideoHttp.RequiredText(result, "Id");
+            var id = VolcengineVideoHttp.RequiredText(result, "Id");
             if (expectedId is not null && id != expectedId) throw new InvalidDataException("素材响应包含其他资源的 Id。");
-            if (action == "GetAsset") _ = ArkVideoHttp.RequiredText(result, "Status");
+            if (action == "GetAsset") _ = VolcengineVideoHttp.RequiredText(result, "Status");
         }
         cancellationToken.ThrowIfCancellationRequested(); return new(action, data);
     }

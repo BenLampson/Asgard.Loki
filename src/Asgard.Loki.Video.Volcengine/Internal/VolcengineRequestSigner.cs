@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Asgard.Loki.Video.Volcengine.Internal;
 
-/// <summary>仅为固定方舟素材 JSON 操作签名，不复用其他供应商认证或执行凭据发现。</summary>
-internal static class ArkAssetSigner
+/// <summary>火山供应商包内部的根路径 POST JSON 签名，不携带任务状态或发现凭据。</summary>
+internal static class VolcengineRequestSigner
 {
     /// <summary>签名请求实际正文、根路径、固定查询及完整认证头，支持显式临时凭据。</summary>
-    internal static void Sign(HttpRequestMessage request, byte[] body, string accessKey, string secret, string? token, string region, DateTimeOffset now)
+    internal static void Sign(HttpRequestMessage request, byte[] body, string accessKey, string secret, string? token, string region, string service, DateTimeOffset now)
     {
         var uri = request.RequestUri!;
         var host = uri.HostNameType == UriHostNameType.IPv6 ? "[" + uri.IdnHost.Trim('[', ']') + "]" : uri.IdnHost;
@@ -22,17 +22,17 @@ internal static class ArkAssetSigner
         var names = "content-type;host;x-content-sha256;x-date";
         if (token is not null) { headers += "x-security-token:" + token + "\n"; names += ";x-security-token"; }
         var canonical = "POST\n/\n" + uri.Query[1..] + "\n" + headers + "\n" + names + "\n" + hash;
-        var scope = date[..8] + "/" + region + "/ark/request";
+        var scope = date[..8] + "/" + region + "/" + service + "/request";
         var toSign = "HMAC-SHA256\n" + date + "\n" + scope + "\n" + Hex(SHA256.HashData(Encoding.UTF8.GetBytes(canonical)));
         var key = Encoding.UTF8.GetBytes(secret);
         try
         {
-            foreach (var component in new[] { date[..8], region, "ark", "request" })
+            foreach (var component in new[] { date[..8], region, service, "request" })
             {
                 var next = HMACSHA256.HashData(key, Encoding.UTF8.GetBytes(component)); CryptographicOperations.ZeroMemory(key); key = next;
             }
             var signature = Hex(HMACSHA256.HashData(key, Encoding.UTF8.GetBytes(toSign)));
-            // 方舟的 SignedHeaders 使用未加引号的分号列表，不能交给通用认证参数解析器重新解释。
+            // 原生 SignedHeaders 使用未加引号的分号列表，不能交给通用认证参数解析器重新解释。
             request.Headers.TryAddWithoutValidation("Authorization", "HMAC-SHA256 Credential=" + accessKey + "/" + scope + ", SignedHeaders=" + names + ", Signature=" + signature);
         }
         finally { CryptographicOperations.ZeroMemory(key); }

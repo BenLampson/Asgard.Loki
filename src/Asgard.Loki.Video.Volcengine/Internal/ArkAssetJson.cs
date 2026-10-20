@@ -9,18 +9,7 @@ internal static class ArkAssetJson
     /// <summary>在任何等待前验证可无损编码并复制完整原生正文。</summary>
     internal static JsonObject Snapshot(JsonObject value, string action)
     {
-        ArgumentNullException.ThrowIfNull(value); var pending = new Stack<JsonNode?>(); pending.Push(value);
-        while (pending.TryPop(out var node))
-        {
-            if (node is JsonObject obj) foreach (var member in obj) { ArkVideoHttp.Text(member.Key); pending.Push(member.Value); }
-            else if (node is JsonArray array) foreach (var child in array) pending.Push(child);
-            else if (node is JsonValue scalar)
-            {
-                if (scalar.TryGetValue<JsonElement>(out var element)) _ = ArkVideoHttp.Parse(JsonSerializer.SerializeToUtf8Bytes(new { value = element }));
-                else if (scalar.TryGetValue<string>(out var text)) ArkVideoHttp.Text(text);
-            }
-        }
-        var copy = value.DeepClone().AsObject();
+        var copy = VolcengineVideoHttp.Snapshot(value);
         if (copy.ContainsKey("ProjectName")) Text(copy, "ProjectName");
         if (action == "CreateAssetGroup") Text(copy, "Name");
         if (action == "CreateAsset") foreach (var key in new[] { "GroupId", "URL", "AssetType" }) Text(copy, key);
