@@ -31,6 +31,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM | `Asgard.Loki.LLM.DeepSeek` | Native Search / Fetch JSON; explicit fixed service credentials; complete ranked results and page content | — |
 | LLM | `Asgard.Loki.LLM.Tencent` | Native Hunyuan complete JSON; TC3 and caller-owned External principal credentials | Native SSE, unchanged tools and all-choice terminal/metadata tails |
 | LLM | `Asgard.Loki.LLM.Xunfei` | Native Spark signed WebSocket; complete ordered native message window | Original JSON messages; text/global terminal and normal-close validation |
+| LLM | `Asgard.Loki.LLM.MiniMax` | Native v2 Chat JSON, original reasoning/tool/sensitivity data and HTTP200 business errors | SSE with native choice finishes and complete snapshots |
 | LLM | `Asgard.Loki.LLM.Cohere` | Native v1 Chat JSON; full history, references and call-plus-parameters tool results | Native NDJSON; unchanged tool fragments and delayed stream-end |
 | LLM | `Asgard.Loki.LLM.Cloudflare` | Explicit native ai/run text JSON; full native envelope and tools | Original SSE JSON and actual DONE control frame; delayed terminal |
 | LLM | `Asgard.Loki.LLM.Coze` | Native v3 bot chat acknowledgement, explicit status/messages queries; complete-target references | Native two-level Chat/Message SSE, raw future events and actual done |
@@ -142,6 +143,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.LLM.DeepSeek` | Native model-free Search / Fetch auxiliary calls with fixed service credentials |
 | `Asgard.Loki.LLM.Tencent` | Native Hunyuan JSON/SSE with supplier-local TC3 authentication |
 | `Asgard.Loki.LLM.Xunfei` | Native Spark WebSocket authentication and complete message windows |
+| `Asgard.Loki.LLM.MiniMax` | Native MiniMax v2 Chat JSON/SSE; supplier-owned base_resp and ending state |
 | `Asgard.Loki.LLM.Cohere` | Native Cohere v1 Chat JSON/NDJSON; independent from Rerank |
 | `Asgard.Loki.LLM.Cloudflare` | Native Workers AI text ai/run JSON/SSE; independent from compatible OpenAI profile |
 | `Asgard.Loki.LLM.Coze` | Explicit Coze v3 JSON/SSE and status/messages; no polling or fake model route |
@@ -459,3 +461,5 @@ Explicit [DashScope Chat/Responses/Text](src/Asgard.Loki.LLM.OpenAI/README.md#ex
 Explicit [DeepSeek Chat/Responses/beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-deepseek-native-endpoints) and [native Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-deepseek-messages) reuse existing packages with separate complete roots, selected actual models and independent credentials. Native reasoning, tool links, structured settings and unknown fields remain intact. Responses requires full stateless input and native semantic endings; FIM retains actual DONE. Verification is offline; real model/setting acceptance remains unverified.
 
 Explicit [Moonshot/Kimi Chat, Partial and Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-moonshot-and-kimi-coding-native-endpoints) and [native Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-moonshot-and-kimi-coding-messages) reuse existing providers with separate complete platform/Coding roots and credentials. Native reasoning summaries, schema/cache settings, tool links and unknown fields remain original; known summary events cannot reopen Responses after terminal. Verification is offline; hosted legacy text and model/setting/Coding entitlement acceptance are not claimed.
+
+[MiniMax native v2 Chat](src/Asgard.Loki.LLM.MiniMax/README.md) uses the existing ChatCompletions client with an explicit complete target and independent Key. Full native JSON, reasoning/tool associations, sensitivity and usage are preserved; HTTP200 base_resp errors retain original payload/status/media. Native finish chunks and complete message snapshots remain separate frames, with endings held through EOF and owned-resource closure. [Native Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-minimax-messages) reuses the separate Anthropic package. Verification is offline; live model/setting acceptance is unverified.

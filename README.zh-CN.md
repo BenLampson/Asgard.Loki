@@ -22,6 +22,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | LLM | `Asgard.Loki.LLM.Anthropic` | Claude Messages 原生 JSON/SSE，保留工具、推理签名及未知字段 |
 | LLM | `Asgard.Loki.LLM.Google` | Gemini generateContent 原生 JSON/SSE，保留原生多模态与工具结构 |
 | LLM | `Asgard.Loki.LLM.Ollama` | 原生 Chat/generate JSON/NDJSON，保留工具关联、prompt/context、thinking、format；显式匿名或 Bearer 身份 |
+| LLM | `Asgard.Loki.LLM.MiniMax` | 原生 v2 Chat JSON/SSE，保留推理、工具关联、敏感标记和用量；原生 base_resp 错误及终态完整性 |
 | LLM | `Asgard.Loki.LLM.Cohere` | 原生 v1 Chat JSON/NDJSON，完整历史、引用、工具参数/结果与分片；独立于 Rerank |
 | LLM | `Asgard.Loki.LLM.Cloudflare` | 显式原生 ai/run 文本 JSON/SSE；完整结果封装、工具数据与实际 DONE 帧；独立于兼容 OpenAI 配置 |
 | LLM | `Asgard.Loki.LLM.Coze` | 原生 v3 Bot 回执/双层 Chat-Message SSE、显式状态/消息查询和完整目标引用；无自动轮询或伪造模型路由 |
@@ -146,3 +147,5 @@ Ollama 兼容接口复用现有 [OpenAI 包](src/Asgard.Loki.LLM.OpenAI/README.m
 DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-deepseek-native-endpoints) 和[原生 Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-deepseek-messages) 复用现有分包，分别配置完整根、实际模型和独立凭据。原生思考、工具关联、结构化参数及未知字段完整保留；Responses 每次发送完整无状态输入并保留语义终态，FIM 要求真实 DONE。当前验证均为离线协议测试，未验证真实模型及可选参数效果。
 
 [Moonshot／Kimi Chat、Partial 与 Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-moonshot-and-kimi-coding-native-endpoints) 和[原生 Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-moonshot-and-kimi-coding-messages) 复用现有供应商封装，平台与 Coding 完整根、模型和独立凭据均由调用者选择。推理摘要、schema、缓存字段、工具关联及未知数据保持原文；Responses 终态后拒绝已知摘要生命周期重开。当前为离线验证，未宣称旧文本托管接口可用或真实模型、参数效果及 Coding 权限已验证。
+
+[MiniMax 原生 v2 Chat](src/Asgard.Loki.LLM.MiniMax/README.md) 通过已有 ChatCompletions 入口调用，完整目标、实际模型和独立 Key 均由调用者配置。保留完整原生数据和工具关联；HTTP200 内的 base_resp 错误保留原始正文、状态及媒体。结束分块和完整消息快照分别返回，成功尾部等待实际 EOF、资源关闭及最终取消检查。[原生 Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-minimax-messages) 复用现有 Anthropic 分包。当前为离线协议验证，未验证真实模型及参数效果。

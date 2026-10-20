@@ -3015,7 +3015,7 @@ LlmOptions --> "explicit native Ollama target"
 @enduml
 ```
 
-Stateless Responses replays complete input; SDK Session affinity does not add remote storage. Compact raw output is opaque data; its ID is not a generated Responses ID. Independent full native windows verify28 OpenAI and9 Messages profile cases with offline HTTP, native terminal/EOF and binding guards; current scoped totals577 OpenAI and152 Anthropic cases pass. Local compact route support is distinct from unverified hosted compact availability. No server/CLI/login/model management/tool execution or native NDJSON conversion is added. Production graph remains63/45/125/63inventory. No live optional-setting/model or full-suite/all-package verification is claimed.
+Stateless Responses replays complete input; SDK Session affinity does not add remote storage. Compact raw output is opaque data; its ID is not a generated Responses ID. Independent full native windows verify28 OpenAI and9 Messages profile cases with offline HTTP, native terminal/EOF and binding guards; current scoped totals577 OpenAI and152 Anthropic cases pass. Local compact route support is distinct from unverified hosted compact availability. No server/CLI/login/model management/tool execution or native NDJSON conversion is added. Production graph remains64/46/127/64inventory. No live optional-setting/model or full-suite/all-package verification is claimed.
 
 ### Native compatible TextCompletions in OpenAI supplier
 
@@ -3038,7 +3038,7 @@ Only configured actual model and method stream mode are owned. Native prompt/FIM
 
 Native text state tracks exact distinct nonnegative indices, bounds association count and keeps original sparse indices. One choice finish starts bounded held-tail processing while other choices continue. Repeated/late known choice generation, malformed carriers, early/missing/repeated DONE and post-DONE data fail. Unknown business type/ID remains data, independent from Responses state. Initial native errors retain their original event; late errors prevent held success. The existing shared HTTP loop accepts this supplier-owned text state without changing the other protocol branches or their original error policies.
 
-Text request/body/errors/whole-SSE limits, actual wire and native media/UTF-8/framing/length, full owned-resource closure and final cancellation precede result/end delivery. Nullable MaximumTextCompletionRequestBytes and MaximumTrackedTextChoices are omitted from default identity serialization, preserving old default binding bytes; explicit policies enter existing binding normally. Borrowed HTTP factories/cache/coordinators are not released. Production graph remains63/45/125/63inventory, no capability or supplier peer reference. Current OpenAI executable passes841 offline cases including140 text cases; protocol fidelity does not prove live model/setting acceptance or full-solution/all-package validation.
+Text request/body/errors/whole-SSE limits, actual wire and native media/UTF-8/framing/length, full owned-resource closure and final cancellation precede result/end delivery. Nullable MaximumTextCompletionRequestBytes and MaximumTrackedTextChoices are omitted from default identity serialization, preserving old default binding bytes; explicit policies enter existing binding normally. Borrowed HTTP factories/cache/coordinators are not released. Production graph remains64/46/127/64inventory, no capability or supplier peer reference. Current OpenAI executable passes841 offline cases including140 text cases; protocol fidelity does not prove live model/setting acceptance or full-solution/all-package validation.
 
 ### Explicit DashScope compatible native profiles
 
@@ -3059,7 +3059,7 @@ Original reasoning/schema/search settings, FIM prompt and tool call/result/item 
 
 Supplier-private Responses classification includes documented reasoning_text/custom_tool_call_input/web_search_call lifecycle events, allowing them before terminal and rejecting reopens afterward. Unknown typed metadata remains raw. Chat uses choices-bearing frames for generated identity, preserves unknown nonstring type/business IDs and does not classify response.failed as a Responses failure. Actual native error event semantics remain intact. This corrects native fidelity within existing strict HTTP v2 behavior; identity serialization and default policy bytes stay unchanged.
 
-Independent whole-window tests cover35 OpenAI profile/fault cases and15 Messages profile cases. Current scoped executables pass841 OpenAI and207 Anthropic offline cases. Exact raw framing/resource/cancellation/terminal and Session association remain supplier/core responsibilities as before. Native text state remains separate from Chat and Responses. Production graph stays63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. No live model/optional-setting or full-suite/all-package verification is claimed.
+Independent whole-window tests cover35 OpenAI profile/fault cases and15 Messages profile cases. Current scoped executables pass841 OpenAI and223 Anthropic offline cases. Exact raw framing/resource/cancellation/terminal and Session association remain supplier/core responsibilities as before. Native text state remains separate from Chat and Responses. Production graph stays64 projects/46 Infrastructure consumers/127 solution paths/64 package IDs. No live model/optional-setting or full-suite/all-package verification is claimed.
 
 
 ### Explicit DeepSeek native profiles
@@ -3081,7 +3081,7 @@ LlmOptions --> "DeepSeek anthropic/v1 target" : selected Messages model / auth
 
 Whole native input/output remains supplier data: Chat reasoning_content, Responses plain reasoning and custom apply_patch IDs/input, Messages unsigned thinking and remote/client tool links, and separate valid FIM suffix/logprobs/echo variants. No automatic response history, previous_response_id, model suffix stripping, effort mapping, signature invention, parameter repair or code/tool execution occurs. Responses requires native completed/incomplete/failed without DONE; text requires actual DONE with usage allowed on the last content choice; Messages requires message_stop. Existing complete-target Session binding and bounded closure/final-cancellation gates apply unchanged.
 
-Thirty-seven OpenAI and twelve Anthropic independent-profile/fault cases pass, bringing current scoped totals to841 and207 respectively. The production graph remains63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. These offline results do not establish live model/setting effectiveness, Linux, full-repository tests or all-package verification.
+Thirty-seven OpenAI and twelve Anthropic independent-profile/fault cases pass, bringing current scoped totals to841 and223 respectively. The production graph remains64 projects/46 Infrastructure consumers/127 solution paths/64 package IDs. These offline results do not establish live model/setting effectiveness, Linux, full-repository tests or all-package verification.
 
 ### Explicit Moonshot and Kimi native profiles
 
@@ -3102,4 +3102,28 @@ Native tools and reverse result associations, reasoning summaries and optional o
 
 Supplier-private HTTP classification recognizes the four documented response.reasoning_summary_part.added/done and response.reasoning_summary_text.delta/done events. These retain their original frames before terminal and cannot restart generation afterward. Similar unknown names remain raw business metadata, without claiming their nested response IDs. Existing strict HTTP v2 binding domain, default option serialization and native text/Chat classification are unchanged.
 
-Fifty-two OpenAI and twenty-eight Messages independent-window/fault cases pass; current scoped totals are841 and207. Conversion regression passes2535 cases. The production graph remains63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. Model/setting/Coding entitlement, current hosted legacy text, full-repository tests, Linux and all-package verification are not established by these offline scopes.
+Fifty-two OpenAI and twenty-eight Messages independent-window/fault cases pass; current scoped totals are841 and223. Conversion regression passes2535 cases. The production graph remains64 projects/46 Infrastructure consumers/127 solution paths/64 package IDs. Model/setting/Coding entitlement, current hosted legacy text, full-repository tests, Linux and all-package verification are not established by these offline scopes.
+
+### Native MiniMax v2 Chat and separate Messages profile
+
+Asgard.Loki.LLM.MiniMax implements the existing IChatCompletionsAdapter, explicit Chat-only protocol support and ApiKey credential support. It references its own LLM capability plus Infrastructure and standard HTTP. The native text/chatcompletion_v2 path, root base_resp business failures and ending/full-snapshot state belong to this supplier. Native Messages independently reuses AnthropicLlmProvider at an explicit anthropic/v1 root; no supplier-peer or cross-capability business dependency is added.
+
+```plantuml
+@startuml
+LlmClient --> ChatCompletionsClient : existing public contract
+ChatCompletionsClient --> MiniMaxLlmProvider : complete bound target
+MiniMaxLlmProvider --> MiniMaxCall : frozen native request / selected authentication
+MiniMaxLlmProvider --> MiniMaxStreamState : exact choices / native finishes / full snapshot
+MiniMaxLlmProvider --> SseReader : bounded strict UTF-8 framing only
+MiniMaxLlmProvider --> HttpBodyReader : bounded raw JSON/error bytes only
+MiniMaxLlmProvider --> ChatCompletion : complete original JSON
+MiniMaxLlmProvider --> ChatCompletionEvent : unassembled original frame / transport identity
+LlmOptions --> AnthropicLlmProvider : independent native Messages profile
+@enduml
+```
+
+Only selected actual model and method stream flag are owned. Native history, thought text/reasoning_content, tool IDs/argument fragments/results, optional settings, usage/sensitivity and unknown data remain original. A nonzero base_resp.status_code fails even under HTTP200 and preserves raw payload/status/media. No sampling/default repair, tool execution, retries, target fallback, media fetch, history subsystem or billing calculation occurs.
+
+Supplier state distinguishes finish-bearing deltas from an optional later complete message snapshot repeating the same native reason. Every observed exact sparse choice must finish; interleaved unfinished choices can continue. Late generation, duplicate chunk finishes, identity/reason changes, duplicate snapshots and missing native endings fail. Optional actual DONE cannot replace native finishes, repeat or permit more events. All ending-stage frames wait through bounded normal EOF, exact length, owned async/sync source/HTTP/client/request closure and final cancellation. Even replaced request content retains explicit original-content disposal ownership.
+
+MiniMaxLlmOptions positive request/response/whole-stream bytes, ending-stage count and tracked-choice count, plus named client, participate in provider identity. Existing complete-target Session coordination/cache contracts apply unchanged. The entry still references only Abstractions; production graph now64 projects/46 Infrastructure consumers/127 unique solution paths/64 package IDs. New native117 and existing Messages223 offline cases pass at their project scopes. No live model/setting, Linux, full-repository or all-package result is established.
