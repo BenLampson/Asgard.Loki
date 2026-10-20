@@ -10,7 +10,7 @@ internal static class AzureImagePayload
 {
     private static readonly Encoding Utf8 = new UTF8Encoding(false, true);
     /// <summary>公开提示词与路由不被原生扩展字段覆盖；JSON 在创建客户端前编码。</summary>
-    internal static HttpContent Generation(ImageGenerationRequest request, AzureImageOptions options, CancellationToken token)
+    internal static AzureImageGenerationPayload Generation(ImageGenerationRequest request, AzureImageOptions options, CancellationToken token, bool streaming = false)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(request); Identity(request.Model, request.Prompt);
         ArgumentNullException.ThrowIfNull(request.Parameters);
@@ -23,9 +23,19 @@ internal static class AzureImagePayload
             if (field.Key.Equals("stream", StringComparison.OrdinalIgnoreCase))
             {
                 if (field.Key != "stream" || field.Value.ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw new ArgumentException("原生 stream 必须使用准确字段名和布尔值。");
-                if (field.Value.ValueKind == JsonValueKind.True) throw new NotSupportedException("Azure 图像原生流式生成尚未实现。");
+                if (streaming && field.Value.ValueKind == JsonValueKind.False) throw new ArgumentException("流式生成不能覆盖显式 stream=false。");
+                if (!streaming && field.Value.ValueKind == JsonValueKind.True) throw new NotSupportedException("stream=true 必须使用原生 StreamAsync 入口。");
             }
+            if (streaming && (field.Key.Equals("n", StringComparison.OrdinalIgnoreCase) || field.Key.Equals("partial_images", StringComparison.OrdinalIgnoreCase))
+                && field.Key is not ("n" or "partial_images")) throw new ArgumentException("流计数字段不能使用大小写别名。");
             copy.Add(field.Key, field.Value.Clone());
+        }
+        var expected = 1;
+        if (streaming)
+        {
+            if (copy.TryGetValue("n", out var count)) expected = AzureImageNumber.Small(count, 1, 10);
+            if (copy.TryGetValue("partial_images", out var partial)) _ = AzureImageNumber.Small(partial, 0, 3);
+            if (!copy.ContainsKey("stream")) copy.Add("stream", JsonSerializer.SerializeToElement(true));
         }
         using var bytes = new MemoryStream();
         using (var writer = new Utf8JsonWriter(bytes))
@@ -34,10 +44,13 @@ internal static class AzureImagePayload
             foreach (var field in copy) { writer.WritePropertyName(field.Key); field.Value.WriteTo(writer); } writer.WriteEndObject();
         }
         if (bytes.Length > options.MaxRequestBytes) throw new ArgumentException("Azure 图像 JSON 请求超过本地字节上限。");
-        var content = new ByteArrayContent(bytes.ToArray()); content.Headers.ContentType = new("application/json"); return content;
+        return new(request.Model, bytes.ToArray(), expected);
     }
+    /// <summary>每次枚举单独创建已冻结正文的内容，未枚举时不持有 HTTP 资源。</summary>
+    internal static HttpContent Json(byte[] bytes)
+    { var content = new ByteArrayContent(bytes); content.Headers.ContentType = new("application/json"); return content; }
     /// <summary>元数据/字段独立复制，图片及遮罩流仅借用；不读长度或回卷。</summary>
-    internal static ImageMultipartEditRequest Snapshot(ImageMultipartEditRequest request, AzureImageOptions options, CancellationToken token)
+    internal static ImageMultipartEditRequest Snapshot(ImageMultipartEditRequest request, AzureImageOptions options, CancellationToken token, bool streaming = false)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(request); Identity(request.Model, request.Prompt);
         ArgumentNullException.ThrowIfNull(request.Images); ArgumentNullException.ThrowIfNull(request.Fields);
@@ -72,13 +85,19 @@ internal static class AzureImagePayload
             if (name == "stream")
             {
                 if (field.Value is not ("true" or "false")) throw new ArgumentException("原生表单 stream 必须为 true/false 文本。");
-                if (field.Value == "true") throw new NotSupportedException("Azure 图像原生流式编辑尚未实现。");
+                if (streaming && field.Value == "false") throw new ArgumentException("流式编辑不能覆盖显式 stream=false。");
+                if (!streaming && field.Value == "true") throw new NotSupportedException("stream=true 必须使用 StreamMultipartEditAsync 入口。");
             }
+            if (streaming && name is "n" or "partial_images") _ = AzureImageNumber.Text(field.Value, name == "n" ? 1 : 0, name == "n" ? 10 : 3);
             bytes += AzureImageJson.Text(field.Name) + AzureImageJson.Text(field.Value);
         }
+        if (streaming && !single.Contains("stream")) { fields = [.. fields, new("stream", "true")]; bytes += AzureImageJson.Text("streamtrue"); }
         if (bytes > options.MaxRequestBytes) throw new ArgumentException("Azure 编辑文本/元数据超过本地字节上限。");
         return request with { Images = Array.AsReadOnly(images), Mask = mask, Fields = Array.AsReadOnly(fields) };
     }
+    /// <summary>原生 n 省略时采用文档的单图终态约束，但不向请求写入默认 n。</summary>
+    internal static int ExpectedImages(ImageMultipartEditRequest request)
+        => request.Fields.SingleOrDefault(field => field.Name == "n") is { } field ? AzureImageNumber.Text(field.Value, 1, 10) : 1;
     /// <summary>单图 image，多图 image[]，mask 单独保留；不插入原生默认参数。</summary>
     internal static HttpContent Multipart(ImageMultipartEditRequest request, AzureImageOptions options)
     {

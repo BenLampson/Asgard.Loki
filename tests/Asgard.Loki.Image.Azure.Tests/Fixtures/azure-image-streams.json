@@ -24,7 +24,7 @@
         "Text": "原始 😀\r\n下一行"
       },
       "stream": true,
-      "partial_images": 0
+      "partial_images": 3
     },
     {
       "prompt": "原始图像提示 😀\r\n下一行",

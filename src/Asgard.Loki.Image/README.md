@@ -1,6 +1,6 @@
 # Asgard.Loki.Image
 
-[Azure](../Asgard.Loki.Image.Azure/README.md) supplies separately configured native deployment/version/API-Key JSON generation and multipart editing. It preserves original results and upload ownership. Its native SSE support is not implemented; unsupported JSON-reference/streaming calls fail locally without protocol or media conversion.
+[Azure](../Asgard.Loki.Image.Azure/README.md) supplies separately configured native deployment/version/API-Key JSON generation and multipart editing. It preserves original results and upload ownership, with native generation SSE and multipart editing SSE. Dated JSON-reference editing remains unsupported and fails locally without media/protocol conversion. Its edit completion marker describes the whole call; original per-image completed events remain intact.
 
 Independent image generation/editing contracts, routing and module registration for Asgard.Loki.
 

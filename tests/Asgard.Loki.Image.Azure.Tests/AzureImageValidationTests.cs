@@ -77,7 +77,7 @@ public sealed class AzureImageValidationTests
     {
         using var upload = new AzureImageReadStream([1]); using var factory = new AzureImageTestFactory(); var token = TestContext.Current.CancellationToken;
         var generation = new AzureImageAdapter(factory, AzureImageFixture.Options()); var edit = new AzureImageEditAdapter(factory, AzureImageFixture.Options());
-        Assert.Throws<NotSupportedException>(() => generation.StreamAsync(AzureImageFixture.Generation(), token));
+        Assert.Throws<NotSupportedException>(() => edit.StreamEditAsync(new() { Model = "images", Prompt = "original" }, token));
         await Assert.ThrowsAsync<NotSupportedException>(() => edit.EditAsync(new() { Model = "images", Prompt = "original" }, token));
         var request = AzureImageFixture.Generation(); request.Parameters["stream"] = JsonSerializer.SerializeToElement(true);
         await Assert.ThrowsAsync<NotSupportedException>(() => generation.GenerateAsync(request, token));

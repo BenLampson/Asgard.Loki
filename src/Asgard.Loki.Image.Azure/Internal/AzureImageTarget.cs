@@ -33,19 +33,40 @@ internal sealed class AzureImageTarget
         return new(Options.Endpoint.AbsoluteUri.TrimEnd('/') + "/openai/deployments/" + Uri.EscapeDataString(Options.Deployment)
             + "/images/" + operation + "?api-version=" + Uri.EscapeDataString(Options.ApiVersion));
     }
+    /// <summary>每次流/完整调用创建自己的请求，原生参数内容所有权由消息持有。</summary>
+    internal HttpRequestMessage Message(string operation, HttpContent content, bool streaming)
+    {
+        var message = new HttpRequestMessage(HttpMethod.Post, Address(operation));
+        try
+        {
+            message.Content = content; message.Headers.Add("api-key", Options.ApiKey);
+            message.Headers.Accept.ParseAdd(streaming ? "text/event-stream" : "application/json"); return message;
+        }
+        catch { message.Dispose(); content.Dispose(); throw; }
+    }
+    /// <summary>只借用工厂；创建的客户端交由本次调用释放，认证仅来自固定目标。</summary>
+    internal HttpClient Client()
+    {
+        var client = _factory.CreateClient(Options.HttpClientName);
+        try { client.DefaultRequestHeaders.Authorization = null; client.DefaultRequestHeaders.Remove("api-key"); return client; }
+        catch { client.Dispose(); throw; }
+    }
+    /// <summary>拒绝外部处理器重定向或改写实际 HTTP 方法后的成功结果。</summary>
+    internal void Validate(HttpResponseMessage response, string operation)
+    {
+        if (response.RequestMessage is { } actual && (actual.Method != HttpMethod.Post || actual.RequestUri != Address(operation)))
+            throw new InvalidDataException("Azure 图像响应目标或方法与固定配置不一致。");
+    }
     /// <summary>本次内容所有权移交消息；完整读取/资源释放前不交付任何成功结果。</summary>
     internal async Task<AzureImageResponse> SendAsync(string operation, HttpContent content, CancellationToken token)
     {
         using (content)
-        using (var message = new HttpRequestMessage(HttpMethod.Post, Address(operation)))
+        using (var message = Message(operation, content, false))
         {
-            message.Content = content; message.Headers.Add("api-key", Options.ApiKey); message.Headers.Accept.ParseAdd("application/json");
             token.ThrowIfCancellationRequested();
-            using var client = _factory.CreateClient(Options.HttpClientName);
-            client.DefaultRequestHeaders.Authorization = null; client.DefaultRequestHeaders.Remove("api-key");
+            using var client = Client();
             using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
-            if (response.RequestMessage is { } actual && (actual.Method != HttpMethod.Post || actual.RequestUri != Address(operation)))
-                throw new InvalidDataException("Azure 图像响应目标或方法与固定配置不一致。");
+            Validate(response, operation);
             var body = await HttpBodyReader.ReadAsync(response.Content, Options.MaxResponseBytes, token).ConfigureAwait(false);
             var result = new AzureImageResponse(response.StatusCode, body, response.Content.Headers.ContentType?.ToString());
             return result;

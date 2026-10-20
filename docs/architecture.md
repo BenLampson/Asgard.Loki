@@ -7,7 +7,8 @@
 ```mermaid
 classDiagram
 IImageGenerationAdapter <|.. AzureImageAdapter
-IImageEditAdapter <|.. AzureImageEditAdapter
+IImageEditAdapter <|-- IStreamingImageEditAdapter
+IStreamingImageEditAdapter <|.. AzureImageEditAdapter
 AzureImageAdapter --> AzureImageOptions : own complete target
 AzureImageEditAdapter --> AzureImageOptions : independent complete target
 AzureImageAdapter --> AzureImageTarget : fixed URI/auth and bounded HTTP
@@ -18,11 +19,16 @@ AzureImageEditAdapter --> AzureImagePayload : native multipart, no JSON conversi
 AzureImagePayload --> BorrowedStreamContent : current-position single-use images/mask
 AzureImageAdapter --> AzureImageJson : original complete result and native errors
 AzureImageEditAdapter --> AzureImageJson
+AzureImageAdapter --> AzureImageStream : explicit native SSE
+AzureImageEditAdapter --> AzureImageStream : multipart SSE
+AzureImageStream --> AzureImageSse : per-call native event validation
+AzureImageStream --> AzureImageReadStream : raw byte/length boundary
+AzureImageSse --> SseReader : framing only
 ```
 
 Generation JSON is snapshotted/encoded before creating a client. Multipart copies metadata, image/mask lists and literal ordered fields while borrowing original readable streams. A single image uses image; multiple use image[], with an independent mask. Unknown/repeated text fields, empty values, false/zero and native JSON precision remain original; protected field overrides, duplicate known scalars, invalid Unicode/header metadata and reused stream identities fail before I/O. Body model is optional and never inferred. File bytes are neither inspected nor buffered for a total content length; each bounded upload refuses implicit replay and leaves the input open.
 
-Call-owned content/message/response/client must finish reading/disposal before publishing complete JSON. HTTP length, byte bounds, UTF-8, unambiguous JSON, native errors and original image payloads are checked. Native URLs/Base64, filtering objects, usage and unknown fields remain intact without arithmetic, pixel work or downloads. Each operation keeps its own native error exception, including original status/content type/body. The supplier-local target only shares fixed endpoint/authentication and HTTP transport, with no selection, workflow or cross-capability state. Factory/inputs stay application-owned and no automatic retry/failover occurs. Native SSE remains unimplemented, not JSON-to-event fallback. Dated editing uses native multipart; JSON image references are rejected without media fetching or inferred conversion. Independent xUnit v3 wire/lifecycle tests use fake HTTP; real Azure/model/quality/filter acceptance remains unverified.
+Call-owned content/message/response/client must finish reading/disposal before publishing complete JSON. HTTP length, byte bounds, UTF-8, unambiguous JSON, native errors and original image payloads are checked. Native URLs/Base64, filtering objects, usage and unknown fields remain intact without arithmetic, pixel work or downloads. Each operation keeps its own native error exception, including original status/content type/body. The supplier-local target only shares fixed endpoint/authentication and HTTP transport, with no selection, workflow or cross-capability state. Factory/inputs stay application-owned and no automatic retry/failover occurs. Native generation and multipart edit SSE preserve complete original JSON and separate SSE identity, without JSON-to-event fallback. Only explicit stream entry inserts true when omitted; a conflicting false fails before I/O. Native n is validated in the documented 1–10 range without rewriting its original integer spelling or injecting an omitted default. Completion requires original native image completions for that request count; partial counts are not progress promises. Original partial indices do not become fabricated output IDs. Progress before the first completed image streams immediately; the first completion and subsequent event tail are held in original order until EOF, raw byte/length checks and HTTP resource disposal all succeed. IsCompleted on edits marks the whole call only on the last native completed image, preserving earlier per-image completed JSON with false. Optional DONE follows actual native completion, cannot replace it and produces no fake event. Missing/excess/duplicate completion, wrong family/identity, late errors, invalid tails, cancellation and read/disposal failures cannot first publish success. Single-use enumeration and early stop preserve borrowed inputs; no replay/reconnect occurs. The helper is supplier-local Image HTTP/framing, with per-enumeration protocol state and no cross-capability coordinator. Dated editing uses native multipart; JSON image references are rejected without media fetching or inferred conversion. Independent xUnit v3 wire/lifecycle tests use fake HTTP; real Azure/model/quality/filter acceptance remains unverified.
 
 
 ## Native SunoAPI Audio provider
