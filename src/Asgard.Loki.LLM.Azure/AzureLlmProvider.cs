@@ -7,7 +7,7 @@ using Asgard.Loki.LLM.Azure.Internal;
 namespace Asgard.Loki.LLM.Azure;
 
 /// <summary>Azure 原生路由和认证独立属于本供应商，不引用其他供应商或管理云资源。</summary>
-public sealed partial class AzureLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter, ILlmCredentialSupport
+public sealed partial class AzureLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter, IRealtimeAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _factory;
     private readonly string _clientName;
@@ -29,13 +29,14 @@ public sealed partial class AzureLlmProvider : IChatCompletionsAdapter, IRespons
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBufferedTerminalEvents, 0);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumTrackedChoices, 0);
         AzureJson.Text(id); AzureJson.Text(httpClientName); if (options.ApiVersion is not null) AzureJson.Text(options.ApiVersion);
+        _realtimeFactoryIdentity = _realtimeFactory.BindingIdentity;
         _factory = factory; _clientName = httpClientName; _options = options; _tokenSource = tokenSource; _time = timeProvider ?? TimeProvider.System; Id = id;
         if (tokenSource is not null) { var sourceIdentity = tokenSource.BindingIdentity; ArgumentException.ThrowIfNullOrWhiteSpace(sourceIdentity); AzureJson.Text(sourceIdentity); _sourceIdentity = sourceIdentity; }
     }
     /// <inheritdoc />
     public string Id { get; }
     /// <inheritdoc />
-    public string BindingIdentity => GetType().AssemblyQualifiedName + ":azure-sse-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity });
+    public string BindingIdentity => GetType().AssemblyQualifiedName + ":azure-sse-v1:" + JsonSerializer.Serialize(new { Options = _options, Client = _clientName, Source = _sourceIdentity }) + _realtimeIdentity;
     /// <inheritdoc />
     public bool SupportsCredential(LlmCredentialKind kind) => kind == LlmCredentialKind.ApiKey || kind == LlmCredentialKind.External && _tokenSource is not null;
     /// <inheritdoc />

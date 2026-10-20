@@ -808,13 +808,20 @@ OpenAIImage ..> Image
 
 ## Azure native provider
 
-`Asgard.Loki.LLM.Azure` implements the existing Chat/Responses JSON/SSE and optional native Responses compaction adapter contracts and references LLM, Infrastructure and standard HTTP. It adds no protocol flag, public universal message format or dependency on OpenAI/Conversion/another capability. Native SSE is provider-owned; it does not change the core protocol contracts. See the [provider support matrix](../src/Asgard.Loki.LLM.Azure/README.md).
+`Asgard.Loki.LLM.Azure` implements the existing Chat/Responses JSON/SSE, optional native Responses compaction and independent Realtime adapter contracts and references LLM, Infrastructure and standard HTTP. It adds no protocol flag, public universal message format or dependency on OpenAI/Conversion/another capability. Native SSE is provider-owned; it does not change the core protocol contracts. See the [provider support matrix](../src/Asgard.Loki.LLM.Azure/README.md).
 
 ```mermaid
 classDiagram
 IChatCompletionsAdapter <|.. AzureLlmProvider
 IResponsesAdapter <|.. AzureLlmProvider
 IResponsesCompactionAdapter <|.. AzureLlmProvider
+IRealtimeAdapter <|.. AzureLlmProvider
+AzureLlmProvider --> AzureRealtimeOptions : separate message policy
+AzureLlmProvider --> IAzureRealtimeWebSocketFactory : borrowed handshake configuration
+AzureLlmProvider --> AzureRealtimeConnection : native duplex only
+AzureRealtimeConnection ..|> IRealtimeConnection
+AzureRealtimeConnection --> AzureRealtimeTransport : owned bounded JSON frames
+AzureRealtimeTransport --> WebSocket : owns socket only
 AzureLlmProvider --> ResponseCompaction : complete native window
 AzureLlmProvider --> HttpBodyReader : bounded raw compaction body
 ILlmCredentialSupport <|.. AzureLlmProvider
@@ -830,9 +837,13 @@ External authentication is provider-owned. The borrowed source has a captured st
 
 Requests are snapshotted before awaiting token acquisition. Conflicting unselected authentication defaults fail before send. Complete results wait for normal bounded UTF-8 body EOF, declared-length checks, response/client disposal and cancellation. `MaximumBodyBytes` bounds raw JSON/error bodies. Duplicate properties, malformed strings/encoding, truncated JSON and unexpected SSE media fail; root native errors preserve original body and HTTP status. The factory, token source and clock remain application-owned. Conversion is an explicit separate decorator with its existing strict loss rules; native Azure filter retention does not grant automatic cross-protocol equivalence.
 
-250 independent offline cases cover native JSON/SSE/compaction, authentication, continuation/Session identity and transport/resource boundaries. Chat retains empty-identity annotations, unknown native metadata and per-choice original indices; the first possible finish starts a bounded tail buffer through filter/usage records, DONE, normal EOF and disposal. Responses preserves unknown events and holds completed/incomplete/failed/error without changing native status; missing/repeated/late terminals or changed response identity fail. Raw bytes are bounded before SSE line parsing; pending tail records and tracked choice indices have separate explicit limits. Tool/item/call IDs remain native, with no tool execution or argument aggregation. The new SSE binding identity/resource policies require fresh Sessions for the earlier JSON-only contract rather than silently rebinding. Core legacy fingerprints and conversion-v24 are unchanged. Cloud login, actual token refresh, live model verification and WebSocket/Realtime operations are not claimed.
+346 independent offline cases cover native JSON/SSE/compaction/Realtime, authentication, continuation/Session identity and transport/resource boundaries. Chat retains empty-identity annotations, unknown native metadata and per-choice original indices; the first possible finish starts a bounded tail buffer through filter/usage records, DONE, normal EOF and disposal. Responses preserves unknown events and holds completed/incomplete/failed/error without changing native status; missing/repeated/late terminals or changed response identity fail. Raw bytes are bounded before SSE line parsing; pending tail records and tracked choice indices have separate explicit limits. Tool/item/call IDs remain native, with no tool execution or argument aggregation. The new SSE binding identity/resource policies require fresh Sessions for the earlier JSON-only contract rather than silently rebinding. Core legacy fingerprints and conversion-v24 are unchanged. Cloud login, actual token refresh, live model verification and Responses WebSocket operations are not claimed.
 
 Native compaction implements the existing optional adapter and requires the same explicit `ResponsesCompaction` target feature and response-ownership rules as the core contract. It uses the selected root's `responses/compact`, maps the actual deployment in the body and never injects `stream`. `MaximumCompactionRequestBytes` bounds final UTF-8 bytes before authentication; its nullable omitted form preserves previous default binding bytes, while explicit configuration changes implementation identity. The whole native output window, tool links and encrypted items remain unchanged; compaction IDs are not indexed as generated-response IDs. Raw compaction errors retain bytes/status/content type, including non-UTF-8 bodies. Actual target/method, body EOF/disposal, final cancellation and external token source identity/expiry are validated before successful publication. Explicit dated compaction roots/versions are offline routing profiles; live API-version acceptance remains unverified.
+
+Azure Realtime implements `IRealtimeAdapter` and the existing raw native event/connection contracts; it does not reference the OpenAI provider or reuse Responses state. The selected v1 or dated API root forms one fixed WS(S) handshake, with actual deployment in a separately escaped `model` or `deployment` query and optional/required explicit version respectively. API Key uses an `api-key` header; External acquires a fixed-principal Bearer token once per explicit open. Source/factory stable identities and token expiry are guarded through handshake, before/after socket I/O and native event delivery. Drift fails and closes the owned socket; no credential refresh, background timer, reconnect or replay is added.
+
+`AzureRealtimeTransport` is supplier-private bounded JSON framing with strict UTF-8/Unicode/duplicate-property parsing and explicit complete-message limits. `AzureRealtimeConnection` maps only known `session.update.session.model` / `response.create.response.model` selectors, retaining business model fields and all audio/tool/error/status/future data. Native response done/error events do not terminate the connection or imply success. Core's existing bound wrapper checks Session affinity; independent native calls and new connections never restore remote conversation state. Existing Azure constructor/default binding bytes remain unchanged; the additive explicit Realtime overload snapshots options/factory identity into a separate identity suffix. No supplier-peer reference, Compile Link, public canonical format or other-capability coordinator is introduced.
 
 ## Vertex standard Gemini provider
 
