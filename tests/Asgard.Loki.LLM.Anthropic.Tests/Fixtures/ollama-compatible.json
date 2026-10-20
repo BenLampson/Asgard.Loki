@@ -1,0 +1,315 @@
+{
+  "provenance": "Independently authored native Messages window for explicit compatible root/Bearer reuse. Signatures/unknown fields are fidelity data, not live Ollama/model support certification.",
+  "sources": [
+    "https://docs.ollama.com/api/anthropic-compatibility",
+    "https://docs.ollama.com/api/authentication"
+  ],
+  "profiles": [
+    {
+      "root": "http://localhost:11434/v1/",
+      "key": "explicit-ignored-placeholder",
+      "id": "local-compatible"
+    },
+    {
+      "root": "https://proxy.invalid/tenant/v1/",
+      "key": "explicit-proxy-key",
+      "id": "proxy-compatible"
+    },
+    {
+      "root": "https://ollama.com/v1/",
+      "key": "fixture-hosted-token",
+      "id": "hosted-compatible"
+    }
+  ],
+  "model": "selected-ollama",
+  "path": "messages",
+  "caller": {
+    "model": "public",
+    "max_tokens": 2048,
+    "system": [
+      {
+        "type": "text",
+        "text": "原生上下文"
+      }
+    ],
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "old thought",
+            "signature": "opaque-old-signature"
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-a",
+            "name": "read_a",
+            "input": {
+              "n": 9007199254740993
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-b",
+            "name": "read_b",
+            "input": {
+              "enabled": false
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-b",
+            "content": "B",
+            "is_error": false
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-a",
+            "content": "A"
+          },
+          {
+            "type": "text",
+            "text": "继续"
+          }
+        ]
+      }
+    ],
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "tools": [
+      {
+        "name": "read_a",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    ],
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "null": null,
+      "false": false,
+      "empty": []
+    }
+  },
+  "wire": {
+    "model": "selected-ollama",
+    "max_tokens": 2048,
+    "system": [
+      {
+        "type": "text",
+        "text": "原生上下文"
+      }
+    ],
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "old thought",
+            "signature": "opaque-old-signature"
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-a",
+            "name": "read_a",
+            "input": {
+              "n": 9007199254740993
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-b",
+            "name": "read_b",
+            "input": {
+              "enabled": false
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-b",
+            "content": "B",
+            "is_error": false
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-a",
+            "content": "A"
+          },
+          {
+            "type": "text",
+            "text": "继续"
+          }
+        ]
+      }
+    ],
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "tools": [
+      {
+        "name": "read_a",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    ],
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "null": null,
+      "false": false,
+      "empty": []
+    },
+    "stream": false
+  },
+  "result": {
+    "id": "msg-ollama-a",
+    "type": "message",
+    "role": "assistant",
+    "model": "reported-ollama",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "native reasoning",
+        "signature": "opaque-returned-signature"
+      },
+      {
+        "type": "tool_use",
+        "id": "next-a",
+        "name": "read_a",
+        "input": {
+          "n": 9007199254740993
+        }
+      }
+    ],
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 8
+    },
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "null": null,
+      "false": false,
+      "empty": []
+    }
+  },
+  "events": [
+    {
+      "type": "message_start",
+      "message": {
+        "id": "msg-ollama-a",
+        "type": "message",
+        "role": "assistant",
+        "model": "reported-ollama",
+        "content": [],
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    },
+    {
+      "type": "content_block_start",
+      "index": 0,
+      "content_block": {
+        "type": "thinking",
+        "thinking": ""
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 0,
+      "delta": {
+        "type": "thinking_delta",
+        "thinking": "native reasoning"
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 0,
+      "delta": {
+        "type": "signature_delta",
+        "signature": "opaque-returned-signature"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 0
+    },
+    {
+      "type": "content_block_start",
+      "index": 1,
+      "content_block": {
+        "type": "tool_use",
+        "id": "next-a",
+        "name": "read_a",
+        "input": {}
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 1,
+      "delta": {
+        "type": "input_json_delta",
+        "partial_json": "{\"n\":9007199254740993}"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 1
+    },
+    {
+      "type": "message_delta",
+      "delta": {
+        "stop_reason": "tool_use",
+        "stop_sequence": null
+      },
+      "usage": {
+        "output_tokens": 8
+      }
+    },
+    {
+      "type": "message_stop"
+    },
+    {
+      "type": "future.metadata",
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    }
+  ],
+  "sse": "id: transport-ollama\nretry: 0\nevent: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg-ollama-a\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"reported-ollama\",\"content\":[],\"usage\":{\"input_tokens\":0,\"output_tokens\":0}}}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"native reasoning\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"opaque-returned-signature\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"tool_use\",\"id\":\"next-a\",\"name\":\"read_a\",\"input\":{}}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"n\\\":9007199254740993}\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1}\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"usage\":{\"output_tokens\":8}}\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"}\n\nevent: future.metadata\ndata: {\"type\":\"future.metadata\",\"future\":{\"exact\":9007199254740993,\"zero\":0,\"null\":null,\"false\":false,\"empty\":[]}}\n\n"
+}
