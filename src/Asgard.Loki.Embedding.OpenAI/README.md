@@ -14,7 +14,7 @@ Native OpenAI Embeddings provider for the Asgard.Loki .NET SDK. It references `A
 | Authentication | Fixed API Key/Bearer token, optional organization/project, explicit named HTTP factory |
 | Errors/cancellation | Original HTTP status/raw body/content type, 200 business-error detection, final cancellation after resource disposal, no retry or failover |
 | Local byte policies | `MaxRequestBytes` defaults to 32 MiB; `MaxResponseBytes` defaults to 64 MiB, including error bodies; no splitting |
-| Offline/live status | 127 substitute-HTTP tests, including 19 Jina cases, five canonical M3E profile cases and 16 raw transport/lifetime boundary cases; no live provider/model/vector-quality verification |
+| Offline/live status | 134 substitute-HTTP tests, including 19 Jina cases, five canonical M3E cases, seven Workers AI profile cases and 16 raw transport/lifetime boundary cases; no live provider/model/vector-quality verification |
 
 ## Initialization
 
@@ -96,3 +96,22 @@ A service exposing canonical `POST embeddings` with text/string-array `input`, B
 Five offline profile cases verify whole scalar/batch requests and native responses, original whitespace/Unicode, reordered indices, exact JSON numbers, optional missing root/item fields, missing usage, native returned model, parameter snapshots, errors and duplicate-index rejection. Strings are not coerced to arrays, non-string elements are not filtered, indices are not fabricated and returned models are not overwritten. This profile covers only canonical text and numeric dense output; it does not certify M3E token inputs, Base64, multimodal contracts or a specific hosted endpoint.
 
 The [official M3E model card](https://huggingface.co/moka-ai/m3e-base) describes model weights and local inference; it is not evidence for an HTTP service contract. No hosted Moka availability, live model acceptance or embedding quality has been verified.
+
+## Workers AI text profile
+
+Cloudflare documents an [OpenAI-compatible Embeddings endpoint](https://developers.cloudflare.com/workers-ai/configuration/open-ai-compatibility/). Configure this adapter with your explicit account-scoped API root, independently supplied token, actual embedding model and target/client identities:
+
+```csharp
+var target = new OpenAiEmbeddingAdapter(httpClientFactory, new OpenAiEmbeddingOptions
+{
+    Id = "cloudflare-vectors",
+    BaseAddress = accountScopedEmbeddingRoot,
+    Model = cloudflareEmbeddingModel,
+    ApiKey = cloudflareToken,
+    HttpClientName = "cloudflare-embedding"
+});
+```
+
+`accountScopedEmbeddingRoot` must be a caller-created URI such as `https://api.cloudflare.com/client/v4/accounts/<account_id>/ai/v1/`, with the actual account substituted. The provider appends only `embeddings`; it preserves proxy/account prefixes. Pass native text/string-array `input`. The model stays in the request body, including names containing `@` and `/`; the SDK performs no model-prefix routing or catalog lookup. Native unknown JSON is retained, but passing an extension does not certify model acceptance.
+
+Seven independent offline cases cover both text forms, roots with/without a trailing slash, complete account-scoped requests/Bearer headers, original indexed numeric vectors/native model/missing usage, errors and rejection of a different operation's output. The separate `ai/run/<model>` API with a `result.shape/data` wrapper is not implemented by this profile; it is not flattened or given synthetic indices. Token input, Base64, model-specific dimensions/options and native `ai/run` semantics are not certified here. No Vectorize/vector database, Worker hosting, AI Gateway configuration, automatic credential discovery or live embedding/model/quality verification is included.
