@@ -3242,3 +3242,20 @@ OpenAiLlmProvider --> "Native original data" : tools / reasoning / search / filt
 ```
 
 Search, safety, thinking, schema and token settings stay caller-supplied at their original positions. Native filtering metadata is data, not SDK policy execution. The SDK neither parses compound credentials nor strips model suffixes or injects search. Actual DONE, source EOF, owned-resource closure and final cancellation gate stream endings. Existing complete-target binding, limits and borrowed cache/coordinator/factory ownership apply. See the [support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-baidu-qianfan-v2-native-chat).
+
+### Explicit Zhipu v4 native protocol targets
+
+Native Chat, Responses and Messages are separate complete targets with caller-selected root/model/Key/protocol. Existing adapters are reused without new supplier packages, public interfaces or supplier-peer references. Native reasoning object shape, tool associations, search/filter metadata and usage stay complete. No gateway sampling clamp, data-URI stripping, token-limit merge or field filtering is applied.
+
+```plantuml
+@startuml
+LlmOptions --> "Zhipu Chat target" : /api/paas/v4/ + ChatCompletions
+LlmOptions --> "Zhipu Responses target" : /api/v1/ + Responses
+LlmOptions --> "Zhipu Messages target" : /api/anthropic/v1/ + ClaudeMessages
+"Zhipu Chat target" --> OpenAiLlmProvider : native JSON / SSE + actual DONE
+"Zhipu Responses target" --> OpenAiLlmProvider : native JSON / SSE + response terminal
+"Zhipu Messages target" --> AnthropicLlmProvider : explicit authentication / message_stop
+@enduml
+```
+
+Existing raw JSON error exceptions, original native failed/incomplete stream snapshots, bounded endings, EOF/closure/final cancellation, complete Session identity and borrowed dependencies remain unchanged. Targets never infer Coding Plan or model support. See the [Chat/Responses matrix and initialization](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-zhipu-v4-native-chat-and-responses) and [Messages matrix and initialization](../src/Asgard.Loki.LLM.Anthropic/README.md#explicit-zhipu-v4-native-messages) for protocol-specific limits and live status.

@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.Anthropic.Tests
 
-**223 passing offline xUnit v3 cases** exercise the actual provider through direct adapters and the public SDK. HTTP is replaced locally; Session tests use MemoryDistributedCache with the explicit test coordinator. There are no real Keys, provider/Redis requests or live model/setting claims. See [testing](../../docs/testing.md).
+**247 passing offline xUnit v3 cases** exercise the actual provider through direct adapters and the public SDK. HTTP is replaced locally; Session tests use MemoryDistributedCache with the explicit test coordinator. There are no real Keys, provider/Redis requests or live model/setting claims. See [testing](../../docs/testing.md).
 
 | Native contract | Cases / coverage |
 | --- | --- |
@@ -19,3 +19,5 @@ Native state tests reject duplicate/missing/incompatible block/tool associations
 HTTP matrices check raw UTF-8/JSON/declared-length/body bounds, original native/HTTP errors, selected default-header isolation, early exit, late reads, async/sync/client disposal and final cancellation. message_delta.stop_reason, message_stop and unknown tails wait until normal EOF and owned-resource closure. Missing message_stop must fail specifically as native truncation, never success inferred from closed blocks or EOF.
 
 Complete Session tests cover static Key/auth/version/client/policy/root/model changes, genuine predecessor identity rejection, delimiter collision prevention and same-configuration cross-instance recovery. Borrowed factories/cache/coordinators stay caller-owned. No model-prefix routing, host inference, login/source refresh, CLI/server/workspace management or production supplier-peer reference is introduced. Optional field passthrough and configured-profile tests do not establish live entitlement, model behavior, schema validity or parameter effectiveness.
+
+Twenty-four Zhipu v4 native/proxy Messages cases verify complete headers/body/result/literal SSE with explicit authentication, original tool associations/thinking/absent signatures, message_stop, Session drift/replay, native errors, late EOF/final cancellation and early exit. Original source windows are independently authored; tests use fake HTTP and MemoryDistributedCache with an explicit coordinator. No real model/optional-setting claim follows.

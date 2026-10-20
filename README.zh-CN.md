@@ -162,3 +162,5 @@ DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#
 [SiliconFlow 原生 Chat／Prefix／FIM](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-siliconflow-native-chat-prefix-and-fim) 复用现有 OpenAI 包，目标仅声明 Chat，并显式配置完整地址、实际模型及独立 Key。推理、工具、schema、多模态内容、根级 prefix／suffix、原始用量和未知字段保持原文。FIM 仍走 ChatCompletions，消息由调用者提供；不补造空消息、不拼接完整代码或合成终态。完整原生／代理 JSON／SSE、实际 DONE、资源关闭、晚期失败及 Session 边界已离线验证，未验证真实模型、参数效果和补全质量。
 
 [百度千帆 v2 原生 Chat](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-baidu-qianfan-v2-native-chat) 复用现有 OpenAI 包，显式配置完整地址、实际模型、独立 Key 与可选 appid 客户端请求头。推理、工具关联、schema、搜索状态／结果、过滤标记和精确用量保持原文。JSON／SSE、真实 DONE、原生错误、资源关闭与完整 Session 绑定已离线验证；未验证真实模型、参数效果、搜索或过滤策略效果。
+
+[智谱 v4 原生 Chat／Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-zhipu-v4-native-chat-and-responses) 与 [Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-zhipu-v4-native-messages) 复用现有包，分别显式绑定地址、协议、实际模型和 Key。原生思考对象、工具历史、搜索／过滤元数据和用量保持原文。Chat DONE、Responses 终态与 Messages message_stop 分别经过离线验证；未验证真实模型、参数效果或 Coding Plan 权限。
