@@ -73,6 +73,25 @@ The adapter identity covers actual model, normalized root, credential digest, cl
 
 The private JSON-only transport has no shared protocol/business state and does not require Infrastructure's SSE reader. A result is returned only after full bounded body validation, declared-length agreement, resource disposal and final cancellation checks. The factory is borrowed; created clients and per-call messages/streams are disposed. Neither path retries, polls, downloads media, hosts callbacks nor refreshes URLs. See the [provider API and limits](../src/Asgard.Loki.Video.Volcengine/README.md).
 
+### Ark inference media assets
+
+`VolcengineAssetClient` is a supplier-owned native API in Video.Volcengine. It exposes ten explicit Create/Get/List/Update/Delete Asset/AssetGroup methods accepting original JSON, returning a complete owned `VolcengineAssetResult`. It adds no universal asset contract or capability dependency. The module entry and `IVideoTaskAdapter` remain unchanged. Assets are media inputs for native video generation via `asset://` references; they do not introduce general file storage or VOD functionality.
+
+```mermaid
+classDiagram
+VolcengineAssetClient --> VolcengineAssetOptions : captures independent AK/SK configuration
+VolcengineAssetClient --> ArkAssetSigner : signs actual JSON bytes
+VolcengineAssetClient --> ArkAssetJson : snapshots native parameters
+VolcengineAssetClient --> ArkVideoHttp : shared private bounded IO
+VolcengineAssetClient --> VolcengineAssetResult : complete native envelope
+VolcengineAssetClient --> TimeProvider : borrows signing clock
+VolcengineAssetResult --> JsonElement : owns immutable data
+```
+
+The native root is `ark.cn-beijing.volcengineapi.com`, distinct from the video inference root. Each explicit method fixes Action and Version; the signer fixes service `ark` and signs the exact POST body hash, root path, canonical query, host, content type, date and optional security token using independently configured AK/SK and region. No credential discovery, refresh, borrowing from another capability or secret serialization occurs. Factory/clock are borrowed; transport resources are per-call owned. Signing intermediates are cleared after use.
+
+Unknown native fields, opaque pagination tokens, project/group/type IDs and preprocessing status/errors stay intact. List calls return one page, and callers preserve their original filters/project/sort while selecting either token or page-number mode. Response operation/version/service/region and returned resource identity are checked. HTTP/API errors retain original bytes via `VideoUpstreamException`; `Result.Status=Failed` is a native asset result, not a successful preprocessing claim. Only upstream `Active` means ready. The SDK supplies no pagination loop, preprocessing poller, asset synchronization, cleanup policy, local storage, media fetch or callback host. Group deletion is an explicit native call; the upstream defines its cascading effect and authorization.
+
 ## Native OpenAI Realtime
 
 Realtime adds independent `LlmProtocol.Realtime` (256), `IRealtimeClient`, `IRealtimeAdapter`, `IRealtimeConnection` and `RealtimeEvent` contracts to LLM. Registration requires the actual adapter interface, including for alternative targets. `LlmClient.Realtime.OpenAsync` resolves one complete upstream target and wraps the native connection with its original Session binding. Reads/writes validate this binding; expiration or configuration changes cannot silently recreate or move it. Realtime IDs are not HTTP Responses continuation ownership. Entry/abstraction dependencies and all six capability boundaries stay unchanged.

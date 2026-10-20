@@ -71,7 +71,7 @@ public sealed class VolcengineVideoAdapter : IVideoTaskAdapter
     {
         var reply = await ArkVideoHttp.SendAsync(_factory, _client, request, _responseLimit, cancellationToken).ConfigureAwait(false);
         if ((int)reply.Status is < 200 or >= 300) throw new VideoUpstreamException("方舟视频 HTTP 调用失败。", reply.Status, reply.Body, reply.ContentType);
-        if (reply.ContentType is not null && !reply.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
+        if (!ArkVideoHttp.IsJson(reply.ContentType))
             throw new InvalidDataException("方舟视频调用未返回原生 JSON。");
         var data = ArkVideoHttp.Parse(reply.Body);
         var hasStatus = data.TryGetProperty("status", out var statusValue) && statusValue.ValueKind != JsonValueKind.Null;

@@ -1,5 +1,6 @@
 using System.Buffers;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
@@ -9,6 +10,9 @@ namespace Asgard.Loki.Video.Volcengine.Internal;
 internal static class ArkVideoHttp
 {
     private static readonly UTF8Encoding Utf8 = new(false, true);
+    /// <summary>仅接受真正的 JSON 媒体类型，不能把同名前缀的其他类型当作 JSON。</summary>
+    internal static bool IsJson(string? contentType) => contentType is null || MediaTypeHeaderValue.TryParse(contentType, out var header)
+        && string.Equals(header.MediaType, "application/json", StringComparison.OrdinalIgnoreCase);
     /// <summary>验证绑定文本及路径不会经由编码替代改变身份。</summary>
     internal static void Text(string text) => _ = Utf8.GetByteCount(text);
     /// <summary>在返回原文之前等待完整 EOF、声明长度、所有资源释放及最终取消检查。</summary>

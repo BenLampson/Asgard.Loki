@@ -48,7 +48,57 @@ The default root is `https://ark.cn-beijing.volces.com/api/v3/`. Specify the act
 
 Known `queued`, `running`, `succeeded`, `failed`, `cancelled` and `expired` states map to Video lifecycle values. A submission acknowledgement is not generation success; unknown states remain nonterminal with original JSON intact. A known successful task must include its native `content.video_url`. HTTP/API errors throw `VideoUpstreamException` with original status, content type and copied body bytes; HTTP 200 task failures remain native task results, including their error object.
 
-Calls perform one submission or query. There is no polling, failover, media download or URL refresh. Result URL availability and expiry are controlled by Ark. Asset/group management uses a separate native authentication contract; a video API Key does not grant AK/SK management access.
+Calls perform one submission or query. There is no polling, failover, media download or URL refresh. Result URL availability and expiry are controlled by Ark.
+
+## Private media asset library
+
+`VolcengineAssetClient` exposes Ark's native inference asset/group operations in this supplier package. It uses independent AK/SK authentication against `https://ark.cn-beijing.volcengineapi.com/`, service `ark`, version `2024-01-01`. A video API Key does not grant management access. No extra capability package or shared asset abstraction is required.
+
+| Public method | Native Action | Native body |
+| --- | --- | --- |
+| `CreateAssetGroupAsync` | `CreateAssetGroup` | Name, optional Description/GroupType/ProjectName |
+| `CreateAssetAsync` | `CreateAsset` | GroupId, URL, Name, AssetType, optional ProjectName |
+| `GetAssetGroupAsync` | `GetAssetGroup` | Id, optional ProjectName |
+| `GetAssetAsync` | `GetAsset` | Id, optional ProjectName |
+| `ListAssetGroupsAsync` | `ListAssetGroups` | Filter, optional paging/sort/ProjectName |
+| `ListAssetsAsync` | `ListAssets` | Filter, optional paging/sort/ProjectName |
+| `UpdateAssetGroupAsync` | `UpdateAssetGroup` | Id, optional Name/Description/ProjectName |
+| `UpdateAssetAsync` | `UpdateAsset` | Id, optional Name/ProjectName |
+| `DeleteAssetGroupAsync` | `DeleteAssetGroup` | Id, optional ProjectName |
+| `DeleteAssetAsync` | `DeleteAsset` | Id, optional ProjectName |
+
+Each method accepts the original `JsonObject` and returns `VolcengineAssetResult`, whose `Data` owns the complete envelope and `Result` exposes the native result object. Inputs are copied before waits; unknown fields, original names, nested values and number precision are preserved. The signed bytes are exactly the submitted JSON. Optional `SecurityToken` participates in signing. Credentials are captured at construction, excluded from options JSON and never discovered or refreshed implicitly. A borrowed `TimeProvider` can supply signing time; the default is `TimeProvider.System`.
+
+```csharp
+var assets = new VolcengineAssetClient(factory, new VolcengineAssetOptions
+{
+    AccessKeyId = accessKeyId,
+    SecretAccessKey = secretAccessKey
+});
+var created = await assets.CreateAssetAsync(new JsonObject
+{
+    ["GroupId"] = groupId, ["URL"] = sourceUrl, ["Name"] = "Reference video",
+    ["AssetType"] = "Video", ["ProjectName"] = projectName
+}, cancellationToken);
+var assetId = created.Result.GetProperty("Id").GetString()!;
+var asset = await assets.GetAssetAsync(new JsonObject
+{
+    ["Id"] = assetId, ["ProjectName"] = projectName
+}, cancellationToken);
+if (asset.Result.GetProperty("Status").GetString() == "Active")
+{
+    // Use this URI in the matching native video content media field.
+    var assetUri = "asset://" + assetId;
+}
+```
+
+Asset creation starts upstream preprocessing; an Id or HTTP 200 does not establish readiness. Native `Processing`, `Failed`, errors and future statuses remain in `Result`. Only `Active` indicates readiness. API errors in `ResponseMetadata.Error` throw `VideoUpstreamException`; a failed asset inside `Result` remains data. Wrong operation/region/version/service, missing native result shapes and mismatched returned resource IDs fail explicitly.
+
+List calls return exactly one page. Preserve `Filter` (including GroupType), project and sorting when passing the original opaque `NextToken` to the next explicit call. Alternatively provide PageNumber and PageSize together. The two paging modes cannot be mixed. The SDK does not inject project defaults, enumerate pages, synchronize assets or poll preprocessing. Use the same project for the group, asset and video inference endpoint/API Key. Availability, account permissions and group authorization are enforced by Ark. Group deletion also deletes its contained assets according to the native API; it happens only through an explicit delete call.
+
+The asset named HTTP client is `Asgard.Loki.Video.Volcengine.Assets`. Resource ownership matches the video adapter. Root address, region, request and response byte limits are independently configurable; defaults are 1 MiB/16 MiB. The SDK sends URL references to Ark and never fetches source media or returned URLs. Asset URI use does not introduce a general storage service or VOD integration. No real asset upload, preprocessing, authorization or deletion has been verified.
+
+Native references: [asset/group guide](https://docs.volcengine.com/docs/ark/private-virtual-avatar-library-guide-preview?lang=zh), [get asset](https://docs.volcengine.com/docs/ark/get-asset-api?lang=zh), [list assets](https://docs.volcengine.com/docs/ark/list-assets-api?lang=zh).
 
 Request and response limits default to 64 MiB and 16 MiB respectively. Invalid UTF-8/JSON, duplicate properties, wrong task IDs, truncated or oversized bodies and late read/disposal/cancellation failures fail explicitly. Offline xUnit v3 tests use independent fixtures and substitute transports. No real Seedance generation, asset preprocessing or media result has been verified by these tests.
 
