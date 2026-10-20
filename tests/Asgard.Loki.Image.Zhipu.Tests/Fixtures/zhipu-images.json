@@ -1,0 +1,98 @@
+{
+  "requests": [
+    {
+      "model": "native-zhipu-fixture",
+      "prompt": "保留原始提示词",
+      "quality": "standard",
+      "size": "1024x1024",
+      "watermark_enabled": false,
+      "user_id": "fixture-user",
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "none": null
+      }
+    },
+    {
+      "model": "native-zhipu-fixture",
+      "prompt": "原生第二个请求",
+      "future": false
+    }
+  ],
+  "url": {
+    "created": 0,
+    "data": [
+      {
+        "url": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+        "future": false
+      }
+    ],
+    "content_filter": [
+      {
+        "role": "assistant",
+        "level": 1,
+        "future": null
+      }
+    ],
+    "usage": {
+      "total_tokens": 0,
+      "future": 9007199254740993
+    },
+    "request_id": "fixture-request",
+    "extendParam": {
+      "native": "original"
+    },
+    "future": false
+  },
+  "aliases": {
+    "data": [
+      {
+        "url": null,
+        "image_url": "https://result.example.invalid/alias.png",
+        "b64_image": "AQID",
+        "future": null
+      }
+    ],
+    "content_filter": [
+      {
+        "role": "assistant",
+        "level": 0
+      }
+    ],
+    "request_id": "alias-request",
+    "future": false
+  },
+  "base64": {
+    "data": [
+      {
+        "b64_image": "AQID",
+        "future": false
+      }
+    ],
+    "usage": {
+      "future": null
+    },
+    "created": null,
+    "future": 0
+  },
+  "empty": {
+    "data": [],
+    "content_filter": [
+      {
+        "role": "assistant",
+        "level": 1
+      }
+    ],
+    "request_id": "empty-request",
+    "future": null
+  },
+  "error": {
+    "error": {
+      "code": "fixture-code",
+      "message": "original native failure",
+      "future": false
+    },
+    "request_id": "failed-request",
+    "future": 9007199254740993
+  }
+}
