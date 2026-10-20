@@ -1,0 +1,15 @@
+{
+  "provenance": "Independent explicit transport profile; full native windows are ark.json, chat/responses.json and literal SSE. No recorded SDK output or live acceptance.",
+  "sources": [
+    "https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-opencode?lang=en",
+    "https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-zcode?lang=zh"
+  ],
+  "root": "https://ark.cn-beijing.volces.com/api/coding/v3/",
+  "chat_endpoint": "https://ark.cn-beijing.volces.com/api/coding/v3/chat/completions",
+  "responses_endpoint": "https://ark.cn-beijing.volces.com/api/coding/v3/responses",
+  "model": "configured-model",
+  "authorization": "Bearer fixture-coding-plan-key",
+  "client": "Explicit.Ark.Coding",
+  "provider": "ark-coding",
+  "target": "coding-target"
+}
