@@ -21,5 +21,7 @@ public enum LlmProtocol
     /// <summary>Amazon Bedrock Converse 原生协议，不等同于 Claude Messages。</summary>
     BedrockConverse = 64,
     /// <summary>Amazon Nova 理解模型的 InvokeModel 原生协议，不等同于 Converse。</summary>
-    BedrockNova = 128
+    BedrockNova = 128,
+    /// <summary>原生 Realtime JSON 双工协议，独立于 Responses WebSocket。</summary>
+    Realtime = 256
 }

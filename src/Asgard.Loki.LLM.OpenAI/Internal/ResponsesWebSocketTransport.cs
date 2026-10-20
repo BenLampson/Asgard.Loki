@@ -6,7 +6,7 @@ using System.Text.Json.Nodes;
 
 namespace Asgard.Loki.LLM.OpenAI.Internal;
 
-/// <summary>仅管理供应商私有的有界 JSON 分帧；生成生命周期由上层原生协议状态处理。</summary>
+/// <summary>仅管理供应商私有的有界 JSON 分帧；Responses 和 Realtime 各自维护原生协议状态。</summary>
 internal sealed class ResponsesWebSocketTransport : IAsyncDisposable
 {
     private static readonly UTF8Encoding StrictUtf8 = new(false, true);
@@ -75,7 +75,7 @@ internal sealed class ResponsesWebSocketTransport : IAsyncDisposable
                     await CloseAsync(cancellationToken).ConfigureAwait(false);
                     return null;
                 }
-                if (frame.MessageType != WebSocketMessageType.Text) throw new InvalidDataException("Responses WebSocket 只接受文本 JSON 消息。");
+                if (frame.MessageType != WebSocketMessageType.Text) throw new InvalidDataException("原生 WebSocket 只接受文本 JSON 消息。");
                 if (message.Length + frame.Count > _maximumMessageBytes) throw new InvalidDataException("上游 WebSocket 消息超过显式大小限制。");
                 message.Write(buffer, 0, frame.Count);
                 if (!frame.EndOfMessage) continue;

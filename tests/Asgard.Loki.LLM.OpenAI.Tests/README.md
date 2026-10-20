@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.OpenAI.Tests
 
+Native Realtime has an independent full client/server JSON transcript, pinned before production implementation. Public SDK tests cover fixed-target/authentication, original native tool IDs/audio/error/response statuses, unknown fields, snapshots, limits/framing, cancellation and owned socket versus borrowed factory lifetime. These are offline WebSocket tests, not real OpenAI model/audio verification.
+
 Native compaction tests cover `/responses/compact` through the public SDK: full input/output windows, encrypted and retained items, unknown data, optional previous-response ownership, explicit target features, complete target binding, concurrent/stale first-binding decisions, cancellation, invalid results and no-retry HTTP errors. Test coordination uses `MemoryDistributedCache`; HTTP is replaced locally. Compaction result IDs are not registered as generation response IDs. No live OpenAI request or entitlement check is performed.
 
 93 offline tests for the actual OpenAI LLM adapter: HTTP/JSON, fragmented SSE and a shared parameter matrix through the public Loki client. Final HTTP assertions cover native tool/reasoning items, schema parameters, unknown fields, false/zero/null, request immutability, route/model mapping and reserved-field rejection.

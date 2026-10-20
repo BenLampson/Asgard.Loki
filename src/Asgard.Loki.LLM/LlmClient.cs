@@ -11,6 +11,7 @@ public sealed class LlmClient
         var invocation = new LlmInvocation(configuration);
         ChatCompletions = new ChatCompletionsClient(invocation);
         Responses = new ResponsesClient(invocation);
+        Realtime = new RealtimeClient(invocation);
         ClaudeMessages = new ClaudeMessagesClient(invocation);
         Gemini = new GeminiClient(invocation);
         OllamaChat = new OllamaChatClient(invocation);
@@ -23,6 +24,8 @@ public sealed class LlmClient
     public IChatCompletionsClient ChatCompletions { get; }
     /// <summary>访问 Responses 能力。</summary>
     public IResponsesClient Responses { get; }
+    /// <summary>访问独立的原生 Realtime 双工协议。</summary>
+    public IRealtimeClient Realtime { get; }
     /// <summary>访问 Claude Messages 原生能力。</summary>
     public IClaudeMessagesClient ClaudeMessages { get; }
     /// <summary>访问 Gemini 原生能力。</summary>

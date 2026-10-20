@@ -1,5 +1,31 @@
 # Asgard.Loki Architecture Specification
 
+## Native OpenAI Realtime
+
+Realtime adds independent `LlmProtocol.Realtime` (256), `IRealtimeClient`, `IRealtimeAdapter`, `IRealtimeConnection` and `RealtimeEvent` contracts to LLM. Registration requires the actual adapter interface, including for alternative targets. `LlmClient.Realtime.OpenAsync` resolves one complete upstream target and wraps the native connection with its original Session binding. Reads/writes validate this binding; expiration or configuration changes cannot silently recreate or move it. Realtime IDs are not HTTP Responses continuation ownership. Entry/abstraction dependencies and all six capability boundaries stay unchanged.
+
+```mermaid
+classDiagram
+LlmClient --> IRealtimeClient : Realtime
+IRealtimeClient <|.. RealtimeClient
+RealtimeClient --> LlmInvocation : complete target binding
+RealtimeClient --> BoundRealtimeConnection : validates original Session
+IRealtimeConnection <|.. BoundRealtimeConnection
+BoundRealtimeConnection --> IRealtimeConnection : owns native connection
+IRealtimeAdapter <|.. OpenAiLlmProvider
+OpenAiLlmProvider --> IOpenAiRealtimeWebSocketFactory : borrows handshake
+OpenAiLlmProvider --> OpenAiRealtimeOptions : snapshots byte limit
+IRealtimeConnection <|.. OpenAiRealtimeConnection
+OpenAiRealtimeConnection --> RealtimeEvent : original JSON
+OpenAiRealtimeConnection --> ResponsesWebSocketTransport : private JSON framing only
+```
+
+The provider appends `/realtime?model={escaped configured actual model}` to the HTTP(S) root, maps it to WS(S), and adds an isolated Bearer header. There is no default model. Existing constructors/default HTTP/Responses binding bytes are retained; explicit Realtime limits/custom factory identity enter provider identity. Factories are borrowed; each returned open socket is owned once. The combined constructor keeps HTTP, Responses WebSocket and Realtime policies independent. Only private JSON framing/IO resource control is shared; Responses lanes, pending requests and terminal state are not reused.
+
+Input snapshots precede awaits, writes serialize and one active reader is allowed. Known model-selection positions cannot switch the bound model; tool/business data is preserved. Original snapshots retain event IDs, item/call associations, audio, usage, unknown extensions and native errors/statuses. This low-level connection does not aggregate responses, execute tools, manage playback or synthesize success. `response.done` and `error` do not end the connection; normal close ends enumeration without proving response success. Invalid envelopes, binary/oversized/invalid UTF-8 frames, abnormal close and IO/cancellation faults fail explicitly. The application inspects expected native terminals and drives commands/closure; no hidden receive/reconnect/replay loop runs. Logical Session reuse selects the same full target for a new socket, without restoring remote state.
+
+Independent complete duplex fixtures precede production code and public SDK offline tests. This does not establish live OpenAI model/audio acceptance. GPT-Live, WebRTC, SIP, ephemeral session provisioning, Realtime conversion and Audio workflows are outside this operation. See the [provider matrix](../src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket) and [finite checklist](model-call-roadmap.md).
+
 This document is the authoritative contract for package boundaries, public API structure and provider extensions. Update it whenever a dependency or public contract changes. Use UML to describe structural changes.
 
 Approved product scope: LLM, Audio, Video, Image, Embedding and Rerank. The existing UML reflects these six independent capability families; Embedding and Rerank remain separate from LLM. Fine-tuning, independent provider file management, gateway administration and billing are excluded. Audio/image uploads remain inputs to their own model calls. This scope clarification changes no public contract or dependency.

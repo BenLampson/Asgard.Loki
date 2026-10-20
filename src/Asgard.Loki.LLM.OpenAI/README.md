@@ -10,10 +10,42 @@ OpenAI LLM provider for Asgard.Loki.
 | Responses creation / continuation | Yes | SSE |
 | Native Responses compaction | Yes, explicit target feature | No |
 | Native Responses WebSocket | Explicit duplex connection | Native JSON events; named lanes |
+| Native Realtime WebSocket | Explicit separate protocol/connection | Original JSON events; no response aggregation |
 
 Create `OpenAiLlmProvider(IHttpClientFactory)` and register it in `LlmOptions.Providers`. Configure targets with a `/v1/` base address, actual model and credential. The default provider ID is `openai`; the named HTTP client is `Asgard.Loki.LLM.OpenAI`.
 
 Preserves extension parameters, tools, reasoning items, cache controls, original response IDs, usage, error events and unknown JSON. Session routing uses the shared LLM module. Configure project/organization defaults through the named HTTP client if needed. Disable POST retries and hedging.
+
+## Native Realtime WebSocket
+
+Declare `Protocols = LlmProtocol.Realtime` on the complete target. This protocol is independent of Responses and needs no Responses feature flag. The provider appends `/realtime?model={escaped actual model}` to the configured HTTP(S) root and maps HTTP(S) to WS(S), with an isolated Bearer handshake. The model is configured by the caller; there is no default model or automatic upgrade. The [official guide](https://developers.openai.com/api/docs/guides/realtime-websocket) describes this JSON protocol; GPT-Live, Responses WebSocket, WebRTC and SIP are separate interfaces.
+
+```csharp
+// Register this provider and a complete Realtime target in the existing LlmOptions.
+var provider = new OpenAiLlmProvider(httpClientFactory,
+    new OpenAiRealtimeOptions { MaximumMessageBytes = 16 * 1024 * 1024 });
+
+await using var connection = await loki.LLM.Realtime.OpenAsync(
+    "configured-public-model", new LlmCallOptions { SessionId = "realtime-conversation-1" }, cancellationToken);
+await connection.SendAsync(new JsonObject
+{
+    ["type"] = "session.update",
+    ["session"] = new JsonObject { ["type"] = "realtime", ["instructions"] = "Be concise." }
+}, cancellationToken);
+await foreach (var item in connection.ReadEventsAsync(cancellationToken))
+{
+    // Inspect original item.Data, including native error and response.done status.
+    // The application drives input, tool results, response.create/cancel and closure.
+}
+```
+
+`IOpenAiRealtimeWebSocketFactory` replaces the handshake for offline tests or application-owned transport configuration. It is borrowed; the returned open socket is owned/disposed once by the connection. The combined constructor accepts independent HTTP, Responses WebSocket and Realtime policies/factories. Default Realtime configuration preserves existing HTTP/Responses binding bytes; explicit changed limits/factory identity participate in complete-target binding. Server/model/credential/provider identity stays fixed. Known model-selection fields may repeat the public or actual model, but cannot change it; business `model` fields inside tool data are untouched.
+
+Send snapshots precede waits. One reader and serialized writes permit duplex application code; no hidden receive loop or tool/audio state is added. The byte limit applies to complete incoming/outgoing JSON, including fragmented UTF-8. Original fields, audio base64, tool/item/call IDs, `event_id`, usage, unknown events and `response.done` statuses are returned. Metadata describes the bound target; native IDs remain in `Data` and are not registered as HTTP Responses continuation IDs.
+
+`error` does not automatically end the connection. A `response.done` event may report completed, cancelled, incomplete or failed; it is not connection completion. Normal socket closure ends enumeration **without establishing model success** or synthesizing a terminal event; application code must inspect its expected events. Malformed envelopes, binary messages, limits, abnormal close and IO faults fail explicitly. Cancellation during IO stops uncertain transport without reconnect/replay. `CloseAsync` closes transport only; `DisposeAsync` releases it. Reopening a logical Session creates a new socket and does not restore remote history. No generation, playback, tool execution or billing loop is performed.
+
+The independent `Fixtures/realtime.json` transcript was committed before implementation. Public SDK tests cover duplex fidelity, authentication/target affinity, original failure statuses, unknown fields, snapshots, limits, framing, cancellation and disposal. This is offline protocol verification; real OpenAI model/audio behavior is **not verified**. Ephemeral session provisioning, browser/WebRTC/SIP and cross-protocol Realtime conversion are outside this operation.
 
 ## Explicit compaction
 

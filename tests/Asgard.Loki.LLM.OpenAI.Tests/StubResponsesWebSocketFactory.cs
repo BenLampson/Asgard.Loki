@@ -4,7 +4,7 @@ using System.Net.WebSockets;
 namespace Asgard.Loki.LLM.OpenAI.Tests;
 
 /// <summary>只记录握手并返回内存 socket；供应商与客户端不能释放借用的工厂。</summary>
-internal sealed class StubResponsesWebSocketFactory : IOpenAiResponsesWebSocketFactory, IDisposable
+internal sealed class StubResponsesWebSocketFactory : IOpenAiResponsesWebSocketFactory, IOpenAiRealtimeWebSocketFactory, IDisposable
 {
     /// <summary>可按测试变更稳定身份。</summary>
     internal string Version { get; set; } = "1";

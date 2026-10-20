@@ -10,13 +10,15 @@ using System.Collections.ObjectModel;
 namespace Asgard.Loki.LLM.OpenAI;
 
 /// <summary>实现 OpenAI Chat/Responses 的 HTTP/JSON、SSE 及可选原生 Responses WebSocket。</summary>
-public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter, IResponsesWebSocketAdapter
+public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter, IResponsesWebSocketAdapter, IRealtimeAdapter
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _httpClientName;
     private readonly IOpenAiResponsesWebSocketFactory _webSocketFactory;
     private readonly OpenAiResponsesWebSocketOptions _webSocketOptions;
     private readonly OpenAiHttpOptions _httpOptions;
+    private readonly IOpenAiRealtimeWebSocketFactory _realtimeFactory;
+    private readonly OpenAiRealtimeOptions _realtimeOptions;
 
     /// <summary>借用命名 HTTP 工厂；调用者应关闭生成类 POST 请求的自动重试。</summary>
     public OpenAiLlmProvider(IHttpClientFactory httpClientFactory, string id = "openai", string httpClientName = "Asgard.Loki.LLM.OpenAI")
@@ -42,7 +44,8 @@ public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IRespon
 
     /// <summary>在任何网络调用前保存不可变策略快照。</summary>
     private OpenAiLlmProvider(IHttpClientFactory httpClientFactory, string id, string httpClientName,
-        IOpenAiResponsesWebSocketFactory? webSocketFactory, OpenAiResponsesWebSocketOptions? webSocketOptions, OpenAiHttpOptions? httpOptions)
+        IOpenAiResponsesWebSocketFactory? webSocketFactory, OpenAiResponsesWebSocketOptions? webSocketOptions, OpenAiHttpOptions? httpOptions,
+        OpenAiRealtimeOptions? realtimeOptions = null, IOpenAiRealtimeWebSocketFactory? realtimeFactory = null)
     {
         ArgumentNullException.ThrowIfNull(httpClientFactory);
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -52,6 +55,10 @@ public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IRespon
         _webSocketFactory = webSocketFactory ?? new DefaultResponsesWebSocketFactory();
         _webSocketOptions = webSocketOptions is null ? new() : webSocketOptions with { };
         _httpOptions = httpOptions is null ? new() : httpOptions with { };
+        _realtimeOptions = realtimeOptions is null ? new() : realtimeOptions with { };
+        _realtimeFactory = realtimeFactory ?? new DefaultResponsesWebSocketFactory();
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_realtimeOptions.MaximumMessageBytes, 0);
+        ArgumentException.ThrowIfNullOrWhiteSpace(_realtimeFactory.BindingIdentity);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_httpOptions.MaximumBodyBytes, 0);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_httpOptions.MaximumBufferedTerminalEvents, 0);
         ArgumentException.ThrowIfNullOrWhiteSpace(_webSocketFactory.BindingIdentity);
@@ -66,7 +73,12 @@ public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IRespon
     public string Id { get; }
 
     /// <summary>HTTP 终态/资源语义使用新域；HTTP、WebSocket 策略和自定义连接工厂均参与完整绑定。</summary>
-    public string BindingIdentity => _webSocketFactory is DefaultResponsesWebSocketFactory && _webSocketOptions == new OpenAiResponsesWebSocketOptions()
+    public string BindingIdentity => _realtimeFactory is DefaultResponsesWebSocketFactory && _realtimeOptions == new OpenAiRealtimeOptions()
+        ? ResponsesBindingIdentity
+        : ResponsesBindingIdentity + "\nrealtime-ws-v1\n" + _realtimeFactory.BindingIdentity + "\n" + JsonSerializer.Serialize(_realtimeOptions);
+
+    /// <summary>默认新增 Realtime 策略不改变已有 HTTP/Responses 会话的绑定字节。</summary>
+    private string ResponsesBindingIdentity => _webSocketFactory is DefaultResponsesWebSocketFactory && _webSocketOptions == new OpenAiResponsesWebSocketOptions()
         ? HttpBindingIdentity
         : HttpBindingIdentity + "\nresponses-ws-v1\n" + _webSocketFactory.BindingIdentity + "\n" + JsonSerializer.Serialize(_webSocketOptions);
 
