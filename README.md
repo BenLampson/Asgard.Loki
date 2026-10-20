@@ -416,3 +416,7 @@ Licensed under the [Apache License, Version 2.0](LICENSE).
 ### Native Cohere v1 Chat contract
 
 `loki.LLM.CohereChat.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.CohereChat` target and `ICohereChatAdapter`. Only actual target model and method stream mode change; full message/history, native tools/results, references and unknown JSON stay intact. Results keep response_id and generation_id distinct, while NDJSON events use event_type without synthetic SSE metadata. The [Cohere supplier](src/Asgard.Loki.LLM.Cohere/README.md) owns native HTTP/NDJSON and terminal integrity; offline support makes no live-service or automatic conversion claim. See the [native contract](src/Asgard.Loki.LLM/README.md#native-cohere-v1-chat-contract).
+
+### Explicit Cloudflare compatible calls
+
+[OpenAI supplier configuration](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-cloudflare-workers-ai-profile) supports explicit account-scoped Workers AI Chat JSON/SSE and currently supported non-streaming GPT-OSS Responses Create. Account root, actual model and API token remain one Session target; tool associations, reasoning/encrypted data, settings and unknown fields stay native. This profile does not infer model availability or convert the separate native ai/run text wire. Offline protocol tests do not establish live account/model acceptance.

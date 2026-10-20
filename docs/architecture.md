@@ -2725,3 +2725,23 @@ CohereLlmProvider --> CohereChatEvent : unchanged native records
 One POST appends chat to the caller-selected versioned/proxy root. The public core snapshots before Session waits; direct supplier calls snapshot before factory creation/await. Only actual model and method stream mode change; complete history, native call-parameters/results, citations, settings, exact numbers and unknown data are retained. A selected Bearer replaces default Authorization; unbound alternative auth, Accepts SSE negotiation or implicit project headers fail before sending. Actual URI/method is checked through publication. Factories/cache/coordinators stay borrowed, while each call owns all HTTP resources.
 
 NDJSON frames preserve raw native event_type and tool index/parameter fragments without normalization or assembly. Known citation/search/tool records require their native array/object carriers; tool calls require native name/parameter-object pairs while optional delta fields preserve absence/null. One stream-start and stable native generation_id lead to one stream-end with native finish_reason/full response. Optional nested IDs/reasons and legacy is_finished must be consistent; independent response_id is never substituted or registered as Responses ownership. Unknown metadata is preserved. Native unsuccessful and future finish reasons remain visible without synthetic stop or success. First-end and subsequent metadata are bounded and held until EOF, strict UTF-8/JSON/declared lengths, resource closure and final cancellation. Missing/duplicate/late native generation, changed identities, explicit root errors, malformed tails, read/disposal/cancellation failures cannot first publish that terminal. Earlier delivered prefixes remain possible. HTTP/native errors retain actual status/body/type. These offline contracts do not establish model/service/account acceptance or output quality.
+
+### Explicit Cloudflare compatible profile
+
+The existing OpenAiLlmProvider executes account-scoped Workers AI Chat JSON/SSE and supported non-streaming Responses Create with an explicitly configured complete root, actual model, API token and protocol. No new package/dependency or provider-peer reference is introduced. Current Cloudflare service Responses support is GPT-OSS-only and non-streaming; the SDK does not advertise its other OpenAI operations on that service or infer eligibility from model names. Native ai/run text envelopes/SSE remain a separate explicit protocol.
+
+```mermaid
+sequenceDiagram
+participant App as Application
+participant Core as LLM complete-target Session
+participant Provider as Existing OpenAiLlmProvider
+participant Remote as Explicit Workers AI account root
+App->>Core: Explicit Chat or non-streaming Responses request
+Core->>Core: Bind root, actual model, token identity, adapter and protocol
+Core->>Provider: Original native JSON snapshot
+Provider->>Remote: One Bearer POST to chat/completions or responses
+Remote-->>Provider: Complete native JSON or Chat SSE
+Provider-->>App: Unchanged data after native integrity and resource closure
+```
+
+Full independent literals exercise tool call/result IDs, sparse indices, reasoning/encrypted items, structured settings, options.rejectIfBusy and unknown/exact values. Account-path drift fails before replacement I/O. Fourteen offline cases plus existing OpenAI regressions verify this configuration contract with no live model/account/setting acceptance claim. Production dependency directions and six-capability boundaries stay unchanged.

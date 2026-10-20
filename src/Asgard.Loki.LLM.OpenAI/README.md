@@ -191,3 +191,26 @@ MaximumModerationRequestBytes is optional and defaults effectively to 32 MiB; wh
 Native HTTP/HTTP200 errors retain actual StatusCode, complete Body bytes and raw ContentType through LlmUpstreamException, including binary errors or JSON errors labeled as plain text. ResponseBody is strict UTF-8 for byte errors; use Body for invalid binary text. Valid success requires complete strict UTF-8 JSON (application/json or a +json media type when supplied), unique members including unknown nested fields, compatible declared length and unchanged actual target/method. SSE is refused before reading a successful body. EOF, stream/response/client disposal and final cancellation precede result publication. No retry or target fallback is added.
 
 The supplier has **408 offline cases**, including **91 native moderation cases**; the core has 20 additional moderation binding/protocol cases. Four independently authored full wire/result fixtures cover scalar, text batch, multimodal group and empty text. Boundary cases cover input/result association, label/null/unknown fidelity, binary/native errors, Unicode/duplicates/media/byte/length constraints, actual target/auth, resource closure/final cancellation and unchanged default binding identity. No real model/server/Key/media interpretation or classification-quality verification has been performed. Native contract references: [Moderations create](https://developers.openai.com/api/reference/resources/moderations/methods/create), [official request types](https://github.com/openai/openai-python/blob/main/src/openai/types/moderation_create_params.py) and [official result types](https://github.com/openai/openai-python/blob/main/src/openai/types/moderation.py).
+
+## Explicit Cloudflare Workers AI profile
+
+Use this existing supplier for account-scoped compatible Chat Completions (JSON/SSE) and supported **non-streaming** Responses Create calls. The application explicitly supplies the complete root, API token, actual model and protocol; no Cloudflare package dependency, account discovery, gateway routing or credential/model heuristic is involved.
+
+```csharp
+var provider = new OpenAiLlmProvider(httpClientFactory, id: "workers-compatible");
+var chatTarget = new LlmTarget
+{
+    Id = "workers-chat-account", ProviderId = provider.Id,
+    BaseAddress = new Uri($"https://api.cloudflare.com/client/v4/accounts/{Uri.EscapeDataString(accountId)}/ai/v1/"),
+    UpstreamModel = actualChatModel, CredentialId = "workers-token",
+    Protocols = LlmProtocol.ChatCompletions
+};
+// Register provider, target and new LlmCredential("workers-token", apiToken)
+// in the existing LlmOptions with an application-owned Session store/coordinator.
+```
+
+For Responses, explicitly configure a supported GPT-OSS model with `Protocols = LlmProtocol.Responses` and call `.LLM.Responses.CreateAsync`; current Cloudflare service support requires stream=false. This profile does not promise Responses SSE, compaction, Realtime or WebSocket support on that service. The adapter does not infer availability or select/migrate models; use independent protocol Sessions and explicit target configuration. Native `ai/run` text envelopes/SSE are a separate protocol and are not converted by this compatible profile.
+
+Only the configured actual model and method stream switch change. Original tool IDs/arguments/results, sparse choice/tool indices, native reasoning/encrypted items, structured output settings, options.rejectIfBusy, exact numbers and unknown fields are retained. The account/root, actual model, API token identity and implementation remain Session-bound. A changed account path fails without sending to a replacement target. Factory/cache/coordinator ownership and the existing one-attempt/terminal/EOF/disposal/cancellation guarantees apply.
+
+Fourteen independent offline profile cases bring this supplier suite to 422 passing cases. Whole wire/results/Chat event windows are checked with fake HTTP and MemoryDistributedCache, including proxy prefixes and opaque tokens. They do not verify live Cloudflare account access, actual model/setting acceptance or generation quality. See [Cloudflare compatibility and current limits](https://developers.cloudflare.com/workers-ai/configuration/open-ai-compatibility/).
