@@ -1,0 +1,41 @@
+{
+  "profiles": [
+    {"style":"V1","version":null,"root":"https://azure-rt.example.invalid/proxy/openai/v1/","endpoint":"wss://azure-rt.example.invalid/proxy/openai/v1/realtime?model=deploy.rt.1"},
+    {"style":"Dated","version":"2024-10-01-preview","root":"https://azure-rt.example.invalid/proxy/openai/","endpoint":"wss://azure-rt.example.invalid/proxy/openai/realtime?api-version=2024-10-01-preview&deployment=deploy.rt.1"}
+  ],
+  "caller_events": [
+    {"type":"session.update","event_id":"caller-session","session":{"type":"realtime","model":"public","instructions":" 保留中文和空白 ","output_modalities":["audio"],"audio":{"input":{"format":{"type":"audio/pcm","rate":24000},"transcription":{"model":"transcribe-unchanged","language":"zh"},"turn_detection":{"type":"server_vad","threshold":0.5,"create_response":false,"interrupt_response":false}},"output":{"format":{"type":"audio/pcm","rate":24000},"voice":"configured-voice"}},"tools":[{"type":"function","name":"lookup","parameters":{"type":"object","properties":{"model":{"type":"string"}},"required":["model"],"additionalProperties":false}}],"tool_choice":"auto","future":{"model":"business-model","exact":9007199254740993,"absent_like":null,"flag":false}}},
+    {"type":"input_audio_buffer.append","event_id":"audio-1","audio":"AAECAw==","future":false},
+    {"type":"input_audio_buffer.commit","event_id":"commit-1"},
+    {"type":"conversation.item.create","event_id":"tool-output-1","previous_item_id":"item-original","item":{"id":"item-result","type":"function_call_output","call_id":"call-original","output":"{\"model\":\"business-model\",\"ok\":false}"}},
+    {"type":"response.create","event_id":"create-1","response":{"model":"public","conversation":"auto","metadata":{"model":"business-model","exact":9007199254740993},"output_modalities":["audio"],"instructions":null,"max_output_tokens":64}},
+    {"type":"response.cancel","event_id":"cancel-1","response_id":"resp-original"},
+    {"type":"future.native","event_id":"future-1","payload":{"model":"unmapped-business-field","x":null,"flag":false,"exact":9007199254740993}}
+  ],
+  "wire_events": [
+    {"type":"session.update","event_id":"caller-session","session":{"type":"realtime","model":"deploy.rt.1","instructions":" 保留中文和空白 ","output_modalities":["audio"],"audio":{"input":{"format":{"type":"audio/pcm","rate":24000},"transcription":{"model":"transcribe-unchanged","language":"zh"},"turn_detection":{"type":"server_vad","threshold":0.5,"create_response":false,"interrupt_response":false}},"output":{"format":{"type":"audio/pcm","rate":24000},"voice":"configured-voice"}},"tools":[{"type":"function","name":"lookup","parameters":{"type":"object","properties":{"model":{"type":"string"}},"required":["model"],"additionalProperties":false}}],"tool_choice":"auto","future":{"model":"business-model","exact":9007199254740993,"absent_like":null,"flag":false}}},
+    {"type":"input_audio_buffer.append","event_id":"audio-1","audio":"AAECAw==","future":false},
+    {"type":"input_audio_buffer.commit","event_id":"commit-1"},
+    {"type":"conversation.item.create","event_id":"tool-output-1","previous_item_id":"item-original","item":{"id":"item-result","type":"function_call_output","call_id":"call-original","output":"{\"model\":\"business-model\",\"ok\":false}"}},
+    {"type":"response.create","event_id":"create-1","response":{"model":"deploy.rt.1","conversation":"auto","metadata":{"model":"business-model","exact":9007199254740993},"output_modalities":["audio"],"instructions":null,"max_output_tokens":64}},
+    {"type":"response.cancel","event_id":"cancel-1","response_id":"resp-original"},
+    {"type":"future.native","event_id":"future-1","payload":{"model":"unmapped-business-field","x":null,"flag":false,"exact":9007199254740993}}
+  ],
+  "server_events": [
+    {"type":"session.created","event_id":"server-1","session":{"id":"session-native","model":"deploy.rt.1","type":"realtime","future":null}},
+    {"type":"session.updated","event_id":"server-2","session":{"id":"session-native","output_modalities":["audio"],"future":false}},
+    {"type":"response.created","event_id":"server-3","response":{"id":"resp-original","status":"in_progress","output":[]}},
+    {"type":"response.output_item.added","event_id":"server-4","response_id":"resp-original","output_index":0,"item":{"id":"item-original","type":"function_call","call_id":"call-original","name":"lookup","arguments":""}},
+    {"type":"response.function_call_arguments.delta","event_id":"server-5","response_id":"resp-original","item_id":"item-original","output_index":0,"call_id":"call-original","delta":"{\"model\":\"业务\"}"},
+    {"type":"response.function_call_arguments.done","event_id":"server-6","response_id":"resp-original","item_id":"item-original","output_index":0,"call_id":"call-original","arguments":"{\"model\":\"业务\"}"},
+    {"type":"response.output_audio.delta","event_id":"server-7","response_id":"resp-original","item_id":"item-audio","output_index":1,"content_index":0,"delta":"AAECAw=="},
+    {"type":"response.audio.delta","event_id":"server-preview-alias","response_id":"resp-original","item_id":"item-audio","output_index":1,"content_index":0,"delta":"BAUGBw==","future":false},
+    {"type":"conversation.item.input_audio_transcription.completed","event_id":"server-8","item_id":"item-input","content_index":0,"transcript":" 保留原文 ","usage":{"type":"tokens","total_tokens":0}},
+    {"type":"future.native","event_id":"server-9","payload":{"model":"business-model","exact":9007199254740993,"empty":null,"flag":false}},
+    {"type":"error","event_id":"server-10","error":{"type":"invalid_request_error","code":"native-code","event_id":"cancel-1","message":"原生错误","param":null,"future":9007199254740993}},
+    {"type":"response.done","event_id":"server-11","response":{"id":"resp-original","status":"failed","status_details":{"type":"failed","error":{"code":"native-failure","future":false}},"output":[{"id":"item-original","type":"function_call","call_id":"call-original","name":"lookup","arguments":"{\"model\":\"业务\"}"}],"usage":{"total_tokens":0,"input_tokens":0,"output_tokens":0}}},
+    {"type":"response.done","event_id":"server-12","response":{"id":"resp-cancelled","status":"cancelled","status_details":{"type":"cancelled","reason":"client_cancelled"},"output":[]}},
+    {"type":"response.done","event_id":"server-13","response":{"id":"resp-later","status":"completed","output":[{"id":"item-later","type":"message","role":"assistant","content":[{"type":"output_audio","transcript":"后续原生回复"}]}],"usage":{"total_tokens":3,"input_tokens":2,"output_tokens":1,"future":9007199254740993}}},
+    {"type":"rate_limits.updated","event_id":"server-14","rate_limits":[{"name":"tokens","limit":100,"remaining":0,"reset_seconds":0.5}],"future":false}
+  ]
+}
