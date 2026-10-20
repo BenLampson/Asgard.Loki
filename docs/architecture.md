@@ -2,7 +2,7 @@
 
 ## Shared transport infrastructure
 
-`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)` and `HttpBodyReader.ReadAsync(HttpContent, int, CancellationToken)`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
+`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)`, `HttpBodyReader.ReadAsync/CopyToAsync`, `BorrowedStreamContent` and `BoundedHttpContent`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
 
 ```mermaid
 classDiagram
@@ -40,6 +40,17 @@ classDiagram
 ArkVideoHttp --> HttpBodyReader : bounded bytes only
 HttpBodyReader --> HttpContent : borrows content
 HttpBodyReader --> Stream : reads and disposes
+```
+
+`HttpBodyReader.CopyToAsync` shares the bounded EOF/length/cancellation path with buffered reading while writing into a borrowed destination. `BorrowedStreamContent` performs single-use upload from a borrowed input without length/position inspection, rewind, buffering or close. `BoundedHttpContent` owns its inner content, preserves original headers and limits the entire serialized body including multipart framing. Input/destination streams remain caller-owned according to those explicit contracts; partial destination writes can remain on failure. These .NET-only primitives carry no capability fields, credential discovery, model state or retries. Audio.OpenAI and Image.OpenAI share the same upload content implementation through their existing Infrastructure references.
+
+```mermaid
+classDiagram
+OpenAiAudioFilePayload --> BorrowedStreamContent
+OpenAiImageEditPayload --> BorrowedStreamContent
+BoundedHttpContent --> HttpContent : owns inner content
+BorrowedStreamContent --> Stream : borrows input
+HttpBodyReader --> Stream : borrows copy destination
 ```
 
 ## Independent Video task contracts

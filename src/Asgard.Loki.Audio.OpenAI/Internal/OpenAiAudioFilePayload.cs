@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Text;
+using Asgard.Loki.Infrastructure;
 
 namespace Asgard.Loki.Audio.OpenAI.Internal;
 
@@ -41,7 +42,7 @@ internal static class OpenAiAudioFilePayload
         try
         {
             content.Add(new StringContent(model, NativeUtf8), "model");
-            var file = new BorrowedAudioContent(request.File.Content);
+            var file = new BorrowedStreamContent(request.File.Content);
             if (request.File.ContentType is { } media) file.Headers.ContentType = MediaTypeHeaderValue.Parse(media);
             content.Add(file, "file", request.File.FileName);
             foreach (var field in request.Fields) content.Add(new StringContent(field.Value, NativeUtf8), field.Name);

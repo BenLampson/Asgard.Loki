@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Asgard.Loki.Infrastructure;
 
 namespace Asgard.Loki.Image.OpenAI.Internal;
 
@@ -85,7 +86,7 @@ internal static class OpenAiImageEditPayload
     /// <summary>只编码原生头部和借用流，不按扩展名猜测 Content-Type。</summary>
     private static void Add(MultipartFormDataContent content, ImageUpload upload, string name)
     {
-        var part = new BorrowedImageContent(upload.Content);
+        var part = new BorrowedStreamContent(upload.Content);
         try { if (upload.ContentType is { } media) part.Headers.ContentType = MediaTypeHeaderValue.Parse(media); content.Add(part, name, upload.FileName); }
         catch { part.Dispose(); throw; }
     }
