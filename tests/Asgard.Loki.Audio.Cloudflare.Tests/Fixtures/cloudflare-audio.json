@@ -1,0 +1,278 @@
+{
+  "sources": [
+    "https://developers.cloudflare.com/workers-ai/models/whisper/schema-input.json",
+    "https://developers.cloudflare.com/workers-ai/models/whisper/schema-output.json",
+    "https://developers.cloudflare.com/workers-ai/models/whisper-large-v3-turbo/schema-input.json",
+    "https://developers.cloudflare.com/workers-ai/models/whisper-large-v3-turbo/schema-output.json",
+    "https://developers.cloudflare.com/workers-ai/get-started/rest-api/"
+  ],
+  "target": {
+    "account": "fixture-account",
+    "raw_model": "@cf/openai/whisper",
+    "json_model": "@cf/openai/whisper-large-v3-turbo",
+    "authorization": "Bearer fixture-native-access"
+  },
+  "audio_base64": "UklGRi4AAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQoAAAAAAAEA/38AgP//",
+  "requests": [
+    {
+      "profile": "RawBinary",
+      "operation": "transcribe",
+      "content_type": "audio/wav",
+      "wire_body_base64": "UklGRi4AAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQoAAAAAAAEA/38AgP//"
+    },
+    {
+      "profile": "JsonBase64",
+      "operation": "transcribe",
+      "content_type": "application/json",
+      "body": {
+        "task": "transcribe",
+        "language": "zh",
+        "vad_filter": false,
+        "initial_prompt": "保留原文 😀\n下一行",
+        "prefix": "literal prefix",
+        "beam_size": 5,
+        "condition_on_previous_text": false,
+        "no_speech_threshold": 0,
+        "compression_ratio_threshold": 2.4,
+        "log_prob_threshold": -1,
+        "hallucination_silence_threshold": 0,
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        },
+        "audio": "UklGRi4AAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQoAAAAAAAEA/38AgP//"
+      }
+    },
+    {
+      "profile": "JsonBase64",
+      "operation": "translate",
+      "content_type": "application/json",
+      "body": {
+        "task": "translate",
+        "language": "zh",
+        "vad_filter": false,
+        "initial_prompt": "保留原文 😀\n下一行",
+        "prefix": "literal prefix",
+        "beam_size": 5,
+        "condition_on_previous_text": false,
+        "no_speech_threshold": 0,
+        "compression_ratio_threshold": 2.4,
+        "log_prob_threshold": -1,
+        "hallucination_silence_threshold": 0,
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        },
+        "audio": "UklGRi4AAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQoAAAAAAAEA/38AgP//"
+      }
+    }
+  ],
+  "responses": {
+    "raw": {
+      "result": {
+        "text": "原始识别 😀",
+        "word_count": 1,
+        "words": [
+          {
+            "word": "原始识别",
+            "start": 0,
+            "end": 0.25,
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Nested": [
+                {
+                  "Text": "原始 😀"
+                }
+              ]
+            }
+          }
+        ],
+        "vtt": "WEBVTT\r\n\r\n00:00.000 --> 00:00.250\r\n原始识别 😀\r\n",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      },
+      "success": true,
+      "errors": [],
+      "messages": [
+        {
+          "code": 0,
+          "message": "fixture diagnostic",
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    "json": {
+      "result": {
+        "text": "Original result 😀",
+        "word_count": 2,
+        "transcription_info": {
+          "language": "zh",
+          "language_probability": 0.94,
+          "duration": 0.375,
+          "duration_after_vad": 0.25,
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        },
+        "segments": [
+          {
+            "start": 0,
+            "end": 0.25,
+            "text": "Original result 😀",
+            "temperature": 0,
+            "avg_logprob": -0.25,
+            "compression_ratio": 1.5,
+            "no_speech_prob": 0,
+            "words": [
+              {
+                "word": "Original",
+                "start": 0,
+                "end": 0.125
+              }
+            ],
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Nested": [
+                {
+                  "Text": "原始 😀"
+                }
+              ]
+            }
+          }
+        ],
+        "vtt": "WEBVTT\n\n00:00.000 --> 00:00.250\nOriginal result 😀\n",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      },
+      "success": true,
+      "errors": [],
+      "messages": [],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    "empty": {
+      "result": {
+        "text": ""
+      },
+      "success": true,
+      "errors": [],
+      "messages": []
+    },
+    "error": {
+      "result": null,
+      "success": false,
+      "errors": [
+        {
+          "code": 7500,
+          "message": "fixture native failure",
+          "source": {
+            "pointer": "task"
+          },
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "messages": [
+        {
+          "message": "original diagnostic"
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    }
+  }
+}
