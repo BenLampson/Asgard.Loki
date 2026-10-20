@@ -2432,3 +2432,19 @@ The actual model maps to native body model while the public alias stays metadata
 Original results order, finite relevance_score values without probability-range restrictions, exact unique input indices and complete expected count are validated. Echoes must preserve original JSON, a native text wrapper of the original, or all original object fields; explicit null and missing remain distinct. Required echoes are never fabricated. Root identity/usage may be absent/null, while present known usage counters must be exact nonnegative integers without estimation/summing. Complete raw JSON and provider views retain unknown fields and original precision. SGLang score arrays and arbitrary alternative envelopes are rejected, rather than converted.
 
 Raw errors preserve bytes/type/status, including native HTTP200 failures and malformed type values. Snapshots, bounded read/declared length, actual target/method, isolated auth, strict unknown-field Unicode/duplicates, normal EOF, owned resource disposal and final cancellation precede result publication. Successful SSE fails before body read. Ninety-seven supplier offline tests verify full wire, opaque/text association, unknown preservation and transport/lifecycle rejection. The preceding 647 Rerank-family regressions remain applicable; core and existing suppliers are unchanged by this package. Live model/service/relevance behavior remains unverified.
+
+### Additive native LLM error bytes
+
+The LLM capability preserves LlmUpstreamException's existing text constructor, HttpStatusCode StatusCode and string ResponseBody. A separate byte constructor adds an independent copied Body and optional ContentType without changing existing supplier calls. Byte-based text projection is strict UTF-8; binary data is available without replacement decoding. Transport bounds, native error detection and any protocol event association remain supplier responsibilities; no shared cross-capability business layer is introduced.
+
+```mermaid
+classDiagram
+class LlmUpstreamException {
+  +HttpStatusCode StatusCode
+  +string ResponseBody
+  +ReadOnlyMemory~byte~ Body
+  +string ContentType
+}
+class ILlmProvider
+ILlmProvider ..> LlmUpstreamException : original native failure
+```

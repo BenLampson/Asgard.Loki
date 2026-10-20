@@ -126,3 +126,7 @@ No new protocol flags, target fields, fingerprint algorithm or package dependenc
 ### Native Responses ownership versus converted output IDs
 
 Responses complete/stream clients register continuation ownership only for results/events without conversion metadata. Converted IDs remain visible and unchanged in JSON, but do not create native `previous_response_id` records. This includes synthetic Converse labels and other protocol-native IDs projected into Responses. Passing such an ID back as a continuation fails before another adapter/HTTP call. Native Responses keep their existing whole-target/session ownership and continuation behavior; no ID prefix is used to distinguish the cases. This changes neither cache coordination nor target selection. Earlier cached converted IDs are not proactively scanned or purged; the conversion guard still rejects cross-protocol continuation when an older ownership record exists.
+
+## Native error bytes
+
+LlmUpstreamException retains its existing text constructor, StatusCode and ResponseBody. A byte constructor additionally copies complete native Body bytes and optional ContentType; byte-constructed errors expose ResponseBody through strict UTF-8 and preserve binary data through Body. The legacy text constructor retains its original text and supplies a UTF-8 projection without inventing a media type. Individual providers own transport limits and error classification. No logging, retry, cross-capability error coordinator or model/content policy is added.
