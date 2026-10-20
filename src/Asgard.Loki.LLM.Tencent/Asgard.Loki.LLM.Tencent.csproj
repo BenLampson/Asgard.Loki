@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Native Tencent Hunyuan model calls with supplier-local TC3 authentication.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>

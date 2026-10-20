@@ -29,6 +29,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM | `Asgard.Loki.LLM.Ollama` | Native Chat/generate JSON/NDJSON, native thinking/schema/tool history and prompt/context; explicit anonymous or Bearer identity | — |
 | LLM | `Asgard.Loki.LLM.Azure` | Native v1/dated Chat, Responses and text Completions JSON; explicit native Responses compaction and independent Realtime; api-key or borrowed external tokens | Native SSE with delayed filter/usage tails; native Realtime JSON WebSocket |
 | LLM | `Asgard.Loki.LLM.DeepSeek` | Native Search / Fetch JSON; explicit fixed service credentials; complete ranked results and page content | — |
+| LLM | `Asgard.Loki.LLM.Tencent` | Native Hunyuan complete JSON; TC3 and caller-owned External principal credentials | SSE unsupported |
 | LLM | `Asgard.Loki.LLM.GoogleVertex` | Vertex Gemini/Claude JSON/SSE with borrowed tokens; separate Express Gemini JSON/SSE with explicit API Key; MaaS Chat JSON/SSE with borrowed tokens | Native events with delayed terminal checks |
 | LLM | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and explicit Converse JSON/EventStream with borrowed SigV4 or explicit Bedrock API Key credentials | Native binary EventStream with independent protocol lifecycles |
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
@@ -134,6 +135,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.LLM.Ollama` | Native Ollama Chat/generate JSON/NDJSON; explicit anonymous or Bearer authentication |
 | `Asgard.Loki.LLM.Azure` | Native Azure endpoints and provider-owned external token source |
 | `Asgard.Loki.LLM.DeepSeek` | Native model-free Search / Fetch auxiliary calls with fixed service credentials |
+| `Asgard.Loki.LLM.Tencent` | Native Hunyuan complete JSON with supplier-local TC3 authentication |
 | `Asgard.Loki.LLM.GoogleVertex` | Native Vertex Gemini, Claude, Express and MaaS target identity/authentication |
 | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and Converse JSON/EventStream with borrowed External SigV4 or explicit Bedrock API Key credentials |
 | `Asgard.Loki.LLM.Conversion` | Optional explicit conversion; references only LLM |

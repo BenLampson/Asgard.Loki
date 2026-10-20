@@ -2581,3 +2581,21 @@ HunyuanEvent --|> LlmJsonEvent
 `HunyuanRequest.Model` serializes as PascalCase `Model`, while native extension parameters retain original Messages, tool schema/argument strings, tool associations, multimodal/reasoning/search data and unknown fields. Case-insensitive Model/Stream overrides, Undefined values and malformed Unicode fail before cache resolution. The whole body is frozen before the first asynchronous Session wait. The chosen method writes PascalCase Stream, and selection changes only Model to the bound actual model; the lowercase payload helper is not used.
 
 Complete results own the full native Response envelope; flat streaming records and SSE metadata remain independent immutable snapshots. `Response.Id` is not projected onto the inherited lowercase Id accessor or Responses continuation ownership. Optional native indices, native finish reasons, disclaimer/search/usage tail fields and raw tool deltas remain unmodified. Native signing, framing, terminal/EOF/error and resource validation belong to the supplier adapter. The core neither infers completion nor executes, aggregates, converts or retries generation. Existing full server/model/credential/provider fingerprint, coordinated initial binding and borrowed dependency rules apply unchanged.
+
+### Tencent native complete JSON and TC3
+
+`LLM.Tencent` references only LLM, Infrastructure and standard HTTP dependencies. `TencentHunyuanProvider` implements the explicit Hunyuan adapter and External credential kind. Its application-owned `ITencentHunyuanCredentialSource` supplies immutable credentials once per call; stable source identity and logical principal remain independent of rotating SecretId/SecretKey/temporary Token. Source/principal drift and expiry fail at acquisition, dispatch and publication. No discovery, STS, refresh, key parsing or authentication heuristics are implemented. Native SSE currently reports unsupported without transport.
+
+```mermaid
+classDiagram
+TencentHunyuanProvider ..|> IHunyuanAdapter
+TencentHunyuanProvider ..|> ILlmCredentialSupport
+TencentHunyuanProvider --> ITencentHunyuanCredentialSource : borrowed once per call
+ITencentHunyuanCredentialSource --> TencentHunyuanCredentials : immutable snapshot
+TencentHunyuanProvider --> TencentPayload : frozen PascalCase JSON and Response envelope
+TencentHunyuanProvider --> TencentTc3 : actual UTF8 body and API3 fixed canonical URI
+TencentHunyuanProvider --> HttpBodyReader : bounded bytes and EOF only
+TencentHunyuanProvider --> IHttpClientFactory : borrowed factory and owned per-call client
+```
+
+The native complete-body snapshot precedes credential waits and byte limits precede acquisition. TC3 signs actual application/json bytes, Host and action with UTC date/hunyuan scope and fixed canonical URI `/`; explicit optional SigningHost supports physical proxies without path inference. Region/temporary Token are explicit. Default credential/signing headers are refused; actual HTTP target/method/body/header mutation fails. Full raw HTTP/native errors and original complete Response envelope/choices/native finish reasons/unknown fields remain supplier-local. Results are withheld through EOF, byte/length/encoding checks, async source and HTTP/client closure, and final cancellation/source/principal/expiry validation. The core Session binding and Responses ownership rules do not change. No cross-capability state, conversion, history, retry, gateway or cloud administration layer is added.

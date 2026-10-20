@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup><PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" /></ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.Tencent/Asgard.Loki.LLM.Tencent.csproj" />
+  </ItemGroup>
+  <ItemGroup><EmbeddedResource Include="Fixtures/*.json" /><EmbeddedResource Include="Fixtures/*.sse" /></ItemGroup>
+</Project>
