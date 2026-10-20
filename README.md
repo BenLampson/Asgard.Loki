@@ -31,6 +31,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM | `Asgard.Loki.LLM.DeepSeek` | Native Search / Fetch JSON; explicit fixed service credentials; complete ranked results and page content | — |
 | LLM | `Asgard.Loki.LLM.Tencent` | Native Hunyuan complete JSON; TC3 and caller-owned External principal credentials | Native SSE, unchanged tools and all-choice terminal/metadata tails |
 | LLM | `Asgard.Loki.LLM.Xunfei` | Native Spark signed WebSocket; complete ordered native message window | Original JSON messages; text/global terminal and normal-close validation |
+| LLM | `Asgard.Loki.LLM.Cohere` | Native v1 Chat JSON; full history, references and call-plus-parameters tool results | Native NDJSON; unchanged tool fragments and delayed stream-end |
 | LLM | `Asgard.Loki.LLM.GoogleVertex` | Vertex Gemini/Claude JSON/SSE with borrowed tokens; separate Express Gemini JSON/SSE with explicit API Key; MaaS Chat JSON/SSE with borrowed tokens | Native events with delayed terminal checks |
 | LLM | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and explicit Converse JSON/EventStream with borrowed SigV4 or explicit Bedrock API Key credentials | Native binary EventStream with independent protocol lifecycles |
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
@@ -138,6 +139,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.LLM.DeepSeek` | Native model-free Search / Fetch auxiliary calls with fixed service credentials |
 | `Asgard.Loki.LLM.Tencent` | Native Hunyuan JSON/SSE with supplier-local TC3 authentication |
 | `Asgard.Loki.LLM.Xunfei` | Native Spark WebSocket authentication and complete message windows |
+| `Asgard.Loki.LLM.Cohere` | Native Cohere v1 Chat JSON/NDJSON; independent from Rerank |
 | `Asgard.Loki.LLM.GoogleVertex` | Native Vertex Gemini, Claude, Express and MaaS target identity/authentication |
 | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and Converse JSON/EventStream with borrowed External SigV4 or explicit Bedrock API Key credentials |
 | `Asgard.Loki.LLM.Conversion` | Optional explicit conversion; references only LLM |
@@ -413,4 +415,4 @@ Licensed under the [Apache License, Version 2.0](LICENSE).
 
 ### Native Cohere v1 Chat contract
 
-`loki.LLM.CohereChat.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.CohereChat` target and `ICohereChatAdapter`. Only actual target model and method stream mode change; full message/history, native tools/results, references and unknown JSON stay intact. Results keep response_id and generation_id distinct, while NDJSON events use event_type without synthetic SSE metadata. Supplier adapters own transport and terminal integrity; the core makes no live-service or automatic conversion claim. See the [native contract](src/Asgard.Loki.LLM/README.md#native-cohere-v1-chat-contract).
+`loki.LLM.CohereChat.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.CohereChat` target and `ICohereChatAdapter`. Only actual target model and method stream mode change; full message/history, native tools/results, references and unknown JSON stay intact. Results keep response_id and generation_id distinct, while NDJSON events use event_type without synthetic SSE metadata. The [Cohere supplier](src/Asgard.Loki.LLM.Cohere/README.md) owns native HTTP/NDJSON and terminal integrity; offline support makes no live-service or automatic conversion claim. See the [native contract](src/Asgard.Loki.LLM/README.md#native-cohere-v1-chat-contract).

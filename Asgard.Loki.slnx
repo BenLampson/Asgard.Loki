@@ -35,6 +35,7 @@
     <Project Path="src/Asgard.Loki.LLM.Azure/Asgard.Loki.LLM.Azure.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Cohere/">
+    <Project Path="src/Asgard.Loki.LLM.Cohere/Asgard.Loki.LLM.Cohere.csproj" />
     <Project Path="src/Asgard.Loki.Rerank.Cohere/Asgard.Loki.Rerank.Cohere.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Google/">
@@ -143,6 +144,7 @@
     <Project Path="tests/Asgard.Loki.LLM.Azure.Tests/Asgard.Loki.LLM.Azure.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Cohere/">
+    <Project Path="tests/Asgard.Loki.LLM.Cohere.Tests/Asgard.Loki.LLM.Cohere.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Rerank.Cohere.Tests/Asgard.Loki.Rerank.Cohere.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Google/">

@@ -2704,3 +2704,24 @@ CohereChatEvent --|> LlmJsonEvent
 Only configured actual model and method stream mode replace root fields. Unknown fields, every history turn, native repeated-name tool call parameters/results, documents/citations, exact numbers and optional values retain their native structures. No generation settings, tool IDs, normalized messages, usage totals or defaults are synthesized. Reserved root routing fields, Undefined and malformed original Unicode fail before Session/cache selection; the immutable snapshot precedes its first asynchronous wait.
 
 Native response_id and generation_id are separate optional identities, not inherited id or Responses continuation ownership. Events derive Type only from event_type, never a business type field or legacy is_finished flag; they carry no synthetic SSE metadata. IsTerminal denotes stream-end without asserting successful generation or tool execution. The supplier owns native transport/state/EOF/resource validation. Core tests use an in-memory adapter and independent whole native fixtures, so they establish no real service/model acceptance. Existing full-target drift, protocol affinity, borrowed ownership, no-retry and final cancellation guarantees apply to this additive entry.
+
+### Native Cohere v1 Chat HTTP and NDJSON
+
+`Asgard.Loki.LLM.Cohere` references only LLM, Infrastructure and standard HTTP. It implements ICohereChatAdapter with an explicit complete API root/actual model/Bearer target; Rerank.Cohere remains independent. CohereLlmOptions captures named project and positive request/body/record/total/tail policies in provider implementation identity. No v2 migration, supplier-peer reference, tool executor, cross-capability coordinator or host is introduced.
+
+```mermaid
+classDiagram
+ICohereChatAdapter <|.. CohereLlmProvider
+CohereLlmProvider ..|> ILlmCredentialSupport
+CohereLlmProvider --> CohereLlmOptions : immutable binding policies
+CohereLlmProvider --> CohereRequest : native snapshot and exact HTTP target
+CohereLlmProvider --> CohereStreamState : supplier-owned lifecycle
+CohereLlmProvider --> NdjsonReader : Infrastructure raw LF bytes only
+CohereLlmProvider --> HttpBodyReader : Infrastructure bounded raw body only
+CohereLlmProvider --> CohereChatCompletion : full JSON
+CohereLlmProvider --> CohereChatEvent : unchanged native records
+```
+
+One POST appends chat to the caller-selected versioned/proxy root. The public core snapshots before Session waits; direct supplier calls snapshot before factory creation/await. Only actual model and method stream mode change; complete history, native call-parameters/results, citations, settings, exact numbers and unknown data are retained. A selected Bearer replaces default Authorization; unbound alternative auth, Accepts SSE negotiation or implicit project headers fail before sending. Actual URI/method is checked through publication. Factories/cache/coordinators stay borrowed, while each call owns all HTTP resources.
+
+NDJSON frames preserve raw native event_type and tool index/parameter fragments without normalization or assembly. Known citation/search/tool records require their native array/object carriers; tool calls require native name/parameter-object pairs while optional delta fields preserve absence/null. One stream-start and stable native generation_id lead to one stream-end with native finish_reason/full response. Optional nested IDs/reasons and legacy is_finished must be consistent; independent response_id is never substituted or registered as Responses ownership. Unknown metadata is preserved. Native unsuccessful and future finish reasons remain visible without synthetic stop or success. First-end and subsequent metadata are bounded and held until EOF, strict UTF-8/JSON/declared lengths, resource closure and final cancellation. Missing/duplicate/late native generation, changed identities, explicit root errors, malformed tails, read/disposal/cancellation failures cannot first publish that terminal. Earlier delivered prefixes remain possible. HTTP/native errors retain actual status/body/type. These offline contracts do not establish model/service/account acceptance or output quality.
