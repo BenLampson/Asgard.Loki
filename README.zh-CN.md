@@ -127,3 +127,7 @@ Cloudflare Workers AI 的账号级兼容 Chat JSON/SSE 和当前支持的非流�
 现有 [OpenAI 分包](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-codex-backend-responses) 还提供独立的 CodexLlmProvider，支持显式后端 Responses JSON/SSE 和 compact。完整服务器/模型/外部主体/账户/认证来源及策略保持现有 Session 绑定，短期令牌可以轮换。工具关联、推理/加密项、结构化输出与未知字段保持原生；不加入登录、刷新、账户管理、参数清理或自动重试。这是离线协议验证，不代表公开稳定 API 或真实账户/模型可用性验证。
 
 同包 CodexSearchClient 另行提供固定账户的一次原生 alpha/search 调用，完整返回原始 HTTP 正文、状态和媒体类型。原生可选参数保持原值；不虚构模型 Session、搜索结果结构、用量或模型终态，也不下载结果 URL。
+
+### 方舟原生 HTTP 边界
+
+[火山供应商](src/Asgard.Loki.LLM.Volcengine/README.md#native-http-fidelity) 的 Chat/Responses JSON/SSE 使用明确的字节、尾部及 choice 关联上限，工厂/异步边界之前冻结完整请求。Chat 的实际 DONE 后继续校验 EOF 与晚到错误，结束帧等待完整资源关闭及最终绑定/取消检查。工具、推理、结构化输出、加密与未知字段保持原生；HTTP 策略和命名客户端参与现有完整目标 Session 绑定，不增加模型名路由、自动重试或能力依赖。

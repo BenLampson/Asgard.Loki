@@ -2938,3 +2938,27 @@ CodexSearchResult --> CodexSearchMetadata : honest fixed service identity
 Each SearchAsync call sends exactly one alpha/search POST, preserving original optional model/stream/unknown parameters without a schema/defaults or automatic model routing. The result retains a detached immutable raw byte window, actual status and raw content type, including JSON/text/binary/SSE/empty outcomes. A native HTTP200 object with an error-like property remains opaque body data, not an invented model answer or failure mapping. Non-2xx errors preserve complete bytes/status/media. All original method/root/account/source/expiry, byte/declared-length/EOF/closure/final-cancellation checks precede result delivery. No refresh/retry, local search, result URL download, usage or model terminal interpretation occurs.
 
 Forty independent offline search cases extend the supplier executable to549 passing cases (127 Codex). The graph remains63 production projects/45 Infrastructure consumers/125 solution paths; no live backend/account/model, new full-repository suite or all-package validation is claimed.
+
+### Ark native HTTP resource and terminal boundary
+
+VolcengineLlmProvider preserves its existing constructor/interfaces and adds explicit immutable VolcengineHttpOptions. Supplier-private ArkRequest freezes/validates original JSON before factory/transport boundaries, owns actual model and method stream selection, and uses the explicit complete root/independent Key without suffix/host routing. ArkHttpTransport owns per-call requests, clients, responses and body streams; native state/errors remain in this supplier. It references only its own LLM capability, capability-independent Infrastructure and standard HTTP. No provider-peer reference, Compile Link, core protocol, shared model/audio coordinator or business host is introduced.
+
+```plantuml
+@startuml
+IChatCompletionsAdapter <|.. VolcengineLlmProvider
+IResponsesAdapter <|.. VolcengineLlmProvider
+VolcengineLlmProvider --> VolcengineHttpOptions : immutable byte/tail/choice policies
+VolcengineLlmProvider --> ArkRequest : full native snapshot and fixed target
+VolcengineLlmProvider --> ArkHttpTransport : single owned HTTP call
+ArkRequest --> ArkJson : original JSON/Unicode validation
+ArkHttpTransport --> HttpBodyReader : Infrastructure raw bounded body
+ArkHttpTransport --> SseReader : Infrastructure bounded raw framing
+ArkHttpTransport --> ArkStreamState : supplier-native identities and endings
+@enduml
+```
+
+Chat per-choice finish begins bounded tail retention but cannot replace native global DONE. Reading continues after DONE to verify normal EOF, declared/actual bytes, strict UTF-8/framing and late errors; subsequent data/repeated DONE is invalid. Responses requires its own consistent known native terminal ID/status, with known generation forbidden after terminal and unknown business objects preserved. Choice state is bounded by distinct native indices, not remote index magnitude; tools/arguments/usage remain raw without reconstruction. Unknown Chat root type extension values are not confused with the Responses type schema.
+
+All ending-stage frames and JSON results wait until complete owned-resource closure, actual method/full URI/Host/auth/content validation and final cancellation. Async/sync/client disposal failures cannot first release terminal data. HTTP/native/binary errors preserve full original bytes/status/media. Borrowed factory/cache/explicit coordinator ownership stays with the application; generated calls are not retried or retargeted. The ark-http-v2 identity includes all policies and named client so old early-completion bindings cannot silently continue under new semantics. A full target/configuration change requires a new Session.
+
+The supplier executable passes207 offline cases (93 retained plus114 new independent snapshot/fault/Session cases), with no new live model/parameter or full-suite/all-package claim. Historical standard-Ark integration results and the strict tool_choice=none failure remain independently recorded. Production graph remains63/45/125; no dependency direction changes.
