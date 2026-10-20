@@ -647,7 +647,6 @@
       "path": "completions",
       "caller": {
         "model": "public",
-        "stream": false,
         "max_tokens": 128,
         "temperature": 0,
         "native_extra": {
@@ -1872,7 +1871,6 @@
       "path": "completions",
       "caller": {
         "model": "public",
-        "stream": false,
         "max_tokens": 128,
         "temperature": 0,
         "native_extra": {
@@ -2566,7 +2564,6 @@
       "path": "completions",
       "caller": {
         "model": "public",
-        "stream": false,
         "max_tokens": 128,
         "temperature": 0,
         "native_extra": {

@@ -164,3 +164,5 @@ DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#
 [百度千帆 v2 原生 Chat](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-baidu-qianfan-v2-native-chat) 复用现有 OpenAI 包，显式配置完整地址、实际模型、独立 Key 与可选 appid 客户端请求头。推理、工具关联、schema、搜索状态／结果、过滤标记和精确用量保持原文。JSON／SSE、真实 DONE、原生错误、资源关闭与完整 Session 绑定已离线验证；未验证真实模型、参数效果、搜索或过滤策略效果。
 
 [智谱 v4 原生 Chat／Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-zhipu-v4-native-chat-and-responses) 与 [Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-zhipu-v4-native-messages) 复用现有包，分别显式绑定地址、协议、实际模型和 Key。原生思考对象、工具历史、搜索／过滤元数据和用量保持原文。Chat DONE、Responses 终态与 Messages message_stop 分别经过离线验证；未验证真实模型、参数效果或 Coding Plan 权限。
+
+[OpenRouter、Xinference 与 Submodel 显式配置](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-openrouter-xinference-and-submodel-profiles) 复用现有 OpenAI 包，按实际协议声明 Chat／Responses／文本补全，并显式绑定完整地址、实际模型、Key 和可选调用者请求头。原生推理、工具关联、文本输入、OpenRouter 重复 finish 用量帧与错误均保持原文。协议／终态／Session 边界已离线验证，未验证历史托管端点或真实模型可用性。

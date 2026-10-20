@@ -271,7 +271,7 @@ Each call uses explicit Bearer/account headers and exact application/json withou
 
 Defaults: 1 MiB request, 32 MiB complete/error/whole-SSE bytes and 128 held terminal-tail records. Factories, token source, clock and Session dependencies stay borrowed. Configure named transports with no automatic redirects/retries/hedging and appropriate timeouts. There is no token-triggered retry, failover, background polling or local tool/workflow/media execution.
 
-Validation uses independent full native JSON/compact/SSE resources and fake HTTP. The complete OpenAI supplier test executable passes1114 offline cases, including127 Codex cases covering separate parallel tool IDs, native opaque fields, original wire/settings, source snapshots, complete Session drift/rotation/ownership and late transport/resource/auth failures. This is not live backend/model acceptance or a new full-repository suite result.
+Validation uses independent full native JSON/compact/SSE resources and fake HTTP. The complete OpenAI supplier test executable passes1213 offline cases, including127 Codex cases covering separate parallel tool IDs, native opaque fields, original wire/settings, source snapshots, complete Session drift/rotation/ownership and late transport/resource/auth failures. This is not live backend/model acceptance or a new full-repository suite result.
 
 ### Native Codex alpha search
 
@@ -318,7 +318,7 @@ The [official compatibility guide](https://docs.ollama.com/api/openai-compatibil
 
 Responses is stateless upstream: replay complete input; do not use previous_response_id or conversation expecting remote storage. SDK Sessions keep only the existing complete-target affinity and response ownership checks. The current local server implements [responses/compact](https://github.com/ollama/ollama/blob/main/server/routes.go); hosted compact availability is not established here. Compact output remains opaque native data, including encrypted_content, without decoding, local summarization or automatic compaction. Its ID does not acquire generated Responses ownership. Native Messages uses the [existing Anthropic provider](../Asgard.Loki.LLM.Anthropic/README.md#explicit-ollama-messages); neither production supplier references the other.
 
-Twenty-eight additional offline tests verify independently authored full native caller/wire/result/SSE windows, explicit local/proxy/hosted configuration, tools and reversed results, original reasoning/schema/unknown values, precise numbers, transport metadata, missing terminal/late read failure, raw native errors and complete Session identity drift/recovery. Total executable: 1114 passing offline cases. Configured-host wire tests do not establish hosted compact access, real model availability, optional field acceptance or generated quality. In particular, SDK field passthrough does not add upstream support for tool_choice, URL images or other unsupported settings.
+Twenty-eight additional offline tests verify independently authored full native caller/wire/result/SSE windows, explicit local/proxy/hosted configuration, tools and reversed results, original reasoning/schema/unknown values, precise numbers, transport metadata, missing terminal/late read failure, raw native errors and complete Session identity drift/recovery. Total executable: 1213 passing offline cases. Configured-host wire tests do not establish hosted compact access, real model availability, optional field acceptance or generated quality. In particular, SDK field passthrough does not add upstream support for tool_choice, URL images or other unsupported settings.
 
 ## Native compatible text completions
 
@@ -353,7 +353,7 @@ The entire request freezes before HTTP factory creation. Selected Bearer, full U
 
 `OpenAiHttpOptions.MaximumTextCompletionRequestBytes` is optional (effective32MiB); `MaximumTrackedTextChoices` is optional (effective128). Existing MaximumBodyBytes (32MiB) bounds JSON/errors/the entire SSE, and MaximumBufferedTerminalEvents (128) bounds ending-stage frames. All explicit policy values participate in the existing complete-target Session binding; omitted new values preserve previous default binding bytes exactly. Current protocol/model/region/parameter restrictions remain upstream-owned: DashScope documents string FIM prompts and null logprobs; generic token-array/sparse/logprobs snapshots do not certify those inputs for a particular model. No retired OpenAI model availability or live text-model acceptance is claimed.
 
-The executable passes1114 offline cases, including140 text cases with independently authored complete JSON/raw SSE windows, original fields and method ownership, request/response faults, resource and final-cancellation failures, native choice/DONE gates and Session drift/recovery. Existing Chat/Responses/Codex/Moderations/WebSocket/Realtime cases remain included. These are protocol checks, not real model quality, setting-effectiveness or a full-repository test result.
+The executable passes1213 offline cases, including140 text cases with independently authored complete JSON/raw SSE windows, original fields and method ownership, request/response faults, resource and final-cancellation failures, native choice/DONE gates and Session drift/recovery. Existing Chat/Responses/Codex/Moderations/WebSocket/Realtime cases remain included. These are protocol checks, not real model quality, setting-effectiveness or a full-repository test result.
 
 ## Explicit DashScope native endpoints
 
@@ -385,7 +385,7 @@ Original top_p, thinking_budget/enable_thinking, response_format, reasoning/text
 
 Responses known reasoning_text, custom_tool_call_input and web_search_call lifecycle events cannot reopen generation after a native terminal. They remain original JSON before terminal. Unknown response metadata stays raw. Chat extension type values and business IDs without choices remain data: a response.failed-named extension does not become a Responses failure, while actual native error events keep their error semantics. These corrections retain existing default identity serialization and native protocol boundaries.
 
-Thirty-five complete-profile cases verify legacy/workspace/proxy roots, JSON/SSE over all three native operations, opaque reasoning/schema/tool histories, reverse tool results, exact unknown numbers, transport metadata and Session identity/continuation. The supplier executable passes1114 offline cases. No DashScope account/model/optional-setting/plugin/search quality has been validated live. Current upstream contracts: [Chat](https://www.alibabacloud.com/help/en/model-studio/qwen-api-via-openai-chat-completions), [Responses](https://help.aliyun.com/zh/model-studio/qwen-api-via-openai-responses), [Completions](https://docs.modelstudio.console.alibabacloud.com/en/model-studio/completions).
+Thirty-five complete-profile cases verify legacy/workspace/proxy roots, JSON/SSE over all three native operations, opaque reasoning/schema/tool histories, reverse tool results, exact unknown numbers, transport metadata and Session identity/continuation. The supplier executable passes1213 offline cases. No DashScope account/model/optional-setting/plugin/search quality has been validated live. Current upstream contracts: [Chat](https://www.alibabacloud.com/help/en/model-studio/qwen-api-via-openai-chat-completions), [Responses](https://help.aliyun.com/zh/model-studio/qwen-api-via-openai-responses), [Completions](https://docs.modelstudio.console.alibabacloud.com/en/model-studio/completions).
 
 ## Explicit DeepSeek native endpoints
 
@@ -415,7 +415,7 @@ var target = new LlmTarget
 
 [Chat](https://api-docs.deepseek.com/api/create-chat-completion/) preserves reasoning_content, selected thinking/effort, JSON mode, original tool IDs and argument fragments. [Beta FIM](https://api-docs.deepseek.com/api/create-completion/) preserves caller prompt/suffix, logprobs or echo: the service forbids combining echo with suffix or logprobs. For streaming include_usage, usage accompanies the final content choice; no separate usage-only frame is required. Actual `[DONE]` remains required. The SDK does not insert FIM markers, normalize effort, strip model suffixes or repair unsupported parameter combinations.
 
-Thirty-seven independently authored whole-window/fault cases verify native and proxy roots, full JSON/SSE for Chat/Responses and three mutually valid FIM variants, exact unknown values, reversed tool outputs, original metadata, terminal loss, stateless Session recovery and root/key drift. Current supplier total:1114 passing offline cases. No real DeepSeek account/model, optional-setting effectiveness or beta availability was tested. Protocol/model/parameter support is caller-declared per target; preserving optional fields does not certify acceptance.
+Thirty-seven independently authored whole-window/fault cases verify native and proxy roots, full JSON/SSE for Chat/Responses and three mutually valid FIM variants, exact unknown values, reversed tool outputs, original metadata, terminal loss, stateless Session recovery and root/key drift. Current supplier total:1213 passing offline cases. No real DeepSeek account/model, optional-setting effectiveness or beta availability was tested. Protocol/model/parameter support is caller-declared per target; preserving optional fields does not certify acceptance.
 
 ## Explicit Moonshot and Kimi Coding native endpoints
 
@@ -450,7 +450,7 @@ Known response.reasoning_summary_part.added/done and response.reasoning_summary_
 
 Native [Messages](../Asgard.Loki.LLM.Anthropic/README.md#explicit-moonshot-and-kimi-coding-messages) uses the existing separate package. No CLI configuration, client impersonation, model discovery, automatic tool/patch execution, retry or gateway orchestration is performed. [Coding service access](https://www.kimi.com/code/docs/en/) and optional model/setting support remain upstream-owned and caller-selected. This package's native TextCompletions client supports explicitly configured compatible services; no current hosted Moonshot legacy `/v1/completions` availability is claimed. Partial Mode is the separately documented Chat operation above.
 
-Fifty-two independent-profile/fault cases verify all configured roots, full Chat/Partial/Responses JSON/SSE, exact unknown values, original tool/reasoning/schema/cache data, missing and late native endings, stateless Session recovery and complete root/key/model/client/policy affinity. Current supplier total:1114 passing offline cases. No real account/model, Coding entitlement, optional-setting effect or hosted legacy text operation has been tested.
+Fifty-two independent-profile/fault cases verify all configured roots, full Chat/Partial/Responses JSON/SSE, exact unknown values, original tool/reasoning/schema/cache data, missing and late native endings, stateless Session recovery and complete root/key/model/client/policy affinity. Current supplier total:1213 passing offline cases. No real account/model, Coding entitlement, optional-setting effect or hosted legacy text operation has been tested.
 
 ## Explicit Mistral native Chat
 
@@ -476,7 +476,7 @@ The [native Chat contract](https://docs.mistral.ai/api/endpoint/chat) preserves 
 
 Actual `[DONE]` is required. Finish-bearing chunks and subsequent metadata wait through normal source EOF, owned resource closure and final cancellation; missing/repeated DONE, appended events and late IO failures cannot release successful endings. Native finish_reason values such as length or error remain original outcomes for the caller to inspect, without synthetic stop/completed labels. Unknown typed business metadata and business IDs remain raw. HTTP errors retain their original status/body; there is no automatic retry, target switch, local tool executor or history manager.
 
-Forty-four independent-window/fault cases verify native/proxy roots, complete JSON/SSE for reasoning/tools/prefix/JSON modes, original caller snapshots, mixed content types, exact large integers, unknown values, tool links, native outcomes, HTTP errors, late/truncated ends, early exit and root/key/model/client/policy/version Session affinity/recovery. Current supplier total:1114 passing offline cases. No production package/API/dependency change is required for these profiles. Real Mistral account/model, optional-setting support/effectiveness and live tool/media behavior remain unverified. The [official OpenAPI](https://docs.mistral.ai/openapi.yaml) describes native message and content fields; SDK event wrapper objects are not added as a new JSON envelope to SSE payloads.
+Forty-four independent-window/fault cases verify native/proxy roots, complete JSON/SSE for reasoning/tools/prefix/JSON modes, original caller snapshots, mixed content types, exact large integers, unknown values, tool links, native outcomes, HTTP errors, late/truncated ends, early exit and root/key/model/client/policy/version Session affinity/recovery. Current supplier total:1213 passing offline cases. No production package/API/dependency change is required for these profiles. Real Mistral account/model, optional-setting support/effectiveness and live tool/media behavior remain unverified. The [official OpenAPI](https://docs.mistral.ai/openapi.yaml) describes native message and content fields; SDK event wrapper objects are not added as a new JSON envelope to SSE payloads.
 
 ## Explicit xAI native Chat and Responses
 
@@ -698,3 +698,66 @@ The [native Chat REST reference](https://docs.bigmodel.cn/api-reference/模型-a
 Responses store defaults to false upstream; the SDK injects no store/continuation values and retains explicit false or caller previous_response_id. Native reasoning.content may be an object, and usage may omit a total; no normalization or arithmetic is applied. Function call IDs, reversed results and raw fragments remain original. Search and filtering metadata stay data; no local search, safety policy, tool execution or media download is performed.
 
 Existing raw JSON errors use LlmUpstreamException with actual HTTP status and original UTF-8 ResponseBody, including HTTP200 failed JSON with a native error object. Native SSE failed/incomplete events retain their actual snapshots and partial outputs; they do not become completed. Missing/repeated terminal, known generation after terminal, late source IO/resource cancellation and early consumer exit follow existing EOF/closure gates and ownership. Complete target/credential/client/policy/version Session binding and byte/tail limits remain unchanged; borrowed cache, coordinator and factory stay caller-owned. Disable retries/hedging in the application HTTP pipeline. Independent native/proxy whole windows and fault cases are offline protocol checks only; no real Key/model, Coding Plan entitlement, setting/search/filter effect or generated quality has been tested.
+
+## Explicit OpenRouter, Xinference and Submodel profiles
+
+Use the existing OpenAiLlmProvider for explicitly selected compatible native operations. Configure the complete root, accepted actual model, independent Key, declared protocol and named client yourself. A provider class exposing an operation does not establish that a particular service/model supports it.
+
+| Service / operation | Complete root example / protocol | Support and limits |
+| --- | --- | --- |
+| OpenRouter Chat JSON / SSE | `https://openrouter.ai/api/v1/` / ChatCompletions | Original reasoning_details, opaque encrypted/signature items, tools, native_finish_reason and exact usage; optional attribution headers are caller-owned |
+| OpenRouter Responses JSON / SSE | Same root / Responses | Stateless native input/output and response terminal; explicit store/previous_response_id are not rewritten |
+| Configured OpenRouter legacy text JSON / SSE | Same root / TextCompletions | Explicit `/completions` wire profile, separate from prompt input at the Chat endpoint; actual legacy model/endpoint acceptance is unverified |
+| Xinference Chat JSON / SSE | Caller-deployed complete `/v1/` root / ChatCompletions | Explicit model UID, root enable_thinking and original tools/settings; no server/model launch or capability detection |
+| Xinference text JSON / SSE | Same selected server root / TextCompletions | Original prompt/suffix/stop/echo/logprobs and raw choices; no conversion to messages |
+| Configured Submodel Chat / text JSON / SSE | Historical `https://llm.submodel.ai/v1/` or caller-selected complete proxy root / corresponding protocol | Original compatible wire; no automatic migration to newer branded domains or serverless instance routes; hosted legacy availability is unverified |
+| Other native protocols | No inference from service name or generic adapter interfaces | No native Submodel Responses/Messages/Gemini capability claim; no control-plane operations |
+
+```csharp
+using Asgard.Loki;
+using Asgard.Loki.LLM;
+using Asgard.Loki.LLM.OpenAI;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+
+// factory, sessionStore, selectedOpenRouterModel and selectedOpenRouterKey are caller-owned.
+var provider = new OpenAiLlmProvider(factory,
+    id: "openrouter-native", httpClientName: "Explicit.OpenRouter.Native");
+await using var loki = new LokiClientBuilder().AddLLM(new LlmOptions
+{
+    SessionStore = sessionStore, Providers = [provider],
+    Credentials = [new LlmCredential("or-key", selectedOpenRouterKey)],
+    Routes = [new LlmRoute
+    {
+        Model = "or-chat", Targets = [new LlmTarget
+        {
+            Id = "or-selected", ProviderId = provider.Id,
+            BaseAddress = new Uri("https://openrouter.ai/api/v1/"),
+            UpstreamModel = selectedOpenRouterModel, CredentialId = "or-key",
+            Protocols = LlmProtocol.ChatCompletions, Version = "caller-context-v1"
+        }]
+    }]
+}).Build();
+var result = await loki.LLM.ChatCompletions.CompleteAsync(new ChatCompletionRequest
+{
+    Model = "or-chat",
+    Messages = new JsonArray(new JsonObject { ["role"] = "user", ["content"] = "Hello" }),
+    Parameters = new()
+    {
+        ["reasoning"] = JsonSerializer.SerializeToElement(new
+        {
+            enabled = true, effort = "medium", exclude = false
+        })
+    }
+}, new LlmCallOptions { SessionId = "or-session-1" }, cancellationToken);
+```
+
+For Responses or text, initialize a separate explicit target using the matching table protocol and call Responses.CreateAsync/StreamAsync or TextCompletions.CompleteAsync/StreamAsync. TextCompletionRequest.Parameters contains native prompt and optional text settings; the selected method owns stream, so do not place stream in that extension dictionary. Raw JSON results and events remain native; no text-to-Chat conversion is performed. Xinference requires the caller's actual deployed root/model UID and accepted authentication Key. The SDK does not supply placeholder credentials, start a server, inspect environments or obtain credentials.
+
+OpenRouter's [native Chat stream contract](https://openrouter.ai/docs/api_reference/streaming) repeats finish_reason/native_finish_reason on the final usage-bearing choice before actual `[DONE]`. Both original frames are retained; this usage frame is not treated as a duplicate control terminal. Actual DONE duplication, data after DONE, missing native control, Responses terminal repetition and known generation after a Responses terminal fail. Native error chunks, including an error as the first/only Chat event without DONE, remain original failures; a late error after a possible normal ending throws with its original body and withdraws buffered endings. Normal endings wait for source EOF, owned-resource closure and final cancellation. Early exit closes the current call only.
+
+The [Responses API](https://openrouter.ai/docs/api_reference/responses/overview) is stateless and rejects store=true/non-null previous_response_id upstream. The SDK preserves explicit values without injecting defaults. Existing Session affinity rejects an unknown previous ID before IO; a known bound ID is sent unchanged and may still be rejected by this upstream. Supply full original history yourself. Native reasoning_details/encrypted content, separate tool IDs, reversed results/fragments, unknown/null/false/zero/empty fields and inconsistent raw totals are not decoded, aggregated or repaired. Optional HTTP-Referer/X-OpenRouter-Title are configured only by the caller's named HTTP client. No model-suffix effort rewrite, default attribution or usage.include injection is performed. When header semantics change, change client name or target Version; arbitrary factory internals are trusted configuration, not automatically hashed.
+
+[Xinference Chat/Generate](https://inference.readthedocs.io/en/latest/models/model_abilities/chat.html) documents distinct native Chat and text endpoints; Python extra_body merges into the root. [Submodel's published serverless reference](https://api.submodel.ai/doc/) documents instance-specific Chat/text routes; configure a complete supported route prefix explicitly and do not substitute it for a historical target silently. The [OpenRouter announcement](https://openrouter.ai/blog/announcements/response-caching/) still names legacy completions separately; no legacy acceptance, caching or hosted model effect has been tested here. Current branded model listings and unrelated administration APIs do not widen these SDK protocol profiles.
+
+Existing byte/tail/choice limits, raw HTTP error status/UTF-8 ResponseBody, full root/model/credential/provider/client/policy/version Session binding and borrowed cache/coordinator/factory ownership apply unchanged. Disable generation retries/hedging in the caller HTTP pipeline. Independent seven-window native/proxy JSON/SSE fixtures and 99 additional cases verify caller immutability, native error handling, EOF/cancellation/early exit, complete binding drift/replay and explicit optional headers offline. No real service/model/legacy endpoint, setting effect, encrypted item acceptance or generated quality has been validated. This adds no supplier package, public API, retry/fallback coordinator, polling, model catalog or administrative/billing feature.

@@ -3259,3 +3259,19 @@ LlmOptions --> "Zhipu Messages target" : /api/anthropic/v1/ + ClaudeMessages
 ```
 
 Existing raw JSON error exceptions, original native failed/incomplete stream snapshots, bounded endings, EOF/closure/final cancellation, complete Session identity and borrowed dependencies remain unchanged. Targets never infer Coding Plan or model support. See the [Chat/Responses matrix and initialization](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-zhipu-v4-native-chat-and-responses) and [Messages matrix and initialization](../src/Asgard.Loki.LLM.Anthropic/README.md#explicit-zhipu-v4-native-messages) for protocol-specific limits and live status.
+
+### Explicit compatible native service targets
+
+OpenRouter, Xinference and configured Submodel operations reuse OpenAiLlmProvider. Every operation selects a complete root, actual model, independent Key, provider ID, named client and native protocol. Native Chat, Responses and legacy text stay separate; generic adapter methods never establish support for an upstream endpoint. No new production project, public API or capability dependency is introduced.
+
+```plantuml
+@startuml
+LlmOptions --> "Selected compatible target" : root / actual model / Key / protocol / Version
+"Selected compatible target" --> OpenAiLlmProvider : native Chat / Responses / text
+OpenAiLlmProvider --> IHttpClientFactory : explicit named client
+IHttpClientFactory --> "Caller configuration" : optional native attribution headers
+OpenAiLlmProvider --> "Original native events" : reasoning / tools / text / usage / errors
+@enduml
+```
+
+OpenRouter's finish-bearing usage frame repeats native finish metadata and remains a distinct original frame. Actual DONE and Responses controls retain their own validation and EOF/closure/cancellation gates. Native stateless Responses rejection inputs are preserved after existing response-ID affinity checks; no hidden history is kept. Semantic header changes participate through caller-updated client name or target Version. Existing limits, complete Session binding and borrowed infrastructure ownership remain unchanged. See the [support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-openrouter-xinference-and-submodel-profiles).
