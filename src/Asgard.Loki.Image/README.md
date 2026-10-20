@@ -1,10 +1,12 @@
 # Asgard.Loki.Image
 
+[Azure](../Asgard.Loki.Image.Azure/README.md) supplies separately configured native deployment/version/API-Key JSON generation and multipart editing. It preserves original results and upload ownership. Its native SSE support is not implemented; unsupported JSON-reference/streaming calls fail locally without protocol or media conversion.
+
 Independent image generation/editing contracts, routing and module registration for Asgard.Loki.
 
 Provides `AddImage()`, `.Image.GenerateAsync()` and `.Image.StreamAsync()`. Generation calls snapshot parameters at method invocation, including before stream enumeration. Requests retain arbitrary JSON parameters; results preserve full provider JSON, image data, URLs, usage and metadata. `GeneratedImage.Decode()` decodes Base64 on demand without downloading URL results.
 
-Install a provider separately, currently `Asgard.Loki.Image.OpenAI`. This package depends only on the generic abstractions and does not reference LLM or audio.
+Install providers separately: [OpenAI](../Asgard.Loki.Image.OpenAI/README.md) and [Azure](../Asgard.Loki.Image.Azure/README.md) document their own native operation support. This package depends only on the generic abstractions and does not reference LLM or audio.
 
 ## Native image editing contracts
 

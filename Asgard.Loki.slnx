@@ -28,6 +28,7 @@
     <Project Path="src/Asgard.Loki.LLM.Anthropic/Asgard.Loki.LLM.Anthropic.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Azure/">
+    <Project Path="src/Asgard.Loki.Image.Azure/Asgard.Loki.Image.Azure.csproj" />
     <Project Path="src/Asgard.Loki.Audio.Azure/Asgard.Loki.Audio.Azure.csproj" />
     <Project Path="src/Asgard.Loki.LLM.Azure/Asgard.Loki.LLM.Azure.csproj" />
   </Folder>
@@ -115,6 +116,7 @@
     <Project Path="tests/Asgard.Loki.LLM.Anthropic.Tests/Asgard.Loki.LLM.Anthropic.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Azure/">
+    <Project Path="tests/Asgard.Loki.Image.Azure.Tests/Asgard.Loki.Image.Azure.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Audio.Azure.Tests/Asgard.Loki.Audio.Azure.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.Azure.Tests/Asgard.Loki.LLM.Azure.Tests.csproj" />
   </Folder>

@@ -1,5 +1,30 @@
 # Asgard.Loki Architecture Specification
 
+## Native deployment-scoped Azure Image
+
+`Image.Azure` depends only on Image, Infrastructure and standard HTTP factory support. Generation and editing use independent existing Image routes/adapters; there is no dependency on Image.OpenAI, LLM, Audio or an application host. Fixed resource/deployment/version/API Key and optional body model are explicit. The public route never becomes a native model; returned UpstreamModel is the deployment. Literal deployment dots and original version text remain bound to the target.
+
+```mermaid
+classDiagram
+IImageGenerationAdapter <|.. AzureImageAdapter
+IImageEditAdapter <|.. AzureImageEditAdapter
+AzureImageAdapter --> AzureImageOptions : own complete target
+AzureImageEditAdapter --> AzureImageOptions : independent complete target
+AzureImageAdapter --> AzureImageTarget : fixed URI/auth and bounded HTTP
+AzureImageEditAdapter --> AzureImageTarget
+AzureImageTarget --> HttpBodyReader : complete bytes and EOF
+AzureImageAdapter --> AzureImagePayload : JSON generation
+AzureImageEditAdapter --> AzureImagePayload : native multipart, no JSON conversion
+AzureImagePayload --> BorrowedStreamContent : current-position single-use images/mask
+AzureImageAdapter --> AzureImageJson : original complete result and native errors
+AzureImageEditAdapter --> AzureImageJson
+```
+
+Generation JSON is snapshotted/encoded before creating a client. Multipart copies metadata, image/mask lists and literal ordered fields while borrowing original readable streams. A single image uses image; multiple use image[], with an independent mask. Unknown/repeated text fields, empty values, false/zero and native JSON precision remain original; protected field overrides, duplicate known scalars, invalid Unicode/header metadata and reused stream identities fail before I/O. Body model is optional and never inferred. File bytes are neither inspected nor buffered for a total content length; each bounded upload refuses implicit replay and leaves the input open.
+
+Call-owned content/message/response/client must finish reading/disposal before publishing complete JSON. HTTP length, byte bounds, UTF-8, unambiguous JSON, native errors and original image payloads are checked. Native URLs/Base64, filtering objects, usage and unknown fields remain intact without arithmetic, pixel work or downloads. Each operation keeps its own native error exception, including original status/content type/body. The supplier-local target only shares fixed endpoint/authentication and HTTP transport, with no selection, workflow or cross-capability state. Factory/inputs stay application-owned and no automatic retry/failover occurs. Native SSE remains unimplemented, not JSON-to-event fallback. Dated editing uses native multipart; JSON image references are rejected without media fetching or inferred conversion. Independent xUnit v3 wire/lifecycle tests use fake HTTP; real Azure/model/quality/filter acceptance remains unverified.
+
+
 ## Native SunoAPI Audio provider
 
 `Audio.SunoAPI` depends only on Audio, Infrastructure and the standard HTTP factory package. It targets the explicitly configured unofficial Suno-API proxy protocol, with no service/model default or account management. `SunoAudioAdapter` supports MUSIC/LYRICS on one fixed target, native batch POST status (including single-ID status queries) and separate raw GET results. Author GET data has no status and cannot establish task completion. Full native records and original envelopes remain cloned, with unknown JSON, song/lyrics/cover fields, exact IDs/numbers and signed addresses retained.
