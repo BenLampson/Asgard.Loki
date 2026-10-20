@@ -2394,3 +2394,41 @@ RerankResult ..> SgLangRerankItem : supplier-owned SgLangRankings view
 The supplier snapshots native query/documents (text or original text/image_url/video_url parts), instruct, nullable positive top_n, return_documents and unknown JSON without tokenizing, rendering, fetching media, flattening or adding defaults. Exact top_n greater than input count caps expected result count only. Native root score/index arrays retain original ranking order and precise JSON, with unique exact input indices, complete expected count and matching required text echoes. Finite scores are not probability-clamped, sorted or recomputed. Optional meta_info stays native/absent/null, without estimated usage. Unsupported Jina envelopes, incomplete/wrong associations and unverifiable rendered multimodal echoes fail explicitly; explicit false return_documents avoids the pinned string-echo limitation for multimodal documents.
 
 Bounded raw read, declared-length/target checks, strict Unicode/duplicate-member validation, isolated authentication, normal EOF/stream-response-client disposal and final cancellation gate publication. Native HTTP/200 errors keep their raw status/bytes/content type. SSE is refused before reading a successful stream. Eighty-eight supplier offline cases plus all 559 existing Rerank-family regressions verify these contracts without a live server/model/quality claim. No provider-peer/cross-capability reference, common business coordinator, login, model catalog, server lifecycle or gateway feature is introduced.
+
+### Explicit compatible rerank wire
+
+`Rerank.OpenAICompatible` implements one explicit object/results/index/relevance_score wire in its own supplier package. It references only Rerank, Infrastructure and standard HTTP, with no changes to Cohere/Jina/SiliconFlow/SGLang validation or core interfaces. Its complete caller-configured API root, actual model, target identity, named client, explicit Anonymous/Bearer mode and 32/64 MiB positive byte policies form one selected upstream. There is no default hosted endpoint, model catalog, format guessing or generic cross-capability business layer.
+
+```mermaid
+classDiagram
+class IRerankAdapter
+class OpenAiCompatibleRerankAdapter {
+  +RerankAsync(request)
+}
+class OpenAiCompatibleRerankOptions {
+  +Uri BaseAddress
+  +string Model
+  +OpenAiCompatibleRerankAuthentication Authentication
+  +int MaxRequestBytes
+  +int MaxResponseBytes
+}
+class RerankResult
+class OpenAiCompatibleRerankItem {
+  +int Index
+  +double RelevanceScore
+  +JsonElement Document
+  +JsonElement Data
+}
+class HttpBodyReader
+OpenAiCompatibleRerankAdapter ..|> IRerankAdapter
+OpenAiCompatibleRerankAdapter --> OpenAiCompatibleRerankOptions
+OpenAiCompatibleRerankAdapter --> HttpBodyReader : Infrastructure bounded bytes only
+OpenAiCompatibleRerankAdapter --> RerankResult : original native object
+RerankResult ..> OpenAiCompatibleRerankItem : provider-owned view
+```
+
+The actual model maps to native body model while the public alias stays metadata. Native string query, nonempty opaque JSON candidate arrays, unknown settings, nullable top_n/return_documents and exact numbers remain unchanged. No text rendering, tokenization, content filtering, media fetch or option default is added. Expected result count is min(positive top_n,input count), or input count for absent/null. Native candidates' actual model/semantic acceptance remains upstream responsibility.
+
+Original results order, finite relevance_score values without probability-range restrictions, exact unique input indices and complete expected count are validated. Echoes must preserve original JSON, a native text wrapper of the original, or all original object fields; explicit null and missing remain distinct. Required echoes are never fabricated. Root identity/usage may be absent/null, while present known usage counters must be exact nonnegative integers without estimation/summing. Complete raw JSON and provider views retain unknown fields and original precision. SGLang score arrays and arbitrary alternative envelopes are rejected, rather than converted.
+
+Raw errors preserve bytes/type/status, including native HTTP200 failures and malformed type values. Snapshots, bounded read/declared length, actual target/method, isolated auth, strict unknown-field Unicode/duplicates, normal EOF, owned resource disposal and final cancellation precede result publication. Successful SSE fails before body read. Ninety-four supplier offline tests verify full wire, opaque/text association, unknown preservation and transport/lifecycle rejection. The preceding 647 Rerank-family regressions remain applicable; core and existing suppliers are unchanged by this package. Live model/service/relevance behavior remains unverified.

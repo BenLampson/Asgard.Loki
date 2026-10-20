@@ -212,4 +212,10 @@
   <Folder Name="/tests/Providers/SGLang/">
     <Project Path="tests/Asgard.Loki.Rerank.SGLang.Tests/Asgard.Loki.Rerank.SGLang.Tests.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/OpenAICompatible/">
+    <Project Path="src/Asgard.Loki.Rerank.OpenAICompatible/Asgard.Loki.Rerank.OpenAICompatible.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/OpenAICompatible/">
+    <Project Path="tests/Asgard.Loki.Rerank.OpenAICompatible.Tests/Asgard.Loki.Rerank.OpenAICompatible.Tests.csproj" />
+  </Folder>
 </Solution>

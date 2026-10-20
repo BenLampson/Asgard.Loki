@@ -57,6 +57,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 重排 | `Asgard.Loki.Rerank.Ali` | DashScope 原生嵌套文本/媒体请求、原始文档索引、分数与完整用量 |
 | 重排 | `Asgard.Loki.Rerank.SiliconFlow` | 原生标量/文本/图片请求、原始索引/文档及可选 token 元数据 |
 | 重排 | `Asgard.Loki.Rerank.SGLang` | 原生文本／内容块、score／index 根数组、原始文档回显及 meta_info |
+| 重排 | `Asgard.Loki.Rerank.OpenAICompatible` | 显式原生 results／index／relevance_score 协议、原始 JSON 候选和可缺省用量 |
 | 视频 | `Asgard.Loki.Video.Volcengine` | 方舟原生任务提交/查询、原始媒体/资产引用与结果地址，持久化完整目标绑定 |
 | 视频 | `Asgard.Loki.Video.Volcengine` | 即梦 Visual 原生签名提交/查询，固定 req_key，原始媒体、结果及可选查询配置 |
 | 视频 | `Asgard.Loki.Video.Ali` | 百炼万相原生 video-generation/image2video 提交与任务查询，完整目标绑定及原始结果 |
