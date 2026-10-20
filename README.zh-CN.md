@@ -26,6 +26,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 显式转换 | `Asgard.Loki.LLM.Conversion` | 四种文本协议间十二个方向的公共子集请求、响应和流；另支持 Nova ↔ Converse 原生完整 JSON 显式转换 |
 | 音频 | `Asgard.Loki.Audio.Volcengine` | V3 HTTP TTS；显式 V1 HTTP query / 二进制 WebSocket submit、原生 JSON、元数据保留与音频聚合 |
 | 音频 | `Asgard.Loki.Audio.OpenAI` | Speech 原生二进制及显式 SSE、音频增量/done、自定义 voice 与原始用量 |
+| 音频 | `Asgard.Loki.Audio.MiniMax` | 原生同步 `t2a_v2`、完整 JSON、hex 音频或原始 URL；不自动下载音频或字幕 |
 | 文件转录/翻译 | `Asgard.Loki.Audio.OpenAI` | 原生 multipart、完整 JSON/字幕结果及转录 delta/segment/done SSE |
 | 图片 | `Asgard.Loki.Image.OpenAI` | Images Generations、原生 JSON/multipart 编辑、Base64/URL、生成/编辑部分与最终图像 SSE |
 | 嵌入 | `Asgard.Loki.Embedding.OpenAI` | 原生 Embeddings、文本/token 批输入、Float/Base64、原始索引及完整 JSON |

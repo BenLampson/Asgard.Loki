@@ -1,5 +1,20 @@
 # Asgard.Loki Architecture Specification
 
+## MiniMax native synchronous speech
+
+`Audio.MiniMax` references only Audio, Infrastructure and the standard HTTP factory package. `MiniMaxSpeechAdapter` implements the existing `INativeSpeechAdapter`; no new common contract or capability dependency is introduced. Fixed server/model/credentials belong to the supplier target. Original request parameters are snapshotted before factory execution; root model is the configured upstream model, while the public model remains a route name. No model catalog, voice remapping or stream-flag rewrite occurs.
+
+```mermaid
+classDiagram
+INativeSpeechAdapter <|.. MiniMaxSpeechAdapter
+MiniMaxSpeechAdapter --> MiniMaxSpeechOptions : fixed native target
+MiniMaxSpeechAdapter --> HttpBodyReader : bounded bytes only
+MiniMaxSpeechAdapter --> SpeechChunk : complete original JSON
+MiniMaxSpeechAdapter --> MiniMaxSpeechException : raw HTTP and business failure
+```
+
+The native nonstream endpoint validates business success and completed data status, then decodes hex or retains original URL spelling in native JSON. URL results have empty audio bytes; the application explicitly consumes the URL, with no download of audio/subtitles by the SDK. The public byte-oriented bridge supports hex only and preserves unmapped settings. Complete JSON, original usage, trace IDs and unknown exact-number fields remain supplier-native. Success waits for full HTTP EOF/length checks, outer disposal and cancellation. SSE, WebSocket, asynchronous synthesis, retries and polling are outside this entry. Offline fixtures do not establish live account/model acceptance.
+
 ## Explicit Volcengine V1 speech
 
 `Audio.Volcengine` owns `VolcengineV1SpeechAdapter`, explicit HTTP/WebSocket transport options, its injectable socket factory, binary codec and native exception. It implements the existing optional `INativeSpeechAdapter`; no common Audio result, entry dependency or other capability changes. Existing V3 HTTP remains a separate adapter. Only bounded HTTP bytes are shared through the provider's direct Infrastructure dependency.
@@ -46,6 +61,7 @@ GoogleVertexLlmProvider ..> Infrastructure
 AwsMantleLlmProvider ..> Infrastructure
 OpenAiSpeechAdapter ..> Infrastructure
 VolcengineV1SpeechAdapter ..> Infrastructure
+MiniMaxSpeechAdapter ..> Infrastructure
 OpenAiImageAdapter ..> Infrastructure
 GoogleVideoAdapter ..> Infrastructure
 GoogleVertexVideoAdapter ..> Infrastructure
@@ -56,7 +72,7 @@ XaiVideoAdapter ..> Infrastructure
 MidjourneyVideoAdapter ..> Infrastructure
 ```
 
-Nineteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Audio.Volcengine, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Twenty supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Audio.Volcengine, Audio.MiniMax, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 
