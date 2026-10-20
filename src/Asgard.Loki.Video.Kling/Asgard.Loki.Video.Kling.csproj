@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Native Kling text2video/image2video task provider for Asgard.Loki.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Video/Asgard.Loki.Video.csproj" />
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>

@@ -42,6 +42,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 视频 | `Asgard.Loki.Video.Google` | Gemini Veo 原生长操作提交、查询与显式结果复制；预览模型公告于 2026-10-22 下线 |
 | 视频 | `Asgard.Loki.Video.GoogleVertex` | Vertex Veo 完整资源作用域内原生提交/查询、借用令牌、原始 GCS 与内联结果 |
 | 视频 | `Asgard.Loki.Video.MiniMax` | MiniMax 原生 v1/v2 显式提交/查询、v1 视频结果元数据，保留媒体、用量和错误 |
+| 视频 | `Asgard.Loki.Video.Kling` | 可灵原生文生/图生视频提交与对应服务查询，显式 API Key 或 AK/SK JWT，保留完整原生结果 |
 | 视频素材库 | `Asgard.Loki.Video.Volcengine` | 方舟 Asset/AssetGroup 十个原生操作，独立 AK/SK 签名，显式分页和状态查询 |
 
 供应商包仅引用所属能力，不会带入其他能力包。入口只引用统一抽象。音频核心的可选原生 JSON 调用契约保留 voice 对象和未知参数，并在源枚举及释放成功后才发出完成块；[OpenAI 语音](src/Asgard.Loki.Audio.OpenAI/README.md) 已接入二进制和显式 SSE 聚合/流式读取；SSE 信封保留原生 JSON、原始 data 文本、事件身份及原始用量，done 在尾部读取和释放成功后才交付。

@@ -30,9 +30,10 @@ OpenAiImageAdapter ..> Infrastructure
 GoogleVideoAdapter ..> Infrastructure
 GoogleVertexVideoAdapter ..> Infrastructure
 MiniMaxVideoAdapter ..> Infrastructure
+KlingVideoAdapter ..> Infrastructure
 ```
 
-Fourteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex and Video.MiniMax. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Fifteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax and Video.Kling. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 
@@ -191,6 +192,26 @@ VertexVideoOperation --> VideoTaskSnapshot : full videos/errors/filtering
 The target fingerprint includes root, actual full resource, stable principal, authentication-source identity, explicit native request project header, HTTP client, implementation and byte policies. Short-lived Bearer rotation retains that binding. Wrong/expired tokens and authentication-source drift fail without changing identities or retrying generation. The application owns login, scopes, refresh and the accuracy of the source's principal assertion; no credentials are discovered or JWTs interpreted. Expiry is rechecked immediately before send, including after factory creation. The source, factory and clock are borrowed, while all call-created resources finish disposal before source/final cancellation checks and result delivery.
 
 Original `instances/parameters` are snapshotted before authentication waits. Full operation names must match project, location, Google publisher, model and requested operation. Missing `done` means running; known terminals distinguish native errors, all-filtered failure and valid native output carriers. Multiple `response.videos`, GCS URIs, inline base64 strings, metadata and unknown fields remain unchanged; no Gemini API result wrapper, data URL, storage client or downloader is introduced. Malformed or contradictory terminals fail explicitly. See the [provider matrix, initialization and limits](../src/Asgard.Loki.Video.GoogleVertex/README.md).
+
+## Native Kling video
+
+`Asgard.Loki.Video.Kling` references only Video, Infrastructure and Microsoft.Extensions.Http. `KlingVideoAdapter` implements the existing task adapter; native operation and authentication are explicit required target settings. The selected text2video/image2video route, HTTPS root, actual model, credential digest, client, implementation and byte limits enter the persistent target identity. No new common Video base contract or capability dependency is introduced.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. KlingVideoAdapter
+KlingVideoAdapter --> KlingVideoOptions : immutable complete target
+KlingVideoOptions --> KlingVideoOperation : explicit native route
+KlingVideoOptions --> KlingVideoAuthentication : API Key or AK/SK JWT
+KlingVideoAdapter --> KlingVideoJwt : provider-owned HS256 signing
+KlingVideoAdapter --> KlingVideoJson : native envelope and task correlation
+KlingVideoAdapter --> HttpBodyReader : bounded transport bytes
+KlingVideoAdapter --> VideoTaskSnapshot : complete original JSON
+```
+
+The adapter snapshots original request JSON and supplies only the configured `model_name`. Original duration strings, raw image inputs, optional callback/external ID/watermark settings and unknown members retain their shape; no media heuristics select the route or model. Native API Key is sent unchanged. Legacy AK/SK mode creates one 30-minute HS256 JWT per explicit request with five-second nbf offset, using a borrowed clock; sending checks the time window again after client creation. JWT timestamps rotate without rebinding the stable task target. Mixed credential modes are rejected, with no key-prefix sniffing, login service, refresh or retry.
+
+Queries escape the original ID as one path segment and require the same ID in the native result. HTTP and nonzero native code errors preserve raw bytes; known native states map independently of HTTP status, future states remain unknown, and successful tasks require a complete nonempty native video URL list. Full envelopes, video identities, durations, links, native deductions and unknown metadata remain unchanged; deductions are never synthesized as tokens. Results are delivered only after reading, outer disposal and final cancellation checks. The factory/clock remain borrowed. Listing, custom external-ID queries, callback hosting, background polling and media downloading are outside these two endpoint implementations. See the [provider support matrix, initialization and offline-only validation status](../src/Asgard.Loki.Video.Kling/README.md).
 
 ## Native MiniMax video v1/v2
 
