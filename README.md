@@ -42,6 +42,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Images | `Asgard.Loki.Image.OpenAI` | OpenAI image generations and native JSON/multipart edits; Base64 and URL results | Native generation/edit SSE partial/final events |
 | Compatible image generation | `Asgard.Loki.Image.OpenAI` | Explicit xAI native complete JSON profile with independent root/model/key and original data[] results | Verified offline; xAI editing uses a distinct native JSON contract |
 | Image editing | `Asgard.Loki.Image.XAI` | Native xAI JSON image.url or ordered images[].url/file_id references; complete original results | Separate edit routes; no multipart conversion or file management |
+| Image | `Asgard.Loki.Image.Midjourney` | Explicit unofficial proxy image operations, original task/text outcomes, input upload and seed requests | Bound native task references and single/batch queries; no synchronous-result fabrication |
 | Image | `Asgard.Loki.Image.Replicate` | Native model predictions/JSON editing and explicit model-input upload; original prediction states/results | Caller-owned snapshots, no implicit polling/downloads; complete-result guard |
 | Image | `Asgard.Loki.Image.Zhipu` | Native v4 images/generations; original URL/Base64 aliases, content filtering, timestamps and metadata | Complete native JSON; no URL download or invented metadata |
 | Image | `Asgard.Loki.Image.Azure` | Native dated deployment-scoped JSON generation and multipart editing; complete original images/filtering/usage | Native generation/editing SSE; original image events, no synthetic streams |
@@ -139,6 +140,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Image.Google` | Native Gemini image generation, editing inputs and original safety-aware SSE for Asgard.Loki. |
 | `Asgard.Loki.Image.GoogleVertex` | Native resource-scoped Vertex Gemini images with explicit Bearer or API-Key authentication for Asgard.Loki. |
 | `Asgard.Loki.Image.MiniMax` | Native MiniMax image generation and subject references with original URL/Base64 results for Asgard.Loki. |
+| `Asgard.Loki.Image.Midjourney` | Explicit native proxy image operations and original bound task outcomes |
 | `Asgard.Loki.Image.Replicate` | Native Replicate model image predictions and explicit model-input upload for Asgard.Loki. |
 | `Asgard.Loki.Image.SiliconFlow` | Native SiliconFlow image generation with original images, timings and seed for Asgard.Loki. |
 | `Asgard.Loki.Image.Volcengine` | Native Ark JSON/SSE and independently signed Jimeng Visual image generation for Asgard.Loki. |

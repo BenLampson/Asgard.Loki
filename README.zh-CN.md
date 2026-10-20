@@ -37,6 +37,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 图片 | `Asgard.Loki.Image.OpenAI` | Images Generations、原生 JSON/multipart 编辑、Base64/URL、生成/编辑部分与最终图像 SSE |
 | 兼容图片生成 | `Asgard.Loki.Image.OpenAI` | 显式 xAI 原生完整 JSON 配置，独立地址／模型／凭据并保留 data[] | 已做离线协议验证；xAI 编辑使用不同的原生 JSON 契约 |
 | 图片编辑 | `Asgard.Loki.Image.XAI` | xAI 原生单图／有序多图 JSON 引用，保留完整结果 | 独立编辑路由，不转换 multipart 或管理文件 |
+| 图片 | `Asgard.Loki.Image.Midjourney` | 显式非官方代理图片操作、原生任务／文本结果、输入上传与 seed 请求 | 完整目标绑定，单次／批量查询；不伪造同步生成结果 |
 | 图片 | `Asgard.Loki.Image.Replicate` | 原生模型预测／JSON 编辑与显式图片输入上传，完整保留原生状态和结果 | 调用者驱动快照；不自动轮询／下载，严格区分未完成与成功 |
 | 图片 | `Asgard.Loki.Image.Zhipu` | 智谱 v4 原生图片生成，保留图片字段别名、审核、时间戳和元数据 | 完整原生 JSON，不下载图片或补造元数据 |
 | 图片 | `Asgard.Loki.Image.Azure` | 原生日期版本部署路径；JSON 生成及 multipart 编辑；保留完整图片、过滤信息和用量 | 原生生成／编辑 SSE；保留逐图事件与整次编辑完成标志 |

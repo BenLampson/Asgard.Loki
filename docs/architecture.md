@@ -153,6 +153,30 @@ No image references are downloaded, opened as paths or normalized into multipart
 SSE uses native partial_succeeded/partial_failed and a payload-free completed summary; image_index identity is preserved and invalid/duplicate indices fail. Per-image failure does not become a whole-stream error. Single-image result+normal EOF can end without a summary; no completed event is invented. Group mode retains partial outcomes incrementally, then requires its native summary or documented terminating internal service failure, without promising max_images outputs. Summary/held single-image frames wait for EOF, raw byte/length checks and all HTTP resource disposal. Original SSE identity and unknown events remain untouched; native complete JSON does not become synthetic SSE. Request bytes freeze before client creation/enumeration, stream instances reject replay and borrowed factories/targets remain application-owned. No task IDs/polling/callbacks/media downloads/tool execution/billing/model catalogs or shared LLM/Audio/Video state. Independent fake-HTTP vectors verify wire and ownership only; real model/feature/pixel/live acceptance remains unverified.
 
 
+## Native Midjourney proxy Image
+
+`Image.Midjourney` references only Image, Infrastructure and standard HTTP support. `MidjourneyImageClient` executes explicit native image operations against a caller-selected unofficial proxy. It does not implement a forwarding server or manufacture synchronous generation results from asynchronous acknowledgements. The supplier client is directly owned by the application, with no Image/Video coordination layer or dependency on Video.Midjourney.
+
+```mermaid
+classDiagram
+MidjourneyImageClient --> MidjourneyImageOptions : complete proxy target
+MidjourneyImageClient --> MidjourneyImageOperation : explicit retained native operation
+MidjourneyImageClient --> MidjourneyImageHttp : one native HTTP exchange
+MidjourneyImageHttp --> HttpBodyReader : bounded raw bytes and EOF
+MidjourneyImageClient --> MidjourneyImageSubmission : native task acknowledgement
+MidjourneyImageClient --> MidjourneyImageTaskReference : persistent complete-target binding
+MidjourneyImageClient --> MidjourneyImageTask : single original task
+MidjourneyImageClient --> MidjourneyImageTaskList : original array and ID association
+MidjourneyImageSubmission --|> MidjourneyImageResponse
+MidjourneyImageTask --|> MidjourneyImageResponse
+MidjourneyImageTaskList --|> MidjourneyImageResponse
+MidjourneyImageResponse --> MidjourneyImageHttpResponse : actual status and original bytes
+```
+
+Native JSON is frozen before IO. Task/parent/button/index/mask associations and unknown values remain untouched; no prompt parsing, model/speed inference, reindexing or media conversion occurs. Task submission codes1/21/22, input-upload URL arrays and seed/queued-seed results use separate interpretation. A seed GET can cause native seed work upstream; the SDK issues one explicit request and does not infer completion or auto-create references. Root/API failures retain original HTTP bytes/status/type.
+
+References bind original IDs to the full root, explicit credential/anonymous identity, adapter implementation, client and transport bounds, and survive reconstruction of the same configuration. Single and batch queries reject drift before IO. Batch results retain native order and associate by actual ID; missing tasks are not fabricated and unrelated/duplicate returned IDs fail. Only known native terminal states complete tasks; progress100, MODAL and unknown states remain nonterminal. Description/shortened text can succeed without an image. Raw task image references do not imply generated artifacts. Complete byte/length/EOF/disposal/cancellation checks precede all delivery. No local task DB, automatic polling/retry, callback host, media proxy/download, Discord/account service, independent file manager or billing is introduced.
+
 ## Native Replicate Image
 
 `Image.Replicate` references only Image, Infrastructure and standard HTTP support. `ReplicateImageAdapter` implements existing generation and JSON editing routes with an explicit owner/name model resource and independent Bearer target. The native `PredictAsync` entry accepts complete root/input JSON and returns a supplier-owned `ReplicateImagePrediction`; `PublicModel` is metadata only. No capability interface or cross-capability dependency is added.
