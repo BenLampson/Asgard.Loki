@@ -44,8 +44,10 @@ if (current.Snapshot.State == VideoTaskState.Succeeded)
 {
     var samples = current.Snapshot.Data.GetProperty("response")
         .GetProperty("generateVideoResponse").GetProperty("generatedSamples");
-    var uri = new Uri(samples[0].GetProperty("video").GetProperty("uri").GetString()!);
-    await target.CopyContentToAsync(uri, destinationStream, cancellationToken);
+    var video = samples[0].GetProperty("video");
+    if (video.TryGetProperty("uri", out var uri))
+        await target.CopyContentToAsync(new Uri(uri.GetString()!), destinationStream, cancellationToken);
+    // Otherwise the original encodedVideo/encoding remain available in video.
 }
 ```
 
@@ -53,7 +55,7 @@ The default versioned root is `https://generativelanguage.googleapis.com/v1beta/
 
 `Parameters` is the original REST body: nonempty `instances` object array, optional `parameters` object, and all other native fields. The actual model belongs in the URL; root `model` is reserved. Text, initial/last frames, reference images, video inputs, original media data and unknown parameters are snapshotted without conversion. Compatibility of a particular field/value with the selected model remains an upstream decision. The SDK neither fetches input URLs nor rewrites their media objects.
 
-The complete JSON operation remains in `VideoTaskSnapshot.Data`, including metadata, multiple `generatedSamples`, filtering reasons, native errors and unknown fields. Absent `done` and `done=false` mean running. `done=true` with valid samples means success; an operation error or an explicit all-filtered response maps to failure while retaining the original envelope. A partially filtered result with valid samples remains successful. Missing results, contradictory done/error/response fields, foreign operation names, malformed UTF-8/JSON and duplicate properties fail explicitly. `NativeStatus` contains the original boolean text or null for omitted `done`.
+The complete JSON operation remains in `VideoTaskSnapshot.Data`, including metadata, multiple `generatedSamples`, original `video.uri` or `video.encodedVideo/encoding`, filtering reasons, native errors and unknown fields. Inline media stays in its native JSON and is neither decoded nor downloaded. Success describes the native task result, not independent validation of video bytes. Absent `done` and `done=false` mean running. `done=true` with valid samples means success; an operation error or an explicit all-filtered response maps to failure while retaining the original envelope. A partially filtered result with valid samples remains successful. Missing results, contradictory done/error/response fields, foreign operation names, malformed UTF-8/JSON and duplicate properties fail explicitly. `NativeStatus` contains the original boolean text or null for omitted `done`.
 
 HTTP and unnamed root API errors throw `VideoUpstreamException` with original status, content type and defensive raw bytes. A named operation's native failure stays a task result. Submissions and queries are never retried or redirected by the SDK; configure the injected HTTP pipeline accordingly.
 

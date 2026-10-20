@@ -36,7 +36,7 @@ public sealed class GoogleVideoTests
     }
     /// <summary>done 缺省或 false 不构成终态；过滤与原生错误不变为成功视频。</summary>
     [Theory] [InlineData(0, VideoTaskState.Running)] [InlineData(1, VideoTaskState.Running)] [InlineData(2, VideoTaskState.Failed)]
-    [InlineData(3, VideoTaskState.Failed)] [InlineData(4, VideoTaskState.Succeeded)]
+    [InlineData(3, VideoTaskState.Failed)] [InlineData(4, VideoTaskState.Succeeded)] [InlineData(5, VideoTaskState.Succeeded)]
     public async Task NativeLifecycle_PreservesAllData(int index, VideoTaskState expected)
     {
         using var handler = new StubHttpHandler((_, _) => Task.FromResult(Json(Query(index)))); var adapter = new GoogleVideoAdapter(new StubHttpClientFactory(handler), Options());
@@ -45,7 +45,7 @@ public sealed class GoogleVideoTests
         Assert.Equal(index == 0 ? null : index == 1 ? "false" : "true", result.NativeStatus); Assert.Equal(1, handler.Calls);
     }
     /// <summary>提交也可以立即完成，不能丢失原生视频列表或错误。</summary>
-    [Theory] [InlineData(2)] [InlineData(4)]
+    [Theory] [InlineData(2)] [InlineData(4)] [InlineData(5)]
     public async Task ImmediateCompletion_UsesSameNativeParser(int index)
     {
         using var handler = new StubHttpHandler((_, _) => Task.FromResult(Json(Query(index)))); var adapter = new GoogleVideoAdapter(new StubHttpClientFactory(handler), Options());
@@ -97,5 +97,14 @@ public sealed class GoogleVideoTests
         var adapter = new GoogleVideoAdapter(new StubHttpClientFactory(handler), Options()); var request = Request();
         var pending = adapter.SubmitAsync(request, TestContext.Current.CancellationToken); await entered.Task.WaitAsync(TestContext.Current.CancellationToken);
         request.Parameters.Clear(); release.SetResult(); await pending;
+    }
+    /// <summary>内联编码仍按原生字段交付，不改成 URI、另一协议的媒体字段或隐式内容下载。</summary>
+    [Fact]
+    public async Task InlineMedia_RemainsNativeAndDoesNotTriggerDownload()
+    {
+        using var handler = new StubHttpHandler((_, _) => Task.FromResult(Json(Query(5)))); var adapter = new GoogleVideoAdapter(new StubHttpClientFactory(handler), Options());
+        var result = await adapter.GetAsync(Operation, TestContext.Current.CancellationToken); var video = result.Data.GetProperty("response").GetProperty("generateVideoResponse").GetProperty("generatedSamples")[0].GetProperty("video");
+        Assert.Equal(VideoTaskState.Succeeded, result.State); Assert.Equal("ZmFrZS12aWRlby1ieXRlcw==", video.GetProperty("encodedVideo").GetString());
+        Assert.Equal("video/mp4", video.GetProperty("encoding").GetString()); Assert.False(video.TryGetProperty("uri", out _)); Assert.False(video.TryGetProperty("bytesBase64Encoded", out _)); Assert.Equal(1, handler.Calls);
     }
 }

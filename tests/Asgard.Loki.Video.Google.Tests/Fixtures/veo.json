@@ -2,7 +2,8 @@
   "sources": [
     "https://ai.google.dev/api/models#method:-models.predictlongrunning",
     "https://ai.google.dev/gemini-api/docs/veo",
-    "https://ai.google.dev/gemini-api/docs/deprecations/"
+    "https://ai.google.dev/gemini-api/docs/deprecations/",
+    "https://github.com/googleapis/python-genai/blob/main/google/genai/models.py"
   ],
   "model": "veo-3.1-generate-preview",
   "operation": "models/veo-3.1-generate-preview/operations/fixture-01",
@@ -31,7 +32,8 @@
     { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": false },
     { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": true, "error": { "code": 8, "message": "Fictional quota failure", "details": [{ "@type": "example.invalid/Detail", "Future": null }] } },
     { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": true, "response": { "@type": "type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse", "generateVideoResponse": { "raiMediaFilteredCount": 1, "raiMediaFilteredReasons": ["Fictional safety filter"], "Future": false } } },
-    { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": true, "response": { "@type": "type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse", "generateVideoResponse": { "generatedSamples": [{ "video": { "uri": "https://veo.invalid/v1beta/files/fixture-a:download?alt=media", "mimeType": "video/mp4", "Future": { "large": 9007199254740993 } } }, { "video": { "uri": "https://veo.invalid/v1beta/files/fixture-b:download?alt=media" }, "Future": "second sample" }], "raiMediaFilteredCount": 0, "Future": [null, true] } }, "Future": { "doNotDrop": "原文" } }
+    { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": true, "response": { "@type": "type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse", "generateVideoResponse": { "generatedSamples": [{ "video": { "uri": "https://veo.invalid/v1beta/files/fixture-a:download?alt=media", "mimeType": "video/mp4", "Future": { "large": 9007199254740993 } } }, { "video": { "uri": "https://veo.invalid/v1beta/files/fixture-b:download?alt=media" }, "Future": "second sample" }], "raiMediaFilteredCount": 0, "Future": [null, true] } }, "Future": { "doNotDrop": "原文" } },
+    { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": true, "response": { "@type": "type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse", "generateVideoResponse": { "generatedSamples": [{ "video": { "encodedVideo": "ZmFrZS12aWRlby1ieXRlcw==", "encoding": "video/mp4", "Future": { "large": 9007199254740993 } } }], "raiMediaFilteredCount": 0 } } }
   ],
   "api_error": { "error": { "code": 429, "message": "Fictional rate limit", "status": "RESOURCE_EXHAUSTED", "details": [{ "Future": 9007199254740993 }] } }
 }

@@ -42,8 +42,8 @@ internal static class GoogleVideoOperation
             foreach (var sample in samples.EnumerateArray())
             {
                 if (sample.ValueKind != JsonValueKind.Object || !sample.TryGetProperty("video", out var video) || video.ValueKind != JsonValueKind.Object
-                    || !video.TryGetProperty("uri", out var uri) || uri.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(uri.GetString()))
-                    throw new InvalidDataException("原生视频样本缺少结果 URI。");
+                    || !(NonEmptyText(video, "uri") || NonEmptyText(video, "encodedVideo")))
+                    throw new InvalidDataException("原生视频样本缺少结果 URI 或内联媒体。");
                 count++;
             }
         }
@@ -52,4 +52,7 @@ internal static class GoogleVideoOperation
             return new(id, "true", VideoTaskState.Failed, data);
         throw new InvalidDataException("已完成操作既没有视频样本，也没有明确过滤结果。");
     }
+    /// <summary>只检查原生结果载体，不解码内联媒体、改写字段或证明视频内容有效。</summary>
+    private static bool NonEmptyText(JsonElement value, string name)
+        => value.TryGetProperty(name, out var text) && text.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(text.GetString());
 }
