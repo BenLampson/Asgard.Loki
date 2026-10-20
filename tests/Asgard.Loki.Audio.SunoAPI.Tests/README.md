@@ -1,0 +1,5 @@
+# Asgard.Loki.Audio.SunoAPI.Tests
+
+Independent native fixtures target the [author-owned unofficial SunoAPI contract](https://github.com/Suno-API/Suno-API/tree/a63492c2ef24f06080c467b608b063503731dde5) and its native integration shapes. They are unrelated to other services with similar names. The author source defines JSON submit MUSIC/LYRICS, POST fetch for full native task states and GET fetch/id for native task data without a status wrapper.
+
+`Fixtures/suno-native-audio.json` contains three complete requests, original submit acknowledgements, all known/nonterminal/unknown/failure state windows, mixed-order and partial/empty batch results, original two-clip music/cover/video metadata, lyrics with CRLF, nested native task-data carriers and full errors. Unknown native fields, zero/false/null, precise large integers and signed URL spelling are deliberate. GET results are not treated as successful task terminal evidence; an empty batch does not manufacture task records. All IDs, credentials, model versions and media are fictional. Structural checks do not prove an implementation, real account/model acceptance or music/lyrics quality; no media is downloaded.
