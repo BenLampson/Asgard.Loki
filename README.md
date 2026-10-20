@@ -29,7 +29,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM | `Asgard.Loki.LLM.GoogleVertex` | Vertex Gemini/Claude JSON/SSE with borrowed tokens; separate Express Gemini JSON/SSE with explicit API Key; MaaS Chat JSON/SSE with borrowed tokens | Native events with delayed terminal checks |
 | LLM | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and explicit Converse JSON/EventStream with borrowed SigV4 or explicit Bedrock API Key credentials | Native binary EventStream with independent protocol lifecycles |
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
-| Speech | `Asgard.Loki.Audio.Volcengine` | Volcengine V3 text-to-speech; API Key or legacy app/token authentication | HTTP chunked JSON to audio chunks |
+| Speech | `Asgard.Loki.Audio.Volcengine` | V3 TTS plus explicit V1 HTTP query / binary WebSocket submit; native JSON and metadata | HTTP JSON or binary WebSocket to ordered audio chunks |
 | Speech | `Asgard.Loki.Audio.OpenAI` | Native Speech binary/SSE responses; custom voice objects and complete native JSON settings | Incremental binary bytes or native delta/done events |
 | File transcription / translation | `Asgard.Loki.Audio.OpenAI` | Native multipart, complete JSON/verbose/diarized or text/subtitle results | Native transcription delta/segment/done SSE |
 | Images | `Asgard.Loki.Image.OpenAI` | OpenAI image generations and native JSON/multipart edits; Base64 and URL results | Native generation/edit SSE partial/final events |
@@ -258,6 +258,8 @@ Bindings store a target/configuration fingerprint, never the API Key. Original r
 Redis preserves routing identity, not TCP connections or provider prompt caches. Unknown execution outcomes are not automatically retried. The caller owns Session authorization and isolation, and should choose an application-specific cache prefix.
 
 ## Volcengine speech
+
+The following example uses V3 HTTP. For explicit V1 HTTP query or binary WebSocket submit, original native JSON and completion rules, see the [Volcengine speech provider](src/Asgard.Loki.Audio.Volcengine/README.md). Volcengine documents V1 as not recommended; no real-provider speech verification is claimed.
 
 ```csharp
 using Asgard.Loki;

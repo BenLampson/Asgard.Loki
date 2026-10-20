@@ -1,5 +1,24 @@
 # Asgard.Loki Architecture Specification
 
+## Explicit Volcengine V1 speech
+
+`Audio.Volcengine` owns `VolcengineV1SpeechAdapter`, explicit HTTP/WebSocket transport options, its injectable socket factory, binary codec and native exception. It implements the existing optional `INativeSpeechAdapter`; no common Audio result, entry dependency or other capability changes. Existing V3 HTTP remains a separate adapter. Only bounded HTTP bytes are shared through the provider's direct Infrastructure dependency.
+
+```mermaid
+classDiagram
+INativeSpeechAdapter <|.. VolcengineV1SpeechAdapter
+VolcengineV1SpeechAdapter --> VolcengineV1SpeechOptions
+VolcengineV1SpeechAdapter --> HttpBodyReader : HTTP bytes only
+VolcengineV1SpeechAdapter --> IVolcengineV1SpeechWebSocketFactory : borrows factory
+IVolcengineV1SpeechWebSocketFactory --> WebSocket : transfers call ownership
+VolcengineV1SpeechAdapter --> SpeechChunk : native JSON or named binary record
+VolcengineV1SpeechAdapter --> VolcengineV1SpeechException : original failure bytes
+```
+
+Calls snapshot original native JSON before I/O, bind configured app/cluster and explicit operation, and preserve the caller's independent body token, UID, request ID, optional model and extensions. The public speech bridge maps only explicit common text/audio fields. No credentials, request IDs, voice choices, usage or model defaults are discovered or invented.
+
+HTTP requires a matching echoed request ID, native success code, negative final sequence and valid bounded audio. Binary transport preserves original wire/header/payload and frontend JSON in explicitly named SDK records, handles both negative-final flags and retains full UInt32 errors. Native final audio and trailing metadata remain buffered until normal peer close, socket disposal and final cancellation. Early close, extra audio, late errors or resource/close failures cannot publish completion. Wire/decoded/frame/fragment bounds are call-local. Factories remain borrowed; no reconnect, persistent session, polling or cross-capability coordinator is added. V1 is an explicit not-recommended native profile; offline fixtures do not establish live model/account acceptance.
+
 ## Shared transport infrastructure
 
 `Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)`, `HttpBodyReader.ReadAsync/CopyToAsync`, and `BorrowedStreamContent`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
@@ -26,6 +45,7 @@ AzureLlmProvider ..> Infrastructure
 GoogleVertexLlmProvider ..> Infrastructure
 AwsMantleLlmProvider ..> Infrastructure
 OpenAiSpeechAdapter ..> Infrastructure
+VolcengineV1SpeechAdapter ..> Infrastructure
 OpenAiImageAdapter ..> Infrastructure
 GoogleVideoAdapter ..> Infrastructure
 GoogleVertexVideoAdapter ..> Infrastructure
@@ -36,7 +56,7 @@ XaiVideoAdapter ..> Infrastructure
 MidjourneyVideoAdapter ..> Infrastructure
 ```
 
-Eighteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Nineteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Audio.Volcengine, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 

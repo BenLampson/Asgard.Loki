@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <EmbeddedResource Include="Fixtures/*.json" />
     <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki.Audio.Volcengine/Asgard.Loki.Audio.Volcengine.csproj" />
     <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
