@@ -2793,3 +2793,24 @@ Provider->>Provider: Native terminal plus full EOF/closure/cancellation validati
 ```
 
 No JSON, credentials, DONE, success state, retry or business coordination enters this transport primitive. Frames already consumed can precede later EOF/length failure; providers must delay native terminal delivery through complete framing and owned outer resource closure. Twenty added offline cases bring Infrastructure to98; no live/native model acceptance is claimed.
+
+### Native Workers AI text supplier
+
+LLM.Cloudflare references only LLM, Infrastructure and standard HTTP. CloudflareTextProvider implements IWorkersAiTextAdapter/API-Key support for one explicit native text format. Compatible Chat/Responses use the separately configured existing OpenAI supplier; production packages do not reference one another or other capabilities. Complete account/run root, actual namespaced model, credential identity, named factory and byte policies form one Session target. Model path segments are escaped once without collapsing separators or allowing dot traversal; route Model never enters the native body.
+
+```mermaid
+classDiagram
+IWorkersAiTextAdapter <|.. CloudflareTextProvider
+CloudflareTextProvider ..|> ILlmCredentialSupport
+CloudflareTextProvider --> CloudflareTextOptions : immutable binding policies
+CloudflareTextProvider --> CloudflareTextRequest : snapshot and exact URL model
+CloudflareTextProvider --> CloudflareTextResponse : native text and error guards
+CloudflareTextProvider --> HttpBodyReader : Infrastructure bounded raw bytes
+CloudflareTextProvider --> SseReader : Infrastructure ReadBoundedAsync
+CloudflareTextProvider --> WorkersAiTextCompletion : full native envelope
+CloudflareTextProvider --> WorkersAiTextEvent : raw JSON or actual DONE
+```
+
+One POST preserves original prompt/messages/tools/settings/unknown values and writes only method stream mode. Direct request snapshot precedes factory creation; public snapshot precedes Session waits. No model/default/template/role/tool association or usage is synthesized. Native complete results require actual success/result.response, retaining the whole original envelope. Text SSE retains every raw JSON frame and transport identity, while actual DONE remains non-JSON control data. Native errors retain raw actual status/body/type, including errors after a held DONE. Duplicate/late data, missing DONE, malformed/truncated/encoding/length/byte/resource/cancellation tails cannot first publish terminal. DONE waits through full framing/EOF/owned closure/final cancellation; control-only tails create no fake events. Factories/cache/coordinators stay borrowed; actual URI/method is checked through final publication. Positive request/complete/SSE byte policies participate in provider identity. No automatic protocol/model guessing, retry/failover, tool execution, host, gateway or background workflow is introduced. Offline contracts do not establish live account/model/setting acceptance or output quality.
+
+Native Cloudflare validation executes136 offline supplier cases with independent whole JSON/SSE windows and local fault-injected HTTP. Compatible OpenAI reuse has14 separate cases within its422-case executable. Core481 and Conversion2535 regressions passed at the public-contract checkpoint; Infrastructure98 passed at the bounded-transport checkpoint. These are scoped protocol/SDK checks, not a new full-suite/all-package/live result.
