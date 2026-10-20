@@ -2,7 +2,7 @@
 
 ## Shared transport infrastructure
 
-`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its minimal public API is `SseFrame` and `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)`. These types describe only complete Server-Sent Events and transport metadata. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
+`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)` and `HttpBodyReader.ReadAsync(HttpContent, int, CancellationToken)`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
 
 ```mermaid
 classDiagram
@@ -29,9 +29,9 @@ OpenAiSpeechAdapter ..> Infrastructure
 OpenAiImageAdapter ..> Infrastructure
 ```
 
-Ten supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI and Video.Volcengine. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Eleven supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine and Video.Ali. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
-Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all nine explicit incoming references.
+Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 
 `HttpBodyReader.ReadAsync` is an independent .NET-only byte transport primitive. It borrows `HttpContent`, consumes and disposes its stream, validates explicit raw-byte limits and Content-Length agreement, then checks final cancellation. Arbitrary binary bytes remain unchanged. HTTP status/media type, outer request/response/client ownership, JSON and native result/error/lifecycle interpretation remain provider responsibilities. Providers report success only after outer disposal and final cancellation checks. There is no retry, scheduling or shared business state.
 
@@ -100,6 +100,25 @@ VolcengineAssetResult --> JsonElement : owns immutable data
 The native root is `ark.cn-beijing.volcengineapi.com`, distinct from the video inference root. Each explicit method fixes Action and Version; the signer fixes service `ark` and signs the exact POST body hash, root path, canonical query, host, content type, date and optional security token using independently configured AK/SK and region. No credential discovery, refresh, borrowing from another capability or secret serialization occurs. Factory/clock are borrowed; transport resources are per-call owned. Signing intermediates are cleared after use.
 
 Unknown native fields, opaque pagination tokens, project/group/type IDs and preprocessing status/errors stay intact. List calls return one page, and callers preserve their original filters/project/sort while selecting either token or page-number mode. Response operation/version/service/region and returned resource identity are checked. HTTP/API errors retain original bytes via `VideoUpstreamException`; `Result.Status=Failed` is a native asset result, not a successful preprocessing claim. Only upstream `Active` means ready. The SDK supplies no pagination loop, preprocessing poller, asset synchronization, cleanup policy, local storage, media fetch or callback host. Group deletion is an explicit native call; the upstream defines its cascading effect and authorization.
+
+### Native DashScope video tasks
+
+`Asgard.Loki.Video.Ali` references Video, Infrastructure and `Microsoft.Extensions.Http`. `AliVideoAdapter` implements native video task submission and one explicit task query. `AliVideoOptions.Operation` chooses video-generation or image2video before IO; no model-name heuristic, parameter conversion or capability-to-capability call is involved. The configured root includes the selected region/workspace API path. Request snapshots preserve the native input/parameters containers, unknown fields and numeric precision; only reserved root model comes from the configured target.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. AliVideoAdapter
+AliVideoAdapter --> AliVideoOptions : captures complete target
+AliVideoOptions --> AliVideoOperation : explicit native service
+AliVideoAdapter --> AliVideoHttp : provider-owned native parsing
+AliVideoHttp --> HttpBodyReader : shared bounded bytes
+AliVideoAdapter --> VideoTaskSnapshot : complete native envelope
+AliVideoAdapter --> VideoUpstreamException : original HTTP/API error
+```
+
+The target identity includes normalized server, actual model, credential digest, selected operation, client name, implementation and byte policies. Persisted references cannot move between native services even though both use the same task-query endpoint. POST sets native Bearer and async headers; GET escapes the original task ID as a single path segment and performs one call. Factories are borrowed; created clients/messages and response streams are disposed before final cancellation and result delivery. The SDK adds no retry, failover, polling, callback host or media download.
+
+The adapter retains the complete `request_id/output/usage` envelope and original nested task errors. Known lifecycle states map to Video values, while native `UNKNOWN` and future states remain unknown/nonterminal without an invented expiry/failure conclusion. Known success requires an original nonempty video result URL; missing/foreign task IDs or status are protocol errors. HTTP and root API errors preserve raw bytes in `VideoUpstreamException`; a failed native task remains a result. See the [provider API and limits](../src/Asgard.Loki.Video.Ali/README.md).
 
 ## Native OpenAI Realtime
 

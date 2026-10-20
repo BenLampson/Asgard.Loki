@@ -28,6 +28,7 @@ $expectedDependencies = [ordered]@{
     'Asgard.Loki.Rerank.SiliconFlow' = @('Asgard.Loki.Rerank', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Video' = @('Asgard.Loki.Abstractions')
     'Asgard.Loki.Video.Volcengine' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Video', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.Video.Ali' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Video', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Volcengine' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.OpenAI' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Anthropic' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')

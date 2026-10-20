@@ -22,6 +22,7 @@
   </Folder>
   <Folder Name="/src/Providers/Ali/">
     <Project Path="src/Asgard.Loki.Rerank.Ali/Asgard.Loki.Rerank.Ali.csproj" />
+    <Project Path="src/Asgard.Loki.Video.Ali/Asgard.Loki.Video.Ali.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Anthropic/">
     <Project Path="src/Asgard.Loki.LLM.Anthropic/Asgard.Loki.LLM.Anthropic.csproj" />
@@ -83,6 +84,7 @@
   </Folder>
   <Folder Name="/tests/Providers/Ali/">
     <Project Path="tests/Asgard.Loki.Rerank.Ali.Tests/Asgard.Loki.Rerank.Ali.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.Ali.Tests/Asgard.Loki.Video.Ali.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Anthropic/">
     <Project Path="tests/Asgard.Loki.LLM.Anthropic.Tests/Asgard.Loki.LLM.Anthropic.Tests.csproj" />

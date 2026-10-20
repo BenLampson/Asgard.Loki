@@ -8,7 +8,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 
 纯 .NET 10 / C# 14 类库：统一 `LokiClient` 入口，能力及供应商按需安装。英文 README 是完整使用说明，结构规则见 [架构规范](docs/architecture.md)。
 
-`Asgard.Loki.Infrastructure` 提供共享的底层 SSE 解析；入口仍只引用统一抽象，六类能力各自维护协议、结果和状态。Video 提供原生提交/查询与持久化完整目标引用契约；[方舟视频包](src/Asgard.Loki.Video.Volcengine/README.md) 支持原生视频生成任务。
+`Asgard.Loki.Infrastructure` 提供共享的底层 SSE 解析和有界 HTTP 字节读取；入口仍只引用统一抽象，六类能力各自维护协议、结果和状态。Video 提供原生提交/查询与持久化完整目标引用契约；[方舟视频包](src/Asgard.Loki.Video.Volcengine/README.md) 和[万相视频包](src/Asgard.Loki.Video.Ali/README.md) 支持各自原生视频任务。
 
 ## 已实现
 
@@ -36,6 +36,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 重排 | `Asgard.Loki.Rerank.Ali` | DashScope 原生嵌套文本/媒体请求、原始文档索引、分数与完整用量 |
 | 重排 | `Asgard.Loki.Rerank.SiliconFlow` | 原生标量/文本/图片请求、原始索引/文档及可选 token 元数据 |
 | 视频 | `Asgard.Loki.Video.Volcengine` | 方舟原生任务提交/查询、原始媒体/资产引用与结果地址，持久化完整目标绑定 |
+| 视频 | `Asgard.Loki.Video.Ali` | 百炼万相原生 video-generation/image2video 提交与任务查询，完整目标绑定及原始结果 |
 | 视频素材库 | `Asgard.Loki.Video.Volcengine` | 方舟 Asset/AssetGroup 十个原生操作，独立 AK/SK 签名，显式分页和状态查询 |
 
 供应商包仅引用所属能力，不会带入其他能力包。入口只引用统一抽象。音频核心的可选原生 JSON 调用契约保留 voice 对象和未知参数，并在源枚举及释放成功后才发出完成块；[OpenAI 语音](src/Asgard.Loki.Audio.OpenAI/README.md) 已接入二进制和显式 SSE 聚合/流式读取；SSE 信封保留原生 JSON、原始 data 文本、事件身份及原始用量，done 在尾部读取和释放成功后才交付。
@@ -52,7 +53,7 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 原生 OpenAI 压缩窗口通过 `loki.LLM.Responses.CompactAsync` 显式调用，目标需同时声明 Responses 协议和 `Features = LlmTargetFeatures.ResponsesCompaction`，供应商还必须实现 `IResponsesCompactionAdapter`。完整结果保留所有窗口项及加密内容，由调用者决定后续输入，不自动压缩或裁剪历史。可选 `PreviousResponseId` 继续校验 Session 归属；压缩结果自身 ID 不登记为生成响应链。原目标不支持该操作时明确失败，不切换目标。火山和转换装饰器当前不声明该能力，初始化及示例见[英文说明](README.md#native-responses-compaction)。
 
-原生 OpenAI Responses WebSocket 通过 `OpenWebSocketAsync` 显式建立连接，目标需声明 `ResponsesWebSocket` 功能。调用者负责收发原生事件及连接释放；完整目标、响应归属、多 lane、steering 和失败/不完整终态均有离线测试。示例及资源上限见[供应商说明](src/Asgard.Loki.LLM.OpenAI/README.md#native-responses-websocket)，未进行真实 OpenAI 联调。Image 已提供独立 JSON 与借用多图/遮罩流的 multipart 编辑契约及可选原生事件流，可接自定义适配器；[Image 说明](src/Asgard.Loki.Image/README.md#native-image-editing-contracts)明确了支持范围。OpenAI 原生 JSON/multipart 非流式及 SSE 编辑已接入，保留多图顺序、独立遮罩、文件字节、完整 JSON 和事件身份；完成项等待正常 EOF 及传输资源释放后公开，图片 variations、音乐生成、视频生成和事件重放仍未实现。Audio 已提供原生文件转录/翻译扩展契约，支持自定义适配器、借用上传流和完整原生结果；OpenAI 原生 multipart 转录/翻译已接入，上传流保持借用关系，转录 SSE 已保留完整事件/用量/SSE 身份，并校验分段引用与终态。公共请求保留扩展参数，结果保留供应商完整 JSON；具体模型、音色与账号授权仍需真实联调验证。
+原生 OpenAI Responses WebSocket 通过 `OpenWebSocketAsync` 显式建立连接，目标需声明 `ResponsesWebSocket` 功能。调用者负责收发原生事件及连接释放；完整目标、响应归属、多 lane、steering 和失败/不完整终态均有离线测试。示例及资源上限见[供应商说明](src/Asgard.Loki.LLM.OpenAI/README.md#native-responses-websocket)，未进行真实 OpenAI 联调。Image 已提供独立 JSON 与借用多图/遮罩流的 multipart 编辑契约及可选原生事件流，可接自定义适配器；[Image 说明](src/Asgard.Loki.Image/README.md#native-image-editing-contracts)明确了支持范围。OpenAI 原生 JSON/multipart 非流式及 SSE 编辑已接入，保留多图顺序、独立遮罩、文件字节、完整 JSON 和事件身份；完成项等待正常 EOF 及传输资源释放后公开，OpenAI 图片 variations、音乐生成、视频生成和事件重放尚不在这些包的支持范围内。Audio 已提供原生文件转录/翻译扩展契约，支持自定义适配器、借用上传流和完整原生结果；OpenAI 原生 multipart 转录/翻译已接入，上传流保持借用关系，转录 SSE 已保留完整事件/用量/SSE 身份，并校验分段引用与终态。公共请求保留扩展参数，结果保留供应商完整 JSON；具体模型、音色与账号授权仍需真实联调验证。
 
 初始化、调用、支持矩阵及验证命令请参阅 [英文 README](README.md)。CI 在 Windows/Linux 上执行构建、测试及二十九个 NuGet 包的依赖与元数据检查，打包产物作为运行附件保存。独立的 `Publish NuGet` 工作流使用 OIDC 可信发布，默认仅验证登录；正式发布需手动选择 `publish` 并填写准确版本，步骤见 [发布说明](docs/releasing.md)。
 
@@ -60,7 +61,7 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 原生 Realtime 通过 `loki.LLM.Realtime.OpenAsync` 使用，目标声明 `LlmProtocol.Realtime`。调用者负责原生事件、音频数据和工具结果的收发；SDK 保留所有状态与未知字段，正常关闭不表示生成成功，不自动执行工具、播放音频或重连。初始化、资源限制和离线验证见[OpenAI 包](src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket)。
 
 
-火山 LLM 真实联调仅使用[测试规范](docs/testing.md)及 [.env.example](.env.example) 的四个变量。运行 `pwsh -File eng/Test-Live.ps1`，扩展参数用 `-Suite Parameters` 或 `-Suite All`。两种协议的 `tool_choice=none` 严格失败断言仍保留，详见[实测记录](docs/llm-parameter-verification.md)。本轮 Realtime、Video 及其他供应商没有新增真实模型验收。
+火山 LLM 真实联调仅使用[测试规范](docs/testing.md)及 [.env.example](.env.example) 的四个变量。运行 `pwsh -File eng/Test-Live.ps1`，扩展参数用 `-Suite Parameters` 或 `-Suite All`。两种协议的 `tool_choice=none` 严格失败断言仍保留，详见[实测记录](docs/llm-parameter-verification.md)。Realtime、Video 及其他供应商的真实模型验收状态以各包说明为准；离线协议测试不代表真实上游验证。
 
 
 本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题见 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
