@@ -1,0 +1,471 @@
+{
+  "sources": [
+    "https://docs.volcengine.com/docs/DoubaoVoice/Websocketinterface?lang=zh",
+    "https://docs.volcengine.com/docs/DoubaoVoice/Parameterbasicdescription?lang=zh",
+    "https://docs.volcengine.com/docs/DoubaoVoice/HTTPone-timecompositenon-streaminginterface-V1notrecommended?lang=zh"
+  ],
+  "authentication": {
+    "app_id": "fixture-v1-app",
+    "cluster": "fixture-native-cluster",
+    "access_token": "fixture-header-access",
+    "authorization": "Bearer;fixture-header-access"
+  },
+  "requests": [
+    {
+      "transport": "WebSocket",
+      "wire_request": {
+        "app": {
+          "appid": "fixture-v1-app",
+          "token": "fixture-body-marker",
+          "cluster": "fixture-native-cluster",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "user": {
+          "uid": "fixture-caller-原样",
+          "Future": {
+            "Keep": null
+          }
+        },
+        "audio": {
+          "voice_type": "fixture-native-voice",
+          "encoding": "pcm",
+          "rate": 24000,
+          "speed_ratio": 1.0,
+          "loudness_ratio": 0.0,
+          "emotion": "neutral",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "request": {
+          "reqid": "fixture-v1-ws-01",
+          "text": "你好，纸船 🛶",
+          "operation": "submit",
+          "model": "fixture-native-model",
+          "text_type": "plain",
+          "silence_duration": 0,
+          "with_timestamp": true,
+          "extra_param": "{\"disable_emoji_filter\":false,\"future\":9007199254740993}",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "transport": "Http",
+      "wire_request": {
+        "app": {
+          "appid": "fixture-v1-app",
+          "token": "fixture-body-marker",
+          "cluster": "fixture-native-cluster",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "user": {
+          "uid": "fixture-caller-原样",
+          "Future": {
+            "Keep": null
+          }
+        },
+        "audio": {
+          "voice_type": "fixture-native-voice",
+          "encoding": "wav",
+          "rate": 24000,
+          "speed_ratio": 1.0,
+          "loudness_ratio": 0.0,
+          "emotion": "neutral",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "request": {
+          "reqid": "fixture-v1-http-02",
+          "text": "你好，纸船 🛶",
+          "operation": "query",
+          "model": "fixture-native-model",
+          "text_type": "plain",
+          "silence_duration": 0,
+          "with_timestamp": true,
+          "extra_param": {
+            "disable_markdown_filter": false,
+            "cache_config": {
+              "text_type": 0,
+              "use_cache": false
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Null": null,
+              "False": false,
+              "Zero": 0,
+              "Nested": [
+                {
+                  "Keep": "大小写"
+                }
+              ]
+            }
+          },
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "transport": "WebSocket",
+      "wire_request": {
+        "app": {
+          "appid": "fixture-v1-app",
+          "token": "fixture-body-marker",
+          "cluster": "fixture-native-cluster",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "user": {
+          "uid": "fixture-caller-原样",
+          "Future": {
+            "Keep": null
+          }
+        },
+        "audio": {
+          "voice_type": "fixture-native-voice",
+          "speed_ratio": 1.0,
+          "loudness_ratio": 0.0,
+          "emotion": "neutral",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "request": {
+          "reqid": "fixture-v1-ws-03",
+          "text": "<speak>你好<break time=\"125ms\"/>纸船</speak>",
+          "operation": "submit",
+          "text_type": "ssml",
+          "silence_duration": 0,
+          "with_timestamp": true,
+          "extra_param": "{\"disable_emoji_filter\":false,\"future\":9007199254740993}",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "client_request_vectors": [
+    {
+      "name": "client-json",
+      "wire_base64": "ERAQAAAAA8F7ImFwcCI6eyJhcHBpZCI6ImZpeHR1cmUtdjEtYXBwIiwidG9rZW4iOiJmaXh0dXJlLWJvZHktbWFya2VyIiwiY2x1c3RlciI6ImZpeHR1cmUtbmF0aXZlLWNsdXN0ZXIiLCJGdXR1cmUiOnsiQmlnIjo5MDA3MTk5MjU0NzQwOTkzLCJOdWxsIjpudWxsLCJGYWxzZSI6ZmFsc2UsIlplcm8iOjAsIk5lc3RlZCI6W3siS2VlcCI6IuWkp+Wwj+WGmSJ9XX19LCJ1c2VyIjp7InVpZCI6ImZpeHR1cmUtY2FsbGVyLeWOn+agtyIsIkZ1dHVyZSI6eyJLZWVwIjpudWxsfX0sImF1ZGlvIjp7InZvaWNlX3R5cGUiOiJmaXh0dXJlLW5hdGl2ZS12b2ljZSIsImVuY29kaW5nIjoicGNtIiwicmF0ZSI6MjQwMDAsInNwZWVkX3JhdGlvIjoxLjAsImxvdWRuZXNzX3JhdGlvIjowLjAsImVtb3Rpb24iOiJuZXV0cmFsIiwiRnV0dXJlIjp7IkJpZyI6OTAwNzE5OTI1NDc0MDk5MywiTnVsbCI6bnVsbCwiRmFsc2UiOmZhbHNlLCJaZXJvIjowLCJOZXN0ZWQiOlt7IktlZXAiOiLlpKflsI/lhpkifV19fSwicmVxdWVzdCI6eyJyZXFpZCI6ImZpeHR1cmUtdjEtd3MtMDEiLCJ0ZXh0Ijoi5L2g5aW977yM57q46Ii5IPCfm7YiLCJvcGVyYXRpb24iOiJzdWJtaXQiLCJtb2RlbCI6ImZpeHR1cmUtbmF0aXZlLW1vZGVsIiwidGV4dF90eXBlIjoicGxhaW4iLCJzaWxlbmNlX2R1cmF0aW9uIjowLCJ3aXRoX3RpbWVzdGFtcCI6dHJ1ZSwiZXh0cmFfcGFyYW0iOiJ7XCJkaXNhYmxlX2Vtb2ppX2ZpbHRlclwiOmZhbHNlLFwiZnV0dXJlXCI6OTAwNzE5OTI1NDc0MDk5M30iLCJGdXR1cmUiOnsiQmlnIjo5MDA3MTk5MjU0NzQwOTkzLCJOdWxsIjpudWxsLCJGYWxzZSI6ZmFsc2UsIlplcm8iOjAsIk5lc3RlZCI6W3siS2VlcCI6IuWkp+Wwj+WGmSJ9XX19LCJGdXR1cmUiOnsiQmlnIjo5MDA3MTk5MjU0NzQwOTkzLCJOdWxsIjpudWxsLCJGYWxzZSI6ZmFsc2UsIlplcm8iOjAsIk5lc3RlZCI6W3siS2VlcCI6IuWkp+Wwj+WGmSJ9XX19",
+      "json_request_index": 0,
+      "compression": 0
+    },
+    {
+      "name": "client-json-gzip",
+      "wire_base64": "ERARAAAAAakfiwgAAAAAAAIKvVK7TsMwFP0VdOcEpVCEkpGBBYkPgKLIjW/B4MTBj7Yo6ooYEMyIAQYQKxMvwd8QYINP4LpVxKN7l9g+5/rec45TAStLSCq/CA4J9MTQOo1hvxV6JgCr9rD4RXQVPwhzpvdQE5tJZyztfviCWdHHsCECWHUe9zNWxDYkcRQtt+J4Yam93I7ieDGAdSclJAV9qZhJQ7U9vwSwgVpBElEJUjOSt1nBGiIJhvrqpr49rQ/PYLQ1GgXgjFdRgfvjImNSog7rk4u3y/s/WiZt/FB/mzkulIf7SmSY2oMSpy2NOWqCRaa4KMgLlFlOgGaWyhfaUURSTYnIU4J8w9Y8IVI5XqAxDRh5EHNFBx9sgc5qJmeWlMZ9R0V+DG3/P/rAhFHLPzsOqQReXy7r65fP5+P3p4ePo8e5r4vzO2JViWMzXr9x3VxYAnPFUU7HNoEnHZtkS8lEQZgRktLElLumHVkYCLuTWpGTSJaTA6sdOaTbmqUl0yynBlUHuDCsKzGlJHdF2hOSfrdOE0gHeuMwO9MxjmaW9CymfANSoj7VwQMAAA==",
+      "json_request_index": 0,
+      "compression": 1
+    }
+  ],
+  "server_frames": [
+    {
+      "name": "ack",
+      "message_type": 11,
+      "flags": 0,
+      "serialization": 0,
+      "compression": 0,
+      "sequence": null,
+      "error_code": null,
+      "payload_base64": "",
+      "wire_base64": "EbAAAAAAAAA="
+    },
+    {
+      "name": "audio-no-sequence",
+      "message_type": 11,
+      "flags": 0,
+      "serialization": 0,
+      "compression": 0,
+      "sequence": null,
+      "error_code": null,
+      "payload_base64": "AQI=",
+      "wire_base64": "EbAAAAAAAAIBAg=="
+    },
+    {
+      "name": "audio-1",
+      "message_type": 11,
+      "flags": 1,
+      "serialization": 0,
+      "compression": 0,
+      "sequence": 1,
+      "error_code": null,
+      "payload_base64": "AQI=",
+      "wire_base64": "EbEAAAAAAAEAAAACAQI="
+    },
+    {
+      "name": "frontend-json",
+      "message_type": 12,
+      "flags": 0,
+      "serialization": 1,
+      "compression": 0,
+      "sequence": null,
+      "error_code": null,
+      "payload_base64": "eyJyZXFpZCI6ImZpeHR1cmUtdjEtd3MtMDEiLCJzZW50ZW5jZSI6eyJ0ZXh0Ijoi5L2g5aW977yM57q46Ii5IPCfm7YiLCJ3b3JkcyI6W3sid29yZCI6IuS9oOWlvSIsInN0YXJ0IjowLjAsImVuZCI6MC4yNX1dfSwidXNhZ2UiOnsibmF0aXZlX3VuaXRzIjowfSwiRnV0dXJlIjp7IkJpZyI6OTAwNzE5OTI1NDc0MDk5MywiTnVsbCI6bnVsbCwiRmFsc2UiOmZhbHNlLCJaZXJvIjowLCJOZXN0ZWQiOlt7IktlZXAiOiLlpKflsI/lhpkifV19fQ==",
+      "wire_base64": "EcAQAAAAAPp7InJlcWlkIjoiZml4dHVyZS12MS13cy0wMSIsInNlbnRlbmNlIjp7InRleHQiOiLkvaDlpb3vvIznurjoiLkg8J+btiIsIndvcmRzIjpbeyJ3b3JkIjoi5L2g5aW9Iiwic3RhcnQiOjAuMCwiZW5kIjowLjI1fV19LCJ1c2FnZSI6eyJuYXRpdmVfdW5pdHMiOjB9LCJGdXR1cmUiOnsiQmlnIjo5MDA3MTk5MjU0NzQwOTkzLCJOdWxsIjpudWxsLCJGYWxzZSI6ZmFsc2UsIlplcm8iOjAsIk5lc3RlZCI6W3siS2VlcCI6IuWkp+Wwj+WGmSJ9XX19"
+    },
+    {
+      "name": "audio-2",
+      "message_type": 11,
+      "flags": 1,
+      "serialization": 0,
+      "compression": 0,
+      "sequence": 2,
+      "error_code": null,
+      "payload_base64": "AwQ=",
+      "wire_base64": "EbEAAAAAAAIAAAACAwQ="
+    },
+    {
+      "name": "audio-final-3",
+      "message_type": 11,
+      "flags": 3,
+      "serialization": 0,
+      "compression": 0,
+      "sequence": -3,
+      "error_code": null,
+      "payload_base64": "BQ==",
+      "wire_base64": "EbMAAP////0AAAABBQ=="
+    },
+    {
+      "name": "audio-final-2",
+      "message_type": 11,
+      "flags": 2,
+      "serialization": 0,
+      "compression": 0,
+      "sequence": -3,
+      "error_code": null,
+      "payload_base64": "BQ==",
+      "wire_base64": "EbIAAP////0AAAABBQ=="
+    },
+    {
+      "name": "audio-gzip-1",
+      "message_type": 11,
+      "flags": 1,
+      "serialization": 0,
+      "compression": 1,
+      "sequence": 1,
+      "error_code": null,
+      "payload_base64": "AQI=",
+      "wire_base64": "EbEBAAAAAAEAAAAWH4sIAAAAAAACCmNkAgCSQsy2AgAAAA=="
+    },
+    {
+      "name": "audio-gzip-final",
+      "message_type": 11,
+      "flags": 3,
+      "serialization": 0,
+      "compression": 1,
+      "sequence": -2,
+      "error_code": null,
+      "payload_base64": "AwQF",
+      "wire_base64": "EbMBAP////4AAAAXH4sIAAAAAAACCmNmYQUAwFYB6QMAAAA="
+    },
+    {
+      "name": "frontend-gzip",
+      "message_type": 12,
+      "flags": 0,
+      "serialization": 1,
+      "compression": 1,
+      "sequence": null,
+      "error_code": null,
+      "payload_base64": "eyJyZXFpZCI6ImZpeHR1cmUtdjEtd3MtMDEiLCJzZW50ZW5jZSI6eyJ0ZXh0Ijoi5L2g5aW977yM57q46Ii5IPCfm7YiLCJ3b3JkcyI6W3sid29yZCI6IuS9oOWlvSIsInN0YXJ0IjowLjAsImVuZCI6MC4yNX1dfSwidXNhZ2UiOnsibmF0aXZlX3VuaXRzIjowfSwiRnV0dXJlIjp7IkJpZyI6OTAwNzE5OTI1NDc0MDk5MywiTnVsbCI6bnVsbCwiRmFsc2UiOmZhbHNlLCJaZXJvIjowLCJOZXN0ZWQiOlt7IktlZXAiOiLlpKflsI/lhpkifV19fQ==",
+      "wire_base64": "EcARAAAAAOofiwgAAAAAAAIKPY6/agJBEMZfRabekz2jyG5pkUbwARJCOLxRFo417h8VjmvFImAtFlpEbK3EBH0bD9PFR8jsFTYzH3y/+ebLweBYpSBhoGbOG4wmcTS1EY+BgUXtUPcRZA4OZ46o62Vb7i5/58/bz+l38V27b9ZHIqcjk1qQr3mlHlzIcImhQ17nDFCnQTVaxVvBwNtkWEXrxKkJvnutHGVwsp59qBK8jhqCFJy3YyEarWa7yYV4YtDzWQZS0yQ4ySyxg7AYvKAZUQghaB2mVacu4gd1Kr/25WFZzldA/4t/YSsaSvoAAAA="
+    },
+    {
+      "name": "error-text",
+      "message_type": 15,
+      "flags": 0,
+      "serialization": 0,
+      "compression": 0,
+      "sequence": null,
+      "error_code": 3001,
+      "payload_base64": "6Jma5p6E5ZCI5oiQ6ZSZ6K+vCm9yaWdpbmFsIGRldGFpbHM=",
+      "wire_base64": "EfAAAAAAC7kAAAAj6Jma5p6E5ZCI5oiQ6ZSZ6K+vCm9yaWdpbmFsIGRldGFpbHM="
+    },
+    {
+      "name": "error-uint32-gzip",
+      "message_type": 15,
+      "flags": 0,
+      "serialization": 1,
+      "compression": 1,
+      "sequence": null,
+      "error_code": 4294967295,
+      "payload_base64": "eyJtZXNzYWdlIjoiZmljdGlvbmFsIG5hdGl2ZSBlcnJvciIsIkZ1dHVyZSI6eyJCaWciOjkwMDcxOTkyNTQ3NDA5OTMsIk51bGwiOm51bGwsIkZhbHNlIjpmYWxzZSwiWmVybyI6MCwiTmVzdGVkIjpbeyJLZWVwIjoi5aSn5bCP5YaZIn1dfX0=",
+      "wire_base64": "EfARAP////8AAACVH4sIAAAAAAACCqtWyk0tLk5MT1WyUkrLTC7JzM9LzFHISyzJLEtVSC0qyi9S0lFyKy0pLQKqqFZyykxXsrI0MDA3tLQ0MjUxNzGwtDTWUfIrzclRssoDkkDFiTnFQLVpIEpHKSq1KF/JygCoJLW4JDVFySq6Wsk7NbUAaN3TJcufbuh/2jZTqTa2thYAriZQB4kAAAA="
+    }
+  ],
+  "stream_order": [
+    "ack",
+    "audio-1",
+    "frontend-json",
+    "audio-2",
+    "audio-final-3"
+  ],
+  "expected_audio_base64": "AQIDBAU=",
+  "http_response": {
+    "reqid": "fixture-v1-http-02",
+    "code": 3000,
+    "operation": "query",
+    "message": "Success",
+    "sequence": -1,
+    "data": "AQIDBAU=",
+    "addition": {
+      "duration": "125.00",
+      "frontend": "{\"words\":[{\"word\":\"你好\",\"start_time\":0.0,\"end_time\":0.25}],\"Future\":9007199254740993}",
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Keep": "大小写"
+          }
+        ]
+      }
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Null": null,
+      "False": false,
+      "Zero": 0,
+      "Nested": [
+        {
+          "Keep": "大小写"
+        }
+      ]
+    }
+  },
+  "http_error": {
+    "reqid": "fixture-v1-http-02",
+    "code": 3001,
+    "message": "fictional rejected request",
+    "sequence": 0,
+    "data": null,
+    "Future": {
+      "Big": 9007199254740993,
+      "Null": null,
+      "False": false,
+      "Zero": 0,
+      "Nested": [
+        {
+          "Keep": "大小写"
+        }
+      ]
+    }
+  }
+}
