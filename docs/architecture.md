@@ -2891,3 +2891,30 @@ Chatbot/Agent terminate natively at message_end; Agent closing full-answer messa
 All frames from the first ending stage are buffered within explicit tail limits through normal strict EOF, declared/raw-byte checks, actual method/complete URI, owned source/response/client closure and final cancellation. Original TTS/metadata may follow generation terminals and remain intact. Native errors after a terminal stage still fail before held terminal delivery. Duplicate/missing/late known generation or changed native identities cannot be silently repaired. No synthetic DONE/stop/answer/usage, retry, polling, reconnect, resume host or file transfer is added.
 
 The complete supplier executable passes127 offline cases with independent full native JSON and three-profile SSE resources and fault-injected local HTTP. No live app/model/audio result or new full-suite/all-package run is claimed.
+
+### Explicit Codex Responses in the OpenAI supplier package
+
+CodexLlmProvider resides in LLM.OpenAI and implements only existing IResponsesAdapter/IResponsesCompactionAdapter plus explicit External credential support. The default OpenAiLlmProvider remains API-Key-only with unchanged binding bytes. No new package/core protocol/capability dependency or business coordinator is introduced. Both providers use one supplier-private OpenAiHttpTransport and OpenAiHttpStreamState; truly generic raw framing stays in Infrastructure. Authentication-specific checks enter as call-bound delegates rather than a second copied Responses implementation.
+
+```plantuml
+@startuml
+IResponsesAdapter <|.. CodexLlmProvider
+IResponsesCompactionAdapter <|.. CodexLlmProvider
+ILlmCredentialSupport <|.. CodexLlmProvider
+CodexLlmProvider --> CodexLlmOptions : immutable account and policies
+CodexLlmProvider --> CodexAuthentication : borrowed stable-principal source
+CodexAuthentication --> ICodexAccessTokenSource : exactly one acquisition
+ICodexAccessTokenSource --> CodexAccessToken : immutable principal/account assertion
+CodexAuthentication --> CodexHttpCall : fixed request and identity guards
+CodexLlmProvider --> OpenAiHttpTransport : same supplier-native HTTP/Responses state
+OpenAiLlmProvider --> OpenAiHttpTransport
+OpenAiHttpTransport --> OpenAiHttpStreamState
+OpenAiHttpTransport --> SseReader : Infrastructure framing only
+@enduml
+```
+
+Complete target/root/actual model/credential/principal plus account/Beta/originator/source/policies/named factory/implementation form the existing full Session binding. The External identity never stores rotating tokens. Token sources/clocks/factories remain borrowed, and calls acquire exactly one token without login/refresh/retry/failover. Before the source await, requests snapshot original native input/settings/tools/schema/reasoning/unknown values. Only actual model and explicit Create stream selection are transport-owned; compact cannot stream. No instructions/store/defaults are inserted or unsupported settings deleted. Native backend acceptance remains upstream responsibility.
+
+Each request carries selected Bearer/account and exact application/json without charset. Omitted native headers cannot come from unbound factory defaults. Source/principal/account/expiry and actual method/root/authentication/media are checked through EOF/owned resource closure/final cancellation. Shared native terminal/response identity rules with bounded tails preserve original events without tool/answer/usage assembly. Errors retain original bytes/status/media. Backend-specific endpoints are not advertised as stable public Platform APIs or live account/model access.
+
+The supplier executable passes509 offline cases including87 new Codex native/auth/complete-Session/fault cases. No live token/backend/model or new full-suite/all-package validation is implied. Production graph stays63 projects/45 Infrastructure consumers/125 unique solution paths.

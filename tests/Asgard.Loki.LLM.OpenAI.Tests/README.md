@@ -25,3 +25,11 @@ Rejections cover malformed input shapes, complete-target model overrides, native
 ## Cloudflare compatible target contracts
 
 Fourteen independent account-scoped Cloudflare cases bring this executable to **422 passing offline cases**. Existing OpenAiLlmProvider receives an explicit complete root/model/opaque token/protocol; there is no Cloudflare production dependency or credential/model dispatcher. Literal caller/wire/result/Chat SSE resources verify complete tool associations, sparse indices, reasoning/encrypted fields, structured settings, rejectIfBusy, exact numbers/unknown fields, proxy roots and account drift rejection. Current Cloudflare Responses support is non-streaming; no synthetic Responses stream or ai/run-to-Chat conversion is tested or claimed. No live account/model/setting acceptance or output quality has been checked.
+
+## Explicit Codex native Responses and compaction
+
+The complete executable passes509 offline cases, including87 Codex cases. Independent full caller/wire/result and literal SSE resources preserve complete native reasoning/encrypted/schema/tools/unknown fields, distinct parallel item/call/output associations, exact values and separate transport identity. No provider output generates snapshot expectations. Codex uses the same supplier-native HTTP/Responses lifecycle with optional call-bound identity guards; existing default OpenAI tests remain included.
+
+Fake external sources/clocks and HTTP verify exactly one token acquisition/request, pre-await snapshots, explicit account/principal/configuration, source/expiry drift, original headers/content type, binary/native/late errors, malformed framing/JSON/Unicode, byte/declared-length/tail limits, EOF/disposal/target/final-cancellation failures before terminal/result delivery. Actual Session tests use MemoryDistributedCache plus the explicit test coordinator: whole root/model/account/source/policy/principal changes fail before second source/HTTP; stable principal token rotation survives instance recreation and native Responses ownership.
+
+No actual token, auth-file/environment lookup, network/backend account, live model setting or answer quality is tested. Source refresh/login, agent hosting and search-result interpretation are outside these cases.

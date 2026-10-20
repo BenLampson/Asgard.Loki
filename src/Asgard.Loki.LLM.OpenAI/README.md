@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.OpenAI
 
-Authentication remains API-Key-only. `LlmCredential.External` is an explicit core identity for providers that implement their own token/signing source; this OpenAI adapter does not opt into it. Direct Chat/Responses JSON/SSE, native Moderations, compaction and WebSocket operations reject both anonymous and external identities before dispatch, rather than using an empty Key.
+`OpenAiLlmProvider` remains API-Key-only. `LlmCredential.External` is an explicit core identity for providers that implement their own token/signing source; this default adapter does not opt into it. The separate [CodexLlmProvider](#explicit-codex-backend-responses) in this same package explicitly supports external subscription credentials. Direct Chat/Responses JSON/SSE, native Moderations, compaction and WebSocket operations reject both anonymous and external identities before dispatch, rather than using an empty Key.
 
 OpenAI LLM provider for Asgard.Loki.
 
@@ -214,3 +214,59 @@ For Responses, explicitly configure a supported GPT-OSS model with `Protocols = 
 Only the configured actual model and method stream switch change. Original tool IDs/arguments/results, sparse choice/tool indices, native reasoning/encrypted items, structured output settings, options.rejectIfBusy, exact numbers and unknown fields are retained. The account/root, actual model, API token identity and implementation remain Session-bound. A changed account path fails without sending to a replacement target. Factory/cache/coordinator ownership and the existing one-attempt/terminal/EOF/disposal/cancellation guarantees apply.
 
 Fourteen independent offline profile cases bring this supplier suite to 422 passing cases. Whole wire/results/Chat event windows are checked with fake HTTP and MemoryDistributedCache, including proxy prefixes and opaque tokens. They do not verify live Cloudflare account access, actual model/setting acceptance or generation quality. See [Cloudflare compatibility and current limits](https://developers.cloudflare.com/workers-ai/configuration/open-ai-compatibility/).
+
+## Explicit Codex backend Responses
+
+`CodexLlmProvider` is a separate provider in this OpenAI package. It implements only existing native Responses JSON/SSE and explicit compaction interfaces with `LlmCredentialKind.External`. It reuses this package's native HTTP/Responses state and Infrastructure framing; no new capability, protocol flag, package dependency or model/agent coordinator is introduced. Chat Completions, Moderations, WebSocket/Realtime and login/account management are outside this provider.
+
+| Operation | Support |
+| --- | --- |
+| Responses Create/continuation | Original JSON or SSE, complete native reasoning/tools/schema/unknown data |
+| Responses compact | Original full native window under explicit ResponsesCompaction target feature |
+| Authentication | Borrowed ICodexAccessTokenSource, stable principal, fixed account ID, explicit optional Beta/originator |
+| Login, auth-file loading, token refresh, subscription/account management | Not implemented |
+| Live backend/account/model/parameter acceptance | Not verified; offline protocol tests only |
+
+The endpoints are backend-specific, not a documented stable public OpenAI Platform API. Configure the complete backend/proxy API root explicitly. Official [Codex authentication](https://learn.chatgpt.com/docs/auth) distinguishes subscription credentials from Platform API keys. Official [externally managed token mode](https://learn.chatgpt.com/docs/app-server#3c-log-in-with-externally-managed-chatgpt-tokens-chatgptauthtokens) describes an experimental application-owned lifecycle; this SDK does not host that app-server/login protocol or reproduce its refresh/retry behavior.
+
+```csharp
+var provider = new CodexLlmProvider(httpClientFactory, new CodexLlmOptions
+{
+    Account = new CodexAccountOptions
+    {
+        AccountId = selectedAccountId,
+        Beta = explicitBetaHeader,          // Optional; omission stays absent.
+        Originator = applicationOriginator  // Optional; never guessed as a CLI.
+    }
+}, applicationTokenSource);
+var credential = LlmCredential.External("codex-account", stablePrincipalIdentity);
+var target = new LlmTarget
+{
+    Id = "codex-native", ProviderId = provider.Id,
+    BaseAddress = new Uri(explicitBackendApiRoot), // e.g. https://host/backend-api/codex/
+    UpstreamModel = configuredActualModel, CredentialId = credential.Id,
+    Protocols = LlmProtocol.Responses,
+    Features = LlmTargetFeatures.ResponsesCompaction
+};
+// Register provider/credential/target with the existing LlmOptions route and Session dependencies.
+var result = await loki.LLM.Responses.CreateAsync(new ResponseRequest
+{
+    Model = publicModel,
+    Input = JsonValue.Create("Hello"),
+    Parameters = new()
+    {
+        ["instructions"] = JsonSerializer.SerializeToElement(explicitInstructions),
+        ["store"] = JsonSerializer.SerializeToElement(false)
+    }
+}, new LlmCallOptions { SessionId = sessionId }, cancellationToken);
+```
+
+The application implements ICodexAccessTokenSource.GetTokenAsync for the requested stable principal, returning immutable CodexAccessToken(principal, accountId, accessToken, expiresOn). The SDK reads no environment/auth file and performs no login/discovery. A call obtains exactly one token. Wrong principal/account, expired token or changed source BindingIdentity fails without refresh or replay. Complete root/actual model/credential/principal, fixed account, optional headers, source identity, byte/tail policies, named factory and implementation participate in the existing complete-target Session binding. Tokens can rotate under the same principal/configuration; short-lived secrets stay out of fingerprints, results, JSON and default formatting.
+
+Only selected actual model and Create/stream mode are transport-owned. Compact has no stream field. Instructions/store/reasoning/schema/tools/unsupported settings are not inserted, deleted, normalized or converted; the caller supplies settings the selected backend/model accepts and receives native errors otherwise. Entire native requests are frozen before the first token-source await. Original item/call IDs, tool output order, reasoning/encrypted/compaction items, exact values and unknown fields are preserved without execution, aggregation or decoding.
+
+Each call uses explicit Bearer/account headers and exact application/json without charset. Omitted Beta/originator cannot be supplied by hidden named-client defaults. No account/model/root is inferred from token syntax. Source/principal/account/expiry, original method/complete URI, authentication/configuration/media and declared byte limits are checked at request/response boundaries. All owned streams/responses/clients/requests close before final binding/cancellation checks and result/held-terminal delivery. Native Responses status/response identity and unknown tails retain the existing protocol rules; EOF does not manufacture completion. HTTP and native errors retain raw bytes/status/media, including binary error bodies and late stream errors.
+
+Defaults: 1 MiB request, 32 MiB complete/error/whole-SSE bytes and 128 held terminal-tail records. Factories, token source, clock and Session dependencies stay borrowed. Configure named transports with no automatic redirects/retries/hedging and appropriate timeouts. There is no token-triggered retry, failover, background polling or local tool/workflow/media execution.
+
+Validation uses independent full native JSON/compact/SSE resources and fake HTTP. The complete OpenAI supplier test executable passes509 offline cases, including87 Codex cases covering separate parallel tool IDs, native opaque fields, original wire/settings, source snapshots, complete Session drift/rotation/ownership and late transport/resource/auth failures. This is not live backend/model acceptance or a new full-repository suite result.

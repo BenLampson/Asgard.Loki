@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <EmbeddedResource Include="Fixtures/**/*.json" />
+    <EmbeddedResource Include="Fixtures/Codex/*.sse" />
     <EmbeddedResource Include="../Asgard.Loki.LLM.Cloudflare.Tests/Fixtures/chat.json" LogicalName="Cloudflare.chat.json" />
     <EmbeddedResource Include="../Asgard.Loki.LLM.Cloudflare.Tests/Fixtures/chat.sse" LogicalName="Cloudflare.chat.sse" />
     <EmbeddedResource Include="../Asgard.Loki.LLM.Cloudflare.Tests/Fixtures/responses.json" LogicalName="Cloudflare.responses.json" />

@@ -121,3 +121,7 @@ Cloudflare Workers AI 的账号级兼容 Chat JSON/SSE 和当前支持的非流�
 原生 `.LLM.WorkersAiText` 要求显式 `LlmProtocol.WorkersAiText` 目标与 `IWorkersAiTextAdapter`。公共模型只作路由信息，实际模型由原生 URL 拥有；prompt/messages 和未知参数保持原生正文，完整结果保留原始封装。流事件保留 SSE JSON 或实际 `[DONE]` 数据及独立传输身份，不虚构 JSON 终态。[Cloudflare 供应商包](src/Asgard.Loki.LLM.Cloudflare/README.md)提供原生 HTTP/SSE，详见[契约与适配器职责](src/Asgard.Loki.LLM/README.md#native-workers-ai-text-contract)。
 
 [CozeChatClient](src/Asgard.Loki.LLM.Coze/README.md) 每个方法只发起一次原生提交/SSE/状态/Chat 消息请求，保留完整回执、多条回答、中间消息、工具/推理和原生 done；Message 完成与 Chat 终态分别处理。Bot ID 是远端服务配置，不冒充底层实际模型；引用绑定完整服务器/Bot/凭据/实现与原生 ID，不加入自动轮询、工具执行或 Bot/工作流管理。离线协议测试不代表真实 Bot 访问或回答质量验证。
+
+### 显式 Codex 后端调用
+
+现有 [OpenAI 分包](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-codex-backend-responses) 还提供独立的 CodexLlmProvider，支持显式后端 Responses JSON/SSE 和 compact。完整服务器/模型/外部主体/账户/认证来源及策略保持现有 Session 绑定，短期令牌可以轮换。工具关联、推理/加密项、结构化输出与未知字段保持原生；不加入登录、刷新、账户管理、参数清理或自动重试。这是离线协议验证，不代表公开稳定 API 或真实账户/模型可用性验证。
