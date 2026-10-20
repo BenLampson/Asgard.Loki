@@ -2448,3 +2448,26 @@ class LlmUpstreamException {
 class ILlmProvider
 ILlmProvider ..> LlmUpstreamException : original native failure
 ```
+
+### Native Moderations core contract
+
+The LLM capability adds ModerationRequest/Moderation, IModerationsClient/Adapter and a ModerationsClient through the existing LlmClient. `LlmProtocol.Moderations=512` is additive: previous protocol values and existing target default flags do not change. A configured target must declare the flag and its provider must implement the native adapter; a support claim alone cannot bypass interface validation. No new package, dependency direction, normalized classification model or cross-capability coordinator is introduced.
+
+```mermaid
+sequenceDiagram
+participant Caller
+participant Core as ModerationsClient
+participant Invocation as Existing LlmInvocation
+participant Cache as Existing ILlmSessionStore
+participant Native as IModerationsAdapter
+Caller->>Core: Native Parameters, public Model, caller SessionId
+Core->>Core: Validate JSON and snapshot before first possible await
+Core->>Invocation: Resolve fixed complete target for Moderations
+Invocation->>Cache: Recover or explicitly coordinate initial binding
+Cache-->>Invocation: Original target and fingerprint
+Invocation-->>Core: Target, actual model, credential, provider, metadata
+Core->>Native: Native object with actual model, no stream injection
+Native-->>Caller: Complete native Moderation.Data and metadata
+```
+
+The client retains original input and extension JSON without defining category thresholds, fetching media or turning model output into an application content policy. Only body model is mapped to the actual selected model. Native input/output shape validation remains supplier-owned; core guarantees object snapshot/identity and complete-target binding. Reserved model/stream controls and Undefined fail before selection; native parameters are frozen before cache/selection awaits. Existing Session protocol isolation, server/model/credential/adapter fingerprint drift rejection, no retries/failover and borrowed resource rules remain in effect. Twenty additional offline core cases establish these behaviors and stable enum values, bringing the core to 247 cases at this contract.

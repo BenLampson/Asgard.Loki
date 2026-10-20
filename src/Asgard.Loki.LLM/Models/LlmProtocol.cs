@@ -23,5 +23,7 @@ public enum LlmProtocol
     /// <summary>Amazon Nova 理解模型的 InvokeModel 原生协议，不等同于 Converse。</summary>
     BedrockNova = 128,
     /// <summary>原生 Realtime JSON 双工协议，独立于 Responses WebSocket。</summary>
-    Realtime = 256
+    Realtime = 256,
+    /// <summary>原生 Moderations 完整 JSON 模型调用，不执行应用内容处置策略。</summary>
+    Moderations = 512
 }

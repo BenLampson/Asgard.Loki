@@ -18,6 +18,7 @@ public sealed class LlmClient
         OllamaGenerate = new OllamaGenerateClient(invocation);
         BedrockConverse = new BedrockConverseClient(invocation);
         BedrockNova = new BedrockNovaClient(invocation);
+        Moderations = new ModerationsClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
@@ -38,4 +39,7 @@ public sealed class LlmClient
     public IBedrockConverseClient BedrockConverse { get; }
     /// <summary>访问 Nova 理解模型的 Invoke 原生协议，不隐式选择模型或转换到 Chat。</summary>
     public IBedrockNovaClient BedrockNova { get; }
+    /// <summary>访问原生 Moderations 模型接口，输入/分类结果不成为应用内容策略。</summary>
+    public IModerationsClient Moderations { get; }
+
 }

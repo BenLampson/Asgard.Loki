@@ -130,3 +130,9 @@ Responses complete/stream clients register continuation ownership only for resul
 ## Native error bytes
 
 LlmUpstreamException retains its existing text constructor, StatusCode and ResponseBody. A byte constructor additionally copies complete native Body bytes and optional ContentType; byte-constructed errors expose ResponseBody through strict UTF-8 and preserve binary data through Body. The legacy text constructor retains its original text and supplies a UTF-8 projection without inventing a media type. Individual providers own transport limits and error classification. No logging, retry, cross-capability error coordinator or model/content policy is added.
+
+## Native Moderations protocol
+
+The LLM capability exposes `loki.LLM.Moderations.CreateAsync(ModerationRequest, LlmCallOptions, CancellationToken)` for explicitly declared `LlmProtocol.Moderations` targets and `IModerationsAdapter` implementations. The request retains native input and extension JSON in Parameters; only public Model maps to the selected target's actual model. No stream switch or model default is injected. Undefined values, model overrides and unsupported stream controls fail before target resolution. Native result validation and actual model acceptance belong to the supplier; `Moderation.Data` retains the complete native object.
+
+The existing required caller SessionId fixes the full server/model/credential/adapter target; it does not store input text or make an application content policy. Protocol changes or target drift cannot redirect a bound Session. Adapters, distributed cache and explicit coordination contracts stay borrowed. Existing protocol numbers remain unchanged; Moderations adds value 512. Consult the selected supplier's support matrix for its HTTP implementation and live status.
