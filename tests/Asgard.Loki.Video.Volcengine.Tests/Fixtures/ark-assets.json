@@ -1,0 +1,426 @@
+{
+  "sources": [
+    "https://docs.volcengine.com/docs/ark/private-virtual-avatar-library-guide-preview?lang=zh",
+    "https://docs.volcengine.com/docs/ark/get-asset-api?lang=zh",
+    "https://docs.volcengine.com/docs/ark/list-assets-api?lang=zh",
+    "https://raw.githubusercontent.com/volcengine/volcengine-python-sdk/master/volcenginesdkcore/signv4.py"
+  ],
+  "checked": "2026-10-20",
+  "note": "Synthetic protocol fixtures and independent Python HMAC vectors; no live credentials or calls.",
+  "signatures": [
+    {
+      "host": "ark.invalid",
+      "session_token": null,
+      "body": "{\"Id\":\"asset-fixture-01\",\"ProjectName\":\"studio\",\"Future\":{\"zero\":0,\"flag\":false,\"empty\":null}}",
+      "date": "20261020T010203Z",
+      "payload_hash": "f77a4e67d8b7e8dfa0d11feeb34ac4fb189107644d82ddcc148b9771ac4525d3",
+      "canonical_request": "POST\n/\nAction=GetAsset&Version=2024-01-01\ncontent-type:application/json\nhost:ark.invalid\nx-content-sha256:f77a4e67d8b7e8dfa0d11feeb34ac4fb189107644d82ddcc148b9771ac4525d3\nx-date:20261020T010203Z\n\ncontent-type;host;x-content-sha256;x-date\nf77a4e67d8b7e8dfa0d11feeb34ac4fb189107644d82ddcc148b9771ac4525d3",
+      "string_to_sign": "HMAC-SHA256\n20261020T010203Z\n20261020/cn-beijing/ark/request\n6a2c8f2e121b302568ec626ac9df7077de7ce62b60ab08da948d4df47ea4a8f6",
+      "authorization": "HMAC-SHA256 Credential=fixture-access/20261020/cn-beijing/ark/request, SignedHeaders=content-type;host;x-content-sha256;x-date, Signature=5e0d1836aa5bf6ceb1f78c7a2464d2c8d26ca7f04769268d1fe802086eddc5f9"
+    },
+    {
+      "host": "ark.invalid:8443",
+      "session_token": "fixture-session-token",
+      "body": "{\"Id\":\"asset-fixture-01\",\"ProjectName\":\"studio\",\"Future\":{\"zero\":0,\"flag\":false,\"empty\":null}}",
+      "date": "20261020T010203Z",
+      "payload_hash": "f77a4e67d8b7e8dfa0d11feeb34ac4fb189107644d82ddcc148b9771ac4525d3",
+      "canonical_request": "POST\n/\nAction=GetAsset&Version=2024-01-01\ncontent-type:application/json\nhost:ark.invalid:8443\nx-content-sha256:f77a4e67d8b7e8dfa0d11feeb34ac4fb189107644d82ddcc148b9771ac4525d3\nx-date:20261020T010203Z\nx-security-token:fixture-session-token\n\ncontent-type;host;x-content-sha256;x-date;x-security-token\nf77a4e67d8b7e8dfa0d11feeb34ac4fb189107644d82ddcc148b9771ac4525d3",
+      "string_to_sign": "HMAC-SHA256\n20261020T010203Z\n20261020/cn-beijing/ark/request\nbc209cb20d1564cdc67d1724d0e9ed64d598da5dbae400d5425b288883a3849e",
+      "authorization": "HMAC-SHA256 Credential=fixture-access/20261020/cn-beijing/ark/request, SignedHeaders=content-type;host;x-content-sha256;x-date;x-security-token, Signature=63a280b88eebb5e539caab965c4199a1cd018c525fcc6015e5bf64e408463727"
+    }
+  ],
+  "cases": [
+    {
+      "action": "CreateAssetGroup",
+      "request": {
+        "ProjectName": "studio",
+        "Name": "fictional group",
+        "Description": "owned fixture",
+        "GroupType": "AIGC",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-CreateAssetGroup",
+          "Action": "CreateAssetGroup",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {
+          "Id": "group-fixture-01",
+          "Future": false
+        },
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    },
+    {
+      "action": "CreateAsset",
+      "request": {
+        "ProjectName": "studio",
+        "GroupId": "group-fixture-01",
+        "URL": "https://media.invalid/input.mp4?opaque=a%2Fb",
+        "Name": "fictional video",
+        "AssetType": "Video",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-CreateAsset",
+          "Action": "CreateAsset",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {
+          "Id": "asset-fixture-01",
+          "Future": false
+        },
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    },
+    {
+      "action": "ListAssetGroups",
+      "request": {
+        "ProjectName": "studio",
+        "Filter": {
+          "GroupType": "AIGC",
+          "GroupIds": [
+            "group-fixture-01"
+          ],
+          "Future": false
+        },
+        "MaxResults": 1,
+        "NextToken": "opaque+/=cursor",
+        "SortBy": "CreateTime",
+        "SortOrder": "Desc",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-ListAssetGroups",
+          "Action": "ListAssetGroups",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {
+          "Items": [
+            {
+              "Id": "group-fixture-01",
+              "ProjectName": "studio",
+              "Name": "fictional fixture",
+              "Future": {
+                "flag": false,
+                "empty": null
+              }
+            }
+          ],
+          "NextToken": "next+/=opaque",
+          "Future": null
+        },
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    },
+    {
+      "action": "ListAssets",
+      "request": {
+        "ProjectName": "studio",
+        "Filter": {
+          "GroupType": "AIGC",
+          "GroupIds": [
+            "group-fixture-01"
+          ],
+          "Future": false
+        },
+        "MaxResults": 1,
+        "NextToken": "opaque+/=cursor",
+        "SortBy": "CreateTime",
+        "SortOrder": "Desc",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-ListAssets",
+          "Action": "ListAssets",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {
+          "Items": [
+            {
+              "Id": "asset-fixture-01",
+              "ProjectName": "studio",
+              "Name": "fictional fixture",
+              "Future": {
+                "flag": false,
+                "empty": null
+              },
+              "GroupId": "group-fixture-01",
+              "AssetType": "Video",
+              "Status": "Active",
+              "URL": "https://media.invalid/result?opaque=a%2Fb&expires=43200",
+              "Error": {
+                "Code": "",
+                "Message": ""
+              },
+              "LastInferenceTime": "2026-10-20T01:02:03Z"
+            }
+          ],
+          "NextToken": "next+/=opaque",
+          "Future": null
+        },
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    },
+    {
+      "action": "GetAsset",
+      "request": {
+        "ProjectName": "studio",
+        "Id": "asset-fixture-01",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-GetAsset",
+          "Action": "GetAsset",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {
+          "Id": "asset-fixture-01",
+          "ProjectName": "studio",
+          "Name": "fictional fixture",
+          "Future": {
+            "flag": false,
+            "empty": null
+          },
+          "GroupId": "group-fixture-01",
+          "AssetType": "Video",
+          "Status": "Active",
+          "URL": "https://media.invalid/result?opaque=a%2Fb&expires=43200",
+          "Error": {
+            "Code": "",
+            "Message": ""
+          },
+          "LastInferenceTime": "2026-10-20T01:02:03Z"
+        },
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    },
+    {
+      "action": "GetAssetGroup",
+      "request": {
+        "ProjectName": "studio",
+        "Id": "group-fixture-01",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-GetAssetGroup",
+          "Action": "GetAssetGroup",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {
+          "Id": "group-fixture-01",
+          "ProjectName": "studio",
+          "Name": "fictional fixture",
+          "Future": {
+            "flag": false,
+            "empty": null
+          }
+        },
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    },
+    {
+      "action": "UpdateAssetGroup",
+      "request": {
+        "ProjectName": "studio",
+        "Id": "group-fixture-01",
+        "Name": "renamed fixture",
+        "Description": "changed fixture",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-UpdateAssetGroup",
+          "Action": "UpdateAssetGroup",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {
+          "Id": "group-fixture-01",
+          "Future": false
+        },
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    },
+    {
+      "action": "UpdateAsset",
+      "request": {
+        "ProjectName": "studio",
+        "Id": "asset-fixture-01",
+        "Name": "renamed fixture",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-UpdateAsset",
+          "Action": "UpdateAsset",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {
+          "Id": "asset-fixture-01",
+          "Future": false
+        },
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    },
+    {
+      "action": "DeleteAsset",
+      "request": {
+        "ProjectName": "studio",
+        "Id": "asset-fixture-01",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-DeleteAsset",
+          "Action": "DeleteAsset",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {},
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    },
+    {
+      "action": "DeleteAssetGroup",
+      "request": {
+        "ProjectName": "studio",
+        "Id": "group-fixture-01",
+        "Future": {
+          "zero": 0,
+          "flag": false,
+          "empty": null,
+          "large": 9007199254740993,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "ResponseMetadata": {
+          "RequestId": "offline-DeleteAssetGroup",
+          "Action": "DeleteAssetGroup",
+          "Version": "2024-01-01",
+          "Service": "ark",
+          "Region": "cn-beijing",
+          "Future": false
+        },
+        "Result": {},
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      }
+    }
+  ]
+}

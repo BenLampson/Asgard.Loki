@@ -6,5 +6,6 @@
     <Compile Include="../Shared/StubHttpClientFactory.cs" Link="StubHttpClientFactory.cs" />
     <Compile Include="../Shared/FragmentedReadStream.cs" Link="FragmentedReadStream.cs" />
     <EmbeddedResource Include="../Asgard.Loki.Video.Tests/Fixtures/ark.json" LogicalName="Asgard.Loki.Video.Volcengine.Tests.Fixtures.ark.json" />
+    <EmbeddedResource Include="Fixtures/*.json" />
   </ItemGroup>
 </Project>
