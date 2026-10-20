@@ -6,7 +6,7 @@ Independent image generation/editing contracts, routing and module registration 
 
 Provides `AddImage()`, `.Image.GenerateAsync()` and `.Image.StreamAsync()`. Generation calls snapshot parameters at method invocation, including before stream enumeration. Requests retain arbitrary JSON parameters; results preserve full provider JSON, image data, URLs, usage and metadata. `GeneratedImage.Decode()` decodes Base64 on demand without downloading URL results.
 
-Install providers separately: [OpenAI](../Asgard.Loki.Image.OpenAI/README.md), [Azure](../Asgard.Loki.Image.Azure/README.md) [Volcengine](../Asgard.Loki.Image.Volcengine/README.md) [Ali](../Asgard.Loki.Image.Ali/README.md) and [Google](../Asgard.Loki.Image.Google/README.md) document their own native operation support. This package depends only on the generic abstractions and does not reference LLM or audio.
+Install providers separately: [OpenAI](../Asgard.Loki.Image.OpenAI/README.md), [Azure](../Asgard.Loki.Image.Azure/README.md) [Volcengine](../Asgard.Loki.Image.Volcengine/README.md) [Ali](../Asgard.Loki.Image.Ali/README.md) [Google](../Asgard.Loki.Image.Google/README.md) and [Google Vertex](../Asgard.Loki.Image.GoogleVertex/README.md) document their own native operation support. This package depends only on the generic abstractions and does not reference LLM or audio.
 
 ## Native image editing contracts
 

@@ -43,6 +43,7 @@
     <Project Path="src/Asgard.Loki.Video.Google/Asgard.Loki.Video.Google.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Google/Vertex/">
+    <Project Path="src/Asgard.Loki.Image.GoogleVertex/Asgard.Loki.Image.GoogleVertex.csproj" />
     <Project Path="src/Asgard.Loki.LLM.GoogleVertex/Asgard.Loki.LLM.GoogleVertex.csproj" />
     <Project Path="src/Asgard.Loki.Video.GoogleVertex/Asgard.Loki.Video.GoogleVertex.csproj" />
   </Folder>
@@ -172,6 +173,7 @@
     <Project Path="tests/Asgard.Loki.Video.Vidu.Tests/Asgard.Loki.Video.Vidu.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Volcengine/">
+    <Project Path="tests/Asgard.Loki.Image.GoogleVertex.Tests/Asgard.Loki.Image.GoogleVertex.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Google.Tests/Asgard.Loki.Image.Google.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Ali.Tests/Asgard.Loki.Image.Ali.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Volcengine.Tests/Asgard.Loki.Image.Volcengine.Tests.csproj" />

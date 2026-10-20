@@ -1,5 +1,24 @@
 # Asgard.Loki Architecture Specification
 
+## Native resource-scoped Vertex Image
+
+`Image.GoogleVertex` references only Image, Infrastructure and standard HTTP support. It has no reference to Image.Google, LLM.GoogleVertex or Video.GoogleVertex. GoogleVertexImageAdapter uses existing generation routes plus directly owned complete native requests. The API-Key constructor explicitly accepts a full Google project/location resource or Express publisher resource; the token-source constructor requires a full project resource and stable principal. Root/version/region/resource are explicit and never selected from model names. Mixed key/principal options fail before I/O. The application owns authentication discovery/login/refresh, token source, factory and optional clock.
+
+Each Bearer operation obtains one same-principal immutable token and checks source identity and expiry before sending, including after factory creation. Token expiry after an authorized request does not invalidate the original response. Source configuration drift and cancellation remain checked before delivery. API Key uses x-goog-api-key and never a credential URL; quota project is explicit. Default authentication/quota identities are rejected. JSON and original SSE preserve native images, history/signatures, safety outcomes, unknown fields and usage. Candidate terminal/EOF/disposal boundaries stay provider-local; no generic media coordinator or automatic tool execution is added. Retired Vertex Imagen3/4 predict endpoints are excluded by their official 2026-06-30 discontinuation dates, independently verified on 2026-10-20; this does not change retained Veo calls.
+
+```mermaid
+classDiagram
+GoogleVertexImageAdapter ..|> IImageGenerationAdapter
+GoogleVertexImageAdapter --> VertexImageHttp : explicit resource and constructor auth profile
+VertexImageHttp --> IGoogleVertexImageTokenSource : borrowed only for Bearer
+IGoogleVertexImageTokenSource --> GoogleVertexImageAccessToken : principal and expiry assertions
+VertexImageHttp --> HttpBodyReader : original bytes and EOF
+GoogleVertexImageAdapter --> VertexImageSse : native frames and delayed terminals
+VertexImageSse --> VertexImageLifecycle : candidate and block outcomes
+VertexImageSse --> SseReader : framing only
+GoogleVertexImageAdapter --> ImageGenerationResult : original JSON plus native image views
+```
+
 ## Native Gemini Image provider
 
 `Image.Google` depends only on Image, Infrastructure and standard HTTP factory support. `GoogleImageAdapter` implements existing generation routes and directly owned complete native requests. Native generateContent and streamGenerateContent methods bind a configured unprefixed model ID, version root and independent x-goog-api-key. Full contents/history, image inputs, signed parts and native settings stay untouched; there is no LLM provider dependency, automatic protocol conversion, output-modality default, tool execution or image fetching. Common prompt requests build native user contents; direct native PublicModel is metadata only.
