@@ -1,0 +1,49 @@
+{
+  "source": "Independently authored canonical Workers AI OpenAI-compatible text embedding wire vectors. Account-scoped embeddings path and unchanged model/input follow the fixed source adapter and Cloudflare's official compatibility declaration. These synthetic responses are not captured live service/model results. Native ai/run shape/data envelopes are a different contract.",
+  "reference": "https://developers.cloudflare.com/workers-ai/configuration/open-ai-compatibility/",
+  "profile": {
+    "id": "cloudflare-embedding-explicit",
+    "base_address": "https://cloudflare-embedding.example.invalid/proxy/client/v4/accounts/account-fixture-42/ai/v1/",
+    "endpoint": "https://cloudflare-embedding.example.invalid/proxy/client/v4/accounts/account-fixture-42/ai/v1/embeddings",
+    "model": "@cf/baai/bge-large-en-v1.5",
+    "api_key": "fixture-cloudflare-embedding-token",
+    "http_client_name": "cloudflare-embedding-profile-tests"
+  },
+  "requests": [
+    {
+      "model": "@cf/baai/bge-large-en-v1.5",
+      "input": ["  First text 😀  ", "Second text\n原样"],
+      "future": {"exact": 9007199254740993, "nullable": null, "flag": false}
+    },
+    {
+      "model": "@cf/baai/bge-large-en-v1.5",
+      "input": "Original scalar text  ",
+      "future": {"empty": [], "zero": 0}
+    }
+  ],
+  "responses": [
+    {
+      "object": "list",
+      "data": [
+        {"object": "embedding", "index": 1, "embedding": [0.25, -0.5], "future": false},
+        {"object": "embedding", "index": 0, "embedding": [0.123456789012345678901, 0], "future": null}
+      ],
+      "model": "@cf/baai/bge-large-en-v1.5-native-version",
+      "usage": {"prompt_tokens": 0, "total_tokens": 0, "future": 9007199254740993},
+      "future": {"nullable": null, "flag": false}
+    },
+    {
+      "data": [{"index": 0, "embedding": [0.123456789012345678901, 0]}],
+      "usage": {"future": 9007199254740993},
+      "future": null
+    }
+  ],
+  "http_error": {
+    "success": false,
+    "errors": [{"code": 10000, "message": "Fictional authentication rejection", "future": false}],
+    "messages": [], "result": null,
+    "future": {"exact": 9007199254740993}
+  },
+  "business_error": {"error": {"code": "fictional", "message": "Not vectors", "future": false}},
+  "native_run_envelope": {"result": {"shape": [2,2], "data": [[0.1,0.2],[0.3,0.4]]}, "success": true, "errors": [], "messages": []}
+}
