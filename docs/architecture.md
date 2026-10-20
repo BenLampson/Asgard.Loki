@@ -1,5 +1,27 @@
 # Asgard.Loki Architecture Specification
 
+## Native Ark Image provider
+
+`Image.Volcengine` references only Image, Infrastructure and standard HTTP factory support. VolcengineImageAdapter implements existing IImageGenerationAdapter for prompt-based native generation and original scalar/array image input. Separate directly owned GenerateNativeAsync/StreamNativeAsync accept VolcengineNativeImageRequest for complete supplier JSON, including the concrete native layer-decomposition operation that may omit prompt. This keeps common ImageGenerationRequest prompt validation intact and adds no generic coordinator or new route mode. Direct native PublicModel is only metadata; it does not perform public route selection. Fixed target model/root/Bearer remain bound and independent from LLM/Video.
+
+```mermaid
+classDiagram
+IImageGenerationAdapter <|.. VolcengineImageAdapter
+VolcengineImageAdapter --> VolcengineImageOptions : complete target
+VolcengineImageAdapter --> VolcengineNativeImageRequest : direct original JSON, optional native prompt
+VolcengineImageAdapter --> ArkImagePayload : frozen native JSON
+VolcengineImageAdapter --> ArkImageJson : whole errors versus data item outcomes
+VolcengineImageAdapter --> ArkImageSse : Ark-local event lifecycle
+ArkImageSse --> SseReader : framing only
+VolcengineImageAdapter --> ArkImageReadStream : raw byte and length boundary
+VolcengineImageAdapter --> HttpBodyReader : full original HTTP bytes
+```
+
+No image references are downloaded, opened as paths or normalized into multipart. Unknown parameters, exact integers, null/false/zero, tools and group/layer fields remain original; actual native model always comes from the fixed target. Returned model may resolve an endpoint to a version and stays unchanged in Data. Root native errors use ImageUpstreamException; original data[].error items coexist with successful images, preserving all native model/geometry/usage/unknown fields without arithmetic or overall-success normalization.
+
+SSE uses native partial_succeeded/partial_failed and a payload-free completed summary; image_index identity is preserved and invalid/duplicate indices fail. Per-image failure does not become a whole-stream error. Single-image result+normal EOF can end without a summary; no completed event is invented. Group mode retains partial outcomes incrementally, then requires its native summary or documented terminating internal service failure, without promising max_images outputs. Summary/held single-image frames wait for EOF, raw byte/length checks and all HTTP resource disposal. Original SSE identity and unknown events remain untouched; native complete JSON does not become synthetic SSE. Request bytes freeze before client creation/enumeration, stream instances reject replay and borrowed factories/targets remain application-owned. No task IDs/polling/callbacks/media downloads/tool execution/billing/model catalogs or shared LLM/Audio/Video state. Independent fake-HTTP vectors verify wire and ownership only; real model/feature/pixel/live acceptance remains unverified.
+
+
 ## Native deployment-scoped Azure Image
 
 `Image.Azure` depends only on Image, Infrastructure and standard HTTP factory support. Generation and editing use independent existing Image routes/adapters; there is no dependency on Image.OpenAI, LLM, Audio or an application host. Fixed resource/deployment/version/API Key and optional body model are explicit. The public route never becomes a native model; returned UpstreamModel is the deployment. Literal deployment dots and original version text remain bound to the target.

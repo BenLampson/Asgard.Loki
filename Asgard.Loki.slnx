@@ -81,6 +81,7 @@
     <Project Path="src/Asgard.Loki.Video.Vidu/Asgard.Loki.Video.Vidu.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Volcengine/">
+    <Project Path="src/Asgard.Loki.Image.Volcengine/Asgard.Loki.Image.Volcengine.csproj" />
     <Project Path="src/Asgard.Loki.Audio.Volcengine/Asgard.Loki.Audio.Volcengine.csproj" />
     <Project Path="src/Asgard.Loki.LLM.Volcengine/Asgard.Loki.LLM.Volcengine.csproj" />
     <Project Path="src/Asgard.Loki.Video.Volcengine/Asgard.Loki.Video.Volcengine.csproj" />
@@ -169,6 +170,7 @@
     <Project Path="tests/Asgard.Loki.Video.Vidu.Tests/Asgard.Loki.Video.Vidu.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Volcengine/">
+    <Project Path="tests/Asgard.Loki.Image.Volcengine.Tests/Asgard.Loki.Image.Volcengine.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Audio.Volcengine.Tests/Asgard.Loki.Audio.Volcengine.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.Volcengine.Tests/Asgard.Loki.LLM.Volcengine.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Video.Volcengine.Tests/Asgard.Loki.Video.Volcengine.Tests.csproj" />

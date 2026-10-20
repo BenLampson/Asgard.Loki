@@ -6,7 +6,7 @@ Independent image generation/editing contracts, routing and module registration 
 
 Provides `AddImage()`, `.Image.GenerateAsync()` and `.Image.StreamAsync()`. Generation calls snapshot parameters at method invocation, including before stream enumeration. Requests retain arbitrary JSON parameters; results preserve full provider JSON, image data, URLs, usage and metadata. `GeneratedImage.Decode()` decodes Base64 on demand without downloading URL results.
 
-Install providers separately: [OpenAI](../Asgard.Loki.Image.OpenAI/README.md) and [Azure](../Asgard.Loki.Image.Azure/README.md) document their own native operation support. This package depends only on the generic abstractions and does not reference LLM or audio.
+Install providers separately: [OpenAI](../Asgard.Loki.Image.OpenAI/README.md), [Azure](../Asgard.Loki.Image.Azure/README.md) and [Volcengine](../Asgard.Loki.Image.Volcengine/README.md) document their own native operation support. This package depends only on the generic abstractions and does not reference LLM or audio.
 
 ## Native image editing contracts
 
@@ -48,3 +48,5 @@ Both operations return the existing ImageGenerationResult because the native ima
 96 offline core tests use custom in-memory adapters, authored complete JSON request/result fixtures and observed nonseekable streams. They verify snapshots, unknown/native fields, image/mask order and role, repeated fields, independent client/operation/model selection, no retry/failover, optional streaming gates, borrowed ownership, cancellation and success-after-source-end/disposal. They do not encode actual HTTP multipart, call OpenAI, decode real media or prove mask/pixel/model behavior.
 
 The bundled OpenAI provider implements generation and separate native JSON/multipart nonstream and SSE editing via OpenAiImageEditAdapter; see its README for initialization, exact native fields and 119 nonstream plus 132 SSE editing cases. ImageEditUpstreamException preserves native error bytes/status/content type and optional original EditEvent for SSE failures. Generation keeps ImageUpstreamException and adds original byte/content-type/GenerationEvent access; its native JSON/SSE boundaries have 94 additional provider regressions. Variations remain unimplemented. The 96 core cases above do not substitute for provider wire or live image verification.
+
+[Volcengine](../Asgard.Loki.Image.Volcengine/README.md) keeps Ark native image references/group/layer JSON, mixed image-level errors and distinct SSE outcomes. Its explicitly owned supplier-native request also represents omitted prompt without changing the common required-prompt convenience request; direct native calls do not select public routes. No per-image failure or summary is projected into another supplier protocol.
