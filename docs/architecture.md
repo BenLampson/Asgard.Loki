@@ -153,6 +153,24 @@ No image references are downloaded, opened as paths or normalized into multipart
 SSE uses native partial_succeeded/partial_failed and a payload-free completed summary; image_index identity is preserved and invalid/duplicate indices fail. Per-image failure does not become a whole-stream error. Single-image result+normal EOF can end without a summary; no completed event is invented. Group mode retains partial outcomes incrementally, then requires its native summary or documented terminating internal service failure, without promising max_images outputs. Summary/held single-image frames wait for EOF, raw byte/length checks and all HTTP resource disposal. Original SSE identity and unknown events remain untouched; native complete JSON does not become synthetic SSE. Request bytes freeze before client creation/enumeration, stream instances reject replay and borrowed factories/targets remain application-owned. No task IDs/polling/callbacks/media downloads/tool execution/billing/model catalogs or shared LLM/Audio/Video state. Independent fake-HTTP vectors verify wire and ownership only; real model/feature/pixel/live acceptance remains unverified.
 
 
+## Native Jimeng Visual Image
+
+`JimengImageAdapter` implements the existing Image generation contract within `Image.Volcengine`, alongside the separate Ark adapter. It owns a fixed root `CVProcess` POST/version, explicit `RequestKey`, independent AK/SK/optional security token and per-call UTC signature. It references only Image, Infrastructure and standard HTTP support; no Video/LLM package, coordinator or credential binding is reused. The application lends the factory and optional `TimeProvider`; each call owns and disposes its HTTP resources. No new capability abstraction or dependency edge is required.
+
+```mermaid
+classDiagram
+IImageGenerationAdapter <|.. JimengImageAdapter
+JimengImageAdapter --> JimengImageOptions : complete signed target
+JimengImageAdapter --> JimengImagePayload : frozen native request bytes
+JimengImageAdapter --> JimengImageSigner : fixed Visual signing scope
+JimengImageAdapter --> TimeProvider : borrowed UTC clock
+JimengImageAdapter --> HttpBodyReader : bounded original bytes and EOF
+JimengImageAdapter --> JimengImageJson : native code and independent arrays
+ImageGenerationResult --> GeneratedImage : original string item views
+```
+
+Public route `Model` is metadata; actual native `req_key` comes only from the complete target. Prompt and root extensions retain exact JSON semantics without default return format/size/switch injection. Root non-10000 codes and native signature/API errors preserve the original bytes/status/content type. `Data` retains all original envelope/algorithm/request IDs/time/status/unknown fields. Base64 and URL arrays retain separate original order, are never paired, and expose original JSON string items through explicit Image views. No fabricated timestamps/images, decoding, downloads, automatic retries, SSE or asynchronous task/polling service is introduced. Native success is published only after full byte/length/read/disposal/cancellation boundaries. Availability remains specific to the explicit service identifier and account; phased-out services are not automatically migrated.
+
 ## Native deployment-scoped Azure Image
 
 `Image.Azure` depends only on Image, Infrastructure and standard HTTP factory support. Generation and editing use independent existing Image routes/adapters; there is no dependency on Image.OpenAI, LLM, Audio or an application host. Fixed resource/deployment/version/API Key and optional body model are explicit. The public route never becomes a native model; returned UpstreamModel is the deployment. Literal deployment dots and original version text remain bound to the target.

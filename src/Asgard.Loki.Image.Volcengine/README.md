@@ -1,6 +1,6 @@
 # Asgard.Loki.Image.Volcengine
 
-Native Ark `images/generations` JSON and SSE within the independent Image capability. The package references only Image, Infrastructure and standard HTTP factory support. No Video/LLM state or credentials, gateway tasks, billing, polling, file service or media downloader are involved.
+Native Ark `images/generations` JSON/SSE and independently signed Jimeng Visual `CVProcess` JSON within the independent Image capability. The package references only Image, Infrastructure and standard HTTP factory support. No Video/LLM state or credentials, gateway tasks, billing, polling, file service or media downloader are involved.
 
 ## Support matrix
 
@@ -9,6 +9,7 @@ Native Ark `images/generations` JSON and SSE within the independent Image capabi
 | Text/image-input generation | `.Image.GenerateAsync` / `.StreamAsync` with `VolcengineImageAdapter` | Fixed actual model and Bearer target; original `image` string/array, group settings and JSON/SSE |
 | Full native JSON including omitted prompt for layer decomposition | `adapter.GenerateNativeAsync(VolcengineNativeImageRequest)` / `.StreamNativeAsync` | Direct call on that fixed target; explicit PublicModel is metadata, not a module route selection |
 | JSON complete results | Native `data[]` | Original successful images and per-image error items, URL/Base64, layer metadata, tools, usage and unknown fields |
+| Jimeng Visual synchronous image generation | `.Image.GenerateAsync` with `JimengImageAdapter` | Explicit `req_key`, root POST `Action=CVProcess&Version=2022-08-31`, independent AK/SK and optional security token; full original JSON |
 | Native SSE | `partial_succeeded`, `partial_failed`, `completed` | Per-image identity/errors and final summary retained, with no OpenAI/Azure event projection |
 
 The [native API](https://console.volcengine.com/ark/region:cn-beijing/docs/image-generation-api) uses the same JSON endpoint for text, image references and native layer settings. Input references are caller-provided HTTP(S) URLs or lowercase-format Base64 data URIs; no reference is downloaded, opened as a path or converted to multipart. Model-specific feature acceptance stays with Ark: the SDK has no model catalog, suffix inference or capability-default injection.
@@ -70,6 +71,38 @@ Complete `Data` keeps mixed data[].error items, layer geometry/name/order, nativ
 
 `MaxRequestBytes` defaults to 32 MiB; `MaxResponseBytes` defaults to 64 MiB for a complete raw response/error or SSE exchange. Invalid UTF-8/ambiguous JSON, protocol association, length/read/disposal errors and cancellation fail explicitly. The application owns targets and factory; each call owns its own HTTP resources. No automatic retry, reconnect or target switch occurs.
 
+## Jimeng Visual synchronous generation
+
+`JimengImageAdapter` uses the same existing Image generation route with a separate complete native target:
+
+```csharp
+var jimeng = new JimengImageAdapter(httpClientFactory, new()
+{
+    Id = "jimeng-images",
+    RequestKey = selectedNativeRequestKey,
+    AccessKeyId = imageAccessKey,
+    SecretAccessKey = imageSecretKey,
+    // SecurityToken = suppliedTemporaryCredentialToken,
+    BaseAddress = new Uri("https://visual.volcengineapi.com/")
+});
+// Register jimeng as a target of an Image route, then call Image.GenerateAsync.
+var result = await jimeng.GenerateAsync(new()
+{
+    Model = "pictures", Prompt = "A paper boat on a blue lake",
+    Parameters = new()
+    {
+        ["return_url"] = System.Text.Json.JsonSerializer.SerializeToElement(true),
+        ["use_pre_llm"] = System.Text.Json.JsonSerializer.SerializeToElement(false)
+    }
+}, cancellationToken);
+```
+
+The [official Visual SDK](https://github.com/volcengine/volc-sdk-python/blob/master/volcengine/visual/VisualService.py) defines this root POST, version and `cn-north-1` / `cv` signing scope. The optional constructor `TimeProvider` is borrowed for per-call UTC signatures. Request bytes are frozen before factory creation/signing. AK/SK/token are independent options and excluded from default configuration JSON. The caller manages temporary-credential expiry; the SDK does not discover or refresh credentials. Use a dedicated named client without retries, hedging or redirects.
+
+**Availability checked 2026-10-20:** the official [Jimeng image service page](https://docs.volcengine.com/docs/JimengAI/JimengAI-imagegenerationbillinginstructions?lang=zh) labels image 2.1 as being phased out. Protocol support does not establish availability for a selected `req_key` or account. Supply the actual permitted service identifier explicitly; no model default/catalog, automatic fallback or migration to a different synchronous/asynchronous API is supplied. This adapter covers `CVProcess`, with no SSE, asynchronous task service or multipart conversion.
+
+`req_key` comes only from the target, while public `Model` labels route metadata. The original prompt and all extra native JSON, including image reference arrays, seed/size, zero/false/null, watermark and unknown settings, remain unchanged. No return format or defaults are inserted. HTTP errors and native non-10000 codes/signature errors retain complete bytes/status/content type in `ImageUpstreamException`. On success, `Data` keeps the entire native envelope, including `status`, `time_elapsed`, root/nested request IDs and `rephraser_result`. `Images` exposes Base64 array items followed by URL array items, preserving the order of each array; the arrays are independent and are never zipped or deduplicated. Each view's `Data` is its original JSON string. No local timestamp, image payload, decoding, media download or usage arithmetic is added. Empty native arrays remain empty. Complete results wait for EOF, length/byte limits, disposal and cancellation checks.
+
 ## Verification
 
-39 xUnit v3 fake-HTTP cases using independent complete JSON/SSE vectors cover scalar/array references, native omitted prompt, full mixed/layer results, group partial failures, single-image EOF, identity/order, snapshots, overall errors, byte/length/cancellation/disposal boundaries and no replay. No real Ark model/endpoint, image quality, feature acceptance, pixel validity or live availability has been verified. This package has no live-test environment variables.
+75 xUnit v3 fake-HTTP cases (39 Ark and 36 Jimeng) using independent complete JSON/SSE vectors cover scalar/array references, native omitted prompt, full mixed/layer results, group partial failures, single-image EOF, identity/order, snapshots, overall errors, byte/length/cancellation/disposal boundaries and no replay. Independent Jimeng exact-byte signing vectors include permanent and temporary credentials, original arrays/metadata, native errors and resource boundaries. No real Ark/Jimeng model/endpoint, image quality, feature acceptance, pixel validity or live availability has been verified. This package has no live-test environment variables.

@@ -39,7 +39,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 图片编辑 | `Asgard.Loki.Image.XAI` | xAI 原生单图／有序多图 JSON 引用，保留完整结果 | 独立编辑路由，不转换 multipart 或管理文件 |
 | 图片 | `Asgard.Loki.Image.Zhipu` | 智谱 v4 原生图片生成，保留图片字段别名、审核、时间戳和元数据 | 完整原生 JSON，不下载图片或补造元数据 |
 | 图片 | `Asgard.Loki.Image.Azure` | 原生日期版本部署路径；JSON 生成及 multipart 编辑；保留完整图片、过滤信息和用量 | 原生生成／编辑 SSE；保留逐图事件与整次编辑完成标志 |
-| 图片 | `Asgard.Loki.Image.Volcengine` | 原生方舟生成／图像输入、无提示词图层原生入口；保留混合结果 | 保留逐图成功／失败与汇总 SSE；支持单图原生 EOF |
+| 图片 | `Asgard.Loki.Image.Volcengine` | 原生方舟生成／图像输入和无提示词图层；独立即梦 Visual CVProcess 签名 JSON | 保留逐图成功／失败与汇总 SSE；支持单图原生 EOF |
 | 图片 | `Asgard.Loki.Image.Ali` | 原生多模态 JSON／图文 SSE；显式现代与旧版图片异步提交 | 单次任务查询，保留文本／图片／用量／失败 |
 | 图片 | `Asgard.Loki.Image.Google` | Gemini 原生图片生成／编辑输入；保留内联图片、签名与安全结果 | 原生 SSE、候选终态及用量元数据 |
 | 图片 | `Asgard.Loki.Image.GoogleVertex` | 显式 Vertex 项目／Express 资源及 Bearer／API Key 认证；保留图片与安全结果 | 原生 Gemini JSON／SSE，保留终态与用量 |

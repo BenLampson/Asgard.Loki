@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Native Ark JSON image generation and original SSE events for Asgard.Loki.</Description>
+    <Description>Native Ark JSON/SSE and independently signed Jimeng Visual image generation for Asgard.Loki.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Asgard.Loki.Image/Asgard.Loki.Image.csproj" />

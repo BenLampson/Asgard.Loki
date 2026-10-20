@@ -9,10 +9,12 @@ internal sealed class ArkTestFactory : HttpMessageHandler, IHttpClientFactory
     internal bool Disposed { get; private set; }
     internal Action? OnCreate { get; set; }
     internal Action? OnDisposeClient { get; set; }
+    internal Action<HttpClient>? ConfigureClient { get; set; }
+    internal string? ClientName { get; private set; }
     internal Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> OnSend { get; set; }
         = (_, _) => Task.FromResult(ArkFixture.Json(ArkFixture.Part("success")));
     public HttpClient CreateClient(string name)
-    { Creates++; OnCreate?.Invoke(); return new ArkTestClient(this, () => { Disposals++; OnDisposeClient?.Invoke(); }); }
+    { Creates++; ClientName = name; OnCreate?.Invoke(); var client = new ArkTestClient(this, () => { Disposals++; OnDisposeClient?.Invoke(); }); ConfigureClient?.Invoke(client); return client; }
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, CancellationToken token)
     { Calls++; return OnSend(message, token); }
     protected override void Dispose(bool disposing) { Disposed = true; base.Dispose(disposing); }
