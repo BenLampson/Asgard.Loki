@@ -1,0 +1,156 @@
+{
+  "requests": [
+    {
+      "model": "native-fixture-model",
+      "input": {
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "保留原始文字"
+              },
+              {
+                "image": "https://input.example.invalid/a%2Fb.png?sig=A%2BB&x=1"
+              }
+            ]
+          }
+        ]
+      },
+      "parameters": {
+        "n": 1,
+        "watermark": false,
+        "seed": 9007199254740993,
+        "future": null
+      },
+      "future": {
+        "zero": 0
+      }
+    },
+    {
+      "model": "native-fixture-model",
+      "input": {
+        "prompt": "legacy",
+        "negative_prompt": "blur"
+      },
+      "parameters": {
+        "n": 2
+      }
+    },
+    {
+      "model": "native-fixture-model",
+      "input": {
+        "prompt": "edit",
+        "base_image_url": "https://input.example.invalid/base.png",
+        "function": "description_edit_with_mask",
+        "mask_image_url": "data:image/png;base64,AQID"
+      },
+      "parameters": {
+        "strength": 0
+      }
+    }
+  ],
+  "success": {
+    "request_id": "req-fixture",
+    "output": {
+      "finished": true,
+      "choices": [
+        {
+          "index": 2,
+          "finish_reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "text": "说明"
+              },
+              {
+                "image": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+                "type": "image",
+                "future": false
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "usage": {
+      "image_count": 1,
+      "input_tokens": 9007199254740993
+    },
+    "future": null
+  },
+  "tasks": [
+    {
+      "request_id": "submit",
+      "output": {
+        "task_id": "task/fixture?x=1",
+        "task_status": "PENDING"
+      },
+      "future": false
+    },
+    {
+      "request_id": "query",
+      "output": {
+        "task_id": "task/fixture?x=1",
+        "task_status": "SUCCEEDED",
+        "choices": [
+          {
+            "index": 2,
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": [
+                {
+                  "text": "说明"
+                },
+                {
+                  "image": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+                  "type": "image",
+                  "future": false
+                }
+              ]
+            }
+          }
+        ],
+        "submit_time": "2026-10-20 10:00:00",
+        "future": null
+      },
+      "usage": {
+        "image_count": 1
+      }
+    },
+    {
+      "request_id": "failed",
+      "output": {
+        "task_id": "task/fixture?x=1",
+        "task_status": "FAILED",
+        "code": "InputDataError",
+        "message": "fixture failure",
+        "results": [
+          {
+            "url": "https://result.example.invalid/partial.png"
+          }
+        ]
+      }
+    },
+    {
+      "output": {
+        "task_id": "task/fixture?x=1",
+        "task_status": "SUCCEEDED",
+        "results": [
+          {
+            "url": "https://result.example.invalid/legacy.png",
+            "future": false
+          }
+        ]
+      }
+    }
+  ],
+  "error": {
+    "request_id": "bad",
+    "code": "InvalidParameter",
+    "message": "fixture error",
+    "future": 9007199254740993
+  }
+}

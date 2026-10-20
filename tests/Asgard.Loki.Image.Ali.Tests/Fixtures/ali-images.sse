@@ -1,0 +1,15 @@
+event: result
+id: event-0
+retry: 500
+data: {"request_id":"stream-id","output":{"finished":true,"choices":[{"index":2,"finish_reason":null,"message":{"role":"assistant","content":[{"text":"first"}]}},{"index":7,"finish_reason":"null","message":{"role":"assistant","content":[{"text":"second"}]}}]},"usage":{"input_tokens":9}}
+
+event: result
+id: event-1
+retry: 500
+data: {"request_id":"stream-id","output":{"finished":true,"choices":[{"index":7,"finish_reason":"stop","message":{"content":[{"image":"https://result.example.invalid/7.png","future":null}]}}]},"usage":{"input_tokens":9,"output_tokens":4}}
+
+event: result
+id: event-2
+retry: 500
+data: {"request_id":"stream-id","output":{"finished":true,"choices":[{"index":2,"finish_reason":"stop","message":{"content":[{"text":"last"}]}}]},"usage":{"input_tokens":9,"output_tokens":6},"future":false}
+
