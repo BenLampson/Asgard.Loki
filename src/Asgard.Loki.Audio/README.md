@@ -2,6 +2,29 @@
 
 Independent audio capability for Asgard.Loki.
 
+## Native audio tasks
+
+Optional `AudioOptions.TaskRoutes` exposes `.Audio.Tasks.SubmitAsync`, `GetAsync`, `GetBatchAsync` and `GetResultAsync`. Register application-owned `IAudioTaskAdapter` targets independently of speech/transcription/translation. `AudioTaskRequest.Model` selects a public route; `Operation` explicitly names the supplier operation (for example `MUSIC` or `LYRICS`), and `Parameters` retains supplier-native JSON. The core implements no supplier protocol by itself.
+
+```csharp
+IAudioTaskAdapter target = applicationOwnedMusicAdapter;
+await using var loki = new LokiClientBuilder().AddAudio(new()
+{
+    TaskRoutes = [new() { Model = "music", Targets = [target] }]
+}).Build();
+var submitted = await loki.Audio.Tasks.SubmitAsync(new()
+{
+    Model = "music", Operation = "MUSIC",
+    Parameters = new() { ["prompt"] = "Original lyrics" }
+}, cancellationToken);
+// Persist submitted.Reference; query explicitly when the application needs an update.
+var current = await loki.Audio.Tasks.GetAsync(submitted.Reference, cancellationToken);
+```
+
+The serialized reference binds the public route, complete target configuration, native task ID and operation. Queries restore that target without selection/retry/failover; configuration drift or a different returned task/operation fails. Adapters must include server, actual model, credential identity and adapter implementation in their stable `BindingIdentity`. Original JSON is cloned, including unknown fields, exact numbers, nulls and native status/error/media fields. The core rejects duplicate JSON fields, invalid Unicode and root `model` overrides. Adapter ownership stays with the application.
+
+Batch queries require optional `IAudioBatchTaskAdapter` and the same complete target/public route, with distinct task IDs; mixed native operations are allowed. There is no per-task fallback loop. Returned tasks follow requested order, `MissingReferences` reports omissions, and `Data` preserves the original native envelope/order. Extra/duplicate/wrong-operation results fail. Optional `IAudioTaskResultAdapter` exposes a separate result-only endpoint: `AudioTaskResult` has original `Data` and the reference, without a guessed state. A media URL or partial result does not establish completion; unknown states remain nonterminal. No background polling, callback listener, media download, rendering or music billing is added. Offline core tests verify these contracts; no live music generation or supplier acceptance is claimed.
+
 Provides `AddAudio()`, `.Audio.Speech.GenerateAsync()` and `.StreamAsync()`. Public speech routes select explicitly configured adapter targets. Audio aggregation preserves byte order, subtitles, usage and unknown provider metadata, and requires an explicit completion marker.
 
 Optional `.Audio.Speech.GenerateNativeAsync()` / `.StreamNativeAsync()` accept a `NativeSpeechRequest`: the public route `Model` plus supplier-native JSON `Parameters`. Adapters opt in through `INativeSpeechAdapter`; existing `ISpeechAdapter` implementations are unchanged. Existing custom `ISpeechClient` implementations remain source compatible through default unsupported native methods. The native aggregate `NativeSpeechResult` contains ordered bytes and frames without inventing a vendor-default audio format.
@@ -45,7 +68,7 @@ These clients send audio files as inputs to transcription/translation requests. 
 
 [Azure native audio](../Asgard.Loki.Audio.Azure/README.md) separately binds a resource root/deployment/API version/API Key for JSON speech and multipart transcription/translation. Public route, native deployment and optional configured body model remain separate. Raw results/HTTP speech metadata and upload ownership are preserved; this provider does not borrow LLM credentials or introduce a shared business coordinator.
 
-`AudioOptions` can configure SpeechRoutes, TranscriptionRoutes and TranslationRoutes independently; at least one operation must have a route. Accessing an unconfigured operation fails. Existing speech initialization and interfaces continue to work. File-operation routes/targets are snapshotted at registration; each client, file operation and model route has its own selection state. There is no Session, shared LLM routing, filtering, retry, failover or fallback to another Audio operation.
+`AudioOptions` can configure SpeechRoutes, TranscriptionRoutes, TranslationRoutes and TaskRoutes independently; at least one operation must have a route. Accessing an unconfigured operation fails. Existing speech initialization and interfaces continue to work. File-operation routes/targets are snapshotted at registration; each client, file operation and model route has its own selection state. There is no Session, shared LLM routing, filtering, retry, failover or fallback to another Audio operation.
 
 ```csharp
 using Asgard.Loki;

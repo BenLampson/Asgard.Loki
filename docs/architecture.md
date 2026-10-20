@@ -1,5 +1,31 @@
 # Asgard.Loki Architecture Specification
 
+## Independent native Audio tasks
+
+`AudioOptions.TaskRoutes` adds optional task registration alongside independent speech, transcription and translation routes. `AudioTaskClient` owns only Audio task selection/association; no Video/LLM reference or shared business coordinator is introduced. Provider packages implement the Audio contracts and own their HTTP/protocol state. The capability core implements no supplier operation by itself.
+
+```mermaid
+classDiagram
+AudioClient --> AudioTaskClient : optional Tasks
+AudioOptions --> AudioTaskRoute : TaskRoutes
+AudioTaskRoute --> IAudioTaskAdapter : complete targets
+AudioTaskClient --> AudioTaskRequest : explicit native Operation + JSON
+AudioTaskClient --> AudioTaskReference : route + target digest + operation + task ID
+IAudioTaskAdapter <|-- IAudioBatchTaskAdapter
+IAudioTaskAdapter <|-- IAudioTaskResultAdapter
+IAudioTaskAdapter --> AudioTaskSnapshot : original native object + explicit state
+IAudioBatchTaskAdapter --> AudioTaskBatchSnapshot : actual returned tasks + native envelope
+AudioTaskClient --> AudioTaskBatchResult : requested order + MissingReferences
+IAudioTaskResultAdapter --> AudioTaskResult : original result without inferred state
+```
+
+Only first submission selects one complete target. References scope a SHA-256 configuration digest to the public route, stable target/credential/model/adapter identity and explicit native operation. Registration snapshots route/target collections; query restores the original target and checks configuration before and after I/O. No filtering, automatic retry, failover, Session/cache or cross-capability state is added. Targets remain application-owned. Restored equivalent configurations can query persisted references; removed/changed targets and different returned IDs/operations fail.
+
+Requests snapshot native JSON before dispatch, preserving exact numbers, nulls, nested fields and Unicode while rejecting duplicate fields, invalid Unicode and public model overrides. Snapshots clone complete original JSON and retain native status/error/media fields; unknown/submitted/running states are nonterminal. Native result validity and lifecycle interpretation belong to providers. Calls verify cancellation and association before exposing results.
+
+Optional native batch support permits mixed operations only on one complete target/public route with distinct task IDs. Results are associated in request order; missing tasks are reported separately, without synthetic windows, while native envelope/order remain unchanged in Data. Extra/duplicate/wrong-operation returns fail, and unsupported batch does not become sequential requests. An optional separate raw-result method returns a cloned native object plus reference without inferred state. Media addresses, partial tracks or lyrics alone cannot imply terminal success. All methods are explicit one-shot operations; no polling, callback server, media download/rendering or billing. Verification uses offline application-owned adapter doubles; no live music acceptance is claimed.
+
+
 ## Native Azure deployment-scoped audio
 
 `Audio.Azure` depends only on Audio, Infrastructure and standard HTTP factory support. `AzureSpeechAdapter` and `AzureAudioFileAdapter` implement existing Audio contracts. Both own their protocol/response flows; a private same-capability `AzureAudioTarget` only validates fixed URI/identity values and builds headers. There is no common LLM/Audio/Video coordinator or cross-provider reference.
@@ -1295,7 +1321,7 @@ OpenAiTranscriptionSse --> OpenAiTranscriptionState : bounded per-call segment i
 AudioFileUpstreamException --> AudioTranscriptionEvent : optional original error event
 ```
 
-AudioOptions has independent optional SpeechRoutes, TranscriptionRoutes and TranslationRoutes; at least one must be configured. Existing speech initialization/interfaces stay compatible, and accessing an unconfigured operation fails. File configurations/target arrays are copied at registration. Each file-operation client/model route owns its selection state, selecting one complete adapter without retry/failover or shared conversational Session. Stream requests validate every target's optional streaming support before selection; no target filtering occurs.
+AudioOptions has independent optional SpeechRoutes, TranscriptionRoutes, TranslationRoutes and TaskRoutes; at least one must be configured. Existing speech initialization/interfaces stay compatible, and accessing an unconfigured operation fails. File configurations/target arrays are copied at registration. Each file-operation client/model route owns its selection state, selecting one complete adapter without retry/failover or shared conversational Session. Stream requests validate every target's optional streaming support before selection; no target filtering occurs.
 
 AudioFileRequest snapshots route/file metadata and literal text fields while borrowing the original stream at its current position. Streams are excluded from JSON serialization and validated as readable at dispatch. The core never opens filenames, inspects length/position, buffers/rewinds uploads or closes borrowed streams/targets. Native repeated part names, order, empty/raw values and nested/array part syntax remain unchanged. Root model/file overrides, null fields/values and header controls fail locally; native multipart encoding and semantic field validation belong to the provider. AudioFileResult copies raw response bytes and content type without inventing a transcript schema; adapters validate native success/error/format rules. AudioTranscriptionEvent clones full JSON/SSE identity and carries the adapter's protocol completion marker. The core holds at most the original terminal until enumeration/disposal succeeds; extra/missing terminals, tail errors or cancellation cannot first expose success. It does not merge deltas, map supplier timestamps/speakers, guess completion names, or add translation streaming without a native contract. Eighty-four offline file tests complement the 38 speech tests; these 122 core tests do not certify HTTP multipart or a live recognizer.
 

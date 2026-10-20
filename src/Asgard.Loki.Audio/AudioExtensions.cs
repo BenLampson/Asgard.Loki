@@ -14,13 +14,16 @@ public static class AudioExtensions
             ArgumentNullException.ThrowIfNull(builder);
             ArgumentNullException.ThrowIfNull(options); ArgumentNullException.ThrowIfNull(options.SpeechRoutes);
             ArgumentNullException.ThrowIfNull(options.TranscriptionRoutes); ArgumentNullException.ThrowIfNull(options.TranslationRoutes);
-            if (options.SpeechRoutes.Count == 0 && options.TranscriptionRoutes.Count == 0 && options.TranslationRoutes.Count == 0)
+            ArgumentNullException.ThrowIfNull(options.TaskRoutes);
+            if (options.SpeechRoutes.Count == 0 && options.TranscriptionRoutes.Count == 0 && options.TranslationRoutes.Count == 0 && options.TaskRoutes.Count == 0)
                 throw new ArgumentOutOfRangeException(nameof(options), "至少配置一种 Audio 操作的路由。");
             var speech = options.SpeechRoutes.Count > 0 ? new SpeechClient(options) : null;
             var files = new AudioFileConfiguration(options);
+            var tasks = new AudioTaskConfiguration(options.TaskRoutes);
             return builder.AddModule(() => new AudioClient(speech,
                 files.TranscriptionRoutes.Count > 0 ? new AudioTranscriptionClient(files) : null,
-                files.TranslationRoutes.Count > 0 ? new AudioTranslationClient(files) : null));
+                files.TranslationRoutes.Count > 0 ? new AudioTranslationClient(files) : null,
+                tasks.Routes.Count > 0 ? new AudioTaskClient(tasks) : null));
         }
     }
 

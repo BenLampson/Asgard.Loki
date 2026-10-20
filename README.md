@@ -14,6 +14,8 @@ The architecture contract, UML, dependency rules and provider extension requirem
 Native protocols preserve original parameters, results and unknown fields. Explicit [protocol conversion](src/Asgard.Loki.LLM.Conversion/README.md) supports its documented reliable subset, including bounded opt-in Chat/Gemini candidate streams; unsupported mappings fail explicitly. [Realtime](src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket) is caller-driven. [Video](src/Asgard.Loki.Video/README.md) provides independent native task contracts and persistent complete-target references; the [Ark](src/Asgard.Loki.Video.Volcengine/README.md), [DashScope](src/Asgard.Loki.Video.Ali/README.md) and [Gemini Veo](src/Asgard.Loki.Video.Google/README.md) providers submit and query native video generation tasks. Video snapshots optionally retain raw HTTP metadata and explicitly distinguish an empty HTTP 202 from native JSON; see the [result contract](src/Asgard.Loki.Video/README.md).
 
 
+Optional [native Audio task contracts](src/Asgard.Loki.Audio/README.md#native-audio-tasks) provide explicit submission, bound status queries, native batch queries and result-only retrieval through application-owned adapters. Missing batch tasks remain explicit; media presence never implies completion. The core supplies no native music protocol by itself.
+
 ## Supported capabilities
 
 Fine-tuning jobs and general provider file management (upload/list/retrieve/download/delete as independent operations) are **not implemented**. Existing audio/image uploads supply inputs to transcription, translation or image editing requests.
