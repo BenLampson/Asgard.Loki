@@ -1,0 +1,17 @@
+id: transport-ark
+retry: 0
+event: native.chat
+data: {"id":"chat-ark-a","object":"chat.completion.chunk","model":"reported-model","choices":[{"index":0,"delta":{"role":"assistant","content":null,"reasoning_content":"原生思考","tool_calls":[{"index":1,"id":"call-b","type":"function","function":{"name":"lookup","arguments":""}},{"index":0,"id":"call-a","type":"function","function":{"name":"lookup","arguments":""}}]},"finish_reason":null}],"usage":null}
+
+data: {"id":"chat-ark-a","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"x\":1}"}}]},"finish_reason":null}]}
+
+data: {"id":"chat-ark-a","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{\"x\":2}"}}]},"finish_reason":null}]}
+
+data: {"id":"chat-ark-a","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"future":{"empty":[],"value":null}}
+
+data: {"id":"chat-ark-a","choices":[],"usage":{"prompt_tokens":0,"completion_tokens":2,"total_tokens":2,"completion_tokens_details":{"reasoning_tokens":1}},"future":{"exact":9007199254740993}}
+
+data: {"type":"vendor.future","id":"business-not-response","response":{"id":"also-business","status":"failed"},"flags":[false,null]}
+
+data: [DONE]
+

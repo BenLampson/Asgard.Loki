@@ -1,0 +1,10 @@
+[
+{"type":"response.created","response":{"id":"response-ark-a","status":"in_progress","output":[]}},
+{"type":"response.reasoning_summary_text.delta","response_id":"response-ark-a","item_id":"rs-a","output_index":0,"summary_index":0,"delta":"原生思考"},
+{"type":"response.output_item.added","response_id":"response-ark-a","output_index":1,"item":{"type":"function_call","id":"fc-a","call_id":"call-a","name":"lookup","arguments":""}},
+{"type":"response.function_call_arguments.delta","response_id":"response-ark-a","item_id":"fc-a","output_index":1,"delta":"{\"x\":1}"},
+{"type":"response.function_call_arguments.done","response_id":"response-ark-a","item_id":"fc-a","output_index":1,"arguments":"{\"x\":1}"},
+{"type":"response.output_item.done","response_id":"response-ark-a","output_index":1,"item":{"type":"function_call","id":"fc-a","call_id":"call-a","name":"lookup","arguments":"{\"x\":1}","status":"completed"}},
+{"type":"response.incomplete","response":{"id":"response-ark-a","status":"incomplete","incomplete_details":{"reason":"length"},"output":[{"type":"reasoning","id":"rs-a","encrypted_content":"opaque-ark-signed","summary":[]},{"type":"function_call","id":"fc-a","call_id":"call-a","name":"lookup","arguments":"{\"x\":1}","status":"completed"}],"usage":{"input_tokens":0,"output_tokens":1},"future":{"exact":9007199254740993,"null":null}}},
+{"type":"vendor.future","response":{"id":"business-not-response","status":"failed"},"value":false}
+]
