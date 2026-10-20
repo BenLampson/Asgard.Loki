@@ -42,6 +42,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Images | `Asgard.Loki.Image.OpenAI` | OpenAI image generations and native JSON/multipart edits; Base64 and URL results | Native generation/edit SSE partial/final events |
 | Compatible image generation | `Asgard.Loki.Image.OpenAI` | Explicit xAI native complete JSON profile with independent root/model/key and original data[] results | Verified offline; xAI editing uses a distinct native JSON contract |
 | Image editing | `Asgard.Loki.Image.XAI` | Native xAI JSON image.url or ordered images[].url/file_id references; complete original results | Separate edit routes; no multipart conversion or file management |
+| Image | `Asgard.Loki.Image.Replicate` | Native model predictions/JSON editing and explicit model-input upload; original prediction states/results | Caller-owned snapshots, no implicit polling/downloads; complete-result guard |
 | Image | `Asgard.Loki.Image.Zhipu` | Native v4 images/generations; original URL/Base64 aliases, content filtering, timestamps and metadata | Complete native JSON; no URL download or invented metadata |
 | Image | `Asgard.Loki.Image.Azure` | Native dated deployment-scoped JSON generation and multipart editing; complete original images/filtering/usage | Native generation/editing SSE; original image events, no synthetic streams |
 | Image | `Asgard.Loki.Image.Volcengine` | Native Ark generation/image inputs and omitted-prompt layers; independently signed Jimeng Visual CVProcess JSON | Native partial successes/failures and original summary SSE; single-image EOF |
@@ -119,8 +120,8 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
 | `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider |
 | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |
-| Asgard.Loki.LLM.Google | Native Gemini Developer API provider |
-| Asgard.Loki.LLM.Ollama | Native Ollama Chat/generate JSON/NDJSON; explicit anonymous or Bearer authentication |
+| `Asgard.Loki.LLM.Google` | Native Gemini Developer API provider |
+| `Asgard.Loki.LLM.Ollama` | Native Ollama Chat/generate JSON/NDJSON; explicit anonymous or Bearer authentication |
 | `Asgard.Loki.LLM.Azure` | Native Azure endpoints and provider-owned external token source |
 | `Asgard.Loki.LLM.GoogleVertex` | Native Vertex Gemini, Claude, Express and MaaS target identity/authentication |
 | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and Converse JSON/EventStream with borrowed External SigV4 or explicit Bedrock API Key credentials |
@@ -131,6 +132,19 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Audio.Cloudflare` | Native Workers AI audio with explicit raw-binary or JSON/Base64 input and original results |
 | `Asgard.Loki.Audio.Azure` | Native Azure deployment-scoped speech, transcription and translation; independent API Key target |
 | `Asgard.Loki.Image.OpenAI` | OpenAI image provider |
+| `Asgard.Loki.Abstractions` | Generic client and module extension contracts for Asgard.Loki. |
+| `Asgard.Loki.Audio.SunoAPI` | Explicit native Suno-API music and lyrics task calls for Asgard.Loki. |
+| `Asgard.Loki.Image.Ali` | Native Ali image JSON, interleaved SSE and caller-driven image tasks for Asgard.Loki. |
+| `Asgard.Loki.Image.Azure` | Native deployment-scoped Azure image generation and multipart editing for Asgard.Loki. |
+| `Asgard.Loki.Image.Google` | Native Gemini image generation, editing inputs and original safety-aware SSE for Asgard.Loki. |
+| `Asgard.Loki.Image.GoogleVertex` | Native resource-scoped Vertex Gemini images with explicit Bearer or API-Key authentication for Asgard.Loki. |
+| `Asgard.Loki.Image.MiniMax` | Native MiniMax image generation and subject references with original URL/Base64 results for Asgard.Loki. |
+| `Asgard.Loki.Image.Replicate` | Native Replicate model image predictions and explicit model-input upload for Asgard.Loki. |
+| `Asgard.Loki.Image.SiliconFlow` | Native SiliconFlow image generation with original images, timings and seed for Asgard.Loki. |
+| `Asgard.Loki.Image.Volcengine` | Native Ark JSON/SSE and independently signed Jimeng Visual image generation for Asgard.Loki. |
+| `Asgard.Loki.Image.XAI` | Native xAI JSON image editing with original ordered image references and complete results for Asgard.Loki. |
+| `Asgard.Loki.Image.Zhipu` | Native Zhipu v4 image generation with original image carriers, content filtering and metadata for Asgard.Loki. |
+| `Asgard.Loki.Infrastructure` | Capability-independent transport primitives for Asgard.Loki providers. |
 
 The entry package depends only on abstractions. Capability packages do not reference each other. Providers reference their own capability, optional shared Infrastructure and necessary standard components. Installing OpenAI images does not install LLM or audio providers.
 

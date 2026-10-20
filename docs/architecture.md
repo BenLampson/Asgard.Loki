@@ -153,6 +153,29 @@ No image references are downloaded, opened as paths or normalized into multipart
 SSE uses native partial_succeeded/partial_failed and a payload-free completed summary; image_index identity is preserved and invalid/duplicate indices fail. Per-image failure does not become a whole-stream error. Single-image result+normal EOF can end without a summary; no completed event is invented. Group mode retains partial outcomes incrementally, then requires its native summary or documented terminating internal service failure, without promising max_images outputs. Summary/held single-image frames wait for EOF, raw byte/length checks and all HTTP resource disposal. Original SSE identity and unknown events remain untouched; native complete JSON does not become synthetic SSE. Request bytes freeze before client creation/enumeration, stream instances reject replay and borrowed factories/targets remain application-owned. No task IDs/polling/callbacks/media downloads/tool execution/billing/model catalogs or shared LLM/Audio/Video state. Independent fake-HTTP vectors verify wire and ownership only; real model/feature/pixel/live acceptance remains unverified.
 
 
+## Native Replicate Image
+
+`Image.Replicate` references only Image, Infrastructure and standard HTTP support. `ReplicateImageAdapter` implements existing generation and JSON editing routes with an explicit owner/name model resource and independent Bearer target. The native `PredictAsync` entry accepts complete root/input JSON and returns a supplier-owned `ReplicateImagePrediction`; `PublicModel` is metadata only. No capability interface or cross-capability dependency is added.
+
+```mermaid
+classDiagram
+IImageGenerationAdapter <|.. ReplicateImageAdapter
+IImageEditAdapter <|.. ReplicateImageAdapter
+ReplicateImageAdapter --> ReplicateImageOptions : complete native target
+ReplicateImageAdapter --> ReplicateNativeImageRequest : complete root and input JSON
+ReplicateImageAdapter --> ReplicateImagePayload : frozen bytes
+ReplicateImageAdapter --> ReplicateImageHttp : one explicit POST
+ReplicateImageHttp --> HttpBodyReader : bounded complete result
+ReplicateImageHttp --> BorrowedStreamContent : single model-input upload
+ReplicateImageAdapter --> ReplicateImagePrediction : original snapshot at any status
+ReplicateImageAdapter --> ReplicateImageInput : original upload confirmation
+ReplicateImagePrediction --> ImageGenerationResult : explicit native success only
+```
+
+Native `Prefer: wait` may return pending. The prediction snapshot retains original ID/status/error/output, partial artifacts, timestamps, metrics, URLs, input and unknown fields. Only exact native known states are terminal; successful completed extraction requires succeeded and no error. Public complete-result entry points reject pending/failed states with original bytes/status/content type rather than silently publishing completion. No extra GET, poller, cancellation request or fallback is performed. Scalar/array string output views preserve original string JSON; unknown shapes and removed output remain in full Data.
+
+The explicit `UploadImageInputAsync` operation sends exactly one native multipart content part and returns complete upload metadata plus its original URL. The application explicitly references that URL in a later JSON edit/prediction; no generic file manager, automatic upload/prediction coordinator, cleanup or media download is introduced. Common multipart edits and Image SSE are unsupported before reading input. Upload source/factory ownership stays with the application, and per-call HTTP resources must finish raw byte/length/EOF/disposal/cancellation checks before a snapshot or input confirmation is returned. Native input parameters are not inferred from public size/quality/count conventions.
+
 ## Native Jimeng Visual Image
 
 `JimengImageAdapter` implements the existing Image generation contract within `Image.Volcengine`, alongside the separate Ark adapter. It owns a fixed root `CVProcess` POST/version, explicit `RequestKey`, independent AK/SK/optional security token and per-call UTC signature. It references only Image, Infrastructure and standard HTTP support; no Video/LLM package, coordinator or credential binding is reused. The application lends the factory and optional `TimeProvider`; each call owns and disposes its HTTP resources. No new capability abstraction or dependency edge is required.
