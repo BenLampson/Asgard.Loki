@@ -1,0 +1,304 @@
+{
+  "root": "https://tokenhub.tencentmaas.com/v1/",
+  "endpoint": "https://tokenhub.tencentmaas.com/v1/chat/completions",
+  "caller": {
+    "model": "public-chat",
+    "messages": [
+      {
+        "role": "user",
+        "content": " 查询北京 "
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call-history",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"city\":\"北京\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-history",
+        "content": "{\"ok\":false,\"exact\":9007199254740993}"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "temperature": 0,
+    "future": {
+      "model": "business-model",
+      "exact": 9007199254740993,
+      "flag": false,
+      "empty": null
+    }
+  },
+  "wire_complete": {
+    "model": "fixture-upstream-chat",
+    "messages": [
+      {
+        "role": "user",
+        "content": " 查询北京 "
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call-history",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"city\":\"北京\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-history",
+        "content": "{\"ok\":false,\"exact\":9007199254740993}"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "temperature": 0,
+    "future": {
+      "model": "business-model",
+      "exact": 9007199254740993,
+      "flag": false,
+      "empty": null
+    },
+    "stream": false
+  },
+  "wire_stream": {
+    "model": "fixture-upstream-chat",
+    "messages": [
+      {
+        "role": "user",
+        "content": " 查询北京 "
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call-history",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"city\":\"北京\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-history",
+        "content": "{\"ok\":false,\"exact\":9007199254740993}"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "temperature": 0,
+    "future": {
+      "model": "business-model",
+      "exact": 9007199254740993,
+      "flag": false,
+      "empty": null
+    },
+    "stream": true
+  },
+  "response": {
+    "id": "chat-tokenhub",
+    "object": "chat.completion",
+    "created": 0,
+    "model": "native-reported",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": " 保留原生推理 ",
+          "tool_calls": [
+            {
+              "id": "call-new",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"北京\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "future": 9007199254740993
+    },
+    "future": {
+      "flag": false,
+      "empty": null
+    }
+  },
+  "events": [
+    {
+      "id": "chat-tokenhub",
+      "object": "chat.completion.chunk",
+      "created": 0,
+      "model": "native-reported",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "role": "assistant",
+            "content": "",
+            "reasoning_content": "思"
+          },
+          "finish_reason": null
+        }
+      ]
+    },
+    {
+      "id": "chat-tokenhub",
+      "object": "chat.completion.chunk",
+      "created": 0,
+      "model": "native-reported",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call-new",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":"
+                }
+              }
+            ]
+          },
+          "finish_reason": null
+        }
+      ]
+    },
+    {
+      "id": "chat-tokenhub",
+      "object": "chat.completion.chunk",
+      "created": 0,
+      "model": "native-reported",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "tool_calls": [
+              {
+                "index": 0,
+                "function": {
+                  "arguments": "\"北京\"}"
+                }
+              }
+            ]
+          },
+          "finish_reason": null
+        }
+      ]
+    },
+    {
+      "id": "chat-tokenhub",
+      "object": "chat.completion.chunk",
+      "created": 0,
+      "model": "native-reported",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {},
+          "finish_reason": "tool_calls"
+        }
+      ]
+    },
+    {
+      "id": "chat-tokenhub",
+      "object": "chat.completion.chunk",
+      "created": 0,
+      "model": "native-reported",
+      "choices": [],
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "future": 9007199254740993
+      },
+      "future": {
+        "empty": null,
+        "flag": false
+      }
+    }
+  ]
+}

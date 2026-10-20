@@ -1,0 +1,17 @@
+event: tokenhub.delta
+id: tokenhub-0
+retry: 800
+data: {"id":"chat-tokenhub","object":"chat.completion.chunk","created":0,"model":"native-reported","choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning_content":"思"},"finish_reason":null}]}
+
+data: {"id":"chat-tokenhub","object":"chat.completion.chunk","created":0,"model":"native-reported","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call-new","type":"function","function":{"name":"lookup","arguments":"{\"city\":"}}]},"finish_reason":null}]}
+
+data: {"id":"chat-tokenhub","object":"chat.completion.chunk","created":0,"model":"native-reported","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"北京\"}"}}]},"finish_reason":null}]}
+
+data: {"id":"chat-tokenhub","object":"chat.completion.chunk","created":0,"model":"native-reported","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}]}
+
+event: tokenhub.usage
+id: tokenhub-tail
+data: {"id":"chat-tokenhub","object":"chat.completion.chunk","created":0,"model":"native-reported","choices":[],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0,"future":9007199254740993},"future":{"empty":null,"flag":false}}
+
+data: [DONE]
+
