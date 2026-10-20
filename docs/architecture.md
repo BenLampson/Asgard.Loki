@@ -3039,3 +3039,24 @@ Only configured actual model and method stream mode are owned. Native prompt/FIM
 Native text state tracks exact distinct nonnegative indices, bounds association count and keeps original sparse indices. One choice finish starts bounded held-tail processing while other choices continue. Repeated/late known choice generation, malformed carriers, early/missing/repeated DONE and post-DONE data fail. Unknown business type/ID remains data, independent from Responses state. Initial native errors retain their original event; late errors prevent held success. The existing shared HTTP loop accepts this supplier-owned text state without changing the other protocol branches or their original error policies.
 
 Text request/body/errors/whole-SSE limits, actual wire and native media/UTF-8/framing/length, full owned-resource closure and final cancellation precede result/end delivery. Nullable MaximumTextCompletionRequestBytes and MaximumTrackedTextChoices are omitted from default identity serialization, preserving old default binding bytes; explicit policies enter existing binding normally. Borrowed HTTP factories/cache/coordinators are not released. Production graph remains63/45/125/63inventory, no capability or supplier peer reference. Current OpenAI executable passes717 offline cases including140 text cases; protocol fidelity does not prove live model/setting acceptance or full-solution/all-package validation.
+
+### Explicit DashScope compatible native profiles
+
+Existing OpenAiLlmProvider owns native compatible Chat/Responses/Text operations, while AnthropicLlmProvider independently owns native Messages at apps/anthropic/v1/. Complete legacy/workspace/proxy root, actual model, credential and protocol are explicit target data; no model-prefix selection, domain migration, new supplier package or provider-peer reference is added. Optional native headers are application-owned named-client configuration; target Version tracks semantic changes outside provider options.
+
+```plantuml
+@startuml
+LlmOptions --> "compatible-mode/v1 target" : explicit protocol/model/credential
+"compatible-mode/v1 target" --> OpenAiLlmProvider : native Chat / Responses / Text
+LlmOptions --> "apps/anthropic/v1 target" : selected Key or Bearer / model
+"apps/anthropic/v1 target" --> AnthropicLlmProvider : native Messages
+OpenAiHttpStreamState --> "Responses native lifecycle" : known reasoning/tool/search cannot reopen terminal
+OpenAiHttpStreamState --> "Chat choices identity" : unknown business type/id stays raw
+@enduml
+```
+
+Original reasoning/schema/search settings, FIM prompt and tool call/result/item IDs remain native, including exact/null/false/empty/zero and future fields. No sampling clamping, thinking-budget removal, automatic search tool insertion, local plugin/tool execution or billing calculation occurs. Message empty signatures and cache counters retain their upstream meaning; passing fields is not a model-effectiveness claim.
+
+Supplier-private Responses classification includes documented reasoning_text/custom_tool_call_input/web_search_call lifecycle events, allowing them before terminal and rejecting reopens afterward. Unknown typed metadata remains raw. Chat uses choices-bearing frames for generated identity, preserves unknown nonstring type/business IDs and does not classify response.failed as a Responses failure. Actual native error event semantics remain intact. This corrects native fidelity within existing strict HTTP v2 behavior; identity serialization and default policy bytes stay unchanged.
+
+Independent whole-window tests cover35 OpenAI profile/fault cases and15 Messages profile cases. Current scoped executables pass752 OpenAI and167 Anthropic offline cases. Exact raw framing/resource/cancellation/terminal and Session association remain supplier/core responsibilities as before. Native text state remains separate from Chat and Responses. Production graph stays63 projects/45 Infrastructure consumers/125 solution paths/63 package IDs. No live model/optional-setting or full-suite/all-package verification is claimed.

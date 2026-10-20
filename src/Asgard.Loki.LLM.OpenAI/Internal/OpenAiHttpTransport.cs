@@ -64,7 +64,7 @@ internal static class OpenAiHttpTransport
                         token.ThrowIfCancellationRequested(); verify?.Invoke(response);
                         if (frame.Data == "[DONE]") { if (text is null) state.ObserveDone(); else text.ObserveDone(); continue; }
                         var data = OpenAiHttpJson.Parse(Encoding.UTF8.GetBytes(frame.Data)); if (data.ValueKind != JsonValueKind.Object) throw new InvalidDataException("OpenAI SSE 必须是原生 JSON 对象。");
-                        if ((text?.Finishing ?? state.Finishing) && (text is null ? OpenAiHttpStreamState.IsFailure(data, frame.EventName) : OpenAiTextCompletionStreamState.IsFailure(data, frame.EventName))) throw Error("OpenAI SSE 在可能终态之后返回错误。", response, Encoding.UTF8.GetBytes(frame.Data), rawErrors);
+                        if ((text?.Finishing ?? state.Finishing) && (text is null ? OpenAiHttpStreamState.IsFailure(data, frame.EventName, responses) : OpenAiTextCompletionStreamState.IsFailure(data, frame.EventName))) throw Error("OpenAI SSE 在可能终态之后返回错误。", response, Encoding.UTF8.GetBytes(frame.Data), rawErrors);
                         if (text is null) state.Observe(data, frame.EventName); else text.Observe(data, frame.EventName);
                         if (text?.Finishing ?? state.Finishing)
                         { if (pending.Count >= options.MaximumBufferedTerminalEvents) throw new InvalidDataException("OpenAI SSE 终态尾部暂存数超限。"); pending.Add(frame); }

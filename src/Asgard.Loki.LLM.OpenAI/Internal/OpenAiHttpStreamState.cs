@@ -11,17 +11,17 @@ internal sealed class OpenAiHttpStreamState(bool responses)
     /// <summary>Chat finish 或 Responses 原生终态/错误之后开始有限尾部暂存。</summary>
     internal bool Finishing { get; private set; }
     /// <summary>识别原生错误位置，不遍历工具参数或未知业务对象。</summary>
-    internal static bool IsFailure(JsonElement data, string? eventName)
+    internal static bool IsFailure(JsonElement data, string? eventName, bool responses)
     {
-        var type = Type(data, eventName);
+        var type = Type(data, eventName, responses);
         var defaultEvent = string.IsNullOrEmpty(type) || type == "message" && !data.TryGetProperty("type", out _);
-        return type is "error" or "response.failed" || defaultEvent && OpenAiHttpJson.IsError(data);
+        return eventName == "error" || type == "error" || responses && type == "response.failed" || defaultEvent && OpenAiHttpJson.IsError(data);
     }
     /// <summary>保留未知尾帧；已知终态重复、源响应身份变化或结束后重开内容均明确失败。</summary>
     internal void Observe(JsonElement data, string? eventName)
     {
         if (_done) throw new InvalidDataException("OpenAI SSE 在 DONE 后追加事件。");
-        var type = Type(data, eventName); var failure = IsFailure(data, eventName);
+        var type = Type(data, eventName, responses); var failure = IsFailure(data, eventName, responses);
         if (responses)
         {
             var hasResponse = data.TryGetProperty("response", out var response) && response.ValueKind == JsonValueKind.Object;
@@ -39,11 +39,12 @@ internal sealed class OpenAiHttpStreamState(bool responses)
         }
         else
         {
-            if (data.TryGetProperty("id", out var id) && id.ValueKind != JsonValueKind.Null && !(id.ValueKind == JsonValueKind.String && id.GetString()!.Length == 0)) Identity(id);
             if (failure) { _terminal = true; Finishing = true; }
             if (data.TryGetProperty("choices", out var choices))
             {
                 if (choices.ValueKind != JsonValueKind.Array) throw new InvalidDataException("OpenAI Chat choices 必须是数组。");
+                // 仅原生 choices 帧的 id 属于 Chat 生成，未知业务事件的同名字段保持原文。
+                if (data.TryGetProperty("id", out var id) && id.ValueKind != JsonValueKind.Null && !(id.ValueKind == JsonValueKind.String && id.GetString()!.Length == 0)) Identity(id);
                 foreach (var choice in choices.EnumerateArray())
                     if (choice.ValueKind == JsonValueKind.Object && choice.TryGetProperty("finish_reason", out var finish) && finish.ValueKind != JsonValueKind.Null)
                     { if (finish.ValueKind != JsonValueKind.String || finish.GetString()!.Length == 0) throw new InvalidDataException("OpenAI Chat finish_reason 无效。"); Finishing = true; }
@@ -66,13 +67,18 @@ internal sealed class OpenAiHttpStreamState(bool responses)
         if (id.ValueKind != JsonValueKind.String || string.IsNullOrEmpty(id.GetString()) || _id is not null && _id != id.GetString()) throw new InvalidDataException("OpenAI SSE 响应身份无效或变化。"); _id = id.GetString();
     }
     /// <summary>类型来自原生 type 或独立 SSE event，未知字符串不猜测为成功。</summary>
-    private static string? Type(JsonElement data, string? eventName)
+    private static string? Type(JsonElement data, string? eventName, bool responses)
     {
-        if (!data.TryGetProperty("type", out var type)) return eventName; if (type.ValueKind != JsonValueKind.String) throw new InvalidDataException("OpenAI SSE type 必须是字符串。"); return type.GetString();
+        if (!data.TryGetProperty("type", out var type)) return eventName;
+        if (type.ValueKind != JsonValueKind.String) { if (responses) throw new InvalidDataException("Responses SSE type 必须是字符串。"); return eventName; }
+        return type.GetString();
     }
     /// <summary>仅已知生成/生命周期事件不能在 Responses 结束后重开，未知元数据原样保留。</summary>
     private static bool IsContent(string? type) => type is "response.created" or "response.in_progress" or "response.queued"
         or "response.output_item.added" or "response.output_item.done" or "response.content_part.added" or "response.content_part.done"
         or "response.output_text.delta" or "response.output_text.done" or "response.output_text.annotation.added"
-        or "response.function_call_arguments.delta" or "response.function_call_arguments.done";
+        or "response.function_call_arguments.delta" or "response.function_call_arguments.done"
+        or "response.reasoning_text.delta" or "response.reasoning_text.done"
+        or "response.custom_tool_call_input.delta" or "response.custom_tool_call_input.done"
+        or "response.web_search_call.in_progress" or "response.web_search_call.searching" or "response.web_search_call.completed";
 }

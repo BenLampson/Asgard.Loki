@@ -102,7 +102,7 @@ var target = new LlmTarget
 
 The request emits one Bearer header, no x-api-key, and the explicit/default anthropic-version. Original thinking/signatures, tool-use/result links and order, schema settings, exact integers and future fields remain native; the SDK does not convert them, choose models or certify endpoint acceptance of optional parameters. Returned native model data remains distinct from selected-target metadata. Full root/model/key/auth/version/client changes invalidate old Sessions normally. No reference to LLM.Volcengine, brand wrapper, CLI/login/settings writer, tool executor or retry loop is added.
 
-Sixteen independent-window profile tests verify JSON/SSE, both root forms, full wire/data/transport metadata, native message_stop and late-failure gates, binding drift and cross-instance recovery. The supplier executable passes 152 offline cases (127 native,16 Coding Plan and9 Ollama profile cases). No live Coding Plan account/model/parameter validation has been performed. The [official configuration](https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-claude-code?lang=zh) supplies the native service contract; its external client base URL convention differs because those clients append `/v1/messages`.
+Sixteen independent-window profile tests verify JSON/SSE, both root forms, full wire/data/transport metadata, native message_stop and late-failure gates, binding drift and cross-instance recovery. The supplier executable passes 167 offline cases (127 native,16 Coding Plan,9 Ollama and15 DashScope profile cases). No live Coding Plan account/model/parameter validation has been performed. The [official configuration](https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-claude-code?lang=zh) supplies the native service contract; its external client base URL convention differs because those clients append `/v1/messages`.
 
 ## Explicit Ollama Messages
 
@@ -110,4 +110,26 @@ Use the existing Bearer option with an explicit full target root. For this SDK, 
 
 The [official Messages guide](https://docs.ollama.com/api/anthropic-compatibility) accepts an explicit ignored Key placeholder for local SDK usage. Configure that value through an ordinary LlmCredential; no omitted Key is treated as anonymous. Local servers do not require authentication, while hosted Messages requires a real independent Bearer token and does not accept x-api-key alone. This provider's default API-Key mode stays unchanged; select Bearer explicitly. The native Ollama package separately supports explicit Anonymous credentials for its own native endpoints. There is no host/model/credential inference, login or model/server management.
 
-Nine additional full-window offline cases verify JSON/SSE over local/proxy/hosted configured targets, exact path/version/Bearer, tools and reversed results, reasoning/signature/unknown values, original model versus target metadata, transport event/id/retry, native message_stop and root/key binding drift. Current total:152 passing offline cases. No real local/cloud model, endpoint entitlement or optional-setting acceptance has been tested. Upstream supports a subset: tool_choice, metadata, caching, citations, PDF and image-URL behavior must follow the actual service contract; preserving native fields is not a claim those settings work. There is no conversion to/from Ollama-native JSON/NDJSON in this package.
+Nine additional full-window offline cases verify JSON/SSE over local/proxy/hosted configured targets, exact path/version/Bearer, tools and reversed results, reasoning/signature/unknown values, original model versus target metadata, transport event/id/retry, native message_stop and root/key binding drift. Current total:167 passing offline cases. No real local/cloud model, endpoint entitlement or optional-setting acceptance has been tested. Upstream supports a subset: tool_choice, metadata, caching, citations, PDF and image-URL behavior must follow the actual service contract; preserving native fields is not a claim those settings work. There is no conversion to/from Ollama-native JSON/NDJSON in this package.
+
+## Explicit DashScope Messages
+
+Use the existing provider with a complete `apps/anthropic/v1/` root and an independent actual model/credential target. This SDK appends only `messages`, so its complete root includes `/v1/`. The [native Messages contract](https://help.aliyun.com/zh/model-studio/anthropic-api-messages) supports either request-local x-api-key or explicit Bearer; select one through AnthropicHttpOptions.Authentication.
+
+```csharp
+var provider = new AnthropicLlmProvider(httpClientFactory,
+    new AnthropicHttpOptions { Authentication = AnthropicAuthentication.Bearer },
+    id: "dashscope-messages", httpClientName: "Explicit.Ali.Messages");
+var target = new LlmTarget
+{
+    Id = "dashscope-messages-target", ProviderId = provider.Id,
+    BaseAddress = new Uri("https://workspace-id.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/"),
+    UpstreamModel = selectedMessagesModel, CredentialId = "dashscope-key",
+    Protocols = LlmProtocol.ClaudeMessages
+};
+// Register provider/target and independent dashscopeKey through ordinary LlmOptions.
+```
+
+Original output_config.format schema/effort, thinking, tools/results and their order, explicit empty signatures, cache counters and future data remain native. They are not converted to another protocol or selected through model substrings. No automatic web-search tool insertion, workspace/model discovery, CLI configuration, login or local tool execution occurs. Each model's protocol and optional-setting support remains caller-owned; passing a field does not certify its effect. Legacy roots and explicit proxy prefixes are supported configuration without automatic migration.
+
+Fifteen full-window profile tests verify both header modes, JSON/SSE, complete paths, transport metadata, native message_stop, full original data, caller immutability and root/key Session drift. Current supplier total:167 passing offline cases. These are offline protocol checks, not live model/account/schema/reasoning/search validation. The package continues to depend only on its own LLM capability, Infrastructure and standard HTTP support.

@@ -139,3 +139,5 @@ Cloudflare Workers AI 的账号级兼容 Chat JSON/SSE 和当前支持的非流�
 Ollama 兼容接口复用现有 [OpenAI 包](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-ollama-compatible-endpoints) 的 Chat、无状态 Responses 和本地 compact，以及现有 [Anthropic 包](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-ollama-messages) 的显式 Bearer 原生 Messages。完整根、实际模型、本地占位凭据或云端独立 Key 均由调用者明确配置；原生 `/api/chat`、`/api/generate` 留在 Ollama 包。完整窗口经过离线验证，不代表真实模型、可选参数效果或云端 compact 可用性验证。
 
 [原生文本/FIM 补全](src/Asgard.Loki.LLM.OpenAI/README.md#native-compatible-text-completions) 使用现有 TextCompletions SDK 入口和 OpenAI 分包，完整端点、实际模型与独立 API Key 由调用者明确配置。prompt 模板、suffix、text/logprobs、choice 索引及未知字段保持原生，文本协议独立维护有界 choice/DONE 终态；不转成 Chat、不修补参数，也不把文本 ID 当作 Responses 续接 ID。已验证离线协议保真，未验证真实模型或参数效果。
+
+[百炼 Chat/Responses/Text](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-dashscope-native-endpoints) 和[原生 Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-dashscope-messages) 复用现有分包，完整兼容根、实际模型和独立凭据由调用者配置，按目标明确声明协议支持。工具关联、schema、推理、FIM 及未知字段保持原生；Responses 终态后拒绝已知推理/工具/搜索生命周期重开，Chat 业务元数据保持数据含义。已做离线协议验证，未验证真实模型或可选参数效果。
