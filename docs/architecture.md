@@ -2653,3 +2653,25 @@ SparkEvent --|> LlmJsonResult
 `SparkRequest.Model` remains public SDK route metadata. The wire snapshot serializes only Parameters and writes the bound actual model to `parameter.chat.domain`; it never injects root model/stream, AppID, default settings or history. Only missing parameter/chat objects are created for that routing path. Explicit null/scalar paths, casing ambiguities, native domain/app_id overrides, Undefined values and invalid original Unicode fail before asynchronous cache/target work. Supplier configuration owns native header.app_id. Other native/unknown JSON remains unchanged, including similarly named nested business fields.
 
 Spark complete calls return `SparkCompletion.Events`, a read-only copy of the whole ordered native message window with independent route metadata. Each immutable `SparkEvent.Data` retains the entire original message, all text/plugin entries, native sequence/status/SID, usage and extensions. There is no synthetic full-response envelope, first-text projection, usage accumulation, role rewrite or SSE metadata. A completion cannot be empty, contain null events or mix target metadata. Native sid is not projected onto the inherited lowercase Id accessor and does not enter Responses continuation ownership. The supplier owns actual WebSocket message assembly, byte/encoding limits, native errors, terminal validation and resource closure. Existing full server/model/credential/provider Session binding, final cancellation, borrowed dependency and no-retry/failover rules apply.
+
+### Xunfei Spark native transport
+
+`LLM.Xunfei` references only LLM and standard .NET WebSocket/cryptography APIs. `XunfeiSparkProvider` implements Spark/External only. AppId is fixed provider configuration; the borrowed credential source supplies one immutable Key/Secret/expiry snapshot for the bound stable principal. Borrowed factory/source/clock configuration identities and transmission policies enter the existing complete-target Session binding. The explicit HTTP(S) target maps only its scheme to WS(S), retaining the configured host/path; there is no model/version/key-format dispatcher or default model. The native request is copied and byte-checked before credentials, then sent once with fixed AppId and actual domain.
+
+```mermaid
+classDiagram
+XunfeiSparkProvider ..|> ISparkAdapter
+XunfeiSparkProvider ..|> ILlmCredentialSupport
+XunfeiSparkProvider --> IXunfeiSparkCredentialSource : borrowed once per call
+IXunfeiSparkCredentialSource --> XunfeiSparkCredentials : immutable principal and signing snapshot
+XunfeiSparkProvider --> IXunfeiSparkWebSocketFactory : borrowed factory, owned socket
+XunfeiSparkProvider --> SparkSigner : actual host/path and RFC1123 UTC HMAC
+XunfeiSparkProvider --> SparkReceiver : bounded complete text-message bytes
+XunfeiSparkProvider --> SparkState : separate native text and global states
+XunfeiSparkProvider --> SparkCompletion : complete original message window
+SparkState --> XunfeiSparkUpstreamException : native code and raw message, no HTTP status
+```
+
+The receiver joins only WebSocket fragments within a complete JSON message. Per-message/total bytes, logical message/fragment counts and terminal-window counts are bounded. Native sid remains fixed; choice sequence increases with gaps allowed. Header/text statuses are distinct, permitting plugin prefixes and a text-finished metadata window before global completion. Reserved text indices do not select or collapse candidates; all original plugin/text/usage/unknown fields remain in immutable events. Whole messages are buffered from first finish until both native completion states, explicitly initiated CloseOutput/normal peer acknowledgement, socket disposal and final identity/expiry/cancellation checks. CloseAsync is not used to silently consume late JSON. Extra/early/abnormal/absent close or data, errors and resource failures prevent the pending terminal window from being published. Complete mode collects this same operation once without text projection or usage accumulation.
+
+Clock-driven per-call handshake and close deadlines are owned, while source/factory/clock/cache/coordinators remain borrowed. Errors retain native code/bytes/JSON without a manufactured HTTP status. Default handshake failure messages exclude the signed URL, and custom factories must keep it private and honor exact target/cancellation/no retry. No credential discovery/refresh, background receive, reconnect, conversion, tool execution, server-side conversation recovery or cross-capability coordinator is introduced. Actual service/model availability remains separate from offline protocol verification.
