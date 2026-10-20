@@ -1,0 +1,1658 @@
+{
+  "provenance": "Independent native contracts authored before tests; no SDK output used. Optional/unknown values establish fidelity only, not model/settings/entitlement acceptance. No current hosted legacy /v1/completions availability is asserted.",
+  "sources": [
+    "https://platform.kimi.ai/docs/api/chat",
+    "https://platform.kimi.ai/docs/api/partial",
+    "https://platform.kimi.ai/docs/api/responses",
+    "https://www.kimi.com/code/docs/en/"
+  ],
+  "profiles": [
+    {
+      "root": "https://api.moonshot.cn/v1/",
+      "key": "fixture-moonshot-0"
+    },
+    {
+      "root": "https://api.moonshot.ai/v1/",
+      "key": "fixture-moonshot-1"
+    },
+    {
+      "root": "https://api.kimi.com/coding/v1/",
+      "key": "fixture-moonshot-2"
+    },
+    {
+      "root": "https://api.kimi.ai/coding/v1/",
+      "key": "fixture-moonshot-3"
+    },
+    {
+      "root": "https://proxy.invalid/tenant/native/v1/",
+      "key": "fixture-moonshot-4"
+    }
+  ],
+  "model": "selected-kimi-model",
+  "chat": {
+    "path": "chat/completions",
+    "caller": {
+      "model": "public",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "old thought 原文",
+          "tool_calls": [
+            {
+              "id": "old-a",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "old-b",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-a",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "继续"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_b",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "thinking": {
+        "type": "enabled",
+        "keep": "all"
+      },
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "native",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "prompt_cache_key": "chosen-cache",
+      "prompt_cache_options": {
+        "mode": "implicit",
+        "ttl": "1h"
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "caller_stream": {
+      "model": "public",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "old thought 原文",
+          "tool_calls": [
+            {
+              "id": "old-a",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "old-b",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-a",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "继续"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_b",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "thinking": {
+        "type": "enabled",
+        "keep": "all"
+      },
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "native",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "prompt_cache_key": "chosen-cache",
+      "prompt_cache_options": {
+        "mode": "implicit",
+        "ttl": "1h"
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream_options": {
+        "include_usage": true
+      }
+    },
+    "wire": {
+      "model": "selected-kimi-model",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "old thought 原文",
+          "tool_calls": [
+            {
+              "id": "old-a",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "old-b",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-a",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "继续"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_b",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "thinking": {
+        "type": "enabled",
+        "keep": "all"
+      },
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "native",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "prompt_cache_key": "chosen-cache",
+      "prompt_cache_options": {
+        "mode": "implicit",
+        "ttl": "1h"
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-kimi-model",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "old thought 原文",
+          "tool_calls": [
+            {
+              "id": "old-a",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "old-b",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "old-a",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "继续"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_b",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "thinking": {
+        "type": "enabled",
+        "keep": "all"
+      },
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "native",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "prompt_cache_key": "chosen-cache",
+      "prompt_cache_options": {
+        "mode": "implicit",
+        "ttl": "1h"
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream_options": {
+        "include_usage": true
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "moonshot-chat",
+      "object": "chat.completion",
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "new thought 原文",
+            "tool_calls": [
+              {
+                "id": "new-a",
+                "type": "function",
+                "function": {
+                  "name": "lookup_a",
+                  "arguments": "{\"n\":9007199254740993}"
+                }
+              },
+              {
+                "id": "new-b",
+                "type": "function",
+                "function": {
+                  "name": "lookup_b",
+                  "arguments": "{\"enabled\":false}"
+                }
+              }
+            ]
+          },
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 20,
+        "completion_tokens": 8,
+        "total_tokens": 28,
+        "cached_tokens": 5,
+        "prompt_tokens_details": {
+          "cached_tokens": 5,
+          "cache_write_tokens": 3
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 6
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "zero": 0,
+          "false": false,
+          "null": null,
+          "empty": []
+        }
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "moonshot-chat",
+        "object": "chat.completion.chunk",
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "reasoning_content": "new thought 原文"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "moonshot-chat",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "new-a",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_a",
+                    "arguments": "{\"n\":9007199254740993}"
+                  }
+                },
+                {
+                  "index": 1,
+                  "id": "new-b",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_b",
+                    "arguments": "{\"enabled\":false}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "moonshot-chat",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 20,
+          "completion_tokens": 8,
+          "total_tokens": 28,
+          "cached_tokens": 5,
+          "prompt_tokens_details": {
+            "cached_tokens": 5,
+            "cache_write_tokens": 3
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 6
+          },
+          "future": {
+            "integer": 9007199254740993,
+            "zero": 0,
+            "false": false,
+            "null": null,
+            "empty": []
+          }
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "zero": 0,
+          "false": false,
+          "null": null,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: moonshot-transport\nretry: 0\ndata: {\"id\":\"moonshot-chat\",\"object\":\"chat.completion.chunk\",\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning_content\":\"new thought 原文\"},\"finish_reason\":null}]}\n\nid: moonshot-transport\nretry: 0\ndata: {\"id\":\"moonshot-chat\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"new-a\",\"type\":\"function\",\"function\":{\"name\":\"lookup_a\",\"arguments\":\"{\\\"n\\\":9007199254740993}\"}},{\"index\":1,\"id\":\"new-b\",\"type\":\"function\",\"function\":{\"name\":\"lookup_b\",\"arguments\":\"{\\\"enabled\\\":false}\"}}]},\"finish_reason\":null}]}\n\nid: moonshot-transport\nretry: 0\ndata: {\"id\":\"moonshot-chat\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":8,\"total_tokens\":28,\"cached_tokens\":5,\"prompt_tokens_details\":{\"cached_tokens\":5,\"cache_write_tokens\":3},\"completion_tokens_details\":{\"reasoning_tokens\":6},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "partial": {
+    "path": "chat/completions",
+    "caller": {
+      "model": "public",
+      "messages": [
+        {
+          "role": "user",
+          "content": "write a small function"
+        },
+        {
+          "role": "assistant",
+          "content": "def 原文(x):\n    ",
+          "partial": true
+        }
+      ],
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "caller_stream": {
+      "model": "public",
+      "messages": [
+        {
+          "role": "user",
+          "content": "write a small function"
+        },
+        {
+          "role": "assistant",
+          "content": "def 原文(x):\n    ",
+          "partial": true
+        }
+      ],
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream_options": {
+        "include_usage": true
+      }
+    },
+    "wire": {
+      "model": "selected-kimi-model",
+      "messages": [
+        {
+          "role": "user",
+          "content": "write a small function"
+        },
+        {
+          "role": "assistant",
+          "content": "def 原文(x):\n    ",
+          "partial": true
+        }
+      ],
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-kimi-model",
+      "messages": [
+        {
+          "role": "user",
+          "content": "write a small function"
+        },
+        {
+          "role": "assistant",
+          "content": "def 原文(x):\n    ",
+          "partial": true
+        }
+      ],
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream_options": {
+        "include_usage": true
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "moonshot-partial",
+      "object": "chat.completion",
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "return x + 1"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 20,
+        "completion_tokens": 8,
+        "total_tokens": 28,
+        "cached_tokens": 5,
+        "prompt_tokens_details": {
+          "cached_tokens": 5,
+          "cache_write_tokens": 3
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 6
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "zero": 0,
+          "false": false,
+          "null": null,
+          "empty": []
+        }
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "moonshot-partial",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "return x"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "moonshot-partial",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": " + 1"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "moonshot-partial",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 20,
+          "completion_tokens": 8,
+          "total_tokens": 28,
+          "cached_tokens": 5,
+          "prompt_tokens_details": {
+            "cached_tokens": 5,
+            "cache_write_tokens": 3
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 6
+          },
+          "future": {
+            "integer": 9007199254740993,
+            "zero": 0,
+            "false": false,
+            "null": null,
+            "empty": []
+          }
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "zero": 0,
+          "false": false,
+          "null": null,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: moonshot-transport\nretry: 0\ndata: {\"id\":\"moonshot-partial\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"return x\"},\"finish_reason\":null}]}\n\nid: moonshot-transport\nretry: 0\ndata: {\"id\":\"moonshot-partial\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" + 1\"},\"finish_reason\":null}]}\n\nid: moonshot-transport\nretry: 0\ndata: {\"id\":\"moonshot-partial\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":8,\"total_tokens\":28,\"cached_tokens\":5,\"prompt_tokens_details\":{\"cached_tokens\":5,\"cache_write_tokens\":3},\"completion_tokens_details\":{\"reasoning_tokens\":6},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "responses": {
+    "path": "responses",
+    "caller": {
+      "model": "public",
+      "input": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "old-thought",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "old summary"
+            }
+          ],
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "original content wins"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-a",
+          "call_id": "old-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-b",
+          "call_id": "old-b",
+          "name": "lookup_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-b",
+          "output": "B"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-a",
+          "output": "A"
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "old-patch-item",
+          "call_id": "old-patch",
+          "name": "apply_patch",
+          "input": "old patch"
+        },
+        {
+          "type": "custom_tool_call_output",
+          "call_id": "old-patch",
+          "output": "original tool output"
+        }
+      ],
+      "reasoning": {
+        "effort": "max"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "native",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "custom",
+          "name": "apply_patch",
+          "format": {
+            "type": "text"
+          }
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "include": [
+        "web_search_call.action.sources"
+      ],
+      "prompt_cache_key": "chosen-cache",
+      "prompt_cache_options": {
+        "mode": "implicit",
+        "ttl": "1h"
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "caller_stream": {
+      "model": "public",
+      "input": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "old-thought",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "old summary"
+            }
+          ],
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "original content wins"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-a",
+          "call_id": "old-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-b",
+          "call_id": "old-b",
+          "name": "lookup_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-b",
+          "output": "B"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-a",
+          "output": "A"
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "old-patch-item",
+          "call_id": "old-patch",
+          "name": "apply_patch",
+          "input": "old patch"
+        },
+        {
+          "type": "custom_tool_call_output",
+          "call_id": "old-patch",
+          "output": "original tool output"
+        }
+      ],
+      "reasoning": {
+        "effort": "max"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "native",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "custom",
+          "name": "apply_patch",
+          "format": {
+            "type": "text"
+          }
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "include": [
+        "web_search_call.action.sources"
+      ],
+      "prompt_cache_key": "chosen-cache",
+      "prompt_cache_options": {
+        "mode": "implicit",
+        "ttl": "1h"
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "wire": {
+      "model": "selected-kimi-model",
+      "input": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "old-thought",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "old summary"
+            }
+          ],
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "original content wins"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-a",
+          "call_id": "old-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-b",
+          "call_id": "old-b",
+          "name": "lookup_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-b",
+          "output": "B"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-a",
+          "output": "A"
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "old-patch-item",
+          "call_id": "old-patch",
+          "name": "apply_patch",
+          "input": "old patch"
+        },
+        {
+          "type": "custom_tool_call_output",
+          "call_id": "old-patch",
+          "output": "original tool output"
+        }
+      ],
+      "reasoning": {
+        "effort": "max"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "native",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "custom",
+          "name": "apply_patch",
+          "format": {
+            "type": "text"
+          }
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "include": [
+        "web_search_call.action.sources"
+      ],
+      "prompt_cache_key": "chosen-cache",
+      "prompt_cache_options": {
+        "mode": "implicit",
+        "ttl": "1h"
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-kimi-model",
+      "input": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "old-thought",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "old summary"
+            }
+          ],
+          "content": [
+            {
+              "type": "reasoning_text",
+              "text": "original content wins"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-a",
+          "call_id": "old-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "id": "old-item-b",
+          "call_id": "old-b",
+          "name": "lookup_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-b",
+          "output": "B"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "old-a",
+          "output": "A"
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "old-patch-item",
+          "call_id": "old-patch",
+          "name": "apply_patch",
+          "input": "old patch"
+        },
+        {
+          "type": "custom_tool_call_output",
+          "call_id": "old-patch",
+          "output": "original tool output"
+        }
+      ],
+      "reasoning": {
+        "effort": "max"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "native",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "custom",
+          "name": "apply_patch",
+          "format": {
+            "type": "text"
+          }
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "include": [
+        "web_search_call.action.sources"
+      ],
+      "prompt_cache_key": "chosen-cache",
+      "prompt_cache_options": {
+        "mode": "implicit",
+        "ttl": "1h"
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "moonshot-response",
+      "object": "response",
+      "status": "completed",
+      "model": "reported-native-model",
+      "output": [
+        {
+          "type": "reasoning",
+          "id": "reason-item",
+          "status": "completed",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "native summary 原文"
+            }
+          ],
+          "encrypted_content": null
+        },
+        {
+          "type": "custom_tool_call",
+          "id": "custom-item",
+          "call_id": "patch-call",
+          "name": "apply_patch",
+          "input": "*** Begin Patch\n*** End Patch",
+          "status": "completed"
+        },
+        {
+          "type": "function_call",
+          "id": "function-item",
+          "call_id": "call-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}",
+          "status": "completed"
+        }
+      ],
+      "usage": {
+        "input_tokens": 20,
+        "input_tokens_details": {
+          "cached_tokens": 5,
+          "cache_write_tokens": 3
+        },
+        "output_tokens": 8,
+        "output_tokens_details": {
+          "reasoning_tokens": 6
+        },
+        "total_tokens": 28
+      },
+      "store": false,
+      "previous_response_id": null,
+      "conversation": null,
+      "prompt_cache_options": {
+        "mode": "implicit",
+        "ttl": "1h"
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "type": "response.created",
+        "response": {
+          "id": "moonshot-response",
+          "status": "in_progress",
+          "output": []
+        },
+        "sequence_number": 0
+      },
+      {
+        "type": "response.output_item.added",
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "reason-item",
+          "status": "in_progress",
+          "summary": []
+        },
+        "sequence_number": 1
+      },
+      {
+        "type": "response.reasoning_summary_part.added",
+        "item_id": "reason-item",
+        "output_index": 0,
+        "summary_index": 0,
+        "part": {
+          "type": "summary_text",
+          "text": ""
+        },
+        "sequence_number": 2
+      },
+      {
+        "type": "response.reasoning_summary_text.delta",
+        "item_id": "reason-item",
+        "output_index": 0,
+        "summary_index": 0,
+        "delta": "native summary 原文",
+        "sequence_number": 3
+      },
+      {
+        "type": "response.reasoning_summary_text.done",
+        "item_id": "reason-item",
+        "output_index": 0,
+        "summary_index": 0,
+        "text": "native summary 原文",
+        "sequence_number": 4
+      },
+      {
+        "type": "response.reasoning_summary_part.done",
+        "item_id": "reason-item",
+        "output_index": 0,
+        "summary_index": 0,
+        "part": {
+          "type": "summary_text",
+          "text": "native summary 原文"
+        },
+        "sequence_number": 5
+      },
+      {
+        "type": "response.output_item.done",
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "reason-item",
+          "status": "completed",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "native summary 原文"
+            }
+          ],
+          "encrypted_content": null
+        },
+        "sequence_number": 6
+      },
+      {
+        "type": "response.output_item.added",
+        "output_index": 1,
+        "item": {
+          "type": "custom_tool_call",
+          "id": "custom-item",
+          "call_id": "patch-call",
+          "name": "apply_patch",
+          "input": "",
+          "status": "in_progress"
+        },
+        "sequence_number": 7
+      },
+      {
+        "type": "response.custom_tool_call_input.delta",
+        "item_id": "custom-item",
+        "output_index": 1,
+        "delta": "*** Begin Patch\n*** End Patch",
+        "sequence_number": 8
+      },
+      {
+        "type": "response.custom_tool_call_input.done",
+        "item_id": "custom-item",
+        "output_index": 1,
+        "input": "*** Begin Patch\n*** End Patch",
+        "sequence_number": 9
+      },
+      {
+        "type": "response.output_item.done",
+        "output_index": 1,
+        "item": {
+          "type": "custom_tool_call",
+          "id": "custom-item",
+          "call_id": "patch-call",
+          "name": "apply_patch",
+          "input": "*** Begin Patch\n*** End Patch",
+          "status": "completed"
+        },
+        "sequence_number": 10
+      },
+      {
+        "type": "response.output_item.added",
+        "output_index": 2,
+        "item": {
+          "type": "function_call",
+          "id": "function-item",
+          "call_id": "call-a",
+          "name": "lookup_a",
+          "arguments": "",
+          "status": "in_progress"
+        },
+        "sequence_number": 11
+      },
+      {
+        "type": "response.function_call_arguments.delta",
+        "item_id": "function-item",
+        "output_index": 2,
+        "delta": "{\"n\":9007199254740993}",
+        "sequence_number": 12
+      },
+      {
+        "type": "response.function_call_arguments.done",
+        "item_id": "function-item",
+        "output_index": 2,
+        "arguments": "{\"n\":9007199254740993}",
+        "sequence_number": 13
+      },
+      {
+        "type": "response.output_item.done",
+        "output_index": 2,
+        "item": {
+          "type": "function_call",
+          "id": "function-item",
+          "call_id": "call-a",
+          "name": "lookup_a",
+          "arguments": "{\"n\":9007199254740993}",
+          "status": "completed"
+        },
+        "sequence_number": 14
+      },
+      {
+        "type": "response.completed",
+        "response": {
+          "id": "moonshot-response",
+          "object": "response",
+          "status": "completed",
+          "model": "reported-native-model",
+          "output": [
+            {
+              "type": "reasoning",
+              "id": "reason-item",
+              "status": "completed",
+              "summary": [
+                {
+                  "type": "summary_text",
+                  "text": "native summary 原文"
+                }
+              ],
+              "encrypted_content": null
+            },
+            {
+              "type": "custom_tool_call",
+              "id": "custom-item",
+              "call_id": "patch-call",
+              "name": "apply_patch",
+              "input": "*** Begin Patch\n*** End Patch",
+              "status": "completed"
+            },
+            {
+              "type": "function_call",
+              "id": "function-item",
+              "call_id": "call-a",
+              "name": "lookup_a",
+              "arguments": "{\"n\":9007199254740993}",
+              "status": "completed"
+            }
+          ],
+          "usage": {
+            "input_tokens": 20,
+            "input_tokens_details": {
+              "cached_tokens": 5,
+              "cache_write_tokens": 3
+            },
+            "output_tokens": 8,
+            "output_tokens_details": {
+              "reasoning_tokens": 6
+            },
+            "total_tokens": 28
+          },
+          "store": false,
+          "previous_response_id": null,
+          "conversation": null,
+          "prompt_cache_options": {
+            "mode": "implicit",
+            "ttl": "1h"
+          },
+          "future": {
+            "integer": 9007199254740993,
+            "zero": 0,
+            "false": false,
+            "null": null,
+            "empty": []
+          }
+        },
+        "sequence_number": 15
+      }
+    ],
+    "sse": "event: response.created\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.created\",\"response\":{\"id\":\"moonshot-response\",\"status\":\"in_progress\",\"output\":[]},\"sequence_number\":0}\n\nevent: response.output_item.added\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.output_item.added\",\"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"reason-item\",\"status\":\"in_progress\",\"summary\":[]},\"sequence_number\":1}\n\nevent: response.reasoning_summary_part.added\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_summary_part.added\",\"item_id\":\"reason-item\",\"output_index\":0,\"summary_index\":0,\"part\":{\"type\":\"summary_text\",\"text\":\"\"},\"sequence_number\":2}\n\nevent: response.reasoning_summary_text.delta\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_summary_text.delta\",\"item_id\":\"reason-item\",\"output_index\":0,\"summary_index\":0,\"delta\":\"native summary 原文\",\"sequence_number\":3}\n\nevent: response.reasoning_summary_text.done\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_summary_text.done\",\"item_id\":\"reason-item\",\"output_index\":0,\"summary_index\":0,\"text\":\"native summary 原文\",\"sequence_number\":4}\n\nevent: response.reasoning_summary_part.done\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_summary_part.done\",\"item_id\":\"reason-item\",\"output_index\":0,\"summary_index\":0,\"part\":{\"type\":\"summary_text\",\"text\":\"native summary 原文\"},\"sequence_number\":5}\n\nevent: response.output_item.done\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.output_item.done\",\"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"reason-item\",\"status\":\"completed\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"native summary 原文\"}],\"encrypted_content\":null},\"sequence_number\":6}\n\nevent: response.output_item.added\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.output_item.added\",\"output_index\":1,\"item\":{\"type\":\"custom_tool_call\",\"id\":\"custom-item\",\"call_id\":\"patch-call\",\"name\":\"apply_patch\",\"input\":\"\",\"status\":\"in_progress\"},\"sequence_number\":7}\n\nevent: response.custom_tool_call_input.delta\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.custom_tool_call_input.delta\",\"item_id\":\"custom-item\",\"output_index\":1,\"delta\":\"*** Begin Patch\\n*** End Patch\",\"sequence_number\":8}\n\nevent: response.custom_tool_call_input.done\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.custom_tool_call_input.done\",\"item_id\":\"custom-item\",\"output_index\":1,\"input\":\"*** Begin Patch\\n*** End Patch\",\"sequence_number\":9}\n\nevent: response.output_item.done\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.output_item.done\",\"output_index\":1,\"item\":{\"type\":\"custom_tool_call\",\"id\":\"custom-item\",\"call_id\":\"patch-call\",\"name\":\"apply_patch\",\"input\":\"*** Begin Patch\\n*** End Patch\",\"status\":\"completed\"},\"sequence_number\":10}\n\nevent: response.output_item.added\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.output_item.added\",\"output_index\":2,\"item\":{\"type\":\"function_call\",\"id\":\"function-item\",\"call_id\":\"call-a\",\"name\":\"lookup_a\",\"arguments\":\"\",\"status\":\"in_progress\"},\"sequence_number\":11}\n\nevent: response.function_call_arguments.delta\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.function_call_arguments.delta\",\"item_id\":\"function-item\",\"output_index\":2,\"delta\":\"{\\\"n\\\":9007199254740993}\",\"sequence_number\":12}\n\nevent: response.function_call_arguments.done\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.function_call_arguments.done\",\"item_id\":\"function-item\",\"output_index\":2,\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"sequence_number\":13}\n\nevent: response.output_item.done\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.output_item.done\",\"output_index\":2,\"item\":{\"type\":\"function_call\",\"id\":\"function-item\",\"call_id\":\"call-a\",\"name\":\"lookup_a\",\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"status\":\"completed\"},\"sequence_number\":14}\n\nevent: response.completed\nid: moonshot-transport\nretry: 0\ndata: {\"type\":\"response.completed\",\"response\":{\"id\":\"moonshot-response\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"reported-native-model\",\"output\":[{\"type\":\"reasoning\",\"id\":\"reason-item\",\"status\":\"completed\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"native summary 原文\"}],\"encrypted_content\":null},{\"type\":\"custom_tool_call\",\"id\":\"custom-item\",\"call_id\":\"patch-call\",\"name\":\"apply_patch\",\"input\":\"*** Begin Patch\\n*** End Patch\",\"status\":\"completed\"},{\"type\":\"function_call\",\"id\":\"function-item\",\"call_id\":\"call-a\",\"name\":\"lookup_a\",\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"status\":\"completed\"}],\"usage\":{\"input_tokens\":20,\"input_tokens_details\":{\"cached_tokens\":5,\"cache_write_tokens\":3},\"output_tokens\":8,\"output_tokens_details\":{\"reasoning_tokens\":6},\"total_tokens\":28},\"store\":false,\"previous_response_id\":null,\"conversation\":null,\"prompt_cache_options\":{\"mode\":\"implicit\",\"ttl\":\"1h\"},\"future\":{\"integer\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}},\"sequence_number\":15}\n\n"
+  },
+  "late_summary_events": [
+    {
+      "type": "response.reasoning_summary_part.added",
+      "item_id": "late-reason",
+      "output_index": 3,
+      "summary_index": 0,
+      "part": {
+        "type": "summary_text",
+        "text": ""
+      },
+      "sequence_number": 16
+    },
+    {
+      "type": "response.reasoning_summary_part.done",
+      "item_id": "late-reason",
+      "output_index": 3,
+      "summary_index": 0,
+      "part": {
+        "type": "summary_text",
+        "text": "late"
+      },
+      "sequence_number": 16
+    },
+    {
+      "type": "response.reasoning_summary_text.delta",
+      "item_id": "late-reason",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": "late",
+      "sequence_number": 16
+    },
+    {
+      "type": "response.reasoning_summary_text.done",
+      "item_id": "late-reason",
+      "output_index": 3,
+      "summary_index": 0,
+      "text": "late",
+      "sequence_number": 16
+    }
+  ]
+}
