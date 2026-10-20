@@ -1,10 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><Description>Google Gemini generateContent native provider for Asgard.Loki.</Description></PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
     <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
-    <Compile Include="../Shared/SseFrame.cs" Link="Internal/SseFrame.cs" />
-    <Compile Include="../Shared/SseReader.cs" Link="Internal/SseReader.cs" />
-    <Compile Include="../Shared/NativeLlmHttp.cs" Link="Internal/NativeLlmHttp.cs" />
   </ItemGroup>
 </Project>

@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><Description>Native Bedrock Claude and Converse calls with explicit targets, borrowed SigV4 credentials or explicit API Key authentication.</Description></PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
     <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
     <InternalsVisibleTo Include="Asgard.Loki.LLM.AWS.Tests" />
-    <Compile Include="../Shared/SseFrame.cs" Link="Internal/SseFrame.cs" />
-    <Compile Include="../Shared/SseReader.cs" Link="Internal/SseReader.cs" />
   </ItemGroup>
 </Project>

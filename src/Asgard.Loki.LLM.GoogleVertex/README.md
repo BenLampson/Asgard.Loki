@@ -86,7 +86,7 @@ Native `STOP`, `MAX_TOKENS`, safety and future finish reasons stay native; no re
 
 `MaximumBodyBytes` defaults to 32 MiB and bounds the total raw operation before SSE line parsing. `MaximumBufferedTerminalEvents` and `MaximumTrackedCandidates` each default to 128. Exceeding a bound fails instead of trimming records or changing association. Raw SSE event names, IDs and retry hints remain metadata; no reconnect, retry, automatic continuation or request replay occurs. Early consumer exit disposes owned resources without generating completion. This native protocol ends at EOF after all observed candidates finish, or after a native prompt block; Chat's `[DONE]` is not a substitute for Vertex's native lifecycle.
 
-The new SSE semantics/resource policies change the provider binding identity from the preceding JSON-only checkpoint. Those Sessions require fresh IDs or caller-controlled expiry/removal, rather than silently rebinding. Existing core credential fingerprints and conversion-v24 remain unchanged. Real cloud/model compatibility and Vertex-specific cross-protocol tool/schema equivalence still require separate evidence.
+The new SSE semantics/resource policies change the provider binding identity from the preceding JSON-only contract. Those Sessions require fresh IDs or caller-controlled expiry/removal, rather than silently rebinding. Existing core credential fingerprints and conversion-v24 remain unchanged. Real cloud/model compatibility and Vertex-specific cross-protocol tool/schema equivalence still require separate evidence.
 
 ## Native Claude complete JSON
 
@@ -193,3 +193,7 @@ Complete JSON/root errors retain original status/body; strict UTF-8, duplicate k
 Primary references: [Express API resource/authentication contract](https://docs.cloud.google.com/gemini-enterprise-agent-platform/reference/express-mode/api-reference), [Claude native SSE](https://platform.claude.com/docs/en/build-with-claude/streaming), [Claude on Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai), [generateContent resource contract](https://cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/projects.locations.publishers.models/generateContent), [native inference](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference), [response fields and native finish reasons](https://cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/GenerateContentResponse), [ProtoJSON numeric representations](https://protobuf.dev/programming-guides/json/). The roadmap separately tracks project-scoped API-Key, Bedrock and other cloud dialects.
 
 Express has 67 independent offline cases: three complete caller/wire/result fixtures plus shared native Gemini raw SSE/full-event goldens. They verify v1/v1beta1 roots, headers, snapshots, field retention, target/Key/configuration affinity, default-header isolation, bounds/faults/cancellation and explicit complete/streamed text conversion. Standard Vertex regressions remain separate; no real Express Key or model call was used.
+
+## Transport dependency
+
+This package references `Asgard.Loki.LLM`, `Asgard.Loki.Infrastructure` and standard HTTP support. Shared SSE framing is provided by Infrastructure; native requests, authentication, results and lifecycle remain supplier-owned.

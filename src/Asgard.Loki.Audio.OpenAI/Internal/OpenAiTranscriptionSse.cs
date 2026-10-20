@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using Asgard.Loki.Internal;
+using Asgard.Loki.Infrastructure;
 
 namespace Asgard.Loki.Audio.OpenAI.Internal;
 

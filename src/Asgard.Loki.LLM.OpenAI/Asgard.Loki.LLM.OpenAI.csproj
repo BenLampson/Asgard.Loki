@@ -3,10 +3,9 @@
     <Description>OpenAI Chat Completions and Responses provider for Asgard.Loki.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
     <InternalsVisibleTo Include="Asgard.Loki.LLM.OpenAI.Tests" />
     <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
-    <Compile Include="../Shared/SseFrame.cs" Link="Internal/SseFrame.cs" />
-    <Compile Include="../Shared/SseReader.cs" Link="Internal/SseReader.cs" />
   </ItemGroup>
 </Project>

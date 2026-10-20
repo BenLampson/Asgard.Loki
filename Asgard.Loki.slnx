@@ -3,6 +3,9 @@
     <Project Path="src/Asgard.Loki.Abstractions/Asgard.Loki.Abstractions.csproj" />
     <Project Path="src/Asgard.Loki/Asgard.Loki.csproj" />
   </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/Capabilities/">
     <Project Path="src/Asgard.Loki.Audio/Asgard.Loki.Audio.csproj" />
     <Project Path="src/Asgard.Loki.Embedding/Asgard.Loki.Embedding.csproj" />
@@ -59,6 +62,9 @@
   </Folder>
   <Folder Name="/tests/Foundation/">
     <Project Path="tests/Asgard.Loki.Tests/Asgard.Loki.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Infrastructure/">
+    <Project Path="tests/Asgard.Loki.Infrastructure.Tests/Asgard.Loki.Infrastructure.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Capabilities/">
     <Project Path="tests/Asgard.Loki.Audio.Tests/Asgard.Loki.Audio.Tests.csproj" />

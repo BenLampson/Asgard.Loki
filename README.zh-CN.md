@@ -1,16 +1,14 @@
 # Asgard.Loki
 
-纯 .NET 模型调用 SDK。六类能力内覆盖固定 New API 版本实际实现的供应商原生调用，具体操作以[唯一覆盖清单](docs/model-call-roadmap.md)为准，查齐任务插件；可靠的才转换，不穷举协议组合。
-
 [English](README.md) | **简体中文**
 
 SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六类；Embedding/Rerank 继续使用独立能力包及供应商分包，不并入 LLM。不做模型微调、独立文件管理、后台或计费。
 
-后续只按[唯一有限验收清单](docs/model-call-roadmap.md)收口：已有可靠转换保持支持，不再穷举协议或供应商扩展。原生 OpenAI Realtime 已补齐独立 JSON 双工连接；视频供应商已选定火山方舟，接下来补原生提交、状态和结果。火山视频是首个接入项，不代表供应商覆盖完成。用户另指定火山资产库为独立文件管理排除的有限例外，覆盖已确认的十种素材/素材组原生操作，使用独立 AK/SK 鉴权；不扩展为通用存储或后台。历史审计已归档，不自动扩项。
-
 目前未实现模型微调或供应商通用文件管理（独立上传、列举、查询、下载、删除）。已有音频和图片上传，是为转写、翻译或图片编辑请求提供输入素材。
 
 纯 .NET 10 / C# 14 类库：统一 `LokiClient` 入口，能力及供应商按需安装。英文 README 是完整使用说明，结构规则见 [架构规范](docs/architecture.md)。
+
+`Asgard.Loki.Infrastructure` 提供共享的底层 SSE 解析；入口仍只引用统一抽象，六类能力各自维护协议、结果和状态。Video 已提供原生提交/查询与持久化完整目标引用契约，供应商支持以各包说明为准。
 
 ## 已实现
 
@@ -55,9 +53,7 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 原生 OpenAI Responses WebSocket 通过 `OpenWebSocketAsync` 显式建立连接，目标需声明 `ResponsesWebSocket` 功能。调用者负责收发原生事件及连接释放；完整目标、响应归属、多 lane、steering 和失败/不完整终态均有离线测试。示例及资源上限见[供应商说明](src/Asgard.Loki.LLM.OpenAI/README.md#native-responses-websocket)，未进行真实 OpenAI 联调。Image 已提供独立 JSON 与借用多图/遮罩流的 multipart 编辑契约及可选原生事件流，可接自定义适配器；[Image 说明](src/Asgard.Loki.Image/README.md#native-image-editing-contracts)明确了支持范围。OpenAI 原生 JSON/multipart 非流式及 SSE 编辑已接入，保留多图顺序、独立遮罩、文件字节、完整 JSON 和事件身份；完成项等待正常 EOF 及传输资源释放后公开，图片 variations、音乐生成、视频生成和事件重放仍未实现。Audio 已提供原生文件转录/翻译扩展契约，支持自定义适配器、借用上传流和完整原生结果；OpenAI 原生 multipart 转录/翻译已接入，上传流保持借用关系，转录 SSE 已保留完整事件/用量/SSE 身份，并校验分段引用与终态。公共请求保留扩展参数，结果保留供应商完整 JSON；具体模型、音色与账号授权仍需真实联调验证。
 
-初始化、调用、支持矩阵及验证命令请参阅 [英文 README](README.md)。CI 在 Windows/Linux 上执行构建、测试及二十八个 NuGet 包的依赖与元数据检查，打包产物作为运行附件保存。独立的 `Publish NuGet` 工作流使用 OIDC 可信发布，默认仅验证登录；正式发布需手动选择 `publish` 并填写准确版本，步骤见 [发布说明](docs/releasing.md)。
-
-当前本地检查点共 6943 项离线测试通过，28 个包完成本地依赖与元数据检查。原生协议、显式可靠转换和真实模型验收分别记录；离线样本不代表供应商真实接受参数。历史扩项队列仅保留于[归档](docs/archive/model-call-roadmap-history.md)。GitHub CI 只在面向 main 的 PR 或显式发布流程执行；本轮不推送、不建 PR、不触发远端 CI。
+初始化、调用、支持矩阵及验证命令请参阅 [英文 README](README.md)。CI 在 Windows/Linux 上执行构建、测试及二十九个 NuGet 包的依赖与元数据检查，打包产物作为运行附件保存。独立的 `Publish NuGet` 工作流使用 OIDC 可信发布，默认仅验证登录；正式发布需手动选择 `publish` 并填写准确版本，步骤见 [发布说明](docs/releasing.md)。
 
 
 原生 Realtime 通过 `loki.LLM.Realtime.OpenAsync` 使用，目标声明 `LlmProtocol.Realtime`。调用者负责原生事件、音频数据和工具结果的收发；SDK 保留所有状态与未知字段，正常关闭不表示生成成功，不自动执行工具、播放音频或重连。初始化、资源限制和离线验证见[OpenAI 包](src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket)。

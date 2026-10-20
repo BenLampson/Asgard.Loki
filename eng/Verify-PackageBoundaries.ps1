@@ -11,6 +11,7 @@ $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $version = [string]$libraryProperties.Project.PropertyGroup.Version
 $expectedDependencies = [ordered]@{
     'Asgard.Loki.Abstractions' = @()
+    'Asgard.Loki.Infrastructure' = @()
     'Asgard.Loki' = @('Asgard.Loki.Abstractions')
     'Asgard.Loki.LLM' = @('Asgard.Loki.Abstractions', 'Microsoft.Extensions.Caching.Abstractions')
     'Asgard.Loki.Audio' = @('Asgard.Loki.Abstractions')
@@ -26,18 +27,18 @@ $expectedDependencies = [ordered]@{
     'Asgard.Loki.Rerank.Ali' = @('Asgard.Loki.Rerank', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Rerank.SiliconFlow' = @('Asgard.Loki.Rerank', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Video' = @('Asgard.Loki.Abstractions')
-    'Asgard.Loki.LLM.Volcengine' = @('Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
-    'Asgard.Loki.LLM.OpenAI' = @('Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
-    'Asgard.Loki.LLM.Anthropic' = @('Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
-    'Asgard.Loki.LLM.Google' = @('Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.Volcengine' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.OpenAI' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.Anthropic' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.Google' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Ollama' = @('Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
-    'Asgard.Loki.LLM.Azure' = @('Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
-    'Asgard.Loki.LLM.GoogleVertex' = @('Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
-    'Asgard.Loki.LLM.AWS' = @('Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.Azure' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.GoogleVertex' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.AWS' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Conversion' = @('Asgard.Loki.LLM')
     'Asgard.Loki.Audio.Volcengine' = @('Asgard.Loki.Audio', 'Microsoft.Extensions.Http')
-    'Asgard.Loki.Audio.OpenAI' = @('Asgard.Loki.Audio', 'Microsoft.Extensions.Http')
-    'Asgard.Loki.Image.OpenAI' = @('Asgard.Loki.Image', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.Audio.OpenAI' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Audio', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.Image.OpenAI' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Image', 'Microsoft.Extensions.Http')
 }
 
 foreach ($packageId in $expectedDependencies.Keys) {

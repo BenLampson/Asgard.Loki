@@ -87,3 +87,7 @@ Native `image_generation.partial_image` events and unknown events remain increme
 `ImageUpstreamException` preserves its original three-argument text constructor, StatusCode and ResponseBody surface. A new byte-body constructor and `Body`/`ContentType` retain exact native error bytes; optional `GenerationEvent` carries original SSE JSON/target/name/id/retry. ResponseBody returns original text for the legacy constructor; for byte bodies it explicitly decodes strict UTF-8 and throws on invalid encoding, so inspect Body for unknown/binary errors. Ordinary HTTP/JSON failures leave GenerationEvent null. No decoder replaces native error bytes.
 
 Ninety-four additional cases compare separate complete generation JSON/SSE request, result and event fixtures, including Unicode fragmentation, unknown fields and caller document disposal. They exercise native errors after held completion, JSON/SSE media refusal, no retry/failover, EOF/length/read/disposal/cancellation, single enumeration and generation/edit streams consumed in an interleaved order. Only private pure image JSON/number/byte validators are shared inside Image.OpenAI; each operation owns its native stream state and exception policy. No Audio/LLM dependency, new coordinator, network call or live image-quality claim is introduced.
+
+## Transport dependency
+
+This package references `Asgard.Loki.Image`, `Asgard.Loki.Infrastructure` and standard HTTP support. Shared SSE framing is provided by Infrastructure; native requests, authentication, results and lifecycle remain supplier-owned.

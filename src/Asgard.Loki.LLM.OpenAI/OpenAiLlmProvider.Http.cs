@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Asgard.Loki.Internal;
+using Asgard.Loki.Infrastructure;
 using Asgard.Loki.LLM.OpenAI.Internal;
 
 namespace Asgard.Loki.LLM.OpenAI;

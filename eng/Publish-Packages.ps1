@@ -14,6 +14,7 @@ if ($Version -cne [string]$properties.Project.PropertyGroup.Version) { throw 'Ve
 # 先检查完整产物集合，随后按照依赖方向发布；默认仅检查，不触发上传。
 $packageIds = @(
     'Asgard.Loki.Abstractions',
+    'Asgard.Loki.Infrastructure',
     'Asgard.Loki',
     'Asgard.Loki.LLM',
     'Asgard.Loki.Audio',

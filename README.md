@@ -11,7 +11,7 @@ The SDK scope is six capability families: **LLM, Audio, Video, Image, Embedding 
 
 The architecture contract, UML, dependency rules and provider extension requirements live in [docs/architecture.md](docs/architecture.md). All namespaces start with `Asgard`.
 
-The New API comparison is limited to [source-proven SDK gaps](docs/model-call-roadmap.md#scope-correction-after-the-source-recheck-2026-10-20); newer supplier features and exhaustive conversion combinations are optional extensions. Complete [Gemini ↔ Chat candidate-array conversion](src/Asgard.Loki.LLM.Conversion/README.md#complete-gemini--chat-candidate-arrays) now preserves source indices/order, independent tools/finishes/citations and shared usage. Gemini `candidateCount` → Chat `n` now works through the existing fixed-Chat SDK, alongside reasoning/Schema settings. Explicit [multi-candidate Chat ↔ Gemini streams](src/Asgard.Loki.LLM.Conversion/README.md#explicit-chat--gemini-multi-candidate-streams) now retain isolated tool/finish state and one shared usage tail through normal EOF/disposal. The opposite request-count mapping remains outside the source-proven parity queue.
+Native protocols preserve original parameters, results and unknown fields. Explicit [protocol conversion](src/Asgard.Loki.LLM.Conversion/README.md) supports its documented reliable subset, including bounded opt-in Chat/Gemini candidate streams; unsupported mappings fail explicitly. [Realtime](src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket) is caller-driven. [Video](src/Asgard.Loki.Video/README.md) provides independent native task contracts and persistent complete-target references; concrete supplier support is documented individually.
 
 ## Supported capabilities
 
@@ -20,7 +20,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Capability | Provider package | Implemented APIs | Streaming |
 | --- | --- | --- | --- |
 | LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat Completions; Responses creation and continuation | SSE |
-| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation/continuation; explicit native compaction and WebSocket | SSE; JSON compaction; native WebSocket events |
+| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation/continuation; explicit native compaction, Responses WebSocket and independent Realtime | SSE; JSON compaction; native JSON WebSocket events |
 | LLM | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages | SSE |
 | LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
 | LLM | `Asgard.Loki.LLM.Ollama` | Native Chat/generate JSON/NDJSON, native thinking/schema/tool history and prompt/context; explicit anonymous or Bearer identity | — |
@@ -62,9 +62,10 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 
 | Package | Responsibility |
 | --- | --- |
+| `Asgard.Loki.Infrastructure` | Shared capability-independent SSE transport primitives |
 | `Asgard.Loki.Abstractions` | Generic client and module builder contracts |
 | `Asgard.Loki` | Client implementation and module lifecycle |
-| `Asgard.Loki.LLM` | Six native LLM protocols, routing, Session storage and registration |
+| `Asgard.Loki.LLM` | Native LLM protocols, routing, Session storage and registration |
 | `Asgard.Loki.Audio` | Independent speech, audio-file transcription/translation contracts, routing and results |
 | `Asgard.Loki.Image` | Independent image contracts, routing and results |
 | `Asgard.Loki.Embedding` | Independent native embedding contracts, routing and results; custom adapters |
@@ -91,9 +92,9 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Audio.OpenAI` | Native OpenAI speech and multipart transcription/translation; independent Audio state |
 | `Asgard.Loki.Image.OpenAI` | OpenAI image provider |
 
-The entry package depends only on abstractions. Capability packages do not reference each other. Each provider depends only on its capability and standard Microsoft components. Installing OpenAI images does not install LLM or audio providers.
+The entry package depends only on abstractions. Capability packages do not reference each other. Providers reference their own capability, optional shared Infrastructure and necessary standard components. Installing OpenAI images does not install LLM or audio providers.
 
-These are the package identities produced by this checkout. The PR/release CI configuration builds and verifies all twenty-eight packages when invoked and attaches them to that workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
+These are the package identities produced by this checkout. The PR/release CI configuration builds and verifies all twenty-nine packages when invoked and attaches them to that workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
 
 ## Native Claude, Gemini and explicit conversion
 
@@ -322,11 +323,7 @@ Local protocol tests are not live-provider verification. Real account permission
 
 The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
 
-The current local checkpoint has 6943 passing offline tests, including 2535 Conversion cases, with 28 packages verified locally. It does not claim live model acceptance or new Windows/Linux GitHub CI. The [single pinned-source coverage checklist](docs/model-call-roadmap.md) covers the six capability families and all actually implemented suppliers/model-call operations in the fixed New API version, including task plugins; the full source-backed inventory now lists the concrete fixed-source rows and their delivery/reuse/gap status. Delivered native operations and reliable conversion subsets remain supported; unsupported combinations do not create an automatic expansion queue.
-
-Native OpenAI Realtime is now available as an independent caller-driven JSON WebSocket connection; see its [initialization and limits](src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket). Video submit/status/result is the next implementation gap; full pinned-source supplier coverage remains in progress. The user selected Volcengine Ark; implementation stays in Video and its independent supplier package, with caller-driven status queries. Universal protocol conversion, fine-tuning, generic file management, administration and billing remain excluded. The user explicitly requested Volcengine assets as a supplier-specific exception, covering the ten native asset/group actions with separate AK/SK authentication. The [archived audit history](docs/archive/model-call-roadmap-history.md) is evidence only, not a competing execution plan.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SECURITY.md](SECURITY.md) for reporting vulnerabilities, and [docs/releasing.md](docs/releasing.md) for the package release checklist. Development checkpoints use local validation. GitHub CI runs on Windows/Linux only for PRs into `main` or reuse by the explicit NuGet release workflow; ordinary pushes and standalone manual CI runs are disabled. Dependabot checks NuGet dependencies and GitHub Actions weekly.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SECURITY.md](SECURITY.md) for reporting vulnerabilities, and [docs/releasing.md](docs/releasing.md) for the package release checklist. Development uses local validation. GitHub CI runs on Windows/Linux only for PRs into `main` or reuse by the explicit NuGet release workflow; ordinary pushes and standalone manual CI runs are disabled. Dependabot checks NuGet dependencies and GitHub Actions weekly.
 
 ## License
 

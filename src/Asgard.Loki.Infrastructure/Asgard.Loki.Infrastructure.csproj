@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Capability-independent transport primitives for Asgard.Loki providers.</Description>
+  </PropertyGroup>
+</Project>

@@ -2,10 +2,11 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Asgard.Loki.LLM;
+using Asgard.Loki.Infrastructure;
 
-namespace Asgard.Loki.Internal;
+namespace Asgard.Loki.LLM.Google.Internal;
 
-/// <summary>由原生供应商独立编译的无重试 HTTP/SSE 收发辅助。</summary>
+/// <summary>Google 供应商的无重试 HTTP/SSE 辅助，保留 LLM 原生异常语义。</summary>
 internal static class NativeLlmHttp
 {
     /// <summary>读取独立 JSON 快照并保留 HTTP 错误正文。</summary>

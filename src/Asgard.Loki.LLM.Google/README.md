@@ -41,3 +41,7 @@ Use a **bare model ID**, without a `models/` prefix, in `UpstreamModel`. The ada
 Results preserve the original `modelVersion` and `responseId` rather than adding artificial OpenAI fields. Use `result.Data` for these native properties. Session routing metadata is available separately. The caller supplies and owns cache, coordinator and HTTP factory. No tool execution or automatic history reconstruction is performed.
 
 This provider references only its LLM capability and standard Microsoft HTTP components. Optional protocol conversion lives in a separate package. Offline xUnit v3 tests verify final wire payloads, opaque content, fragmented SSE, errors and Session binding. Gemini has **not been live-verified**. See [generateContent](https://ai.google.dev/api/generate-content) and [function calling](https://ai.google.dev/gemini-api/docs/function-calling).
+
+## Transport dependency
+
+This package references `Asgard.Loki.LLM`, `Asgard.Loki.Infrastructure` and standard HTTP support. Shared SSE framing is provided by Infrastructure; native requests, authentication, results and lifecycle remain supplier-owned.
