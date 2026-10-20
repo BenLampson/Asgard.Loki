@@ -399,7 +399,9 @@ HTTP requires a matching echoed request ID, native success code, negative final 
 
 ## Shared transport infrastructure
 
-`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)`, `HttpBodyReader.ReadAsync/CopyToAsync`, and `BorrowedStreamContent`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
+`NdjsonReader` is a capability-independent raw LF record framer. Independent returned byte snapshots retain CR, blank records and arbitrary bytes; a nonempty EOF record may lack LF. Explicit positive per-record and total raw-byte limits count CR within a record and all delimiters in the total. Optional Content-Length is validated before reading and at EOF. The reader never inspects source Length/Position, disposes a borrowed stream, parses JSON, infers a supplier terminal or retries. Cancellation is checked through final enumeration. Ollama uses this shared transport while retaining its existing blank-line/strict JSON/done semantics and per-record-only stream policy (`long.MaxValue` total); provider-owned normal EOF and resource closure remain necessary for terminal publication.
+
+`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)`, `HttpBodyReader.ReadAsync/CopyToAsync`, `NdjsonReader.ReadAsync`, and `BorrowedStreamContent`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
 
 ```mermaid
 classDiagram
@@ -415,6 +417,11 @@ class SseReader {
 }
 Infrastructure --> SseFrame : publishes
 Infrastructure --> SseReader : publishes
+class NdjsonReader {
+    +ReadAsync(Stream, int, long, CancellationToken, long?) IAsyncEnumerable~ReadOnlyMemory~
+}
+Infrastructure --> NdjsonReader : publishes
+OllamaLlmProvider ..> Infrastructure
 OpenAiLlmProvider ..> Infrastructure
 VolcengineLlmProvider ..> Infrastructure
 AnthropicLlmProvider ..> Infrastructure
@@ -1038,6 +1045,7 @@ OllamaLlmProvider --> OllamaLlmOptions : fingerprinted limits
 OllamaLlmProvider --> OllamaChatResponse : native JSON
 OllamaLlmProvider --> OllamaChatEvent : native NDJSON
 OllamaLlmProvider --> OllamaChatState : per invocation
+OllamaLlmProvider --> NdjsonReader : Infrastructure raw LF framing
 IOllamaGenerateClient <|.. OllamaGenerateClient
 OllamaGenerateClient --> LlmInvocation : independent protocol binding
 OllamaGenerateClient --> IOllamaGenerateAdapter
@@ -1050,7 +1058,7 @@ OllamaLlmProvider --> OllamaGenerateEvent : native NDJSON
 
 The native generate client uses protocol flag 32 and `OllamaGenerateRequest`, whose routed model is named and whose remaining fields use native extension JSON. This retains optional prompt omission versus empty/null and original suffix/system/template/context/images/think/format/options without a Chat wrapper. `IOllamaGenerateAdapter.GenerateAsync` and its explicit streaming implementation append `generate` to the configured API root. Generate state validates native response/model/done independently of Chat; only pure UTF-8/JSON/NDJSON/error utilities and request construction are shared within the provider. Returned context stays application-owned and is never automatically cached or replayed. Both operations use complete Session affinity, explicit credentials and delayed terminal publication. Provider implementation identity includes `generate-v1`, invalidating bindings from the preceding Chat-only contract; no new package/dependency or automatic protocol upgrade is introduced.
 
-`LLM.Ollama` depends only on LLM and standard HTTP. It implements explicit `POST chat` relative to the caller's `/api/` root, preserving proxy prefixes. `OllamaChatRequest` owns `Model`, `Messages` and extension parameters; `think`, `format`, `options`, `keep_alive`, images, tool IDs/object arguments/history and future fields remain native. Only method stream mode and configured actual model change. No model-name branch, model registry/download, tool executor, server or shared Embedding workflow is added. Native `/api/generate` is delivered through its own client and state below; cross-protocol Ollama conversion remains pending.
+`LLM.Ollama` depends on LLM, capability-independent Infrastructure and standard HTTP. It implements explicit `POST chat` relative to the caller's `/api/` root, preserving proxy prefixes. `OllamaChatRequest` owns `Model`, `Messages` and extension parameters; `think`, `format`, `options`, `keep_alive`, images, tool IDs/object arguments/history and future fields remain native. Only method stream mode and configured actual model change. No model-name branch, model registry/download, tool executor, server or shared Embedding workflow is added. Native `/api/generate` is delivered through its own client and state below; cross-protocol Ollama conversion remains pending.
 
 Anonymous authentication requires a stable explicit identity, per-provider support and no inherited default Authorization; selected API Key calls use their own Bearer value. Named clients and resource limits participate in implementation fingerprints. Session changes fail without reselection. Request-owned messages, responses and clients are disposed; factories/caches/coordinators remain borrowed.
 

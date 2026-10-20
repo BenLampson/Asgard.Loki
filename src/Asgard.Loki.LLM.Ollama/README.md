@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.Ollama
 
-Native Ollama **`POST /api/chat` and `/api/generate`** JSON and NDJSON provider. This package references only `Asgard.Loki.LLM` and standard HTTP dependencies. It does not install the separate Embedding provider, start a server, manage models, execute tools or run a conversation loop.
+Native Ollama **`POST /api/chat` and `/api/generate`** JSON and NDJSON provider. This package references `Asgard.Loki.LLM`, capability-independent `Asgard.Loki.Infrastructure` and standard HTTP dependencies. It does not install the separate Embedding provider, start a server, manage models, execute tools or run a conversation loop.
 
 ## Support matrix
 
@@ -108,3 +108,5 @@ Native `done:true` and error records are held until EOF and response/client disp
 Primary contract references: [Chat](https://docs.ollama.com/api/chat), [generate](https://docs.ollama.com/api/generate), [streaming](https://docs.ollama.com/api/streaming), [errors](https://docs.ollama.com/api/errors), [authentication](https://docs.ollama.com/api/authentication). Independent fixtures were authored against these contracts and the native [v0.40.6 types](https://github.com/ollama/ollama/blob/v0.40.6/api/types.go); they are not copied mapper output.
 
 The public LLM clients now validate raw native DOM/extension Unicode before snapshots and Session work. Eight additional Chat/generate complete/stream cases verify malformed extension keys and escaped strings fail before cache/HTTP. Direct provider Unicode handling and well-formed native data remain unchanged; see the [LLM snapshot contract](../Asgard.Loki.LLM/README.md#native-json-snapshot-encoding).
+
+NDJSON raw LF framing uses `Infrastructure.NdjsonReader`; Ollama retains its own blank-line, strict JSON, error and terminal interpretation. Existing per-record byte limits still include CR and exclude LF; streaming does not gain a new total-byte policy. The shared reader leaves the stream open for the provider-owned HTTP lifetime.

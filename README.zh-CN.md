@@ -8,7 +8,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 
 纯 .NET 10 / C# 14 类库：统一 `LokiClient` 入口，能力及供应商按需安装。英文 README 是完整使用说明，结构规则见 [架构规范](docs/architecture.md)。
 
-`Asgard.Loki.Infrastructure` 提供共享的底层 SSE 解析和有界 HTTP 字节读取；入口仍只引用统一抽象，六类能力各自维护协议、结果和状态。Video 提供原生提交/查询与持久化完整目标引用契约；[方舟视频包](src/Asgard.Loki.Video.Volcengine/README.md) 、[万相视频包](src/Asgard.Loki.Video.Ali/README.md)和[Gemini Veo 视频包](src/Asgard.Loki.Video.Google/README.md) 支持各自原生视频任务。
+`Asgard.Loki.Infrastructure` 提供共享的底层 SSE/NDJSON 分帧和有界 HTTP 字节读取；入口仍只引用统一抽象，六类能力各自维护协议、结果和状态。Video 提供原生提交/查询与持久化完整目标引用契约；[方舟视频包](src/Asgard.Loki.Video.Volcengine/README.md) 、[万相视频包](src/Asgard.Loki.Video.Ali/README.md)和[Gemini Veo 视频包](src/Asgard.Loki.Video.Google/README.md) 支持各自原生视频任务。
 
 
 可选的[原生音频任务契约](src/Asgard.Loki.Audio/README.md#native-audio-tasks)支持显式提交、绑定原目标的状态查询、原生批量查询与独立结果读取，由应用提供适配器。批量缺失任务明确报告，不用媒体地址推断完成；能力核心本身不实现供应商音乐协议。

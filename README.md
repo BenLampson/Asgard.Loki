@@ -100,7 +100,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 
 | Package | Responsibility |
 | --- | --- |
-| `Asgard.Loki.Infrastructure` | Shared capability-independent SSE and bounded HTTP byte transport |
+| `Asgard.Loki.Infrastructure` | Shared capability-independent SSE/NDJSON framing and bounded HTTP byte transport |
 | `Asgard.Loki.Abstractions` | Generic client and module builder contracts |
 | `Asgard.Loki` | Client implementation and module lifecycle |
 | `Asgard.Loki.LLM` | Native LLM protocols, routing, Session storage and registration |
