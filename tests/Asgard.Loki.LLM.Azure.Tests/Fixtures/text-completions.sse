@@ -1,0 +1,28 @@
+: native text completion transcript; hand-authored independently
+id: filter-0
+retry: 450
+event: native.annotation
+data: {"id":"","model":"","choices":[],"prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"}}}],"future":false}
+
+id: delta-1
+data: {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":1,"text":"二","finish_reason":null,"logprobs":{"tokens":["二"],"token_logprobs":[-0.1],"top_logprobs":[{"二":-0.1}],"text_offset":[0]}}]}
+
+data: {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":0,"text":"first","finish_reason":null,"logprobs":null}]}
+
+data: {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":0,"text":"","finish_reason":"stop","logprobs":null}]}
+
+data: {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":1,"text":"项","finish_reason":null,"logprobs":{"tokens":["项"],"token_logprobs":[-0.2],"top_logprobs":[{"项":-0.2}],"text_offset":[1]}}]}
+
+event: native.delayed_filter
+data: {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":0,"finish_reason":"content_filter","content_filter_results":{"sexual":{"filtered":true,"severity":"medium"}},"content_filter_offsets":{"check_offset":5,"start_offset":0,"end_offset":5}}]}
+
+data: {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":1,"text":"","finish_reason":"length","logprobs":null}]}
+
+data: {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[],"usage":{"prompt_tokens":2,"completion_tokens":3,"total_tokens":5,"future":9007199254740993}}
+
+id: future-9
+event: native.future
+data: {"future":{"model":"business-model","empty":null,"flag":false,"exact":9007199254740993}}
+
+data: [DONE]
+
