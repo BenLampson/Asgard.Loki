@@ -11,7 +11,7 @@ internal static class AliImageSse
     internal static async IAsyncEnumerable<ImageGenerationEvent> ReadAsync(Stream source, ImageResultMetadata metadata, int status,
         string? contentType, [EnumeratorCancellation] CancellationToken token)
     {
-        var choices = new Dictionary<int, bool>(); bool? indexed = null; string? requestId = null;
+        var choices = new Dictionary<int, bool>(); string? requestId = null;
         await foreach (var frame in SseReader.ReadAsync(source, token, strictUtf8: true).ConfigureAwait(false))
         {
             var bytes = Encoding.UTF8.GetBytes(frame.Data); var root = AliImageJson.Parse(bytes);
@@ -35,8 +35,6 @@ internal static class AliImageSse
                     {
                         if (choice.ValueKind != JsonValueKind.Object) throw new InvalidDataException("阿里 choice 必须为对象。");
                         var hasIndex = choice.TryGetProperty("index", out var index); var key = position++;
-                        if (indexed is not null && indexed != hasIndex) throw new InvalidDataException("阿里流不能混用显式 index 和数组位置关联。");
-                        indexed = hasIndex;
                         if (hasIndex && (index.ValueKind != JsonValueKind.Number || !index.TryGetInt32(out key) || key < 0)) throw new InvalidDataException("阿里原生 choice index 无效。");
                         if (!seen.Add(key)) throw new InvalidDataException("同帧阿里 choice index 重复。");
                         choices.TryAdd(key, false);

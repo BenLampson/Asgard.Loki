@@ -90,4 +90,15 @@ public sealed class AliImageProtocolTests
         using var factory = new AliTestFactory { OnSend = (_, _) => Task.FromResult(AliFixture.Json(data)) };
         var result = await new AliImageAdapter(factory, AliFixture.Options()).GenerateNativeAsync(AliFixture.Request(), TestContext.Current.CancellationToken); Assert.Empty(result.Images); Assert.True(JsonElement.DeepEquals(data, result.Data));
     }
+    /// <summary>原生 choice 的可选索引可与缺省数组位置共存；不能因未知索引字段出现而丢掉合法帧。</summary>
+    [Fact]
+    public async Task OptionalChoiceIndicesMayAppearWithoutChangingAssociation()
+    {
+        var text = "data: {\"output\":{\"choices\":[{\"message\":{\"content\":[{\"text\":\"zero\"}]}},{\"index\":7,\"message\":{\"content\":[{\"text\":\"seven\"}]}}]}}\n\n"
+            + "data: {\"output\":{\"choices\":[{\"index\":0,\"finish_reason\":\"stop\"},{\"index\":7,\"finish_reason\":\"stop\"}]}}\n\n";
+        using var factory = new AliTestFactory { OnSend = (_, _) => Task.FromResult(AliFixture.Sse(Encoding.UTF8.GetBytes(text))) };
+        var result = await AliFixture.Collect(new AliImageAdapter(factory, AliFixture.Options()).StreamNativeAsync(AliFixture.Request(streaming: true), TestContext.Current.CancellationToken));
+        Assert.Equal(2, result.Count); Assert.False(result[0].Data.GetProperty("output").GetProperty("choices")[0].TryGetProperty("index", out _));
+    }
+
 }
