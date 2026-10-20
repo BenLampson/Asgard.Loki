@@ -1,0 +1,23 @@
+{
+  "root":"https://tools.example.invalid/proxy/v1/tools/",
+  "endpoints":{"search":"https://tools.example.invalid/proxy/v1/tools/search","fetch":"https://tools.example.invalid/proxy/v1/tools/fetch"},
+  "search_requests":[
+    {"query":" (\"保真 😀\" OR 原生) site:example.invalid -site:ads.example.invalid ","count":3,"ori_question":null,"localization":"2001:db8::1","need_content":true,"future":{"model":"business-model","exact":9007199254740993,"flag":false,"empty":null}},
+    {"query":"q"},
+    {"query":"保留空值边界","count":1,"ori_question":" 原始问题 ","localization":"","need_content":false,"future":null}
+  ],
+  "fetch_requests":[
+    {"url":"https://pages.example.invalid/中文?q=a%2Bb&v=1#part","future":{"model":"business-model","exact":9007199254740993,"flag":false,"empty":null}},
+    {"url":"http://pages.example.invalid/a"}
+  ],
+  "search_responses":[
+    {"results":[{"rerank_score":0,"title":" 保留低分条目 ","url":"https://pages.example.invalid/same","snippet":"短摘要 😀","summary":" 给模型的长摘要，保留原始空白。 ","content":"# 页面一\n\n原生内容。","site_name":null,"site_icon":null,"date":null,"authority":-1,"future":{"id":"native-item-1","exact":9007199254740993,"flag":false}},{"rerank_score":2.875,"title":"第二条目","url":"https://pages.example.invalid/same","snippet":"相同 URL 仍保留两项","summary":"原生排序不重排、不去重。","content":"# 页面二\n\n[原始链接](https://content.example.invalid/x)","site_name":"原生站点","site_icon":"https://icons.example.invalid/icon.png","date":"2026-10-01T00:00:00+00:00","authority":4,"future":null}],"future":{"exact":9007199254740993,"flag":false,"empty":null}},
+    {"results":[],"future":{"empty":true,"exact":9007199254740993}},
+    {"results":[{"rerank_score":1.25,"title":"","url":"http://pages.example.invalid/a","snippet":"","summary":" 原文 ","content":"","site_name":null,"site_icon":null,"date":null,"authority":0}],"future":false}
+  ],
+  "fetch_responses":[
+    {"title":" 原生页面标题 😀 ","content":"# 原生页面\n\n包含 [链接](https://content.example.invalid/a) 和代码 `model`。\n\n  保留空白。  ","future":{"model":"business-model","exact":9007199254740993,"flag":false,"empty":null}},
+    {"title":"","content":"","future":{"empty":true,"exact":9007199254740993}}
+  ],
+  "native_error":{"error":{"type":"invalid_request_error","code":"native-code","message":"保留原生错误","param":null,"future":9007199254740993},"future":false}
+}
