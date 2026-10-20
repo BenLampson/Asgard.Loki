@@ -3208,3 +3208,21 @@ OpenAiLlmProvider --> SseReader : strict bounded framing only
 The SDK does not infer a model from suffixes, inject search, rewrite token/reasoning settings, supply store/include defaults, retrieve history or normalize native usage/billing. Nested and native flat reasoning alternatives remain caller data. Stored continuation uses explicit store/previous_response_id and the existing response-ownership binding; stateless calls send their complete native input without local history. Returned media references and encrypted data remain opaque and are not fetched, decrypted or executed.
 
 The exact known response.image_generation_call.in_progress/generating/completed event names share the existing Responses generation-after-terminal guard, alongside reasoning/function/search events. This is native lifecycle validation, not a local image/tool operation. Unknown similar prefixes/business IDs remain raw. First native failed/error events, incomplete outcomes and complete payloads retain their existing protocol contracts; late native/IO/cancellation failures discard buffered endings. Complete target/client/policy/version Session affinity, ownership and EOF/closure rules remain unchanged. See the [native support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-xai-native-chat-and-responses).
+
+### Explicit SiliconFlow native Chat, Prefix and FIM
+
+Existing OpenAiLlmProvider handles a selected SiliconFlow complete root/model/credential with a ChatCompletions-only target. Native prefix-only and FIM use that same Chat endpoint with original root prefix/suffix and caller-supplied messages. No new supplier package, public protocol/interface, text endpoint or cross-capability dependency is introduced.
+
+```mermaid
+classDiagram
+LlmOptions --> "SiliconFlow Chat target" : complete root / actual model / independent Key
+"SiliconFlow Chat target" --> OpenAiLlmProvider : native Chat JSON / SSE
+ChatCompletionRequest --> OpenAiLlmProvider : full messages / native parameters
+OpenAiLlmProvider --> ChatCompletion : original output / reasoning / tools / usage
+OpenAiLlmProvider --> ChatCompletionEvent : original delta / transport metadata
+OpenAiLlmProvider --> OpenAiHttpStreamState : actual DONE / identity / buffered tail
+```
+
+Original reasoning_content, thinking controls, function IDs/arguments/reverse outputs, schema settings, media URL/frame containers, prefix/suffix whitespace, native usage and unknown exact values remain raw. The SDK does not fabricate empty user messages, combine FIM code, invert flags, normalize effort, rename token fields, fetch media, execute tools or calculate billing. Source/method stream and selected actual model remain explicit; no hostname/model inference, Responses or Messages path is silently added.
+
+Native JSON/SSE and original HTTP code/message/data errors keep the existing contracts. Actual DONE, full EOF, owned-resource closure and final cancellation govern ending delivery; a native length reason and incomplete JSON text are not repaired. Complete Session identity and borrowed cache/coordinator/factory ownership remain unchanged. See the [supplier support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-siliconflow-native-chat-prefix-and-fim).
