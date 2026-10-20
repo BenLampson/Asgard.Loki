@@ -1,0 +1,7 @@
+# Asgard.Loki.Video.XAI.Tests
+
+Independent offline original JSON fixtures for xAI video generations, edits, extensions and explicit result queries. Fictional keys/media/IDs do not establish model availability, media acceptance, URL validity or generation quality.
+
+Native shapes follow the official [REST reference](https://docs.x.ai/developers/rest-api-reference/inference/videos), [generation and status/error guide](https://docs.x.ai/developers/model-capabilities/video/generation), [reference/first/key/last-frame guide](https://docs.x.ai/developers/model-capabilities/video/reference-to-video) and [extension guide](https://docs.x.ai/developers/model-capabilities/video/extension). Requests preserve original image/video/reference/voice inputs and frame order/timestamps. A last-frame-only fixture preserves an omitted prompt. Unknown fields, zero/false/null, large integers and original signed links deliberately test preservation; model-specific acceptance remains unverified.
+
+Submit returns request_id; native query JSON may omit it. Keep the requested ID as SDK context and do not insert it into native JSON. Lifecycle fixtures cover pending progress, done output, filtered done, failed with/without original usage, expired and future states. Native monetary usage remains raw metadata and cannot change failure into success. A separate zero-byte HTTP 202 transport fixture preserves the absence of JSON through the optional Video raw-response contract; it is an offline boundary case, not live transport evidence.
