@@ -27,7 +27,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages | SSE |
 | LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
 | LLM | `Asgard.Loki.LLM.Ollama` | Native Chat/generate JSON/NDJSON, native thinking/schema/tool history and prompt/context; explicit anonymous or Bearer identity | — |
-| LLM | `Asgard.Loki.LLM.Azure` | Native v1/dated Chat and Responses JSON; api-key or borrowed external token authentication | Native SSE; delayed filter/usage tails |
+| LLM | `Asgard.Loki.LLM.Azure` | Native v1/dated Chat and Responses JSON; explicit native Responses compaction; api-key or borrowed external tokens | Native SSE; delayed filter/usage tails |
 | LLM | `Asgard.Loki.LLM.GoogleVertex` | Vertex Gemini/Claude JSON/SSE with borrowed tokens; separate Express Gemini JSON/SSE with explicit API Key; MaaS Chat JSON/SSE with borrowed tokens | Native events with delayed terminal checks |
 | LLM | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and explicit Converse JSON/EventStream with borrowed SigV4 or explicit Bedrock API Key credentials | Native binary EventStream with independent protocol lifecycles |
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
@@ -87,7 +87,7 @@ Public LLM snapshots reject malformed original Unicode before JSON serialization
 
 LLM additionally exposes an explicit [external authentication identity](src/Asgard.Loki.LLM/README.md#external-authentication-identity) for provider-owned token/signing sources. Core Sessions bind the stable principal and configuration, never a rotating access token. Existing API Key/anonymous contracts and fingerprint bytes stay compatible; a dedicated cloud provider must opt in and implement its own transport/authentication.
 
-The independent [Azure LLM provider](src/Asgard.Loki.LLM.Azure/README.md) now implements complete native Chat/Responses JSON and SSE with explicit v1/dated routing and API Key or borrowed external token authentication. Stable principal Sessions survive token rotation; configuration/principal changes fail. Native SSE preserves delayed filter/usage tails and holds terminal events through EOF/disposal; compaction and WebSocket remain pending; no live Azure authentication or model validation is claimed.
+The independent [Azure LLM provider](src/Asgard.Loki.LLM.Azure/README.md) now implements complete native Chat/Responses JSON and SSE with explicit v1/dated routing and API Key or borrowed external token authentication. Stable principal Sessions survive token rotation; configuration/principal changes fail. Native SSE preserves delayed filter/usage tails and holds terminal events through EOF/disposal; explicit native compaction preserves complete windows under a target feature declaration. WebSocket is unsupported; no live Azure authentication or model validation is claimed.
 
 The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md) implements native Gemini/Claude JSON/SSE with explicit full project/location/model resources and borrowed external authentication. It preserves native fields and fixed-target Sessions through token rotation. Express Gemini API Key JSON/SSE is now available through a separate provider in the same package; MaaS Chat JSON/SSE is also delivered; wire fixtures do not establish live acceptance of Developer API-only fields.
 
@@ -257,7 +257,7 @@ Custom LLM providers can explicitly support `LlmCredential.Anonymous("local-inst
 
 ### Native Responses compaction
 
-For a native OpenAI target, explicitly configure `Protocols = LlmProtocol.Responses` and `Features = LlmTargetFeatures.ResponsesCompaction`. Both the target flag and an `IResponsesCompactionAdapter` are required. Ordinary Responses support does not imply compact support; Ark and converting providers do not currently advertise this operation.
+For a native OpenAI or Azure target, explicitly configure `Protocols = LlmProtocol.Responses` and `Features = LlmTargetFeatures.ResponsesCompaction`. Both the target flag and an `IResponsesCompactionAdapter` are required. Ordinary Responses support does not imply compact support; Ark and converting providers do not currently advertise this operation.
 
 Given an OpenAI route named `openai-assistant` with that feature enabled:
 
@@ -281,7 +281,7 @@ var continued = await loki.LLM.Responses.CreateAsync(new ResponseRequest
 }, compactCall, cancellationToken);
 ```
 
-Compaction is one explicit non-streaming request to `/responses/compact`; the SDK does not trigger it automatically or prune/decrypt the returned window. The optional `PreviousResponseId` uses the same Session ownership checks as creation. A compaction result ID is not registered as a generated response ID for continuation. Calls remain bound to the complete original target, and unsupported features never cause rerouting or retries. Enabling/changing a target feature changes its binding fingerprint; default `Features.None` preserves existing basic-target serialization. See the [OpenAI provider guide](src/Asgard.Loki.LLM.OpenAI/README.md).
+Compaction is one explicit non-streaming request to `/responses/compact`; the SDK does not trigger it automatically or prune/decrypt the returned window. The optional `PreviousResponseId` uses the same Session ownership checks as creation. A compaction result ID is not registered as a generated response ID for continuation. Calls remain bound to the complete original target, and unsupported features never cause rerouting or retries. Enabling/changing a target feature changes its binding fingerprint; default `Features.None` preserves existing basic-target serialization. See the [OpenAI provider guide](src/Asgard.Loki.LLM.OpenAI/README.md) and [Azure provider guide](src/Asgard.Loki.LLM.Azure/README.md#explicit-native-compaction).
 
 ### Native Responses WebSocket
 

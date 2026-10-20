@@ -7,7 +7,7 @@ using Asgard.Loki.LLM.Azure.Internal;
 namespace Asgard.Loki.LLM.Azure;
 
 /// <summary>Azure 原生路由和认证独立属于本供应商，不引用其他供应商或管理云资源。</summary>
-public sealed partial class AzureLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, ILlmCredentialSupport
+public sealed partial class AzureLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _factory;
     private readonly string _clientName;
@@ -25,6 +25,7 @@ public sealed partial class AzureLlmProvider : IChatCompletionsAdapter, IRespons
         if (!Enum.IsDefined(options.ApiStyle)) throw new ArgumentOutOfRangeException(nameof(options));
         if (options.ApiStyle == AzureLlmApiStyle.Dated || options.ApiVersion is not null) ArgumentException.ThrowIfNullOrWhiteSpace(options.ApiVersion);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBodyBytes, 0);
+        if (options.MaximumCompactionRequestBytes is <= 0) throw new ArgumentOutOfRangeException(nameof(options));
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumBufferedTerminalEvents, 0);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumTrackedChoices, 0);
         AzureJson.Text(id); AzureJson.Text(httpClientName); if (options.ApiVersion is not null) AzureJson.Text(options.ApiVersion);

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Asgard.Loki.LLM.Azure;
 
 /// <summary>Azure 原生端点与本地资源策略，不声明模型能力或自动选择版本。</summary>
@@ -13,4 +15,7 @@ public sealed record AzureLlmOptions
     public int MaximumBufferedTerminalEvents { get; init; } = 128;
     /// <summary>单次 Chat 流允许关联的原始 choice 索引数，不重编号。</summary>
     public int MaximumTrackedChoices { get; init; } = 128;
+    /// <summary>原生压缩请求的 UTF-8 字节上限；省略有效为 32 MiB，省略字段保持已有绑定字节。</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaximumCompactionRequestBytes { get; init; }
 }
