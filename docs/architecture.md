@@ -1,5 +1,27 @@
 # Asgard.Loki Architecture Specification
 
+## Native Azure deployment-scoped audio
+
+`Audio.Azure` depends only on Audio, Infrastructure and standard HTTP factory support. `AzureSpeechAdapter` and `AzureAudioFileAdapter` implement existing Audio contracts. Both own their protocol/response flows; a private same-capability `AzureAudioTarget` only validates fixed URI/identity values and builds headers. There is no common LLM/Audio/Video coordinator or cross-provider reference.
+
+```mermaid
+classDiagram
+INativeSpeechAdapter <|.. AzureSpeechAdapter
+IAudioTranscriptionAdapter <|.. AzureAudioFileAdapter
+IAudioTranslationAdapter <|.. AzureAudioFileAdapter
+AzureSpeechAdapter --> AzureAudioOptions : explicit fixed resource/deployment/version/key
+AzureAudioFileAdapter --> AzureAudioOptions : separate configured target
+AzureSpeechAdapter --> AzureAudioTarget : URI and header values only
+AzureAudioFileAdapter --> AzureAudioTarget
+AzureAudioFileAdapter --> BorrowedStreamContent : bounded caller-owned upload
+AzureSpeechAdapter --> HttpBodyReader : original bounded error bytes
+AzureAudioFileAdapter --> HttpBodyReader : complete native body
+```
+
+Public route names never become native path/body model selectors. The resource root, literal deployment and explicit API version identify a call; no default version, dot removal, model lookup or auth discovery occurs. Optional fixed `BodyModel` is omitted unless configured and remains distinct from deployment. File result target metadata records the native deployment selector, not an inferred underlying model. API Key authentication is provider-owned and isolated from LLM Azure identity.
+
+Speech freezes native JSON before I/O, preserving optional/null/unknown values, and produces ordered opaque bytes plus explicitly named SDK HTTP records with original headers. File calls preserve native part order, duplicates, literal values, borrowed input position and full JSON/text/subtitle body. Model/voice/range defaults, estimated LLM usage and language conversion are never invented. Native success requires HTTP200, valid original output and EOF/length/resource/cancellation completion. Final speech records and file results cannot escape late failures. Unsupported SSE/native input mappings fail explicitly. No retry, target switch, poller, file manager, Entra login or generic proxy is introduced.
+
 ## Explicit compatible audio configurations
 
 SiliconFlow voice-based binary speech and native multipart transcription reuse existing `Audio.OpenAI` adapters with explicit `BaseAddress`, actual model, credential, and provider identity. There is no new package, dependency edge, native voice-relaxation switch or common capability change. Request/response wire, errors, opaque audio, original JSON/text field types, borrowed uploads and terminal/disposal/cancellation behavior are verified through those public configured targets.
@@ -105,6 +127,8 @@ OpenAiSpeechAdapter ..> Infrastructure
 VolcengineV1SpeechAdapter ..> Infrastructure
 MiniMaxSpeechAdapter ..> Infrastructure
 CloudflareAudioFileAdapter ..> Infrastructure
+AzureSpeechAdapter ..> Infrastructure
+AzureAudioFileAdapter ..> Infrastructure
 OpenAiImageAdapter ..> Infrastructure
 GoogleVideoAdapter ..> Infrastructure
 GoogleVertexVideoAdapter ..> Infrastructure
@@ -115,7 +139,7 @@ XaiVideoAdapter ..> Infrastructure
 MidjourneyVideoAdapter ..> Infrastructure
 ```
 
-Twenty-one supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Audio.Volcengine, Audio.MiniMax, Audio.Cloudflare, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Twenty-two supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Audio.Volcengine, Audio.MiniMax, Audio.Cloudflare, Audio.Azure, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 

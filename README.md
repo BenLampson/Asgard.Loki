@@ -34,6 +34,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Compatible audio profiles | `Asgard.Loki.Audio.OpenAI` | Explicit SiliconFlow voice-based binary speech and multipart transcription; original parameters/results | Existing adapters with verified roots/auth/wire; no brand-only package |
 | Speech | `Asgard.Loki.Audio.MiniMax` | Native synchronous `t2a_v2`; original parameters, hex audio or unchanged URL results | One complete JSON result; no implicit URL download |
 | Audio recognition / translation | `Asgard.Loki.Audio.Cloudflare` | Explicit native raw-binary recognition or JSON/Base64 task transcribe/translate; complete original envelopes | Borrowed single-use uploads; no multipart inference or implicit profile switch |
+| Azure audio | `Asgard.Loki.Audio.Azure` | Explicit deployment/API-version/api-key speech JSON and native multipart transcription/translation | Ordered opaque audio or complete original file results; optional fixed body model |
 | File transcription / translation | `Asgard.Loki.Audio.OpenAI` | Native multipart, complete JSON/verbose/diarized or text/subtitle results | Native transcription delta/segment/done SSE |
 | Images | `Asgard.Loki.Image.OpenAI` | OpenAI image generations and native JSON/multipart edits; Base64 and URL results | Native generation/edit SSE partial/final events |
 | Embedding | `Asgard.Loki.Embedding.OpenAI` | Native Embeddings, text/token batch inputs, Float/Base64 and indexed results | — |
@@ -115,6 +116,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Audio.OpenAI` | Native OpenAI speech and multipart transcription/translation; independent Audio state |
 | `Asgard.Loki.Audio.MiniMax` | Native MiniMax synchronous speech; hex audio and caller-consumed URL results |
 | `Asgard.Loki.Audio.Cloudflare` | Native Workers AI audio with explicit raw-binary or JSON/Base64 input and original results |
+| `Asgard.Loki.Audio.Azure` | Native Azure deployment-scoped speech, transcription and translation; independent API Key target |
 | `Asgard.Loki.Image.OpenAI` | OpenAI image provider |
 
 The entry package depends only on abstractions. Capability packages do not reference each other. Providers reference their own capability, optional shared Infrastructure and necessary standard components. Installing OpenAI images does not install LLM or audio providers.

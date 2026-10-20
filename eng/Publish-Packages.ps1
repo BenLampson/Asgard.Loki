@@ -44,6 +44,7 @@ $packageIds = @(
     'Asgard.Loki.Audio.OpenAI',
     'Asgard.Loki.Audio.MiniMax',
     'Asgard.Loki.Audio.Cloudflare',
+    'Asgard.Loki.Audio.Azure',
     'Asgard.Loki.Image.OpenAI',
     'Asgard.Loki.Embedding.OpenAI',
     'Asgard.Loki.Embedding.Google',

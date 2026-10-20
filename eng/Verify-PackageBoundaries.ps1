@@ -49,6 +49,7 @@ $expectedDependencies = [ordered]@{
     'Asgard.Loki.Audio.OpenAI' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Audio', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Audio.MiniMax' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Audio', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Audio.Cloudflare' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Audio', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.Audio.Azure' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Audio', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Image.OpenAI' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Image', 'Microsoft.Extensions.Http')
 }
 
