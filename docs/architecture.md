@@ -29,9 +29,10 @@ OpenAiSpeechAdapter ..> Infrastructure
 OpenAiImageAdapter ..> Infrastructure
 GoogleVideoAdapter ..> Infrastructure
 GoogleVertexVideoAdapter ..> Infrastructure
+MiniMaxVideoAdapter ..> Infrastructure
 ```
 
-Thirteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google and Video.GoogleVertex. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Fourteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex and Video.MiniMax. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 
@@ -171,6 +172,26 @@ VertexVideoOperation --> VideoTaskSnapshot : full videos/errors/filtering
 The target fingerprint includes root, actual full resource, stable principal, authentication-source identity, explicit native request project header, HTTP client, implementation and byte policies. Short-lived Bearer rotation retains that binding. Wrong/expired tokens and authentication-source drift fail without changing identities or retrying generation. The application owns login, scopes, refresh and the accuracy of the source's principal assertion; no credentials are discovered or JWTs interpreted. Expiry is rechecked immediately before send, including after factory creation. The source, factory and clock are borrowed, while all call-created resources finish disposal before source/final cancellation checks and result delivery.
 
 Original `instances/parameters` are snapshotted before authentication waits. Full operation names must match project, location, Google publisher, model and requested operation. Missing `done` means running; known terminals distinguish native errors, all-filtered failure and valid native output carriers. Multiple `response.videos`, GCS URIs, inline base64 strings, metadata and unknown fields remain unchanged; no Gemini API result wrapper, data URL, storage client or downloader is introduced. Malformed or contradictory terminals fail explicitly. See the [provider matrix, initialization and limits](../src/Asgard.Loki.Video.GoogleVertex/README.md).
+
+## Native MiniMax video v1/v2
+
+`Asgard.Loki.Video.MiniMax` references Video, Infrastructure and Microsoft.Extensions.Http. `MiniMaxVideoAdapter` captures an explicit native v1/v2 contract independently of the model name. v1 uses flat generation JSON, a task-ID query parameter and original file ID; v2 uses native multimodal `content`, a task-ID path segment and a `task` result envelope. Both use the existing Video submit/query/reference mechanism, with no capability-to-capability calls or new required base contract.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. MiniMaxVideoAdapter
+MiniMaxVideoAdapter --> MiniMaxVideoOptions : captures complete target
+MiniMaxVideoOptions --> MiniMaxVideoApiVersion : explicit native contract
+MiniMaxVideoAdapter --> MiniMaxVideoProtocol : task/file/error semantics
+MiniMaxVideoAdapter --> MiniMaxVideoHttp : one raw HTTP exchange
+MiniMaxVideoHttp --> HttpBodyReader : shared bounded bytes
+MiniMaxVideoAdapter --> VideoTaskSnapshot : complete original result
+MiniMaxVideoAdapter --> MiniMaxVideoResultFile : explicit v1 video metadata only
+```
+
+The fingerprint binds unversioned root, actual model, credential digest, native version, client, implementation and byte policies. Persisted references cannot move between versions or complete targets. Input snapshots preserve media, settings and unknown fields before waits; no prompt/format conversion, model-based endpoint selection or injected generation defaults occur. Submissions indicate acceptance only. Queries map known native statuses, preserve future values as unknown/nonterminal and require the matching version's output carrier on known success. Task ID mismatches, malformed native envelopes or incomplete results fail explicitly. Root API/HTTP errors retain raw bytes separately from native failed-task data.
+
+The supplier-only `GetResultFileAsync(VideoTaskSnapshot)` revalidates a successful v1 native task and performs one original result-metadata retrieval. It requires matching precise positive int64 file ID and video-generation purpose, retaining full native file metadata and signed URL. It has no arbitrary-file ID entry point or general file-management API. A snapshot remains caller-owned consistency data, not an authorization token; applications call the original bound adapter and the upstream enforces account access. v2 returns its original task content URL without implicit v1 file retrieval. No CDN download/key forwarding, callback host, polling, retry or URL refresh is added. Each exchange finishes body reading, outer resource disposal and final cancellation before result delivery. See the [provider support matrix and initialization](../src/Asgard.Loki.Video.MiniMax/README.md).
 
 ## Native OpenAI Realtime
 

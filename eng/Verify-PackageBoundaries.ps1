@@ -31,6 +31,7 @@ $expectedDependencies = [ordered]@{
     'Asgard.Loki.Video.Ali' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Video', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Video.Google' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Video', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Video.GoogleVertex' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Video', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.Video.MiniMax' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Video', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Volcengine' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.OpenAI' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Anthropic' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')

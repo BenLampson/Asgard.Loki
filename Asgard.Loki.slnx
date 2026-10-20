@@ -46,6 +46,9 @@
     <Project Path="src/Asgard.Loki.Embedding.Jina/Asgard.Loki.Embedding.Jina.csproj" />
     <Project Path="src/Asgard.Loki.Rerank.Jina/Asgard.Loki.Rerank.Jina.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/MiniMax/">
+    <Project Path="src/Asgard.Loki.Video.MiniMax/Asgard.Loki.Video.MiniMax.csproj" />
+  </Folder>
   <Folder Name="/src/Providers/Ollama/">
     <Project Path="src/Asgard.Loki.Embedding.Ollama/Asgard.Loki.Embedding.Ollama.csproj" />
     <Project Path="src/Asgard.Loki.LLM.Ollama/Asgard.Loki.LLM.Ollama.csproj" />
@@ -109,6 +112,9 @@
   <Folder Name="/tests/Providers/Jina/">
     <Project Path="tests/Asgard.Loki.Embedding.Jina.Tests/Asgard.Loki.Embedding.Jina.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Rerank.Jina.Tests/Asgard.Loki.Rerank.Jina.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/MiniMax/">
+    <Project Path="tests/Asgard.Loki.Video.MiniMax.Tests/Asgard.Loki.Video.MiniMax.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Ollama/">
     <Project Path="tests/Asgard.Loki.Embedding.Ollama.Tests/Asgard.Loki.Embedding.Ollama.Tests.csproj" />
