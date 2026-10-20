@@ -37,6 +37,24 @@
         "prompt": "纸船在湖面航行 🛶",
         "aspect_ratio": "4:3",
         "audio": false
+      },
+      "wire_response": {
+        "task_id": "vidu-fixture-01",
+        "state": "created",
+        "model": "viduq1",
+        "prompt": "纸船在湖面航行 🛶",
+        "duration": 5,
+        "seed": 0,
+        "aspect_ratio": "4:3",
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "credits": 4,
+        "created_at": "2026-10-20T03:00:00.123456Z",
+        "Future": {
+          "Keep": null,
+          "Big": 9007199254740993
+        }
       }
     },
     {
@@ -71,6 +89,26 @@
         "prompt": "让纸船轻轻摇晃",
         "movement_amplitude": "small",
         "is_rec": false
+      },
+      "wire_response": {
+        "task_id": "vidu-fixture-01",
+        "state": "created",
+        "model": "viduq2-turbo",
+        "prompt": "让纸船轻轻摇晃",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "credits": 4,
+        "created_at": "2026-10-20T03:00:00.123456Z",
+        "Future": {
+          "Keep": null,
+          "Big": 9007199254740993
+        },
+        "images": [
+          "data:image/png;base64,ZmFrZS1pbWFnZQ=="
+        ]
       }
     },
     {
@@ -104,6 +142,27 @@
           "https://media.example/last.png"
         ],
         "prompt": "从首帧移动至尾帧"
+      },
+      "wire_response": {
+        "task_id": "vidu-fixture-01",
+        "state": "created",
+        "model": "viduq2-pro",
+        "prompt": "从首帧移动至尾帧",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "credits": 4,
+        "created_at": "2026-10-20T03:00:00.123456Z",
+        "Future": {
+          "Keep": null,
+          "Big": 9007199254740993
+        },
+        "images": [
+          "https://media.example/first.png",
+          "https://media.example/last.png"
+        ]
       }
     },
     {
@@ -145,6 +204,27 @@
               "https://media.example/ref-a.png"
             ]
           }
+        ]
+      },
+      "wire_response": {
+        "task_id": "vidu-fixture-01",
+        "state": "created",
+        "model": "viduq2",
+        "prompt": "保持角色外观不变",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "credits": 4,
+        "created_at": "2026-10-20T03:00:00.123456Z",
+        "Future": {
+          "Keep": null,
+          "Big": 9007199254740993
+        },
+        "images": [
+          "https://media.example/ref-a.png",
+          "https://media.example/ref-b.png"
         ]
       }
     }
