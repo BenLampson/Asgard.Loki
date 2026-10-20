@@ -114,3 +114,5 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 Cohere v1 原生入口 `loki.LLM.CohereChat.CompleteAsync`／`.StreamAsync` 要求显式 `LlmProtocol.CohereChat` 目标和 `ICohereChatAdapter`。仅替换已选实际模型和方法流标志，保留完整历史、原生工具参数/结果、引用与未知字段；response_id 与 generation_id 分开保留，NDJSON 使用 event_type，不虚构 SSE 身份。[Cohere 供应商包](src/Asgard.Loki.LLM.Cohere/README.md)负责原生 HTTP/NDJSON 与终态完整性；[核心契约](src/Asgard.Loki.LLM/README.md#native-cohere-v1-chat-contract)不代表真实供应商验证或自动协议转换。
 
 Cloudflare Workers AI 的账号级兼容 Chat JSON/SSE 和当前支持的非流式 GPT-OSS Responses Create，可显式配置[现有 OpenAI 供应商包](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-cloudflare-workers-ai-profile)。账号路径、实际模型和 API Token 维持完整 Session 绑定；工具关联、推理/加密项、参数和未知字段保持原生。这一配置不猜测模型能力，也不转换另一种原生 ai/run 文本协议；离线测试不代表真实账号或模型验证。
+
+原生 `.LLM.WorkersAiText` 要求显式 `LlmProtocol.WorkersAiText` 目标与 `IWorkersAiTextAdapter`。公共模型只作路由信息，实际模型由原生 URL 拥有；prompt/messages 和未知参数保持原生正文，完整结果保留原始封装。流事件保留 SSE JSON 或实际 `[DONE]` 数据及独立传输身份，不虚构 JSON 终态。详见[原生契约和适配器职责](src/Asgard.Loki.LLM/README.md#native-workers-ai-text-contract)。

@@ -2745,3 +2745,29 @@ Provider-->>App: Unchanged data after native integrity and resource closure
 ```
 
 Full independent literals exercise tool call/result IDs, sparse indices, reasoning/encrypted items, structured settings, options.rejectIfBusy and unknown/exact values. Account-path drift fails before replacement I/O. Fourteen offline cases plus existing OpenAI regressions verify this configuration contract with no live model/account/setting acceptance claim. Production dependency directions and six-capability boundaries stay unchanged.
+
+### Native Workers AI text core contract
+
+LLM adds `WorkersAiText = 16384`, `LlmClient.WorkersAiText`, `IWorkersAiTextClient`/`IWorkersAiTextAdapter`, `WorkersAiTextRequest`, `WorkersAiTextCompletion` and `WorkersAiTextEvent`. Prior protocol values, defaults and dependency directions remain unchanged. The explicit flag requires the physical adapter interface. No Cloudflare supplier, Infrastructure, peer capability, automatic conversion or business coordinator is referenced by this core contract.
+
+```mermaid
+classDiagram
+IWorkersAiTextClient <|.. WorkersAiTextClient
+WorkersAiTextClient --> LlmInvocation : complete target and explicit Session coordination
+WorkersAiTextClient --> WorkersAiTextRequest : snapshot before first cache await
+WorkersAiTextClient --> IWorkersAiTextAdapter
+IWorkersAiTextAdapter --|> ILlmProvider
+IWorkersAiTextAdapter --> WorkersAiTextCompletion : full native JSON envelope
+IWorkersAiTextAdapter --> WorkersAiTextEvent : raw native SSE data including DONE
+WorkersAiTextCompletion --|> LlmJsonResult
+class WorkersAiTextEvent {
+    +string Data
+    +Nullable~JsonElement~ Json
+    +bool IsTerminal
+    +LlmResultMetadata Metadata
+}
+```
+
+The actual model remains in the selected complete target for supplier URL construction; it is never injected into the native body. Only method stream mode is set. Request snapshots preserve complete prompt/messages, native tool associations/arguments, response format, optional values, exact numbers and unknown fields before Session waits. Reserved model/stream aliases, Undefined and malformed Unicode fail before cache access. Full account/server/model/credential/adapter/protocol binding, drift rejection, no retry/failover, borrowed dependencies and final cancellation stay unchanged.
+
+The standalone native event avoids projecting non-JSON DONE into LlmJsonEvent. Data preserves original SSE data, optional Json owns a strict immutable native object, and EventName/EventId/RetryMilliseconds remain transport-only. Only literal [DONE] is terminal; business JSON type/done/response fields and event names cannot complete the call. The supplier must validate native lifecycle, bytes, EOF and resource closure before delivery. Completion retains the entire native envelope and no native ID enters Responses ownership. Core in-memory/fixture checks establish orchestration/data contracts, not native Cloudflare HTTP/service/model acceptance.

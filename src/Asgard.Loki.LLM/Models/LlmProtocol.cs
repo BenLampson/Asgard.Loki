@@ -33,5 +33,7 @@ public enum LlmProtocol
     /// <summary>讯飞星火原生 WebSocket JSON 消息协议，独立于 Chat/SSE。</summary>
     Spark = 4096,
     /// <summary>Cohere v1 Chat 原生 JSON/NDJSON 协议，独立于 OpenAI Chat。</summary>
-    CohereChat = 8192
+    CohereChat = 8192,
+    /// <summary>Cloudflare Workers AI 原生 ai/run 文本 JSON/SSE 协议，不等同于兼容 Chat。</summary>
+    WorkersAiText = 16384
 }

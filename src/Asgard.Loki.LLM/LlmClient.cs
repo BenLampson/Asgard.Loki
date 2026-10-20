@@ -23,6 +23,7 @@ public sealed class LlmClient
         Hunyuan = new HunyuanClient(invocation);
         Spark = new SparkClient(invocation);
         CohereChat = new CohereChatClient(invocation);
+        WorkersAiText = new WorkersAiTextClient(invocation);
     }
 
     /// <summary>访问 Chat Completions 能力。</summary>
@@ -53,5 +54,7 @@ public sealed class LlmClient
     public ISparkClient Spark { get; }
     /// <summary>访问 Cohere v1 原生 Chat JSON/NDJSON，不隐式迁移到 v2。</summary>
     public ICohereChatClient CohereChat { get; }
+    /// <summary>访问 Workers AI 原生文本 ai/run，不从模型名称推断 Chat/Responses 格式。</summary>
+    public IWorkersAiTextClient WorkersAiText { get; }
 
 }

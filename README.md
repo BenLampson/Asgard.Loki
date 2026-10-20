@@ -420,3 +420,7 @@ Licensed under the [Apache License, Version 2.0](LICENSE).
 ### Explicit Cloudflare compatible calls
 
 [OpenAI supplier configuration](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-cloudflare-workers-ai-profile) supports explicit account-scoped Workers AI Chat JSON/SSE and currently supported non-streaming GPT-OSS Responses Create. Account root, actual model and API token remain one Session target; tool associations, reasoning/encrypted data, settings and unknown fields stay native. This profile does not infer model availability or convert the separate native ai/run text wire. Offline protocol tests do not establish live account/model acceptance.
+
+### Native Workers AI text contract
+
+`.LLM.WorkersAiText` requires an explicit `LlmProtocol.WorkersAiText` target and `IWorkersAiTextAdapter`. The public model stays route metadata; the selected actual model belongs in the native URL, while prompt/messages and all native parameters stay in their original body structure. Complete results retain the native envelope. Streaming events preserve actual SSE JSON or `[DONE]` data with separate transport identity; no JSON terminal is fabricated. See the [native contract and adapter responsibilities](src/Asgard.Loki.LLM/README.md#native-workers-ai-text-contract).

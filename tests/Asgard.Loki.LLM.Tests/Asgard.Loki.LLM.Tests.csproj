@@ -8,6 +8,7 @@
     <ProjectReference Include="../../src/Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="../Asgard.Loki.LLM.Cloudflare.Tests/Fixtures/native.json" Link="Fixtures/Cloudflare/native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Asgard.Loki.LLM.Cohere.Tests/Fixtures/*" Link="Fixtures/Cohere/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Asgard.Loki.LLM.Xunfei.Tests/Fixtures/spark.json" Link="Fixtures/spark.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Asgard.Loki.LLM.Tencent.Tests/Fixtures/hunyuan.json" Link="Fixtures/hunyuan.json" CopyToOutputDirectory="PreserveNewest" />

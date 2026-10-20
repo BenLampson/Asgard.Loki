@@ -31,7 +31,7 @@ public sealed class ProtocolSupportTests
     }
 
     /// <summary>肯定声明仍必须有实际适配接口，不能构造一个永远只能强制转换失败的目标。</summary>
-    [Theory] [InlineData(LlmProtocol.ChatCompletions)] [InlineData(LlmProtocol.Realtime)] [InlineData(LlmProtocol.Moderations)] [InlineData(LlmProtocol.TextCompletions)] [InlineData(LlmProtocol.Hunyuan)] [InlineData(LlmProtocol.Spark)] [InlineData(LlmProtocol.CohereChat)]
+    [Theory] [InlineData(LlmProtocol.ChatCompletions)] [InlineData(LlmProtocol.Realtime)] [InlineData(LlmProtocol.Moderations)] [InlineData(LlmProtocol.TextCompletions)] [InlineData(LlmProtocol.Hunyuan)] [InlineData(LlmProtocol.Spark)] [InlineData(LlmProtocol.CohereChat)] [InlineData(LlmProtocol.WorkersAiText)]
     public void Declaration_CannotReplaceAdapterImplementation(LlmProtocol protocol)
     {
         var provider = new ProtocolClaimOnlyProvider();
@@ -58,7 +58,7 @@ public sealed class ProtocolSupportTests
     }
 
     /// <summary>非法协议位先按原规则拒绝，不让 None 或组合值进入声明回调。</summary>
-    [Theory] [InlineData(0)] [InlineData(-1)] [InlineData(16384)]
+    [Theory] [InlineData(0)] [InlineData(-1)] [InlineData(32768)]
     public void InvalidProtocolFlags_DoNotReachSupportCallback(int flags)
     {
         var provider = new ProtocolRestrictedProvider((LlmProtocol)(-1));
