@@ -1,6 +1,6 @@
 # Asgard.Loki.Embedding.OpenAI
 
-Native OpenAI Embeddings provider for the Asgard.Loki .NET SDK. It references only `Asgard.Loki.Embedding` and standard HTTP dependencies; it does not install or share LLM/Image providers, Sessions or credentials.
+Native OpenAI Embeddings provider for the Asgard.Loki .NET SDK. It references `Asgard.Loki.Embedding`, capability-independent `Asgard.Loki.Infrastructure` for bounded HTTP reading, and standard HTTP dependencies; it does not install or share LLM/Image providers, Sessions or credentials.
 
 ## Support matrix
 
@@ -12,8 +12,9 @@ Native OpenAI Embeddings provider for the Asgard.Loki .NET SDK. It references on
 | Output | Complete native JSON, original `data` order/indices, Float or Base64 embedding values, usage and unknown fields |
 | Views | Provider-owned `result.OpenAiVectors`, each with original `Index`, `Data`, `Values` or `Base64`; explicit `DecodeBytes()` |
 | Authentication | Fixed API Key/Bearer token, optional organization/project, explicit named HTTP factory |
-| Errors/cancellation | Original HTTP status/body, 200 business-error detection, cancellation, no retry or failover |
-| Offline/live status | 106 substitute-HTTP tests, including 19 Jina compatibility/boundary cases; no live provider/model/vector-quality verification |
+| Errors/cancellation | Original HTTP status/raw body/content type, 200 business-error detection, final cancellation after resource disposal, no retry or failover |
+| Local byte policies | `MaxRequestBytes` defaults to 32 MiB; `MaxResponseBytes` defaults to 64 MiB, including error bodies; no splitting |
+| Offline/live status | 127 substitute-HTTP tests, including 19 Jina cases, five canonical M3E profile cases and 16 raw transport/lifetime boundary cases; no live provider/model/vector-quality verification |
 
 ## Initialization
 
@@ -63,7 +64,7 @@ No encoding or dimension default is injected. Explicit format/dimensions must ma
 
 `Values` is an optional copied `double` view of native JSON numbers. `Base64` remains its original string; `DecodeBytes()` is explicit and returns original bytes. The SDK does not automatically convert Base64 into Float JSON, assume an endianness, inspect encoded floating-point values, normalize vectors or certify semantic correctness. Full native `Data` stays independent of response/document disposal and of these convenience views.
 
-HTTP errors retain complete status/body, including non-JSON bodies; an explicit `error` in a 200 response also fails with its actual status/body. Malformed/truncated JSON, contradictory batch results or SSE are protocol failures. The borrowed `IHttpClientFactory` and adapter remain caller-owned; request-local clients, requests and responses are disposed. Caller-configured HTTP policies must not retry/hedge these POST requests if single-attempt semantics are required.
+HTTP errors retain status, original `Body` bytes and `ContentType`, including binary bodies. The existing `ResponseBody` property is a strict UTF-8 projection; it throws for invalid UTF-8 instead of replacing bytes. An explicit `error` in a 200 response also fails with its actual status/body, including a JSON error labeled as plain text. Malformed/truncated JSON, contradictory batch results or SSE are protocol failures. Successful responses must be UTF-8 JSON when a content type is supplied. Invalid Unicode, duplicate members (including unknown nested fields), exceeded byte limits or contradictory declared length fail. Request inputs are snapshotted before creating an HTTP client. A supplied actual response target/method must match the configured POST endpoint. Authentication and organization/project defaults from the factory are removed; only this target's explicit headers are used. The borrowed `IHttpClientFactory` and adapter remain caller-owned; request-local clients, requests, response streams and responses are disposed before the final cancellation check and result publication. Read/disposal failures cannot publish a successful result. Caller-configured HTTP policies must not retry/hedge these POST requests if single-attempt semantics are required.
 
 This is synchronous native multi-input support, not an asynchronous Batch API. Streaming embeddings, Azure-specific authentication, file uploads, vector stores, similarity search, RAG pipelines, background jobs and billing are not implemented here. No real API Key, live HTTP service, Redis or other project's credentials are used by unit tests.
 
@@ -87,3 +88,11 @@ Nineteen additional offline cases cover those three positive goldens, seven obje
 Jina contracts checked on 2026-10-19: [official OpenAPI](https://api.jina.ai/openapi.json), version `2026.10.13.1624`, including `EmbeddingsV3Request`, `EmbeddingsV4Request`, `EmbeddingsV5Request`, `SingleEmbeddingData`, `MultiEmbeddingData` and `EmbeddingResponse`, plus the [embedding reference](https://jina.ai/embeddings/). The current public schema was re-fetched and the relevant definitions match the cached audit. This is schema/wire verification with substitute HTTP, without a live embedding, PDF/media interpretation, native packed-format or quality claim.
 
 OpenAI contracts checked: [Embeddings create](https://developers.openai.com/api/reference/resources/embeddings/methods/create), [native embedding type](https://github.com/openai/openai-python/blob/main/src/openai/types/embedding.py), and [official Base64 float32 decoder](https://github.com/openai/openai-python/blob/main/src/openai/lib/_parsing/_embeddings.py). The native wire and output invariants are verified offline; real model acceptance and embedding quality remain unverified.
+
+## Canonical M3E text profile
+
+A service exposing canonical `POST embeddings` with text/string-array `input`, Bearer authentication and indexed numeric `data` can use the same adapter. Configure a distinct `Id`, explicit caller-owned `BaseAddress`, actual `Model`, `ApiKey` and `HttpClientName` as in initialization above. No Moka API root or model name is supplied by this profile. The operation is selected by the adapter, without routing on an `m3e` model prefix. Organization/project remain absent unless explicitly configured.
+
+Five offline profile cases verify whole scalar/batch requests and native responses, original whitespace/Unicode, reordered indices, exact JSON numbers, optional missing root/item fields, missing usage, native returned model, parameter snapshots, errors and duplicate-index rejection. Strings are not coerced to arrays, non-string elements are not filtered, indices are not fabricated and returned models are not overwritten. This profile covers only canonical text and numeric dense output; it does not certify M3E token inputs, Base64, multimodal contracts or a specific hosted endpoint.
+
+The [official M3E model card](https://huggingface.co/moka-ai/m3e-base) describes model weights and local inference; it is not evidence for an HTTP service contract. No hosted Moka availability, live model acceptance or embedding quality has been verified.

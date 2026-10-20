@@ -88,7 +88,8 @@ public sealed class OpenAiEmbeddingTests
         using var handler = new StubHttpHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(body) }));
         var error = await Assert.ThrowsAsync<EmbeddingUpstreamException>(() => OpenAiEmbeddingFixtures.Adapter(handler)
             .EmbedAsync(OpenAiEmbeddingFixtures.Request(), TestContext.Current.CancellationToken));
-        Assert.Equal(200, error.StatusCode); Assert.Equal(body, error.ResponseBody); Assert.Equal(1, handler.Calls);
+        Assert.Equal(200, error.StatusCode); Assert.Equal(body, error.ResponseBody); Assert.Equal(Encoding.UTF8.GetBytes(body), error.Body.ToArray());
+        Assert.Equal("text/plain; charset=utf-8", error.ContentType); Assert.Equal(1, handler.Calls);
     }
 
     /// <summary>非 JSON、截断 JSON 及 SSE 都不能被视作完整嵌入结果。</summary>

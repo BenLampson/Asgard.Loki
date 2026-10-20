@@ -11,8 +11,10 @@ internal static class OpenAiEmbeddingPayload
     {
         ArgumentNullException.ThrowIfNull(request); ArgumentException.ThrowIfNullOrWhiteSpace(request.Model);
         ArgumentNullException.ThrowIfNull(request.Parameters);
-        if (request.Parameters.Any(p => p.Key == "model" || p.Value.ValueKind == JsonValueKind.Undefined))
+        if (request.Parameters.Any(p => p.Key.Equals("model", StringComparison.OrdinalIgnoreCase) || p.Value.ValueKind == JsonValueKind.Undefined))
             throw new ArgumentException("原生嵌入参数不能覆盖公共 model 或包含 Undefined。", nameof(request));
+        OpenAiEmbeddingJson.Text(request.Model);
+        foreach (var field in request.Parameters) { OpenAiEmbeddingJson.Text(field.Key); OpenAiEmbeddingJson.Validate(field.Value); }
         var parameters = request.Parameters.ToDictionary(p => p.Key, p => p.Value.Clone(), StringComparer.Ordinal);
         if (!parameters.TryGetValue("input", out var input)) throw new ArgumentException("OpenAI 嵌入需要原生 input。");
         var count = InputCount(input); int? dimensions = null; string? encoding = null;

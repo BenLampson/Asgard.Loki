@@ -1670,7 +1670,7 @@ Multi-input synchronous requests are distinct from a hosted asynchronous Batch A
 
 ### Native OpenAI Embeddings
 
-`Asgard.Loki.Embedding.OpenAI` depends only on Embedding and standard HTTP components. `OpenAiEmbeddingAdapter` encapsulates an explicit API root, actual model, API Key, optional organization/project and named borrowed HTTP factory. It implements one native `POST embeddings` operation, with public-route model mapping as the only mandatory body rewrite. It never injects an encoding default or stream switch, tokenizes, splits inputs or retries. The API Key is constructor-validated and excluded from options JSON.
+`Asgard.Loki.Embedding.OpenAI` depends on Embedding, capability-independent Infrastructure and standard HTTP components. Infrastructure supplies only bounded raw HTTP reading, not a cross-capability coordinator. `OpenAiEmbeddingAdapter` encapsulates an explicit API root, actual model, API Key, optional organization/project and named borrowed HTTP factory. It implements one native `POST embeddings` operation, with public-route model mapping as the only mandatory body rewrite. It never injects an encoding default or stream switch, tokenizes, splits inputs or retries. The API Key is constructor-validated and excluded from options JSON.
 
 ```mermaid
 sequenceDiagram
@@ -1680,16 +1680,22 @@ participant Adapter as OpenAiEmbeddingAdapter
 participant HTTP as Borrowed IHttpClientFactory
 Caller->>Core: Native input/parameters and public model
 Core->>Adapter: One selected complete target, request snapshot
-Adapter->>Adapter: Validate native input count, format and dimensions
+Adapter->>Adapter: Snapshot and validate native input/Unicode/request bytes
 Adapter->>HTTP: Create named request-local client
 HTTP-->>Adapter: One native HTTP response
-Adapter->>Adapter: Validate original indices, count, width and encoding
+Adapter->>Adapter: Bounded raw read through Infrastructure, validate actual target
+Adapter->>Adapter: Dispose stream/response/client and check cancellation
+Adapter->>Adapter: Validate JSON, original indices, count, width and encoding
 Adapter-->>Caller: Native Data, metadata and provider-owned views
 ```
 
 Native input is nonempty text, a text batch, one token array or a token-array batch. Actual token/model limits remain upstream decisions. Complete result validation requires one item per input with unique original indices, uniform nonempty vector widths/encoding and agreement with explicit format/dimensions. Unknown JSON is retained; missing usage is unknown. Float arrays contain finite numbers. Base64 syntax and full float32 byte widths are validated without decoding or assuming an endianness. Malformed/truncated JSON, duplicate JSON properties, broken association, mismatched results, SSE and explicit business errors cannot become a successful empty vector list.
 
 `OpenAiEmbeddingVector` and `EmbeddingResult.OpenAiVectors` are provider-owned native views. They preserve original array order and `Index`; numeric `Values` is an optional copied double view, and `Base64`/explicit `DecodeBytes()` retain original encoded bytes. Raw `Data` is not replaced with a normalized embedding model. The native returned model stays in `Data`, while metadata records configured public/upstream/provider identities. HTTP errors preserve actual status/body; a 200 business error keeps its actual status. Requests/responses and factory-created clients are disposed per call; factory and target adapters remain borrowed. There is no conversational state, hosted Batch/SSE API, vector database or RAG pipeline. Offline final-wire and lifecycle tests do not certify live acceptance or vector quality.
+
+The adapter exposes positive local `MaxRequestBytes` (32 MiB) and `MaxResponseBytes` (64 MiB) policies. Full raw error bytes/content type use the capability's additive exception contract; legacy text projection stays strict UTF-8. Success JSON checks unknown nested strings/member uniqueness as well as vector fields. Target authentication/organization/project never inherit unrelated factory defaults; a supplied actual response request must retain the fixed method/URI. No success precedes normal read, resource disposal and final cancellation. The existing fast rejection of successful SSE remains before body reading.
+
+An explicitly configured canonical M3E text/indexed-numeric profile reuses this same adapter and package with caller-supplied root/model/Key/identity. It adds no vendor reference, model-prefix selection, scalar-to-array coercion, invented indices/model/usage or hosted-service default. Independent scalar/batch fixture cases establish the reusable JSON subset, not live service/model availability or token/Base64/multimodal support.
 
 ### Jina compatibility and native supplier boundary
 

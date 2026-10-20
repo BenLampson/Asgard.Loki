@@ -53,7 +53,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Image | `Asgard.Loki.Image.MiniMax` | Native image_generation JSON and subject-reference inputs; original URL/Base64 arrays and metadata | Complete result; native business errors retained |
 | Image | `Asgard.Loki.Image.SiliconFlow` | Native image_size/batch_size/reference fields and images/timings/seed result envelope | Complete original JSON; no implicit OpenAI field conversion |
 | Embedding | `Asgard.Loki.Embedding.Azure` | Native deployment-scoped embeddings with explicit API version/api-key, original text/token inputs and float/Base64 vectors | Original batch order and index coverage; complete errors and bounded HTTP ownership |
-| Embedding | `Asgard.Loki.Embedding.OpenAI` | Native Embeddings, text/token batch inputs, Float/Base64 and indexed results | — |
+| Embedding | `Asgard.Loki.Embedding.OpenAI` | Native Embeddings, text/token batch inputs, Float/Base64 and indexed results | Explicit canonical M3E text profile; bounded raw HTTP errors and final cancellation |
 | Embedding | `Asgard.Loki.Embedding.Google` | Native embedContent / synchronous batchEmbedContents, native settings/media JSON and ordered vectors | — |
 | Embedding | `Asgard.Loki.Embedding.Ollama` | Native embed text/media batches, original settings, ordered vectors and optional native counters | — |
 | Embedding | `Asgard.Loki.Embedding.Jina` | Native text/media/fused groups, indexed dense and per-token Float/Base64 embeddings | — |
@@ -135,7 +135,6 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Audio.Cloudflare` | Native Workers AI audio with explicit raw-binary or JSON/Base64 input and original results |
 | `Asgard.Loki.Audio.Azure` | Native Azure deployment-scoped speech, transcription and translation; independent API Key target |
 | `Asgard.Loki.Image.OpenAI` | OpenAI image provider |
-| `Asgard.Loki.Abstractions` | Generic client and module extension contracts for Asgard.Loki. |
 | `Asgard.Loki.Audio.SunoAPI` | Explicit native Suno-API music and lyrics task calls for Asgard.Loki. |
 | `Asgard.Loki.Image.Ali` | Native Ali image JSON, interleaved SSE and caller-driven image tasks for Asgard.Loki. |
 | `Asgard.Loki.Image.Azure` | Native deployment-scoped Azure image generation and multipart editing for Asgard.Loki. |
@@ -148,7 +147,6 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Image.Volcengine` | Native Ark JSON/SSE and independently signed Jimeng Visual image generation for Asgard.Loki. |
 | `Asgard.Loki.Image.XAI` | Native xAI JSON image editing with original ordered image references and complete results for Asgard.Loki. |
 | `Asgard.Loki.Image.Zhipu` | Native Zhipu v4 image generation with original image carriers, content filtering and metadata for Asgard.Loki. |
-| `Asgard.Loki.Infrastructure` | Capability-independent transport primitives for Asgard.Loki providers. |
 
 The entry package depends only on abstractions. Capability packages do not reference each other. Providers reference their own capability, optional shared Infrastructure and necessary standard components. Installing OpenAI images does not install LLM or audio providers.
 

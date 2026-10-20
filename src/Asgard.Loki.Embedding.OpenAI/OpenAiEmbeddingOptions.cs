@@ -20,4 +20,8 @@ public sealed class OpenAiEmbeddingOptions
     public string? Project { get; init; }
     /// <summary>外部工厂中注册的 HTTP 客户端名称。</summary>
     public string HttpClientName { get; init; } = "Asgard.Loki.Embedding.OpenAI";
+    /// <summary>完整请求的 UTF-8 字节上限，默认 32 MiB，不按字符计数或拆批。</summary>
+    public int MaxRequestBytes { get; init; } = 32 * 1024 * 1024;
+    /// <summary>原始完整响应或错误字节上限，默认 64 MiB。</summary>
+    public int MaxResponseBytes { get; init; } = 64 * 1024 * 1024;
 }
