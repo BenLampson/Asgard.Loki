@@ -1,0 +1,384 @@
+{
+  "provenance": "Independent native Messages profile before tests; raw output_config/thinking/signature/tool history/unknown fields do not certify endpoint or model setting effectiveness.",
+  "source": "https://help.aliyun.com/zh/model-studio/anthropic-api-messages",
+  "profiles": [
+    {
+      "root": "https://dashscope.aliyuncs.com/",
+      "key": "fixture-ali-legacy-key"
+    },
+    {
+      "root": "https://fixture-workspace.cn-beijing.maas.aliyuncs.com/",
+      "key": "fixture-ali-workspace-key"
+    },
+    {
+      "root": "https://proxy.invalid/tenant-prefix/",
+      "key": "fixture-ali-proxy-key"
+    }
+  ],
+  "base_path": "apps/anthropic/v1/",
+  "model": "caller-selected-ali",
+  "caller": {
+    "model": "public",
+    "max_tokens": 2048,
+    "system": [
+      {
+        "type": "text",
+        "text": "原生消息",
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "old thought",
+            "signature": ""
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-a",
+            "name": "lookup_a",
+            "input": {
+              "n": 9007199254740993
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-b",
+            "name": "lookup_b",
+            "input": {
+              "enabled": false
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-b",
+            "content": "B",
+            "is_error": false
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-a",
+            "content": "A"
+          },
+          {
+            "type": "text",
+            "text": "继续"
+          }
+        ]
+      }
+    ],
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "tools": [
+      {
+        "name": "lookup_a",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    ],
+    "output_config": {
+      "effort": "high",
+      "format": {
+        "type": "json_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "null": null,
+      "empty": []
+    }
+  },
+  "wire": {
+    "model": "caller-selected-ali",
+    "max_tokens": 2048,
+    "system": [
+      {
+        "type": "text",
+        "text": "原生消息",
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "old thought",
+            "signature": ""
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-a",
+            "name": "lookup_a",
+            "input": {
+              "n": 9007199254740993
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-b",
+            "name": "lookup_b",
+            "input": {
+              "enabled": false
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-b",
+            "content": "B",
+            "is_error": false
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-a",
+            "content": "A"
+          },
+          {
+            "type": "text",
+            "text": "继续"
+          }
+        ]
+      }
+    ],
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "tools": [
+      {
+        "name": "lookup_a",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    ],
+    "output_config": {
+      "effort": "high",
+      "format": {
+        "type": "json_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "null": null,
+      "empty": []
+    },
+    "stream": false
+  },
+  "result": {
+    "id": "msg-ali-a",
+    "type": "message",
+    "role": "assistant",
+    "model": "native-reported-ali",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "原生思考",
+        "signature": ""
+      },
+      {
+        "type": "tool_use",
+        "id": "new-a",
+        "name": "lookup_a",
+        "input": {
+          "n": 9007199254740993
+        }
+      },
+      {
+        "type": "tool_use",
+        "id": "new-b",
+        "name": "lookup_b",
+        "input": {
+          "enabled": false
+        }
+      }
+    ],
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 11,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "null": null,
+      "empty": []
+    }
+  },
+  "events": [
+    {
+      "type": "message_start",
+      "message": {
+        "id": "msg-ali-a",
+        "type": "message",
+        "role": "assistant",
+        "model": "native-reported-ali",
+        "content": [],
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    },
+    {
+      "type": "content_block_start",
+      "index": 0,
+      "content_block": {
+        "type": "thinking",
+        "thinking": ""
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 0,
+      "delta": {
+        "type": "thinking_delta",
+        "thinking": "原生思考"
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 0,
+      "delta": {
+        "type": "signature_delta",
+        "signature": ""
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 0
+    },
+    {
+      "type": "content_block_start",
+      "index": 1,
+      "content_block": {
+        "type": "tool_use",
+        "id": "new-a",
+        "name": "lookup_a",
+        "input": {}
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 1,
+      "delta": {
+        "type": "input_json_delta",
+        "partial_json": "{\"n\":9007199254740993}"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 1
+    },
+    {
+      "type": "content_block_start",
+      "index": 2,
+      "content_block": {
+        "type": "tool_use",
+        "id": "new-b",
+        "name": "lookup_b",
+        "input": {}
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 2,
+      "delta": {
+        "type": "input_json_delta",
+        "partial_json": "{\"enabled\":false}"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 2
+    },
+    {
+      "type": "message_delta",
+      "delta": {
+        "stop_reason": "tool_use",
+        "stop_sequence": null
+      },
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 11,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "type": "message_stop"
+    },
+    {
+      "type": "vendor.trace",
+      "id": "business-trace",
+      "error": {
+        "business": false
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "false": false,
+        "null": null,
+        "empty": []
+      }
+    }
+  ],
+  "sse": "id: ali-transport\nretry: 0\nevent: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg-ali-a\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"native-reported-ali\",\"content\":[],\"usage\":{\"input_tokens\":0,\"output_tokens\":0}}}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"原生思考\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"tool_use\",\"id\":\"new-a\",\"name\":\"lookup_a\",\"input\":{}}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"n\\\":9007199254740993}\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":2,\"content_block\":{\"type\":\"tool_use\",\"id\":\"new-b\",\"name\":\"lookup_b\",\"input\":{}}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"enabled\\\":false}\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":2}\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":0,\"output_tokens\":11,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0}}\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"}\n\nevent: vendor.trace\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-trace\",\"error\":{\"business\":false},\"future\":{\"exact\":9007199254740993,\"zero\":0,\"false\":false,\"null\":null,\"empty\":[]}}\n\n"
+}
