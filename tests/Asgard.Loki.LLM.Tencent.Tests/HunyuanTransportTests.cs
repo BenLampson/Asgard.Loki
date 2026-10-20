@@ -66,4 +66,14 @@ public sealed class HunyuanTransportTests
         var provider = new TencentHunyuanProvider(factory, source, timeProvider: new HunyuanClock()); if (code == "0") Assert.True(JsonElement.DeepEquals(data, (await provider.CompleteAsync(HunyuanFixture.Body(), HunyuanFixture.Context(), TestContext.Current.CancellationToken)).Data));
         else { var error = await Assert.ThrowsAsync<LlmUpstreamException>(() => provider.CompleteAsync(HunyuanFixture.Body(), HunyuanFixture.Context(), TestContext.Current.CancellationToken)); Assert.True(JsonElement.DeepEquals(data, JsonSerializer.Deserialize<JsonElement>(error.Body.Span))); } Assert.Equal(1, factory.Calls);
     }
+    /// <summary>读取/客户端关闭边界的延迟请求修改也不能交付完整结果。</summary>
+    [Theory] [InlineData(false)] [InlineData(true)]
+    public async Task LateWireMutationCannotPublishAfterClosure(bool clientClosure)
+    {
+        using var source = new HunyuanSource(); using var factory = new HunyuanHttpFactory(); HttpRequestMessage? sent = null;
+        var stream = new HunyuanReadStream(Encoding.UTF8.GetBytes(HunyuanFixture.Part("response").GetRawText())) { OnEof = clientClosure ? null : () => sent!.Headers.Host = "changed.example.invalid" };
+        if (clientClosure) factory.OnDisposeClient = () => sent!.RequestUri = new("https://changed.example.invalid/");
+        factory.OnSend = (message, _) => { sent = message; var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) }; response.Content.Headers.ContentType = new("application/json"); return Task.FromResult(response); };
+        await Assert.ThrowsAsync<InvalidDataException>(() => new TencentHunyuanProvider(factory, source, timeProvider: new HunyuanClock()).CompleteAsync(HunyuanFixture.Body(), HunyuanFixture.Context(), TestContext.Current.CancellationToken)); Assert.True(stream.Disposed); Assert.Equal(1, factory.Calls); Assert.Equal(1, factory.Disposals);
+    }
 }

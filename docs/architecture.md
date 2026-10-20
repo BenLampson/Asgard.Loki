@@ -2594,6 +2594,7 @@ TencentHunyuanProvider --> ITencentHunyuanCredentialSource : borrowed once per c
 ITencentHunyuanCredentialSource --> TencentHunyuanCredentials : immutable snapshot
 TencentHunyuanProvider --> TencentPayload : frozen PascalCase JSON and Response envelope
 TencentHunyuanProvider --> TencentTc3 : actual UTF8 body and API3 fixed canonical URI
+TencentHunyuanProvider --> TencentWireGuard : signed wire snapshot through resource closure
 TencentHunyuanProvider --> HttpBodyReader : bounded bytes and EOF only
 TencentHunyuanProvider --> IHttpClientFactory : borrowed factory and owned per-call client
 ```

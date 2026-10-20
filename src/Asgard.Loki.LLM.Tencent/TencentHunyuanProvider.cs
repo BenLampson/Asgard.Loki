@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Headers;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -45,26 +44,24 @@ public sealed partial class TencentHunyuanProvider : IHunyuanAdapter, ILlmCreden
         var body = TencentPayload.Snapshot(request, context.Target.UpstreamModel, false, _options.MaximumRequestBytes);
         var credentials = await CredentialsAsync(context, token).ConfigureAwait(false); byte[] bytes; HttpStatusCode status; string? type;
         using (var message = new HttpRequestMessage(HttpMethod.Post, endpoint))
-        using (var client = _factory.CreateClient(_clientName))
+        using (var originalContent = new ByteArrayContent(body))
         {
-            AssertIdentity(credentials, context.Credential.PrincipalIdentity!, token);
-            if (client.DefaultRequestHeaders.Any(h => h.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) || h.Key.Equals("Host", StringComparison.OrdinalIgnoreCase)
-                || h.Key.StartsWith("X-TC-", StringComparison.OrdinalIgnoreCase) || new[] { "api-key", "x-api-key", "x-goog-api-key" }.Contains(h.Key, StringComparer.OrdinalIgnoreCase))) throw new InvalidOperationException("混元客户端默认头包含非本次原生调用拥有的认证或签名配置。");
-            using var originalContent = new ByteArrayContent(body); message.Content = originalContent; message.Content.Headers.ContentType = new("application/json"); message.Headers.Accept.ParseAdd("application/json");
-            TencentTc3.Sign(message, body, _options.SigningHost ?? endpoint.Authority, credentials, _time.GetUtcNow(), _options.Region);
-            var hash = SHA256.HashData(body); var headers = message.Headers.ToDictionary(h => h.Key, h => string.Join(",", h.Value), StringComparer.OrdinalIgnoreCase);
-            using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
-            AssertIdentity(credentials, context.Credential.PrincipalIdentity!, token);
-            if (message.Method != HttpMethod.Post || message.RequestUri != endpoint || response.RequestMessage is { } actual && (actual.Method != HttpMethod.Post || actual.RequestUri != endpoint)
-                || !ReferenceEquals(message.Content, originalContent) || message.Content.Headers.ContentType?.ToString() != "application/json"
-                || !SHA256.HashData(await message.Content.ReadAsByteArrayAsync(token).ConfigureAwait(false)).SequenceEqual(hash)
-                || headers.Any(h => !message.Headers.TryGetValues(h.Key, out var values) || string.Join(",", values) != h.Value)
-                || message.Headers.Any(h => !headers.ContainsKey(h.Key) && (h.Key.StartsWith("X-TC-", StringComparison.OrdinalIgnoreCase) || h.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase)))) throw new InvalidDataException("混元原生实际目标、正文或认证头发生改变。");
-            type = response.Content.Headers.NonValidated.TryGetValues("Content-Type", out var types) ? string.Join(", ", types) : null;
-            if (response.IsSuccessStatusCode && MediaTypeHeaderValue.TryParse(type, out var media) && media.MediaType?.Equals("text/event-stream", StringComparison.OrdinalIgnoreCase) == true) throw new InvalidDataException("混元完整调用不能接受 SSE。");
-            var declared = response.Content.Headers.NonValidated.Contains("Content-Length"); var length = response.Content.Headers.ContentLength;
-            if (declared && length is null || length < 0 || length > _options.MaximumResponseBytes) throw new InvalidDataException("混元响应声明长度无效或超过上限。");
-            bytes = await HttpBodyReader.ReadAsync(response.Content, _options.MaximumResponseBytes, token).ConfigureAwait(false); status = response.StatusCode;
+            message.Content = originalContent; TencentWireGuard guard; HttpResponseMessage response;
+            using (var client = _factory.CreateClient(_clientName))
+            {
+                SignMessage(client, message, body, credentials, context, false, token); guard = new(message, body);
+                response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+                using (response)
+                {
+                    AssertIdentity(credentials, context.Credential.PrincipalIdentity!, token); await guard.VerifyAsync(response, token).ConfigureAwait(false);
+                    type = RawContentType(response);
+                    if (response.IsSuccessStatusCode && MediaTypeHeaderValue.TryParse(type, out var media) && media.MediaType?.Equals("text/event-stream", StringComparison.OrdinalIgnoreCase) == true) throw new InvalidDataException("混元完整调用不能接受 SSE。");
+                    CheckLength(response);
+                    bytes = await HttpBodyReader.ReadAsync(response.Content, _options.MaximumResponseBytes, token).ConfigureAwait(false); status = response.StatusCode;
+                    await guard.VerifyAsync(response, token).ConfigureAwait(false);
+                }
+            }
+            await guard.VerifyAsync(response, token).ConfigureAwait(false);
         }
         AssertIdentity(credentials, context.Credential.PrincipalIdentity!, token);
         if ((int)status is < 200 or >= 300) throw new LlmUpstreamException("腾讯混元 HTTP 调用失败。", status, bytes, type);
@@ -77,6 +74,23 @@ public sealed partial class TencentHunyuanProvider : IHunyuanAdapter, ILlmCreden
     /// <summary>当前原生供应商仅提供完整 JSON；不把 JSON 响应伪装成流式事件。</summary>
     public IAsyncEnumerable<HunyuanEvent> StreamAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
         => throw new NotSupportedException("此混元适配器尚不支持原生 SSE。");
+    /// <summary>完整和流式原生调用共享同一个显式身份、默认头隔离与实际字节签名规则。</summary>
+    private void SignMessage(HttpClient client, HttpRequestMessage message, byte[] body, TencentHunyuanCredentials credentials, LlmAdapterContext context, bool stream, CancellationToken token)
+    {
+        AssertIdentity(credentials, context.Credential.PrincipalIdentity!, token);
+        if (client.DefaultRequestHeaders.Any(h => h.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) || h.Key.Equals("Host", StringComparison.OrdinalIgnoreCase)
+            || h.Key.StartsWith("X-TC-", StringComparison.OrdinalIgnoreCase) || new[] { "api-key", "x-api-key", "x-goog-api-key" }.Contains(h.Key, StringComparer.OrdinalIgnoreCase))) throw new InvalidOperationException("混元客户端默认头包含非本次原生调用拥有的认证或签名配置。");
+        message.Content!.Headers.ContentType = new("application/json"); message.Headers.Accept.ParseAdd(stream ? "text/event-stream" : "application/json");
+        TencentTc3.Sign(message, body, _options.SigningHost ?? context.Target.BaseAddress.Authority, credentials, _time.GetUtcNow(), _options.Region);
+    }
+    /// <summary>保留实际 Content-Type 原文供原生 HTTP/SSE 错误使用。</summary>
+    private static string? RawContentType(HttpResponseMessage response) => response.Content.Headers.NonValidated.TryGetValues("Content-Type", out var types) ? string.Join(", ", types) : null;
+    /// <summary>声明长度格式、负值或上限错误在首次正文读取之前拒绝。</summary>
+    private void CheckLength(HttpResponseMessage response)
+    {
+        var declared = response.Content.Headers.NonValidated.Contains("Content-Length"); var length = response.Content.Headers.ContentLength;
+        if (declared && length is null || length < 0 || length > _options.MaximumResponseBytes) throw new InvalidDataException("混元响应声明长度无效或超过上限。");
+    }
     /// <summary>校验供应商、协议、服务器、实际模型与 External 主体，不按 Key 内容推测协议。</summary>
     private void ValidateContext(LlmAdapterContext context)
     {
