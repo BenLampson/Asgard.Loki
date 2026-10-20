@@ -3016,3 +3016,26 @@ LlmOptions --> "explicit native Ollama target"
 ```
 
 Stateless Responses replays complete input; SDK Session affinity does not add remote storage. Compact raw output is opaque data; its ID is not a generated Responses ID. Independent full native windows verify28 OpenAI and9 Messages profile cases with offline HTTP, native terminal/EOF and binding guards; current scoped totals577 OpenAI and152 Anthropic cases pass. Local compact route support is distinct from unverified hosted compact availability. No server/CLI/login/model management/tool execution or native NDJSON conversion is added. Production graph remains63/45/125/63inventory. No live optional-setting/model or full-suite/all-package verification is claimed.
+
+### Native compatible TextCompletions in OpenAI supplier
+
+OpenAiLlmProvider additively implements existing ITextCompletionsAdapter through explicit interface methods, alongside its separate Chat adapter. Core TextCompletions1024/request/result/event/client and complete-target Session contracts are reused without a new protocol/package/dependency. Targets explicitly declare native text support; the default Chat/Responses target declaration stays unchanged. Retired OpenAI service/model availability is not implied by configuring a current compatible endpoint.
+
+```plantuml
+@startuml
+TextCompletionsClient --> ITextCompletionsAdapter : existing complete-target resolution
+OpenAiLlmProvider ..|> ITextCompletionsAdapter : explicit native text methods
+OpenAiLlmProvider --> OpenAiTextCompletionCall : original DOM snapshot / selected wire
+OpenAiLlmProvider --> OpenAiHttpTransport : existing supplier-private bounded IO
+OpenAiHttpTransport --> OpenAiTextCompletionStreamState : native text choices / actual DONE
+OpenAiTextCompletionStreamState --> OpenAiTextCompletionJson : text/logprobs / exact indices
+OpenAiLlmProvider --> TextCompletion : original native JSON
+OpenAiLlmProvider --> TextCompletionEvent : original JSON / SSE identity
+@enduml
+```
+
+Only configured actual model and method stream mode are owned. Native prompt/FIM/suffix/echo/logprobs/unknown fields and omission remain unchanged; hidden CLR container values are rejected in favor of explicit native JSON containers. No message conversion, model catalog, parameter clamping, FIM marker injection or execution is added. Text results do not acquire Responses continuation ownership.
+
+Native text state tracks exact distinct nonnegative indices, bounds association count and keeps original sparse indices. One choice finish starts bounded held-tail processing while other choices continue. Repeated/late known choice generation, malformed carriers, early/missing/repeated DONE and post-DONE data fail. Unknown business type/ID remains data, independent from Responses state. Initial native errors retain their original event; late errors prevent held success. The existing shared HTTP loop accepts this supplier-owned text state without changing the other protocol branches or their original error policies.
+
+Text request/body/errors/whole-SSE limits, actual wire and native media/UTF-8/framing/length, full owned-resource closure and final cancellation precede result/end delivery. Nullable MaximumTextCompletionRequestBytes and MaximumTrackedTextChoices are omitted from default identity serialization, preserving old default binding bytes; explicit policies enter existing binding normally. Borrowed HTTP factories/cache/coordinators are not released. Production graph remains63/45/125/63inventory, no capability or supplier peer reference. Current OpenAI executable passes717 offline cases including140 text cases; protocol fidelity does not prove live model/setting acceptance or full-solution/all-package validation.

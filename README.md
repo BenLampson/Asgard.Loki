@@ -23,7 +23,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Capability | Provider package | Implemented APIs | Streaming |
 | --- | --- | --- | --- |
 | LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat/Responses; fixed published Bot calls; explicit Coding Plan Chat/Responses | SSE |
-| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation/continuation; native Moderations; explicit compaction, Responses WebSocket and independent Realtime | SSE; JSON compaction; native JSON WebSocket events |
+| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat/Responses/Moderations; configured native text/FIM; explicit compaction, Responses WebSocket and independent Realtime | SSE; JSON compaction; native JSON WebSocket events |
 | LLM | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages | SSE |
 | LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
 | LLM | `Asgard.Loki.LLM.Ollama` | Native Chat/generate JSON/NDJSON, native thinking/schema/tool history and prompt/context; explicit anonymous or Bearer identity | — |
@@ -450,3 +450,5 @@ The same [Volcengine package](src/Asgard.Loki.LLM.Volcengine/README.md#published
 Explicit Ark Coding Plan targets reuse [LLM.Volcengine](src/Asgard.Loki.LLM.Volcengine/README.md#explicit-coding-plan-configuration) for Chat/Responses at `coding/v3/` and [LLM.Anthropic](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-ark-coding-plan-messages) for native Messages at `coding/v1/` with selected Bearer. Roots, actual model and independent credential are caller-owned complete target configuration. Full native windows and Session identity are offline-tested; live Coding Plan entitlement and optional-setting effectiveness remain unverified.
 
 Explicit Ollama compatible endpoints reuse [LLM.OpenAI](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-ollama-compatible-endpoints) for Chat/stateless Responses/local compact and [LLM.Anthropic](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-ollama-messages) for native Messages with selected Bearer. Complete roots, actual model and independent local placeholder or hosted Key are explicit configuration. Native `/api/chat` and `/api/generate` stay in the Ollama package. Offline full-window verification does not certify model/optional-setting effectiveness or hosted compact availability.
+
+[Native text/FIM completions](src/Asgard.Loki.LLM.OpenAI/README.md#native-compatible-text-completions) now use the existing TextCompletions SDK client and OpenAI supplier package with explicit current endpoint/model/API Key configuration. Prompt templates, suffix, text/logprobs/choice indices and unknown fields remain native. Text has its own bounded choice/DONE lifecycle; no prompt-to-Chat conversion, parameter repair or generated Responses ID ownership is added. These calls are verified offline, with no live model/parameter acceptance claim.

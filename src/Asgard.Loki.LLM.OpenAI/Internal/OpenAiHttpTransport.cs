@@ -39,7 +39,7 @@ internal static class OpenAiHttpTransport
     }
     /// <summary>复用原生状态和有界终态尾流，完整 EOF/释放/最终取消前不交付终态。</summary>
     internal static async IAsyncEnumerable<SseFrame> StreamAsync(HttpRequestMessage message, IHttpClientFactory factory, string clientName, OpenAiHttpOptions options,
-        bool responses, [EnumeratorCancellation] CancellationToken token, Action<HttpClient>? beforeSend = null, Action<HttpResponseMessage?>? verify = null, bool rawErrors = false)
+        bool responses, [EnumeratorCancellation] CancellationToken token, Action<HttpClient>? beforeSend = null, Action<HttpResponseMessage?>? verify = null, bool rawErrors = false, OpenAiTextCompletionStreamState? text = null)
     {
         var pending = new List<SseFrame>(); var state = new OpenAiHttpStreamState(responses); HttpResponseMessage? actualResponse = null;
         using (var request = message)
@@ -62,15 +62,15 @@ internal static class OpenAiHttpTransport
                     await foreach (var frame in SseReader.ReadAsync(bounded, token, strictUtf8: true).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested(); verify?.Invoke(response);
-                        if (frame.Data == "[DONE]") { state.ObserveDone(); continue; }
+                        if (frame.Data == "[DONE]") { if (text is null) state.ObserveDone(); else text.ObserveDone(); continue; }
                         var data = OpenAiHttpJson.Parse(Encoding.UTF8.GetBytes(frame.Data)); if (data.ValueKind != JsonValueKind.Object) throw new InvalidDataException("OpenAI SSE 必须是原生 JSON 对象。");
-                        if (state.Finishing && OpenAiHttpStreamState.IsFailure(data, frame.EventName)) throw Error("OpenAI SSE 在可能终态之后返回错误。", response, Encoding.UTF8.GetBytes(frame.Data), rawErrors);
-                        state.Observe(data, frame.EventName);
-                        if (state.Finishing)
+                        if ((text?.Finishing ?? state.Finishing) && (text is null ? OpenAiHttpStreamState.IsFailure(data, frame.EventName) : OpenAiTextCompletionStreamState.IsFailure(data, frame.EventName))) throw Error("OpenAI SSE 在可能终态之后返回错误。", response, Encoding.UTF8.GetBytes(frame.Data), rawErrors);
+                        if (text is null) state.Observe(data, frame.EventName); else text.Observe(data, frame.EventName);
+                        if (text?.Finishing ?? state.Finishing)
                         { if (pending.Count >= options.MaximumBufferedTerminalEvents) throw new InvalidDataException("OpenAI SSE 终态尾部暂存数超限。"); pending.Add(frame); }
                         else yield return frame;
                     }
-                    state.Complete();
+                    if (text is null) state.Complete(); else text.Complete();
                 }
             }
         }

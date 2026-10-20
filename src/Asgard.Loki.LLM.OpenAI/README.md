@@ -7,6 +7,7 @@ OpenAI LLM provider for Asgard.Loki.
 | API | Complete result | Streaming |
 | --- | --- | --- |
 | Chat Completions | Yes | SSE |
+| Configured native text/FIM completions | Full choices/text/logprobs JSON | Native SSE + actual DONE |
 | Native Moderations | Complete native JSON; text/batch/multimodal input groups | No |
 | Responses creation / continuation | Yes | SSE |
 | Native Responses compaction | Yes, explicit target feature | No |
@@ -270,7 +271,7 @@ Each call uses explicit Bearer/account headers and exact application/json withou
 
 Defaults: 1 MiB request, 32 MiB complete/error/whole-SSE bytes and 128 held terminal-tail records. Factories, token source, clock and Session dependencies stay borrowed. Configure named transports with no automatic redirects/retries/hedging and appropriate timeouts. There is no token-triggered retry, failover, background polling or local tool/workflow/media execution.
 
-Validation uses independent full native JSON/compact/SSE resources and fake HTTP. The complete OpenAI supplier test executable passes577 offline cases, including127 Codex cases covering separate parallel tool IDs, native opaque fields, original wire/settings, source snapshots, complete Session drift/rotation/ownership and late transport/resource/auth failures. This is not live backend/model acceptance or a new full-repository suite result.
+Validation uses independent full native JSON/compact/SSE resources and fake HTTP. The complete OpenAI supplier test executable passes717 offline cases, including127 Codex cases covering separate parallel tool IDs, native opaque fields, original wire/settings, source snapshots, complete Session drift/rotation/ownership and late transport/resource/auth failures. This is not live backend/model acceptance or a new full-repository suite result.
 
 ### Native Codex alpha search
 
@@ -318,3 +319,38 @@ The [official compatibility guide](https://docs.ollama.com/api/openai-compatibil
 Responses is stateless upstream: replay complete input; do not use previous_response_id or conversation expecting remote storage. SDK Sessions keep only the existing complete-target affinity and response ownership checks. The current local server implements [responses/compact](https://github.com/ollama/ollama/blob/main/server/routes.go); hosted compact availability is not established here. Compact output remains opaque native data, including encrypted_content, without decoding, local summarization or automatic compaction. Its ID does not acquire generated Responses ownership. Native Messages uses the [existing Anthropic provider](../Asgard.Loki.LLM.Anthropic/README.md#explicit-ollama-messages); neither production supplier references the other.
 
 Twenty-eight additional offline tests verify independently authored full native caller/wire/result/SSE windows, explicit local/proxy/hosted configuration, tools and reversed results, original reasoning/schema/unknown values, precise numbers, transport metadata, missing terminal/late read failure, raw native errors and complete Session identity drift/recovery. Total executable: 577 passing offline cases. Configured-host wire tests do not establish hosted compact access, real model availability, optional field acceptance or generated quality. In particular, SDK field passthrough does not add upstream support for tool_choice, URL images or other unsupported settings.
+
+## Native compatible text completions
+
+The existing provider also implements ITextCompletionsAdapter for explicitly configured current text/FIM endpoints, such as [DashScope Completions](https://docs.modelstudio.console.alibabacloud.com/en/model-studio/completions) and [DeepSeek FIM](https://api-docs.deepseek.com/api/create-completion/). Register an ordinary complete target with `Protocols = LlmProtocol.TextCompletions`, an explicit full API root, actual model and independent API Key. The SDK appends only `completions`; a Beta prefix or FIM template belongs to the caller.
+
+```csharp
+var provider = new OpenAiLlmProvider(httpClientFactory);
+var target = new LlmTarget
+{
+    Id = "text-target", ProviderId = provider.Id,
+    BaseAddress = new Uri(configuredTextApiRoot),
+    UpstreamModel = selectedTextModel, CredentialId = "text-key",
+    Protocols = LlmProtocol.TextCompletions
+};
+// Register provider/target, independent textKey, route "code" and caller-owned SessionStore.
+var result = await loki.LLM.TextCompletions.CompleteAsync(new TextCompletionRequest
+{
+    Model = "code", Parameters = new()
+    {
+        ["prompt"] = System.Text.Json.JsonSerializer.SerializeToElement(nativePrompt),
+        ["max_tokens"] = System.Text.Json.JsonSerializer.SerializeToElement(128)
+    }
+}, new LlmCallOptions { SessionId = "code-session" }, cancellationToken);
+// TextCompletions.StreamAsync returns original TextCompletionEvent JSON and SSE metadata.
+```
+
+Requests keep original prompt/suffix/echo/logprobs, exact values, null/false/empty/unknown fields and omission. Only the selected model and method stream flag are transport-owned; aliases are rejected. The SDK neither adds FIM markers nor converts prompts to messages, clamps sampling settings, removes reasoning options or executes generated code. Native JSON containers use JsonObject/JsonArray; hidden CLR containers inside JsonValue are rejected rather than serialized with potentially changed Unicode. Complete native text choices, indices, logprobs, finish reasons and returned model stay intact. A text result ID does not acquire generated Responses ownership.
+
+Text SSE tracks distinct exact nonnegative choice indices in a bounded dictionary; sparse values never allocate indexed arrays. A choice finish starts held-tail processing while other choices can continue. Known text/logprobs cannot reopen an ended choice; duplicate indices/ends, missing choice finishes, early/repeated/missing DONE and later data fail. Unknown business metadata remains raw and does not become a Responses lifecycle, including a response.failed-named extension. Actual DONE is a control record, not fabricated JSON. Native initial errors stay original; a late native error discards held success and retains raw bytes/status/media.
+
+The entire request freezes before HTTP factory creation. Selected Bearer, full URI/method/Host/content and successful UTF-8 JSON/SSE media are checked through bounded length/EOF, owned async/sync/client/request closure and final cancellation. Other default key/signature auth is rejected without changing borrowed defaults. Factories, caches and binding coordinators stay caller-owned. No generated POST retries, failover, history manager, background work or media download is added.
+
+`OpenAiHttpOptions.MaximumTextCompletionRequestBytes` is optional (effective32MiB); `MaximumTrackedTextChoices` is optional (effective128). Existing MaximumBodyBytes (32MiB) bounds JSON/errors/the entire SSE, and MaximumBufferedTerminalEvents (128) bounds ending-stage frames. All explicit policy values participate in the existing complete-target Session binding; omitted new values preserve previous default binding bytes exactly. Current protocol/model/region/parameter restrictions remain upstream-owned: DashScope documents string FIM prompts and null logprobs; generic token-array/sparse/logprobs snapshots do not certify those inputs for a particular model. No retired OpenAI model availability or live text-model acceptance is claimed.
+
+The executable passes717 offline cases, including140 text cases with independently authored complete JSON/raw SSE windows, original fields and method ownership, request/response faults, resource and final-cancellation failures, native choice/DONE gates and Session drift/recovery. Existing Chat/Responses/Codex/Moderations/WebSocket/Realtime cases remain included. These are protocol checks, not real model quality, setting-effectiveness or a full-repository test result.

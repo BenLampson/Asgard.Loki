@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 namespace Asgard.Loki.LLM.OpenAI;
 
 /// <summary>实现 OpenAI Chat/Responses HTTP/JSON、SSE、原生 Moderations 及可选双工协议。</summary>
-public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter, IResponsesWebSocketAdapter, IRealtimeAdapter, IModerationsAdapter
+public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter, IResponsesWebSocketAdapter, IRealtimeAdapter, IModerationsAdapter, ITextCompletionsAdapter
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _httpClientName;
@@ -61,6 +61,7 @@ public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IRespon
         ArgumentException.ThrowIfNullOrWhiteSpace(_realtimeFactory.BindingIdentity);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_httpOptions.MaximumBodyBytes, 0);
         if (_httpOptions.MaximumModerationRequestBytes is <= 0) throw new ArgumentOutOfRangeException(nameof(httpOptions));
+        if (_httpOptions.MaximumTextCompletionRequestBytes is <= 0 || _httpOptions.MaximumTrackedTextChoices is <= 0) throw new ArgumentOutOfRangeException(nameof(httpOptions));
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_httpOptions.MaximumBufferedTerminalEvents, 0);
         ArgumentException.ThrowIfNullOrWhiteSpace(_webSocketFactory.BindingIdentity);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_webSocketOptions.MaximumMessageBytes, 0);
