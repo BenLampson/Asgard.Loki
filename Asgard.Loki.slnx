@@ -52,6 +52,9 @@
   <Folder Name="/src/Providers/Midjourney/">
     <Project Path="src/Asgard.Loki.Video.Midjourney/Asgard.Loki.Video.Midjourney.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/Cloudflare/">
+    <Project Path="src/Asgard.Loki.Audio.Cloudflare/Asgard.Loki.Audio.Cloudflare.csproj" />
+  </Folder>
   <Folder Name="/src/Providers/MiniMax/">
     <Project Path="src/Asgard.Loki.Audio.MiniMax/Asgard.Loki.Audio.MiniMax.csproj" />
     <Project Path="src/Asgard.Loki.Video.MiniMax/Asgard.Loki.Video.MiniMax.csproj" />
@@ -131,6 +134,9 @@
   </Folder>
   <Folder Name="/tests/Providers/Midjourney/">
     <Project Path="tests/Asgard.Loki.Video.Midjourney.Tests/Asgard.Loki.Video.Midjourney.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Cloudflare/">
+    <Project Path="tests/Asgard.Loki.Audio.Cloudflare.Tests/Asgard.Loki.Audio.Cloudflare.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/MiniMax/">
     <Project Path="tests/Asgard.Loki.Audio.MiniMax.Tests/Asgard.Loki.Audio.MiniMax.Tests.csproj" />

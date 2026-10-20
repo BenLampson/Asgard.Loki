@@ -43,6 +43,7 @@ $packageIds = @(
     'Asgard.Loki.Video.Midjourney',
     'Asgard.Loki.Audio.OpenAI',
     'Asgard.Loki.Audio.MiniMax',
+    'Asgard.Loki.Audio.Cloudflare',
     'Asgard.Loki.Image.OpenAI',
     'Asgard.Loki.Embedding.OpenAI',
     'Asgard.Loki.Embedding.Google',

@@ -32,6 +32,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Speech | `Asgard.Loki.Audio.Volcengine` | V3 TTS plus explicit V1 HTTP query / binary WebSocket submit; native JSON and metadata | HTTP JSON or binary WebSocket to ordered audio chunks |
 | Speech | `Asgard.Loki.Audio.OpenAI` | Native Speech binary/SSE responses; custom voice objects and complete native JSON settings | Incremental binary bytes or native delta/done events |
 | Speech | `Asgard.Loki.Audio.MiniMax` | Native synchronous `t2a_v2`; original parameters, hex audio or unchanged URL results | One complete JSON result; no implicit URL download |
+| Audio recognition / translation | `Asgard.Loki.Audio.Cloudflare` | Explicit native raw-binary recognition or JSON/Base64 task transcribe/translate; complete original envelopes | Borrowed single-use uploads; no multipart inference or implicit profile switch |
 | File transcription / translation | `Asgard.Loki.Audio.OpenAI` | Native multipart, complete JSON/verbose/diarized or text/subtitle results | Native transcription delta/segment/done SSE |
 | Images | `Asgard.Loki.Image.OpenAI` | OpenAI image generations and native JSON/multipart edits; Base64 and URL results | Native generation/edit SSE partial/final events |
 | Embedding | `Asgard.Loki.Embedding.OpenAI` | Native Embeddings, text/token batch inputs, Float/Base64 and indexed results | — |
@@ -112,6 +113,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Audio.Volcengine` | Volcengine speech provider |
 | `Asgard.Loki.Audio.OpenAI` | Native OpenAI speech and multipart transcription/translation; independent Audio state |
 | `Asgard.Loki.Audio.MiniMax` | Native MiniMax synchronous speech; hex audio and caller-consumed URL results |
+| `Asgard.Loki.Audio.Cloudflare` | Native Workers AI audio with explicit raw-binary or JSON/Base64 input and original results |
 | `Asgard.Loki.Image.OpenAI` | OpenAI image provider |
 
 The entry package depends only on abstractions. Capability packages do not reference each other. Providers reference their own capability, optional shared Infrastructure and necessary standard components. Installing OpenAI images does not install LLM or audio providers.

@@ -1,5 +1,23 @@
 # Asgard.Loki Architecture Specification
 
+## Explicit Cloudflare native audio inputs
+
+`Audio.Cloudflare` references only Audio, Infrastructure and the standard HTTP factory package. `CloudflareAudioFileAdapter` implements existing file recognition/translation interfaces with a fixed API root/account/model/credential and an explicit input format. The public route remains distinct in `AudioResultMetadata`. Raw binary forwards current-position audio unchanged and rejects additional fields and translation; it has no native task carrier. JSON/Base64 sets the matching native transcribe/translate task and preserves literal JSON field values, including nested types and exact numbers. No model-name inference, automatic profile switch or hidden text transformation is involved.
+
+```mermaid
+classDiagram
+IAudioTranscriptionAdapter <|.. CloudflareAudioFileAdapter
+IAudioTranslationAdapter <|.. CloudflareAudioFileAdapter
+CloudflareAudioFileAdapter --> CloudflareAudioFileOptions : explicit fixed target and input format
+CloudflareAudioFileAdapter --> BorrowedStreamContent : bounded original bytes
+CloudflareAudioFileAdapter --> CloudflareAudioJsonContent : supplier Base64 JSON framing
+CloudflareAudioJsonContent --> BorrowedStreamContent : bounded single-use source
+CloudflareAudioFileAdapter --> HttpBodyReader : bounded original response
+CloudflareAudioFileAdapter --> AudioFileResult : complete native bytes and content type
+```
+
+Supplier JSON framing streams Base64 with bounded buffers, without full-file prebuffering, stream ownership transfer or retry. Raw metadata fields unsupported by a selected input schema fail rather than disappear. Native REST success/errors and required text structure are validated; empty recognition text remains valid. Whole response bytes retain words/segments/transcription data/VTT/diagnostics and unknown fields. A complete result waits for body/declared-length checks, owned HTTP/content/client disposal and final cancellation. Upload and factory remain borrowed. There is no SSE, Worker deployment, audio chunking service, task polling or cross-capability coordinator. Offline fixtures establish protocol behavior, not live recognition/translation quality.
+
 ## Bounded borrowed uploads
 
 Infrastructure additionally exposes `BorrowedStreamContent(Stream, long maximumBytes)`. Its existing constructor remains compatible. A positive bound counts raw bytes from the current position without inspecting length, buffering, rewinding or closing the caller's input. Exceeding it cannot write a block beyond the bound or trigger replay; partial output and one consumed source block can remain. Protocol framing, encoding, field names and native success remain supplier-owned.
@@ -72,6 +90,7 @@ AwsMantleLlmProvider ..> Infrastructure
 OpenAiSpeechAdapter ..> Infrastructure
 VolcengineV1SpeechAdapter ..> Infrastructure
 MiniMaxSpeechAdapter ..> Infrastructure
+CloudflareAudioFileAdapter ..> Infrastructure
 OpenAiImageAdapter ..> Infrastructure
 GoogleVideoAdapter ..> Infrastructure
 GoogleVertexVideoAdapter ..> Infrastructure
@@ -82,7 +101,7 @@ XaiVideoAdapter ..> Infrastructure
 MidjourneyVideoAdapter ..> Infrastructure
 ```
 
-Twenty supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Audio.Volcengine, Audio.MiniMax, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Twenty-one supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Audio.Volcengine, Audio.MiniMax, Audio.Cloudflare, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 

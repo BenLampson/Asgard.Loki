@@ -41,6 +41,8 @@ These clients send audio files as inputs to transcription/translation requests. 
 
 `.Audio.Transcriptions.CreateAsync(AudioFileRequest)` and `.Audio.Translations.CreateAsync(AudioFileRequest)` call explicitly configured application-owned adapters. Transcription optionally exposes `.StreamAsync` through `IStreamingAudioTranscriptionAdapter`; all targets in the route must implement it before a stream can be selected. The OpenAI package implements native multipart transcription/translation, native transcription SSE and speech synthesis. Its optional streaming interface preserves delta/segment/done events and validates segment identity/completion without rewriting native text.
 
+[Cloudflare native audio](../Asgard.Loki.Audio.Cloudflare/README.md) implements the same complete-result interfaces with explicit input profiles. Raw binary recognition sends the upload unchanged and rejects extra fields/translation. JSON/Base64 uses the model's native transcribe/translate task, with each `Fields` value explicitly documented as native JSON text. This supplier profile does not change the core's literal-field snapshots or infer form/JSON types for other providers. Complete response bytes retain all native metadata; no multipart or SSE is inferred.
+
 `AudioOptions` can configure SpeechRoutes, TranscriptionRoutes and TranslationRoutes independently; at least one operation must have a route. Accessing an unconfigured operation fails. Existing speech initialization and interfaces continue to work. File-operation routes/targets are snapshotted at registration; each client, file operation and model route has its own selection state. There is no Session, shared LLM routing, filtering, retry, failover or fallback to another Audio operation.
 
 ```csharp
