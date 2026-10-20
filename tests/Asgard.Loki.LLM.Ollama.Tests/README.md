@@ -8,7 +8,7 @@ Run locally after restore/build:
 
 ```powershell
 dotnet build tests/Asgard.Loki.LLM.Ollama.Tests/Asgard.Loki.LLM.Ollama.Tests.csproj -c Release --no-restore -warnaserror -m:1 -p:UseSharedCompilation=false
-dotnet tests/Asgard.Loki.LLM.Ollama.Tests/bin/Release/net10.0/Asgard.Loki.LLM.Ollama.Tests.dll -noLogo -parallelMode none
+dotnet test --project tests/Asgard.Loki.LLM.Ollama.Tests/Asgard.Loki.LLM.Ollama.Tests.csproj -c Release --no-build
 ```
 
 No actual Ollama/cloud/model, live credentials, network or Redis is used. Native generate has its own `generate-request`, `generate-wire`, `generate-response` and `generate-events` independent fixtures, preserving prompt/context/logprobs and protocol identity. It does not automatically cache/replay context or wrap a Chat request. Ollama protocol conversion remains separate follow-up work. See the [provider contract and limitations](../../src/Asgard.Loki.LLM.Ollama/README.md).

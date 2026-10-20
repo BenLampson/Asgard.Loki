@@ -77,3 +77,9 @@ Use [.env.example](../.env.example) as a naming checklist. It contains only the 
 Future live provider fixtures must be separate and explicitly invoked. Use uppercase ASCII names with the `ASGARD_LOKI_TEST_` prefix and keep different capability credentials independent. Keep generation parameter matrices in test data. Check observable constraints and meaningful combinations; statistical or perceptual effects require repeated comparison or manual evaluation rather than a fixed generated sentence.
 
 Redis integration, audio, images and OpenAI live verification remain outside this current fixture. Future Redis tests must explicitly provide a dedicated test cache and shared coordinator, isolate keys per run and never flush the database. No real-provider credentials are supplied to ordinary CI or fork PRs. Running a live test does not authorize NuGet publication.
+
+## Offline unit-test runner
+
+Ordinary `.Tests.csproj` projects use xUnit v3 with the Microsoft Testing Platform runner selected by `global.json`. Build first, then run `dotnet test --project <project.csproj> --no-build` (matching the build configuration), or use `eng/Test.ps1` for the already-built ordinary suite. Each project must discover and execute tests; zero tests or a runner handshake failure is a failure, not a successful verification. These tests use local doubles and never enable live calls.
+
+The separate `.IntegrationTests.csproj` projects retain the native xUnit command line used by `eng/Test-Live.ps1`; changing the ordinary runner does not enable, discover or execute live integration tests. No remote CI is dispatched by either local command.
