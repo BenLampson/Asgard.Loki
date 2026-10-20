@@ -37,6 +37,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 重排 | `Asgard.Loki.Rerank.Ali` | DashScope 原生嵌套文本/媒体请求、原始文档索引、分数与完整用量 |
 | 重排 | `Asgard.Loki.Rerank.SiliconFlow` | 原生标量/文本/图片请求、原始索引/文档及可选 token 元数据 |
 | 视频 | `Asgard.Loki.Video.Volcengine` | 方舟原生任务提交/查询、原始媒体/资产引用与结果地址，持久化完整目标绑定 |
+| 视频 | `Asgard.Loki.Video.Volcengine` | 即梦 Visual 原生签名提交/查询，固定 req_key，原始媒体、结果及可选查询配置 |
 | 视频 | `Asgard.Loki.Video.Ali` | 百炼万相原生 video-generation/image2video 提交与任务查询，完整目标绑定及原始结果 |
 | 视频 | `Asgard.Loki.Video.Google` | Gemini Veo 原生长操作提交、查询与显式结果复制；预览模型公告于 2026-10-22 下线 |
 | 视频 | `Asgard.Loki.Video.GoogleVertex` | Vertex Veo 完整资源作用域内原生提交/查询、借用令牌、原始 GCS 与内联结果 |

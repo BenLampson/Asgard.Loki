@@ -42,6 +42,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Rerank | `Asgard.Loki.Rerank.Ali` | Native DashScope nested text/media requests, original indices/documents, scores and usage | — |
 | Rerank | `Asgard.Loki.Rerank.SiliconFlow` | Native scalar/text/image requests, original indices/documents, optional native token metadata | — |
 | Video | `Asgard.Loki.Video.Volcengine` | Ark native task submission/query, original media/asset references and result URLs | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.Volcengine` | Jimeng Visual signed native submit/query, fixed req_key, original fields and optional query settings | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Ali` | DashScope native video-generation/image2video submission and task-query results | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Google` | Native Gemini Veo predictLongRunning, operation query and explicit output copy; previews retire 2026-10-22 | Caller-driven task snapshots/content |
 | Video | `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo resource-scoped prediction/query, borrowed tokens, GCS and inline results | Caller-driven task snapshots |
@@ -85,7 +86,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Embedding.Ollama` | Native Ollama embedding inputs/settings, ordered vectors and provider-owned views |
 | `Asgard.Loki.Embedding.Jina` | Native Jina text/media/fused inputs, dense/per-token embeddings and provider-owned views |
 | `Asgard.Loki.Video` | Native video tasks and complete-target reference binding |
-| `Asgard.Loki.Video.Volcengine` | Ark native video generation provider |
+| `Asgard.Loki.Video.Volcengine` | Ark and signed native Jimeng Visual video generation providers |
 | `Asgard.Loki.Video.Ali` | Native DashScope video task provider with explicit service selection |
 | `Asgard.Loki.Video.Google` | Native Gemini Veo operations and explicit content transfer |
 | `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo operations with complete resource/principal binding |

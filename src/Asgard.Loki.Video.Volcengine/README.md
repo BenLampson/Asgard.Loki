@@ -1,11 +1,13 @@
 # Asgard.Loki.Video.Volcengine
 
-Native Volcengine Ark video generation for the pure .NET SDK. References the independent Video capability, Infrastructure's bounded byte reader and `Microsoft.Extensions.Http`.
+Native Volcengine Ark and Jimeng Visual video generation for the pure .NET SDK. References the independent Video capability, Infrastructure's bounded byte reader and `Microsoft.Extensions.Http`.
 
 | Operation | Native API | Result |
 | --- | --- | --- |
-| `SubmitAsync` | `POST contents/generations/tasks` | Original acknowledgement and task ID |
-| `GetAsync` | `GET contents/generations/tasks/{id}` | Original status, errors, metadata and result URLs |
+| `VolcengineVideoAdapter.SubmitAsync` | `POST contents/generations/tasks` | Original acknowledgement and task ID |
+| `VolcengineVideoAdapter.GetAsync` | `GET contents/generations/tasks/{id}` | Original status, errors, metadata and result URLs |
+| `JimengVideoAdapter.SubmitAsync` | Signed `POST /?Action=CVSync2AsyncSubmitTask&Version=2022-08-31` | Original code/data/task ID |
+| `JimengVideoAdapter.GetAsync` | Signed `POST /?Action=CVSync2AsyncGetResult&Version=2022-08-31` | Original code/data/status and video URL; optional original query parameters |
 
 ```csharp
 using System.Text.Json.Nodes;
@@ -49,6 +51,51 @@ The default root is `https://ark.cn-beijing.volces.com/api/v3/`. Specify the act
 Known `queued`, `running`, `succeeded`, `failed`, `cancelled` and `expired` states map to Video lifecycle values. A submission acknowledgement is not generation success; unknown states remain nonterminal with original JSON intact. A known successful task must include its native `content.video_url`. HTTP/API errors throw `VideoUpstreamException` with original status, content type and copied body bytes; HTTP 200 task failures remain native task results, including their error object.
 
 Calls perform one submission or query. There is no polling, failover, media download or URL refresh. Result URL availability and expiry are controlled by Ark.
+
+## Native Jimeng Visual video
+
+`JimengVideoAdapter` uses the native Visual root `https://visual.volcengineapi.com/`, version `2022-08-31`, signing region `cn-north-1` and service `cv`. Supply a full original `RequestKey` explicitly. It is the actual `req_key`, not a model alias inferred from image count or frame settings. Ark video and Visual use different endpoints/protocols; their credentials and result semantics remain independently configured.
+
+```csharp
+var visual = new JimengVideoAdapter(factory, new JimengVideoOptions
+{
+    Id = "visual-video", RequestKey = actualRequestKey,
+    AccessKeyId = accessKeyId, SecretAccessKey = secretAccessKey
+});
+// Register visual as a VideoRoute target just like the Ark adapter above.
+var submittedVisual = await visual.SubmitAsync(new VideoTaskRequest
+{
+    Model = "video",
+    Parameters = new JsonObject
+    {
+        ["prompt"] = "A paper boat on a lake.", ["seed"] = -1, ["frames"] = 121
+    }
+}, cancellationToken);
+var queriedVisual = await visual.GetAsync(submittedVisual.TaskId,
+    new JsonObject
+    {
+        // Keep native req_json as a string; the SDK does not rewrite its contents.
+        ["req_json"] = queryConfigurationJson
+    }, cancellationToken);
+```
+
+The common `loki.Video.GetAsync(reference)` performs one query with the fixed `req_key` and original task ID. For extra native query fields, call the originally bound adapter's `GetAsync(taskId, JsonObject, cancellationToken)` overload. Multiple-target applications retain the adapter associated with `VideoTaskReference.TargetId`; this direct native call does not reselect or recover a target. Neither overload polls or resubmits.
+
+Inputs remain original native JSON, including `image_urls`, `binary_data_base64`, prompt, seed, frames, aspect ratio, original query configuration and unknown fields. Root `model` is reserved by the Video submission contract; `req_key` is fixed by the complete target and cannot be supplied in submission parameters. Query extras cannot override `req_key` or `task_id`; optional `req_json` must remain a string. The SDK snapshots before waits, never changes a request key based on media, injects no generation defaults and neither fetches nor uploads input media.
+
+The complete target fingerprint includes HTTPS root, actual request key, AK/SK/token identity, native version/region/service, implementation, HTTP client and byte limits. Persisted references reject drift before query IO. Optional temporary `SecurityToken` participates in the signature. Credentials are captured, excluded from configuration JSON and never discovered or refreshed. A borrowed `TimeProvider` supplies signing time; actual serialized bytes, native root path and Action/Version query are signed exactly once. The named client is `Asgard.Loki.Video.Volcengine.Jimeng`; configure it without automatic retries, hedging, redirects or default credential headers. The factory and clock remain application-owned.
+
+Visual success is determined by outer integer `code=10000`, then native `data.status`. Submit acknowledgement means accepted, with no invented native status. Known query values `in_queue`, `generating`, `done` and `expired` map to queued, running, successful and expired states. `done` also requires a nonempty original `data.video_url`. Native `not_found` is ambiguous between absence and expiry, so it remains unknown/nonterminal; future statuses remain unknown as well. The redundant top-level `status` is preserved without interpreting it as a task lifecycle.
+
+Native query responses commonly omit `task_id`. In that case `Snapshot.TaskId` carries the original requested ID as request context; `Data` is unchanged and gains no synthetic task/request-key field. This is not an independent upstream identity echo. If an optional task ID or request key is returned inside `data`, mismatches fail explicitly. All original request IDs, timings, output URLs, watermark metadata, errors and unknown members stay in the native JSON.
+
+Non-success native codes, including processing/moderation failures, throw `VideoUpstreamException` with complete raw status/content-type/body. OpenAPI authentication errors and HTTP errors retain their original envelopes too. The SDK does not treat every non-success code as proof of permanent task failure. Missing/inconsistent known result shapes, malformed UTF-8/JSON, duplicate members and empty known-success URLs fail explicitly. No native error is converted into a successful task.
+
+**Availability:** official [Visual video pages](https://docs.volcengine.com/docs/JimengAI/JimengAI-VideoGeneration30Pro-ProductIntroduction?lang=zh) mark older families as being phased out. Request-key availability and account access remain upstream constraints; no default model or automatic migration is supplied. Offline fixtures validate the documented native protocol and independent signatures, not model availability. **No real Visual generation, account authorization, watermark effect or media download has been verified.**
+
+Request/response bounds are 64 MiB/16 MiB by default. Body reading, outer resource disposal and final cancellation complete before result delivery. The supplier shares private Volcengine signing/JSON helpers and Infrastructure's bounded byte reader, while Ark tasks, Visual tasks and asset operations keep their own protocol interpretation. There is no callback host, state cache, background poller, URL download/refresh, credential fallback or gateway endpoint.
+
+References: [Visual native video](https://docs.volcengine.com/docs/JimengAI/JimengAI-VideoGeneration30Pro-InterfaceDocumentation?lang=zh), [official Visual actions](https://github.com/volcengine/volc-sdk-python/blob/master/volcengine/visual/VisualService.py), [official signing algorithm](https://github.com/volcengine/volc-sdk-python/blob/master/volcengine/auth/SignerV4.py).
 
 ## Private media asset library
 

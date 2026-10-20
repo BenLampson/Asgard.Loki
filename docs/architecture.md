@@ -133,6 +133,25 @@ The target identity includes normalized server, actual model, credential digest,
 
 The adapter retains the complete `request_id/output/usage` envelope and original nested task errors. Known lifecycle states map to Video values, while native `UNKNOWN` and future states remain unknown/nonterminal without an invented expiry/failure conclusion. Known success requires an original nonempty video result URL; missing/foreign task IDs or status are protocol errors. HTTP and root API errors preserve raw bytes in `VideoUpstreamException`; a failed native task remains a result. See the [provider API and limits](../src/Asgard.Loki.Video.Ali/README.md).
 
+## Native Jimeng Visual video
+
+`JimengVideoAdapter` stays in Video.Volcengine and implements the existing task contract. The target explicitly captures Visual root, actual `req_key`, independent AK/SK/token identity, native `cv` service/`cn-north-1` region/`2022-08-31` version, client and limits. There is no new package, capability dependency, model alias conversion or media-based request-key selection. Ark assets and Visual share only provider-private root-POST signing plus strict JSON/HTTP utilities; their business/native result semantics remain separate.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. JimengVideoAdapter
+JimengVideoAdapter --> JimengVideoOptions : immutable complete target
+JimengVideoAdapter --> VolcengineRequestSigner : explicit cv service
+VolcengineAssetClient --> VolcengineRequestSigner : explicit ark service
+JimengVideoAdapter --> VolcengineVideoHttp : strict JSON and lifetime
+VolcengineVideoHttp --> HttpBodyReader : shared bounded bytes
+JimengVideoAdapter --> VideoTaskSnapshot : original native envelope
+```
+
+Submit and query are fixed signed POST Actions over the original serialized bytes. Submit reserves `req_key` for the target. Query preserves original task ID, request key and optional native `req_json` string/unknown fields through a supplier-owned overload; extras cannot override identity fields. Inputs snapshot before waits. Persisted common Video references continue to enforce complete-target binding, while direct native calls use the explicitly selected adapter.
+
+The adapter checks outer integer `code` before `data.status`. Native errors preserve raw envelopes in `VideoUpstreamException`, including processing errors; HTTP 200 or `done` alone never proves success. Known successful results require the original video URL. Explicit expiry is terminal, while ambiguous `not_found` and future statuses stay unknown/nonterminal. Query responses often omit task ID: the SDK snapshot uses the original request ID only as correlation context and never inserts it into native Data. Optional native echoes must match when present. Redundant root status, unknown fields and metadata remain unchanged. See the [provider contract and upstream availability note](../src/Asgard.Loki.Video.Volcengine/README.md#native-jimeng-visual-video).
+
 ## Native Gemini Developer API video
 
 `Asgard.Loki.Video.Google` references Video, Infrastructure and Microsoft.Extensions.Http. `GoogleVideoAdapter` implements the existing JSON task contract with native `models/{model}:predictLongRunning` submission and one explicit operation-name GET. It captures versioned HTTPS root, actual model, key identity, client and resource policies. No Vertex/LLM dependency or shared business coordinator is introduced. Gemini Veo preview availability and the announced 2026-10-22 shutdown are documented in the [provider README](../src/Asgard.Loki.Video.Google/README.md).
