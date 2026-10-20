@@ -1,0 +1,5 @@
+# Asgard.Loki.Embedding.Azure.Tests
+
+Independent fictional vectors for the native deployment-scoped [Azure embeddings contract](https://learn.microsoft.com/azure/ai-services/openai/reference#embeddings), authored before implementation. They cover scalar/batched text and token inputs, float/Base64 vectors, explicit dimensions/encoding/user/unknown parameters, a deliberately configured optional native body model, and native error details. The dated deployment endpoint is distinct from the newer v1 endpoint; no model/API default or latest-version migration is inferred.
+
+Original input text/token boundaries, returned vector order and indices, exact unknown numbers, usage/model metadata and errors are independent snapshots. Expected Base64 values represent fixed sample float32 bytes, not production decoding. The SDK must not reorder vectors, infer indices, tokenize/truncate/split inputs, replace encoding or invent usage. There are no live keys, network calls, Redis dependencies, real embedding quality or supplier acceptance claims.

@@ -1,0 +1,163 @@
+{
+  "source": "Independent fictional native Azure deployment-scoped embeddings request/response vectors, authored before production implementation. Original texts/token boundaries, native field values, reordered vector indices and raw errors retained; no live model/key/network.",
+  "endpoint": "https://azure-embeddings.example.invalid/prefix/openai/deployments/embed.deploy-01/embeddings?api-version=2024-10-21",
+  "requests": [
+    {
+      "input": "  Original text with spaces\nNative unicode: 图像 😀  ",
+      "encoding_format": "float",
+      "dimensions": 2,
+      "user": "caller-original-id",
+      "future": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "flag": false
+      }
+    },
+    {
+      "input": [
+        "First original input",
+        "Second original input"
+      ],
+      "encoding_format": "base64",
+      "dimensions": 2,
+      "future": {
+        "ordered": [
+          null,
+          false,
+          0
+        ]
+      }
+    },
+    {
+      "input": [
+        0,
+        42,
+        1000
+      ],
+      "future": false
+    },
+    {
+      "input": [
+        [
+          0,
+          42
+        ],
+        [
+          7,
+          8,
+          0
+        ]
+      ],
+      "dimensions": 2,
+      "user": null,
+      "model": "explicit-native-body-model",
+      "future": {
+        "exact": 9007199254740993
+      }
+    }
+  ],
+  "float_response": {
+    "object": "list",
+    "data": [
+      {
+        "object": "embedding",
+        "index": 0,
+        "embedding": [
+          0.123456789012345678901,
+          -0.5
+        ],
+        "future": {
+          "nullable": null,
+          "flag": false
+        }
+      }
+    ],
+    "model": "native-resolved-embedding-version",
+    "usage": {
+      "prompt_tokens": 0,
+      "total_tokens": 0,
+      "future": 9007199254740993
+    },
+    "content_filter_results": [],
+    "future": {
+      "request_id": "native-azure-fixture",
+      "nullable": null
+    }
+  },
+  "base64_response": {
+    "object": "list",
+    "data": [
+      {
+        "object": "embedding",
+        "index": 1,
+        "embedding": "AACAPwAAAAA=",
+        "future": false
+      },
+      {
+        "object": "embedding",
+        "index": 0,
+        "embedding": "AACAPgAAAL8=",
+        "future": null
+      }
+    ],
+    "model": "native-resolved-embedding-version",
+    "usage": {
+      "prompt_tokens": 3,
+      "total_tokens": 3,
+      "future": 9007199254740993
+    },
+    "future": {
+      "preserve_order": true
+    }
+  },
+  "batch_float_response": {
+    "object": "list",
+    "data": [
+      {
+        "object": "embedding",
+        "index": 1,
+        "embedding": [
+          0.123456789012345678901,
+          -0.5
+        ],
+        "future": {
+          "nullable": null,
+          "flag": false
+        }
+      },
+      {
+        "object": "embedding",
+        "index": 0,
+        "embedding": [
+          0.25,
+          0
+        ],
+        "future": null
+      }
+    ],
+    "model": "native-resolved-embedding-version",
+    "usage": {
+      "prompt_tokens": 0,
+      "total_tokens": 0,
+      "future": 9007199254740993
+    },
+    "content_filter_results": [],
+    "future": {
+      "request_id": "native-azure-fixture",
+      "nullable": null
+    }
+  },
+  "api_error": {
+    "error": {
+      "code": "DeploymentNotFound",
+      "message": "Fictional native deployment error",
+      "innererror": {
+        "code": "NativeInner",
+        "future": false
+      }
+    },
+    "future": {
+      "exact": 9007199254740993
+    }
+  }
+}
