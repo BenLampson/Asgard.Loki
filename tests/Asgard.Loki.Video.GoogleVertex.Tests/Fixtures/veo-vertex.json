@@ -1,0 +1,34 @@
+{
+  "sources": [
+    "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/video/generate-videos-from-text",
+    "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/video/generate-videos-from-an-image",
+    "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/veo/3-1-generate"
+  ],
+  "model_resource": "projects/fixture-project/locations/us-central1/publishers/google/models/veo-3.1-generate-001",
+  "operation": "projects/fixture-project/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/fixture-op-01",
+  "submissions": [
+    {
+      "instances": [{ "prompt": "A fictional paper bird over the lake. 紙鳥🌊" }],
+      "parameters": { "durationSeconds": 8, "aspectRatio": "16:9", "resolution": "1080p", "sampleCount": 2, "generateAudio": true, "negativePrompt": "blur", "seed": 4294967295, "storageUri": "gs://fictional-output/video/", "Future": { "large": 9007199254740993, "null": null, "false": false } },
+      "Future": { "Case": "kept" }
+    },
+    {
+      "instances": [{ "prompt": "Animate the fictional bird.", "image": { "bytesBase64Encoded": "ZmFrZS1pbWFnZQ==", "mimeType": "image/png" }, "lastFrame": { "gcsUri": "gs://fictional-input/end.png", "mimeType": "image/png" } }],
+      "parameters": { "sampleCount": 1, "resizeMode": "pad", "personGeneration": "allow_adult", "durationSeconds": 8, "generateAudio": false }
+    },
+    {
+      "instances": [{ "prompt": "Use this fictional reference.", "referenceImages": [{ "referenceType": "asset", "image": { "gcsUri": "gs://fictional-input/reference.png", "mimeType": "image/png" } }] }],
+      "parameters": { "sampleCount": 1, "durationSeconds": 8, "Future": [null, 0, false, 9007199254740993] }
+    }
+  ],
+  "query_request": { "operationName": "projects/fixture-project/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/fixture-op-01" },
+  "queries": [
+    { "name": "projects/fixture-project/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/fixture-op-01", "metadata": { "Future": 9007199254740993 } },
+    { "name": "projects/fixture-project/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/fixture-op-01", "done": false },
+    { "name": "projects/fixture-project/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/fixture-op-01", "done": true, "error": { "code": 8, "message": "Fictional quota failure", "details": [{ "@type": "example.invalid/Error", "Future": false }] } },
+    { "name": "projects/fixture-project/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/fixture-op-01", "done": true, "response": { "@type": "type.googleapis.com/cloud.ai.large_models.vision.GenerateVideoResponse", "raiMediaFilteredCount": 1, "raiMediaFilteredReasons": ["Fictional safety filter"], "Future": null } },
+    { "name": "projects/fixture-project/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/fixture-op-01", "done": true, "response": { "@type": "type.googleapis.com/cloud.ai.large_models.vision.GenerateVideoResponse", "raiMediaFilteredCount": 0, "videos": [{ "gcsUri": "gs://fictional-output/video/sample_0.mp4", "mimeType": "video/mp4", "Future": { "large": 9007199254740993 } }, { "gcsUri": "gs://fictional-output/video/sample_1.mp4", "mimeType": "video/mp4" }], "Future": [null, false] }, "Future": { "Original": "原文" } },
+    { "name": "projects/fixture-project/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/fixture-op-01", "done": true, "response": { "@type": "type.googleapis.com/cloud.ai.large_models.vision.GenerateVideoResponse", "raiMediaFilteredCount": 0, "videos": [{ "bytesBase64Encoded": "ZmFrZS12aWRlby1ieXRlcw==", "mimeType": "video/mp4", "Future": { "DoNotDecode": true } }] } }
+  ],
+  "api_error": { "error": { "code": 403, "message": "Fictional permission failure", "status": "PERMISSION_DENIED", "details": [{ "Future": 9007199254740993 }] } }
+}
