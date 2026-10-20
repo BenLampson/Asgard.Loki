@@ -1,0 +1,1495 @@
+{
+  "source": [
+    "https://cloud.baidu.com/doc/qianfan-api/s/3m7of64lb",
+    "https://cloud.baidu.com/doc/qianfan-docs/s/Fm9l6ocai",
+    "https://cloud.baidu.com/doc/qianfan-docs/s/Wm8r4sw29"
+  ],
+  "profiles": [
+    {
+      "root": "https://qianfan.baidubce.com/v2/",
+      "key": "bce-v3/fixture/plain-A",
+      "appid": null,
+      "client": "Explicit.BaiduV2.Plain",
+      "version": "plain-v1"
+    },
+    {
+      "root": "https://qianfan.baidubce.com/v2/",
+      "key": "bce-v3/fixture/plain-B",
+      "appid": "app-fixture-B",
+      "client": "Explicit.BaiduV2.AppB",
+      "version": "appid-B-v1"
+    },
+    {
+      "root": "https://proxy.invalid/baidu/v2/",
+      "key": "bce-v3/fixture/plain-C",
+      "appid": "app-fixture-C",
+      "client": "Explicit.BaiduV2.ProxyC",
+      "version": "appid-C-v1"
+    }
+  ],
+  "path": "chat/completions",
+  "modes": {
+    "reasoning": {
+      "model": "deepseek-r1-distill-qwen-32b",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "比较20和22。"
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-reasoning"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "wire": {
+        "model": "deepseek-r1-distill-qwen-32b",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "比较20和22。"
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-reasoning"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "wire_stream": {
+        "model": "deepseek-r1-distill-qwen-32b",
+        "stream": true,
+        "messages": [
+          {
+            "role": "user",
+            "content": "比较20和22。"
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-reasoning"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "result": {
+        "id": "baidu-v2-reasoning-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-baidu-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "20 小于 22。",
+              "reasoning_content": "Compare original values."
+            },
+            "finish_reason": "stop",
+            "flag": 0
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "prompt_tokens_details": {
+            "search_tokens": 0,
+            "cached_tokens": 0
+          },
+          "native_exact": 9007199254740993
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "baidu-v2-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "reasoning_content": "Compare original values."
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "20 小于 22。"
+              },
+              "finish_reason": null,
+              "flag": 0
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop",
+              "flag": 0
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-reasoning-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "prompt_tokens_details": {
+              "search_tokens": 0,
+              "cached_tokens": 0
+            },
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "business-only",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": Baidu native stream\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning_content\":\"Compare original values.\"},\"finish_reason\":null}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"20 小于 22。\"},\"finish_reason\":null,\"flag\":0}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\",\"flag\":0}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-reasoning-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"prompt_tokens_details\":{\"search_tokens\":0,\"cached_tokens\":0},\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"error\":{\"business\":true}}}}\n\nid: baidu-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-only\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "tools": {
+      "model": "deepseek-v3.1-250821",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Compare the original city results."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "id": "call-A",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"北京\"}"
+                }
+              },
+              {
+                "id": "call-B",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"上海\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-B",
+            "name": "lookup",
+            "content": "{\"value\":22}"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-A",
+            "name": "lookup",
+            "content": "{\"value\":20}"
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-tools"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "description": "Lookup a city",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "city"
+                ]
+              }
+            }
+          }
+        ],
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      },
+      "wire": {
+        "model": "deepseek-v3.1-250821",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Compare the original city results."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "id": "call-A",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"北京\"}"
+                }
+              },
+              {
+                "id": "call-B",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"上海\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-B",
+            "name": "lookup",
+            "content": "{\"value\":22}"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-A",
+            "name": "lookup",
+            "content": "{\"value\":20}"
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-tools"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "description": "Lookup a city",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "city"
+                ]
+              }
+            }
+          }
+        ],
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      },
+      "wire_stream": {
+        "model": "deepseek-v3.1-250821",
+        "stream": true,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Compare the original city results."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "id": "call-A",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"北京\"}"
+                }
+              },
+              {
+                "id": "call-B",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"上海\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-B",
+            "name": "lookup",
+            "content": "{\"value\":22}"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call-A",
+            "name": "lookup",
+            "content": "{\"value\":20}"
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-tools"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "description": "Lookup a city",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "city"
+                ]
+              }
+            }
+          }
+        ],
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      },
+      "result": {
+        "id": "baidu-v2-tools-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-baidu-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "",
+              "tool_calls": [
+                {
+                  "id": "call-C",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup",
+                    "arguments": "{\"city\":\"杭州\"}"
+                  }
+                },
+                {
+                  "id": "call-D",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup",
+                    "arguments": "{\"city\":\"苏州\"}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": "tool_calls",
+            "flag": 0
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "prompt_tokens_details": {
+            "search_tokens": 0,
+            "cached_tokens": 0
+          },
+          "native_exact": 9007199254740993
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "baidu-v2-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "tool_calls": [
+                  {
+                    "index": 0,
+                    "id": "call-C",
+                    "type": "function",
+                    "function": {
+                      "name": "lookup",
+                      "arguments": "{\"city\":"
+                    }
+                  },
+                  {
+                    "index": 1,
+                    "id": "call-D",
+                    "type": "function",
+                    "function": {
+                      "name": "lookup",
+                      "arguments": "{\"city\":"
+                    }
+                  }
+                ]
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "tool_calls": [
+                  {
+                    "index": 1,
+                    "function": {
+                      "arguments": "\"苏州\"}"
+                    }
+                  },
+                  {
+                    "index": 0,
+                    "function": {
+                      "arguments": "\"杭州\"}"
+                    }
+                  }
+                ]
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "tool_calls",
+              "flag": 0
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-tools-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "prompt_tokens_details": {
+              "search_tokens": 0,
+              "cached_tokens": 0
+            },
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "business-only",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": Baidu native stream\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call-C\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"city\\\":\"}},{\"index\":1,\"id\":\"call-D\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"city\\\":\"}}]},\"finish_reason\":null}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"\\\"苏州\\\"}\"}},{\"index\":0,\"function\":{\"arguments\":\"\\\"杭州\\\"}\"}}]},\"finish_reason\":null}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\",\"flag\":0}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-tools-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"prompt_tokens_details\":{\"search_tokens\":0,\"cached_tokens\":0},\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"error\":{\"business\":true}}}}\n\nid: baidu-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-only\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "schema": {
+      "model": "deepseek-v3",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return JSON with an answer string."
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-schema"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answer": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "wire": {
+        "model": "deepseek-v3",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return JSON with an answer string."
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-schema"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answer": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "wire_stream": {
+        "model": "deepseek-v3",
+        "stream": true,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return JSON with an answer string."
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-schema"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answer": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "result": {
+        "id": "baidu-v2-schema-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-baidu-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\"answer\":\"确认\"}"
+            },
+            "finish_reason": "stop",
+            "flag": 0
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "prompt_tokens_details": {
+            "search_tokens": 0,
+            "cached_tokens": 0
+          },
+          "native_exact": 9007199254740993
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "baidu-v2-schema-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-schema-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "{\"answer\":\"确认\"}"
+              },
+              "finish_reason": null,
+              "flag": 0
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-schema-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop",
+              "flag": 0
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-schema-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "prompt_tokens_details": {
+              "search_tokens": 0,
+              "cached_tokens": 0
+            },
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "business-only",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": Baidu native stream\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-schema-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-schema-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"answer\\\":\\\"确认\\\"}\"},\"finish_reason\":null,\"flag\":0}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-schema-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\",\"flag\":0}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-schema-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"prompt_tokens_details\":{\"search_tokens\":0,\"cached_tokens\":0},\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"error\":{\"business\":true}}}}\n\nid: baidu-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-only\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "search": {
+      "model": "ernie-4.5-turbo-32k",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use the native search result references."
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-search"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "web_search": {
+          "enable": true,
+          "enable_citation": true,
+          "enable_trace": true,
+          "enable_status": true
+        }
+      },
+      "wire": {
+        "model": "ernie-4.5-turbo-32k",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use the native search result references."
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-search"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "web_search": {
+          "enable": true,
+          "enable_citation": true,
+          "enable_trace": true,
+          "enable_status": true
+        }
+      },
+      "wire_stream": {
+        "model": "ernie-4.5-turbo-32k",
+        "stream": true,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use the native search result references."
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-search"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "web_search": {
+          "enable": true,
+          "enable_citation": true,
+          "enable_trace": true,
+          "enable_status": true
+        }
+      },
+      "result": {
+        "id": "baidu-v2-search-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "reported-native-baidu-model",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "原始来源 [1]。"
+            },
+            "finish_reason": "stop",
+            "flag": 0
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "prompt_tokens_details": {
+            "search_tokens": 4,
+            "cached_tokens": 0
+          },
+          "native_exact": 9007199254740993
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "search_results": [
+          {
+            "index": 1,
+            "url": "https://example.invalid/source",
+            "title": "Original native source"
+          }
+        ]
+      },
+      "events": [
+        {
+          "id": "baidu-v2-search-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant",
+                "content": "原始搜索信号"
+              },
+              "delta_tag": "search_status"
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-search-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "原始来源 [1]。"
+              },
+              "finish_reason": null,
+              "flag": 0
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-search-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop",
+              "flag": 0
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-search-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "reported-native-baidu-model",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "prompt_tokens_details": {
+              "search_tokens": 4,
+              "cached_tokens": 0
+            },
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "error": {
+                "business": true
+              }
+            }
+          },
+          "search_results": [
+            {
+              "index": 1,
+              "url": "https://example.invalid/source",
+              "title": "Original native source"
+            }
+          ]
+        },
+        {
+          "type": "vendor.trace",
+          "id": "business-only",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": Baidu native stream\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-search-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"原始搜索信号\"},\"delta_tag\":\"search_status\"}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-search-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"原始来源 [1]。\"},\"finish_reason\":null,\"flag\":0}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-search-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\",\"flag\":0}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-search-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-baidu-model\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"prompt_tokens_details\":{\"search_tokens\":4,\"cached_tokens\":0},\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"error\":{\"business\":true}}},\"search_results\":[{\"index\":1,\"url\":\"https://example.invalid/source\",\"title\":\"Original native source\"}]}\n\nid: baidu-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-only\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    },
+    "filtered": {
+      "model": "ernie-4.5-turbo-32k",
+      "caller": {
+        "model": "public",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return the requested native result."
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-filtered"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "safety": {
+          "input_level": "standard"
+        }
+      },
+      "wire": {
+        "model": "ernie-4.5-turbo-32k",
+        "stream": false,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return the requested native result."
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-filtered"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "safety": {
+          "input_level": "standard"
+        }
+      },
+      "wire_stream": {
+        "model": "ernie-4.5-turbo-32k",
+        "stream": true,
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return the requested native result."
+          }
+        ],
+        "max_tokens": 128,
+        "temperature": 0.1,
+        "stream_options": {
+          "include_usage": true
+        },
+        "metadata": {
+          "case": "native-filtered"
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        },
+        "safety": {
+          "input_level": "standard"
+        }
+      },
+      "result": {
+        "id": "baidu-v2-filtered-A",
+        "object": "chat.completion",
+        "created": 1792512000,
+        "model": "",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "native-filtered"
+            },
+            "finish_reason": "content_filter",
+            "flag": 3,
+            "ban_round": -1
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "prompt_tokens_details": {
+            "search_tokens": 0,
+            "cached_tokens": 0
+          },
+          "native_exact": 9007199254740993
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0,
+          "empty": "",
+          "business": {
+            "error": {
+              "business": true
+            }
+          }
+        }
+      },
+      "events": [
+        {
+          "id": "baidu-v2-filtered-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-filtered-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "native-filtered"
+              },
+              "finish_reason": null,
+              "flag": 3
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-filtered-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "content_filter",
+              "flag": 3,
+              "ban_round": -1
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "baidu-v2-filtered-A",
+          "object": "chat.completion.chunk",
+          "created": 1792512000,
+          "model": "",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 41,
+            "completion_tokens": 17,
+            "total_tokens": 999,
+            "prompt_tokens_details": {
+              "search_tokens": 0,
+              "cached_tokens": 0
+            },
+            "native_exact": 9007199254740993
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0,
+            "empty": "",
+            "business": {
+              "error": {
+                "business": true
+              }
+            }
+          }
+        },
+        {
+          "type": "vendor.trace",
+          "id": "business-only",
+          "error": {
+            "business": true
+          },
+          "native_exact": 9007199254740993
+        }
+      ],
+      "sse": ": Baidu native stream\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-filtered-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-filtered-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"native-filtered\"},\"finish_reason\":null,\"flag\":3}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-filtered-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"content_filter\",\"flag\":3,\"ban_round\":-1}],\"usage\":null}\n\nid: baidu-transport\nretry: 0\ndata: {\"id\":\"baidu-v2-filtered-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"prompt_tokens_details\":{\"search_tokens\":0,\"cached_tokens\":0},\"native_exact\":9007199254740993},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0,\"empty\":\"\",\"business\":{\"error\":{\"business\":true}}}}\n\nid: baidu-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-only\",\"error\":{\"business\":true},\"native_exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+    }
+  },
+  "error": {
+    "code": "InvalidArgument",
+    "message": "Native request rejected",
+    "type": "invalid_request_error",
+    "native_extra": {
+      "exact": 9007199254740993,
+      "nullable": null,
+      "enabled": false,
+      "zero": 0,
+      "empty": "",
+      "business": {
+        "error": {
+          "business": true
+        }
+      }
+    }
+  }
+}
