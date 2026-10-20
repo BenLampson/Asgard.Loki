@@ -1,6 +1,6 @@
 # Asgard.Loki.Audio.OpenAI
 
-Native OpenAI Speech binary/SSE and file transcription/translation transport for the independent Audio capability. Depends only on `Asgard.Loki.Audio` and `Microsoft.Extensions.Http`; no LLM, image, web server or background service.
+Native OpenAI Speech binary/SSE and file transcription/translation transport for the independent Audio capability. Depends on `Asgard.Loki.Audio`, `Asgard.Loki.Infrastructure` and `Microsoft.Extensions.Http`; no LLM, image, web server or background service.
 
 ## Support matrix
 
@@ -24,6 +24,37 @@ Protocol references: [Speech API](https://developers.openai.com/api/reference/re
 The 2026-10-19 source review confirmed native SSE in the current create reference/OpenAPI. The indexed [legacy official Audio event reference](https://platform.openai.com/docs/api-reference/audio/json-object?lang=csharp) describes delta.audio and done.usage; its current rendered redirect does not expose those event definitions. This implementation targets those two documented event shapes and preserves extensions; it is not a live-account confirmation of current model behavior or every future event variant.
 
 ## Initialization
+
+Explicit compatible targets can reuse these adapters when their native request/response contracts match. See [compatible audio profiles](#explicit-compatible-audio-profiles); changing a root alone does not establish model, parameter or operation support.
+
+## Explicit compatible audio profiles
+
+| Explicit profile | Reused entry | Verified wire | Limits |
+|---|---|---|---|
+| SiliconFlow voice-based speech | `OpenAiSpeechAdapter` | `POST https://api.siliconflow.cn/v1/audio/speech`, Bearer, original JSON, binary audio | Nonempty native string voice; no voice-name remapping; binary HTTP completion |
+| SiliconFlow transcription | `OpenAiAudioFileAdapter` | `POST https://api.siliconflow.cn/v1/audio/transcriptions`, Bearer, native multipart file/model, complete JSON | Borrowed single-use upload; original native errors/results |
+
+These are explicit configurations of the existing package, with separate actual models and credentials for each operation:
+
+```csharp
+var speech = new OpenAiSpeechAdapter(httpFactory, new OpenAiSpeechOptions
+{
+    Id = "siliconflow-speech", Model = configuredSpeechModel, ApiKey = speechKey,
+    BaseAddress = new Uri("https://api.siliconflow.cn/v1/")
+});
+var transcription = new OpenAiAudioFileAdapter(httpFactory, new OpenAiAudioFileOptions
+{
+    Id = "siliconflow-transcription", Model = configuredRecognitionModel, ApiKey = recognitionKey,
+    BaseAddress = new Uri("https://api.siliconflow.cn/v1/")
+});
+// Register speech in SpeechRoutes and transcription in TranscriptionRoutes.
+```
+
+Use `Speech.GenerateNativeAsync` for explicitly native root fields such as `gain` or `sample_rate`; extensions stay original JSON. The common `SpeechRequest.SampleRate`/`AudioParameters` are not silently mapped to another vendor dialect. A missing response format remains omitted; no speed/stream defaults, voice, usage or model suffix is invented. File fields remain literal text in original order, including duplicates and empty values. Binary HTTP metadata/trace headers and original transcription body bytes remain available, with native errors and terminal/disposal/cancellation policy unchanged. File results expose their existing body/content-type/target contract rather than a new raw-HTTP header contract.
+
+The verified profile covers voice-based speech and multipart transcription. It does not assert SiliconFlow translation or SSE support, native voice management, or reference-only/empty-voice speech compatibility. Existing OpenAI voice validation is unchanged; such requests fail before HTTP instead of receiving a fabricated voice. Official contracts: [speech](https://docs.siliconflow.cn/docs/api/audio-speech-post), [transcription](https://docs.siliconflow.cn/docs/api/audio-transcriptions-post). Model/account/parameter acceptance and recognition/audio quality have **not** been live-tested. Independent fixtures and replacement HTTP transports verify the stated wire and ownership behavior only.
+
+## OpenAI initialization
 
 The application supplies the HTTP factory, credentials and cancellation token. The factory is borrowed; each factory-created client and response stream is disposed per invocation.
 

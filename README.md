@@ -31,6 +31,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
 | Speech | `Asgard.Loki.Audio.Volcengine` | V3 TTS plus explicit V1 HTTP query / binary WebSocket submit; native JSON and metadata | HTTP JSON or binary WebSocket to ordered audio chunks |
 | Speech | `Asgard.Loki.Audio.OpenAI` | Native Speech binary/SSE responses; custom voice objects and complete native JSON settings | Incremental binary bytes or native delta/done events |
+| Compatible audio profiles | `Asgard.Loki.Audio.OpenAI` | Explicit SiliconFlow voice-based binary speech and multipart transcription; original parameters/results | Existing adapters with verified roots/auth/wire; no brand-only package |
 | Speech | `Asgard.Loki.Audio.MiniMax` | Native synchronous `t2a_v2`; original parameters, hex audio or unchanged URL results | One complete JSON result; no implicit URL download |
 | Audio recognition / translation | `Asgard.Loki.Audio.Cloudflare` | Explicit native raw-binary recognition or JSON/Base64 task transcribe/translate; complete original envelopes | Borrowed single-use uploads; no multipart inference or implicit profile switch |
 | File transcription / translation | `Asgard.Loki.Audio.OpenAI` | Native multipart, complete JSON/verbose/diarized or text/subtitle results | Native transcription delta/segment/done SSE |

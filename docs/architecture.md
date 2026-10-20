@@ -1,5 +1,19 @@
 # Asgard.Loki Architecture Specification
 
+## Explicit compatible audio configurations
+
+SiliconFlow voice-based binary speech and native multipart transcription reuse existing `Audio.OpenAI` adapters with explicit `BaseAddress`, actual model, credential, and provider identity. There is no new package, dependency edge, native voice-relaxation switch or common capability change. Request/response wire, errors, opaque audio, original JSON/text field types, borrowed uploads and terminal/disposal/cancellation behavior are verified through those public configured targets.
+
+```mermaid
+classDiagram
+SpeechRoute --> OpenAiSpeechAdapter : explicit compatible speech target
+AudioTranscriptionRoute --> OpenAiAudioFileAdapter : explicit compatible recognition target
+OpenAiSpeechAdapter --> OpenAiSpeechOptions : root + model + identity
+OpenAiAudioFileAdapter --> OpenAiAudioFileOptions : separate root + model + identity
+```
+
+Compatibility is operation/profile-specific. A URL, model label or supplier's broad SDK-compatibility statement does not relax native schema requirements or prove other operations. Reference-only/empty-voice TTS, provider-specific SSE, translation and independent voice/file services are not added by these configurations. Public native JSON can retain explicit compatible extra fields without inventing defaults; real model acceptance remains separate from offline wire retention.
+
 ## Explicit Cloudflare native audio inputs
 
 `Audio.Cloudflare` references only Audio, Infrastructure and the standard HTTP factory package. `CloudflareAudioFileAdapter` implements existing file recognition/translation interfaces with a fixed API root/account/model/credential and an explicit input format. The public route remains distinct in `AudioResultMetadata`. Raw binary forwards current-position audio unchanged and rejects additional fields and translation; it has no native task carrier. JSON/Base64 sets the matching native transcribe/translate task and preserves literal JSON field values, including nested types and exact numbers. No model-name inference, automatic profile switch or hidden text transformation is involved.
