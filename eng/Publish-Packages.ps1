@@ -48,6 +48,7 @@ $packageIds = @(
     'Asgard.Loki.Audio.SunoAPI',
     'Asgard.Loki.Image.OpenAI',
     'Asgard.Loki.Image.Azure',
+    'Asgard.Loki.Image.SiliconFlow',
     'Asgard.Loki.Image.MiniMax',
     'Asgard.Loki.Image.GoogleVertex',
     'Asgard.Loki.Image.Google',

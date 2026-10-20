@@ -1,5 +1,21 @@
 # Asgard.Loki Architecture Specification
 
+## Native SiliconFlow Image
+
+`Image.SiliconFlow` references only Image, Infrastructure and HTTP factory support. SiliconFlowImageAdapter implements existing generation routes with an explicit native endpoint/model/Bearer key. Original image_size, batch_size, image references and settings pass unchanged, including explicit zero and unknown fields; no OpenAI size/n or model-default inference occurs. The independent native images/timings/seed envelope remains in complete Data, with original images[].url item views. It is not replaced by an OpenAI data array, created timestamp or usage estimate. The native result shape is why this provider cannot be represented by merely relabeling the existing OpenAI response adapter.
+
+HTTP and native code/message errors retain original bodies, including plaintext or message-only error formats. Known image envelope validation and strict byte/length/JSON checks precede delivery. Empty native arrays stay empty and counts are not fabricated. Unsupported stream calls fail before I/O; no synthesis, polling, media download or cross-capability provider dependency is introduced. The application owns the borrowed factory and handler policies; per-call HTTP resources are disposed before publication.
+
+```mermaid
+classDiagram
+SiliconFlowImageAdapter ..|> IImageGenerationAdapter
+SiliconFlowImageAdapter --> SiliconFlowImageOptions : explicit complete target
+SiliconFlowImageAdapter --> SiliconFlowImagePayload : original native fields
+SiliconFlowImageAdapter --> SiliconFlowImageJson : original images envelope
+SiliconFlowImageAdapter --> HttpBodyReader : raw bytes and EOF
+SiliconFlowImageAdapter --> ImageGenerationResult : original timings/seed and image views
+```
+
 ## Native MiniMax Image
 
 `Image.MiniMax` depends only on Image, Infrastructure and standard HTTP factory support. MiniMaxImageAdapter implements existing generation routes against one explicit native image_generation endpoint, model and independent Bearer key. Native prompt/extra root parameters, subject references and exact scalar values are snapshotted before factory creation/await. There is no cross-capability provider reference, native-default model, size/aspect conversion, response-format alias rewrite, download or generic task coordinator.

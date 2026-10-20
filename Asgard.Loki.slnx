@@ -79,6 +79,7 @@
     <Project Path="src/Asgard.Loki.Audio.SunoAPI/Asgard.Loki.Audio.SunoAPI.csproj" />
   </Folder>
   <Folder Name="/src/Providers/SiliconFlow/">
+    <Project Path="src/Asgard.Loki.Image.SiliconFlow/Asgard.Loki.Image.SiliconFlow.csproj" />
     <Project Path="src/Asgard.Loki.Rerank.SiliconFlow/Asgard.Loki.Rerank.SiliconFlow.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Vidu/">
@@ -174,6 +175,7 @@
     <Project Path="tests/Asgard.Loki.Video.Vidu.Tests/Asgard.Loki.Video.Vidu.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Volcengine/">
+    <Project Path="tests/Asgard.Loki.Image.SiliconFlow.Tests/Asgard.Loki.Image.SiliconFlow.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.MiniMax.Tests/Asgard.Loki.Image.MiniMax.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.GoogleVertex.Tests/Asgard.Loki.Image.GoogleVertex.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Google.Tests/Asgard.Loki.Image.Google.Tests.csproj" />
