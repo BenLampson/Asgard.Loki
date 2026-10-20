@@ -1,0 +1,893 @@
+{
+  "sources": [
+    "https://github.com/trueai-org/midjourney-proxy/blob/b68b2baa6667fa14306e521205ff687f9e10d83f/src/Midjourney.Base/Dto/SubmitVideoDTO.cs",
+    "https://github.com/trueai-org/midjourney-proxy/blob/b68b2baa6667fa14306e521205ff687f9e10d83f/src/Midjourney.Base/Dto/BaseSubmitDTO.cs",
+    "https://github.com/trueai-org/midjourney-proxy/blob/b68b2baa6667fa14306e521205ff687f9e10d83f/src/Midjourney.Base/Dto/ReturnCode.cs",
+    "https://github.com/trueai-org/midjourney-proxy/blob/b68b2baa6667fa14306e521205ff687f9e10d83f/src/Midjourney.Base/Models/Enums.cs",
+    "https://github.com/trueai-org/midjourney-proxy/blob/b68b2baa6667fa14306e521205ff687f9e10d83f/src/Midjourney.Base/Models/SubmitResultVO.cs",
+    "https://github.com/trueai-org/midjourney-proxy/blob/b68b2baa6667fa14306e521205ff687f9e10d83f/src/Midjourney.Base/Models/TaskInfo.cs",
+    "https://github.com/trueai-org/midjourney-proxy/blob/b68b2baa6667fa14306e521205ff687f9e10d83f/src/Midjourney.API/Controllers/SubmitController.cs",
+    "https://github.com/trueai-org/midjourney-proxy/blob/b68b2baa6667fa14306e521205ff687f9e10d83f/src/Midjourney.API/Controllers/TaskController.cs",
+    "https://github.com/novicezk/midjourney-proxy/blob/main/docs/config.md"
+  ],
+  "submissions": [
+    {
+      "path": "submit/video",
+      "wire_request": {
+        "prompt": "纸船缓慢航行 🛶 --fast",
+        "image": "data:image/png;base64,ZmFrZS1pbWFnZQ==",
+        "endImage": "https://media.example/last.png?signature=original%2Bvalue",
+        "motion": "low",
+        "loop": false,
+        "videoType": "vid_1.1_i2v_480",
+        "batchSize": 2,
+        "state": "caller-state-原样",
+        "notifyHook": "https://caller.example/video-callback",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "submit/video",
+      "wire_request": {
+        "prompt": "让纸船沿岸移动",
+        "image": "https://media.example/first.png",
+        "motion": "high",
+        "loop": true,
+        "videoType": "vid_1.1_i2v_720",
+        "batchSize": 4,
+        "state": null,
+        "notifyHook": null,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "submit/video",
+      "wire_request": {
+        "prompt": "继续向前移动",
+        "image": null,
+        "motion": "low",
+        "loop": false,
+        "action": "extend",
+        "index": 0,
+        "taskId": "parent-9007199254740993",
+        "videoType": "vid_1.1_i2v_720",
+        "batchSize": 1,
+        "state": "original-parent-reference",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "acknowledgements": [
+    {
+      "code": 1,
+      "description": "accepted fictional video task",
+      "result": "mj-video-9007199254740993",
+      "properties": {
+        "discordInstanceId": "fake-instance",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "code": 21,
+      "description": "existing task",
+      "result": "mj-video-9007199254740993",
+      "properties": {
+        "status": "IN_PROGRESS",
+        "progress": "37%",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "code": 21,
+      "description": "existing completed video",
+      "result": "mj-video-9007199254740993",
+      "properties": {
+        "status": "SUCCESS",
+        "videoUrl": "https://output.example/mj-a.mp4?signature=original%2Bvalue",
+        "videoUrls": [
+          {
+            "url": "https://output.example/mj-a.mp4?signature=original%2Bvalue",
+            "thumbnail": "https://output.example/thumb-a.webp"
+          },
+          {
+            "url": "https://output.example/mj-b.mp4",
+            "thumbnail": "https://output.example/thumb-b.webp"
+          }
+        ],
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "code": 22,
+      "description": "queued fictional video task",
+      "result": "mj-video-9007199254740993",
+      "properties": {
+        "numberOfQueues": 1,
+        "discordInstanceId": "fake-instance",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "code": 21,
+      "description": "existing legacy video carrier",
+      "result": "mj-video-9007199254740993",
+      "properties": {
+        "status": "SUCCESS",
+        "imageUrl": "https://output.example/opaque-video?signature=original%2Bvalue",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "queries": [
+    {
+      "id": "mj-video-9007199254740993",
+      "action": "VIDEO",
+      "botType": "MID_JOURNEY",
+      "status": "NOT_START",
+      "prompt": "纸船缓慢航行 🛶 --fast",
+      "promptEn": "fictional native prompt",
+      "description": "/video fictional request",
+      "state": "caller-state-原样",
+      "submitTime": 1792450800123,
+      "startTime": 0,
+      "finishTime": 0,
+      "progress": "0%",
+      "failReason": null,
+      "videoType": "vid_1.1_i2v_480",
+      "imageUrl": null,
+      "videoUrl": null,
+      "videoUrls": null,
+      "properties": {
+        "finalPrompt": "native prompt",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "buttons": [
+        {
+          "customId": "native-action-opaque",
+          "label": "native action",
+          "type": 2,
+          "style": 1,
+          "emoji": null
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Keep": "大小写"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mj-video-9007199254740993",
+      "action": "VIDEO",
+      "botType": "MID_JOURNEY",
+      "status": "SUBMITTED",
+      "prompt": "纸船缓慢航行 🛶 --fast",
+      "promptEn": "fictional native prompt",
+      "description": "/video fictional request",
+      "state": "caller-state-原样",
+      "submitTime": 1792450800123,
+      "startTime": 0,
+      "finishTime": 0,
+      "progress": "0%",
+      "failReason": null,
+      "videoType": "vid_1.1_i2v_480",
+      "imageUrl": null,
+      "videoUrl": null,
+      "videoUrls": null,
+      "properties": {
+        "finalPrompt": "native prompt",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "buttons": [
+        {
+          "customId": "native-action-opaque",
+          "label": "native action",
+          "type": 2,
+          "style": 1,
+          "emoji": null
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Keep": "大小写"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mj-video-9007199254740993",
+      "action": "VIDEO",
+      "botType": "MID_JOURNEY",
+      "status": "IN_PROGRESS",
+      "prompt": "纸船缓慢航行 🛶 --fast",
+      "promptEn": "fictional native prompt",
+      "description": "/video fictional request",
+      "state": "caller-state-原样",
+      "submitTime": 1792450800123,
+      "startTime": 0,
+      "finishTime": 0,
+      "progress": "0%",
+      "failReason": null,
+      "videoType": "vid_1.1_i2v_480",
+      "imageUrl": null,
+      "videoUrl": null,
+      "videoUrls": null,
+      "properties": {
+        "finalPrompt": "native prompt",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "buttons": [
+        {
+          "customId": "native-action-opaque",
+          "label": "native action",
+          "type": 2,
+          "style": 1,
+          "emoji": null
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Keep": "大小写"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mj-video-9007199254740993",
+      "action": "VIDEO",
+      "botType": "MID_JOURNEY",
+      "status": "FAILURE",
+      "prompt": "纸船缓慢航行 🛶 --fast",
+      "promptEn": "fictional native prompt",
+      "description": "/video fictional request",
+      "state": "caller-state-原样",
+      "submitTime": 1792450800123,
+      "startTime": 0,
+      "finishTime": 0,
+      "progress": "100%",
+      "failReason": "fictional failure",
+      "videoType": "vid_1.1_i2v_480",
+      "imageUrl": null,
+      "videoUrl": null,
+      "videoUrls": null,
+      "properties": {
+        "finalPrompt": "native prompt",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "buttons": [
+        {
+          "customId": "native-action-opaque",
+          "label": "native action",
+          "type": 2,
+          "style": 1,
+          "emoji": null
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Keep": "大小写"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mj-video-9007199254740993",
+      "action": "VIDEO",
+      "botType": "MID_JOURNEY",
+      "status": "CANCEL",
+      "prompt": "纸船缓慢航行 🛶 --fast",
+      "promptEn": "fictional native prompt",
+      "description": "/video fictional request",
+      "state": "caller-state-原样",
+      "submitTime": 1792450800123,
+      "startTime": 0,
+      "finishTime": 0,
+      "progress": "100%",
+      "failReason": null,
+      "videoType": "vid_1.1_i2v_480",
+      "imageUrl": null,
+      "videoUrl": null,
+      "videoUrls": null,
+      "properties": {
+        "finalPrompt": "native prompt",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "buttons": [
+        {
+          "customId": "native-action-opaque",
+          "label": "native action",
+          "type": 2,
+          "style": 1,
+          "emoji": null
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Keep": "大小写"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mj-video-9007199254740993",
+      "action": "VIDEO",
+      "botType": "MID_JOURNEY",
+      "status": "SUCCESS",
+      "prompt": "纸船缓慢航行 🛶 --fast",
+      "promptEn": "fictional native prompt",
+      "description": "/video fictional request",
+      "state": "caller-state-原样",
+      "submitTime": 1792450800123,
+      "startTime": 1792450800456,
+      "finishTime": 1792450830000,
+      "progress": "100%",
+      "failReason": null,
+      "videoType": "vid_1.1_i2v_480",
+      "imageUrl": "https://output.example/mj-a.mp4?signature=original%2Bvalue",
+      "videoUrl": "https://output.example/mj-a.mp4?signature=original%2Bvalue",
+      "videoUrls": [
+        {
+          "url": "https://output.example/mj-a.mp4?signature=original%2Bvalue",
+          "thumbnail": "https://output.example/thumb-a.webp",
+          "Future": {
+            "Keep": null
+          }
+        },
+        {
+          "url": "https://output.example/mj-b.mp4",
+          "thumbnail": "https://output.example/thumb-b.webp",
+          "Future": [
+            false,
+            0
+          ]
+        }
+      ],
+      "properties": {
+        "finalPrompt": "native prompt",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "buttons": [
+        {
+          "customId": "native-action-opaque",
+          "label": "native action",
+          "type": 2,
+          "style": 1,
+          "emoji": null
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Keep": "大小写"
+          }
+        ]
+      },
+      "videoDuration": 5,
+      "frameCount": 120
+    },
+    {
+      "id": "mj-video-9007199254740993",
+      "action": "VIDEO",
+      "botType": "MID_JOURNEY",
+      "status": "future_state",
+      "prompt": "纸船缓慢航行 🛶 --fast",
+      "promptEn": "fictional native prompt",
+      "description": "/video fictional request",
+      "state": "caller-state-原样",
+      "submitTime": 1792450800123,
+      "startTime": 0,
+      "finishTime": 0,
+      "progress": "100%",
+      "failReason": null,
+      "videoType": "vid_1.1_i2v_480",
+      "imageUrl": null,
+      "videoUrl": null,
+      "videoUrls": null,
+      "properties": {
+        "finalPrompt": "native prompt",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "buttons": [
+        {
+          "customId": "native-action-opaque",
+          "label": "native action",
+          "type": 2,
+          "style": 1,
+          "emoji": null
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Keep": "大小写"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mj-video-9007199254740993",
+      "action": "VIDEO",
+      "botType": "MID_JOURNEY",
+      "status": "MODAL",
+      "prompt": "纸船缓慢航行 🛶 --fast",
+      "promptEn": "fictional native prompt",
+      "description": "/video fictional request",
+      "state": "caller-state-原样",
+      "submitTime": 1792450800123,
+      "startTime": 0,
+      "finishTime": 0,
+      "progress": "0%",
+      "failReason": null,
+      "videoType": "vid_1.1_i2v_480",
+      "imageUrl": null,
+      "videoUrl": null,
+      "videoUrls": null,
+      "properties": {
+        "finalPrompt": "native prompt",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "buttons": [
+        {
+          "customId": "native-action-opaque",
+          "label": "native action",
+          "type": 2,
+          "style": 1,
+          "emoji": null
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Null": null,
+        "False": false,
+        "Zero": 0,
+        "Nested": [
+          {
+            "Keep": "大小写"
+          }
+        ]
+      }
+    }
+  ],
+  "success_variants": [
+    {
+      "name": "flat-video",
+      "body": {
+        "id": "mj-video-9007199254740993",
+        "action": "VIDEO",
+        "botType": "MID_JOURNEY",
+        "status": "SUCCESS",
+        "prompt": "纸船缓慢航行 🛶 --fast",
+        "promptEn": "fictional native prompt",
+        "description": "/video fictional request",
+        "state": "caller-state-原样",
+        "submitTime": 1792450800123,
+        "startTime": 1792450800456,
+        "finishTime": 1792450830000,
+        "progress": "100%",
+        "failReason": null,
+        "videoType": "vid_1.1_i2v_480",
+        "imageUrl": null,
+        "videoUrl": "https://output.example/opaque-video",
+        "videoUrls": null,
+        "properties": {
+          "finalPrompt": "native prompt",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "buttons": [
+          {
+            "customId": "native-action-opaque",
+            "label": "native action",
+            "type": 2,
+            "style": 1,
+            "emoji": null
+          }
+        ],
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        },
+        "videoDuration": 5,
+        "frameCount": 120
+      }
+    },
+    {
+      "name": "video-list",
+      "body": {
+        "id": "mj-video-9007199254740993",
+        "action": "VIDEO",
+        "botType": "MID_JOURNEY",
+        "status": "SUCCESS",
+        "prompt": "纸船缓慢航行 🛶 --fast",
+        "promptEn": "fictional native prompt",
+        "description": "/video fictional request",
+        "state": "caller-state-原样",
+        "submitTime": 1792450800123,
+        "startTime": 1792450800456,
+        "finishTime": 1792450830000,
+        "progress": "100%",
+        "failReason": null,
+        "videoType": "vid_1.1_i2v_480",
+        "imageUrl": null,
+        "videoUrl": null,
+        "videoUrls": [
+          {
+            "url": "https://output.example/mj-a.mp4?signature=original%2Bvalue",
+            "thumbnail": "https://output.example/thumb-a.webp",
+            "Future": {
+              "Keep": null
+            }
+          },
+          {
+            "url": "https://output.example/mj-b.mp4",
+            "thumbnail": "https://output.example/thumb-b.webp",
+            "Future": [
+              false,
+              0
+            ]
+          }
+        ],
+        "properties": {
+          "finalPrompt": "native prompt",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "buttons": [
+          {
+            "customId": "native-action-opaque",
+            "label": "native action",
+            "type": 2,
+            "style": 1,
+            "emoji": null
+          }
+        ],
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        },
+        "videoDuration": 5,
+        "frameCount": 120
+      }
+    },
+    {
+      "name": "legacy-image",
+      "body": {
+        "id": "mj-video-9007199254740993",
+        "action": "VIDEO",
+        "botType": "MID_JOURNEY",
+        "status": "SUCCESS",
+        "prompt": "纸船缓慢航行 🛶 --fast",
+        "promptEn": "fictional native prompt",
+        "description": "/video fictional request",
+        "state": "caller-state-原样",
+        "submitTime": 1792450800123,
+        "startTime": 1792450800456,
+        "finishTime": 1792450830000,
+        "progress": "100%",
+        "failReason": null,
+        "videoType": "vid_1.1_i2v_480",
+        "imageUrl": "https://output.example/legacy-video-carrier",
+        "videoUrl": null,
+        "videoUrls": null,
+        "properties": {
+          "finalPrompt": "native prompt",
+          "Future": {
+            "Big": 9007199254740993,
+            "Null": null,
+            "False": false,
+            "Zero": 0,
+            "Nested": [
+              {
+                "Keep": "大小写"
+              }
+            ]
+          }
+        },
+        "buttons": [
+          {
+            "customId": "native-action-opaque",
+            "label": "native action",
+            "type": 2,
+            "style": 1,
+            "emoji": null
+          }
+        ],
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        },
+        "videoDuration": 5,
+        "frameCount": 120
+      }
+    }
+  ],
+  "api_errors": [
+    {
+      "code": 23,
+      "description": "queue rejected",
+      "result": "mj-video-9007199254740993",
+      "properties": {
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "code": 24,
+      "description": "fictional rejected prompt",
+      "properties": {
+        "bannedWord": "fictional-word",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "code": 3,
+      "description": "task missing",
+      "result": null,
+      "properties": {
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
