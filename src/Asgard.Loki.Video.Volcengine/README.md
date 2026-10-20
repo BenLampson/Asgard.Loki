@@ -57,7 +57,7 @@ Calls perform one submission or query. There is no polling, failover, media down
 | Public method | Native Action | Native body |
 | --- | --- | --- |
 | `CreateAssetGroupAsync` | `CreateAssetGroup` | Name, optional Description/GroupType/ProjectName |
-| `CreateAssetAsync` | `CreateAsset` | GroupId, URL, Name, AssetType, optional ProjectName |
+| `CreateAssetAsync` | `CreateAsset` | GroupId, URL, AssetType, optional Name/ProjectName |
 | `GetAssetGroupAsync` | `GetAssetGroup` | Id, optional ProjectName |
 | `GetAssetAsync` | `GetAsset` | Id, optional ProjectName |
 | `ListAssetGroupsAsync` | `ListAssetGroups` | Filter, optional paging/sort/ProjectName |

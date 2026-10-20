@@ -23,7 +23,7 @@ internal static class ArkAssetJson
         var copy = value.DeepClone().AsObject();
         if (copy.ContainsKey("ProjectName")) Text(copy, "ProjectName");
         if (action == "CreateAssetGroup") Text(copy, "Name");
-        if (action == "CreateAsset") foreach (var key in new[] { "GroupId", "URL", "Name", "AssetType" }) Text(copy, key);
+        if (action == "CreateAsset") foreach (var key in new[] { "GroupId", "URL", "AssetType" }) Text(copy, key);
         if (action.StartsWith("Get", StringComparison.Ordinal) || action.StartsWith("Update", StringComparison.Ordinal) || action.StartsWith("Delete", StringComparison.Ordinal)) Text(copy, "Id");
         if (action.StartsWith("List", StringComparison.Ordinal))
         {

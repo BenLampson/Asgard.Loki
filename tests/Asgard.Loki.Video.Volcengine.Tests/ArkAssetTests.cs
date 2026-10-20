@@ -104,4 +104,18 @@ public sealed class ArkAssetTests
         var client = new VolcengineAssetClient(new StubHttpClientFactory(handler), Options()); var actual = await client.ListAssetsAsync(request, TestContext.Current.CancellationToken);
         Assert.Equal(10, actual.Result.GetProperty("TotalCount").GetInt32()); Assert.Equal(1, handler.Calls);
     }
+    /// <summary>官方素材创建示例允许省略名称和项目，SDK 不能拒绝或补写这些原生可选字段。</summary>
+    [Fact]
+    public async Task CreateAsset_LeavesOptionalNameAndProjectAbsent()
+    {
+        var request = Request("CreateAsset"); request.Remove("Name"); request.Remove("ProjectName");
+        using var handler = new StubHttpHandler(async (message, ct) =>
+        {
+            var wire = JsonNode.Parse(await message.Content!.ReadAsStringAsync(ct))!.AsObject();
+            Assert.False(wire.ContainsKey("Name")); Assert.False(wire.ContainsKey("ProjectName")); Assert.True(JsonNode.DeepEquals(request, wire));
+            return ArkFixture.Json(Case("CreateAsset").GetProperty("response"));
+        });
+        var client = new VolcengineAssetClient(new StubHttpClientFactory(handler), Options());
+        await client.CreateAssetAsync(request, TestContext.Current.CancellationToken); Assert.Equal(1, handler.Calls);
+    }
 }
