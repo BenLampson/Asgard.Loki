@@ -37,6 +37,7 @@
     <Project Path="src/Asgard.Loki.Rerank.Cohere/Asgard.Loki.Rerank.Cohere.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Google/">
+    <Project Path="src/Asgard.Loki.Image.Google/Asgard.Loki.Image.Google.csproj" />
     <Project Path="src/Asgard.Loki.Embedding.Google/Asgard.Loki.Embedding.Google.csproj" />
     <Project Path="src/Asgard.Loki.LLM.Google/Asgard.Loki.LLM.Google.csproj" />
     <Project Path="src/Asgard.Loki.Video.Google/Asgard.Loki.Video.Google.csproj" />
@@ -171,6 +172,7 @@
     <Project Path="tests/Asgard.Loki.Video.Vidu.Tests/Asgard.Loki.Video.Vidu.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Volcengine/">
+    <Project Path="tests/Asgard.Loki.Image.Google.Tests/Asgard.Loki.Image.Google.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Ali.Tests/Asgard.Loki.Image.Ali.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Volcengine.Tests/Asgard.Loki.Image.Volcengine.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Audio.Volcengine.Tests/Asgard.Loki.Audio.Volcengine.Tests.csproj" />

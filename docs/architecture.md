@@ -1,5 +1,22 @@
 # Asgard.Loki Architecture Specification
 
+## Native Gemini Image provider
+
+`Image.Google` depends only on Image, Infrastructure and standard HTTP factory support. `GoogleImageAdapter` implements existing generation routes and directly owned complete native requests. Native generateContent and streamGenerateContent methods bind a configured unprefixed model ID, version root and independent x-goog-api-key. Full contents/history, image inputs, signed parts and native settings stay untouched; there is no LLM provider dependency, automatic protocol conversion, output-modality default, tool execution or image fetching. Common prompt requests build native user contents; direct native PublicModel is metadata only.
+
+Results retain all native candidate/safety/usage data and use preserved Image views for inline image payloads. Native safety/no-image reasons are outcomes; HTTP/API errors retain complete error bodies. Every observed candidate must finish or a native prompt block must occur. Omitted ProtoJSON candidate index means native zero; explicit indices stay associated. Terminals and later usage wait for EOF and ownership checks. No fabricated completion or automatic continuation. Imagen predict in Gemini API is excluded after official retirement verification on 2026-10-20; this does not classify Vertex Imagen or add unpinned APIs.
+
+```mermaid
+classDiagram
+GoogleImageAdapter ..|> IImageGenerationAdapter
+GoogleImageAdapter --> GoogleImageHttp : fixed native target
+GoogleImageAdapter --> GoogleImagePayload : whole request snapshot
+GoogleImageAdapter --> GoogleImageSse : original native frames
+GoogleImageSse --> GoogleImageLifecycle : candidate and block endings
+GoogleImageSse --> SseReader : framing only
+GoogleImageAdapter --> ImageGenerationResult : original JSON plus native image views
+```
+
 ## Native Ali Image provider and preserved image views
 
 `Image.Ali` references only Image, Infrastructure and standard HTTP factory support. `AliImageAdapter` implements existing prompt-based generation plus directly owned native JSON/SSE calls. The fixed multimodal service stays independent of explicitly configured `AliImageTaskClient` async image-generation, text2image and image2image submission services. Task GET is one explicit call and verifies a complete target fingerprint and returned native ID; no dependency on Video, generic task coordinator or background poller is introduced. Regional/workspace root, actual model and credential identity are explicit.
