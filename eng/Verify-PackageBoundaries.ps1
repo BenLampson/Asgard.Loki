@@ -48,6 +48,7 @@ $expectedDependencies = [ordered]@{
     'Asgard.Loki.LLM.DeepSeek' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Tencent' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Coze' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.Dify' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Cloudflare' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Cohere' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Xunfei' = @('Asgard.Loki.LLM')

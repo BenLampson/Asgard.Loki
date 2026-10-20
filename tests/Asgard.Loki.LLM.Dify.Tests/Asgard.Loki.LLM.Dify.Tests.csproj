@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.Dify/Asgard.Loki.LLM.Dify.csproj" />
+    <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
+    <EmbeddedResource Include="Fixtures/*.json" />
+    <EmbeddedResource Include="Fixtures/*.sse" />
+  </ItemGroup>
+</Project>

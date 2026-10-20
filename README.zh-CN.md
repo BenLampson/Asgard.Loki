@@ -25,6 +25,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | LLM | `Asgard.Loki.LLM.Cohere` | 原生 v1 Chat JSON/NDJSON，完整历史、引用、工具参数/结果与分片；独立于 Rerank |
 | LLM | `Asgard.Loki.LLM.Cloudflare` | 显式原生 ai/run 文本 JSON/SSE；完整结果封装、工具数据与实际 DONE 帧；独立于兼容 OpenAI 配置 |
 | LLM | `Asgard.Loki.LLM.Coze` | 原生 v3 Bot 回执/双层 Chat-Message SSE、显式状态/消息查询和完整目标引用；无自动轮询或伪造模型路由 |
+| LLM | `Asgard.Loki.LLM.Dify` | 固定应用 Key 的原生阻塞聊天 JSON，显式应用类型；无伪模型路由、工作流托管或文件管理 |
 | LLM | `Asgard.Loki.LLM.Azure` | 显式 v1/日期版本 Chat、Responses 及原生文本补全 JSON/SSE；原生 Responses 压缩保留完整窗口，需目标显式声明能力；独立 Realtime JSON WebSocket；api-key 或借用外部主体令牌；过滤/用量尾帧及终态校验 |
 | LLM | `Asgard.Loki.LLM.DeepSeek` | 原生 Search／Fetch 完整 JSON；独立固定服务及凭据；保留原生排序、评分、完整页面内容和空结果，无需模型／Session |
 | LLM | `Asgard.Loki.LLM.Tencent` | 混元原生 JSON／SSE；供应商专属 TC3 和应用拥有的 External 主体凭据；保留工具分片、多候选终态及完整尾帧 |

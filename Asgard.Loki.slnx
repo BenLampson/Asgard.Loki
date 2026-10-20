@@ -41,6 +41,9 @@
     <Project Path="src/Asgard.Loki.LLM.Cohere/Asgard.Loki.LLM.Cohere.csproj" />
     <Project Path="src/Asgard.Loki.Rerank.Cohere/Asgard.Loki.Rerank.Cohere.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/Dify/">
+    <Project Path="src/Asgard.Loki.LLM.Dify/Asgard.Loki.LLM.Dify.csproj" />
+  </Folder>
   <Folder Name="/src/Providers/Google/">
     <Project Path="src/Asgard.Loki.Image.Google/Asgard.Loki.Image.Google.csproj" />
     <Project Path="src/Asgard.Loki.Embedding.Google/Asgard.Loki.Embedding.Google.csproj" />
@@ -153,6 +156,9 @@
   <Folder Name="/tests/Providers/Cohere/">
     <Project Path="tests/Asgard.Loki.LLM.Cohere.Tests/Asgard.Loki.LLM.Cohere.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Rerank.Cohere.Tests/Asgard.Loki.Rerank.Cohere.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Dify/">
+    <Project Path="tests/Asgard.Loki.LLM.Dify.Tests/Asgard.Loki.LLM.Dify.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Google/">
     <Project Path="tests/Asgard.Loki.Embedding.Google.Tests/Asgard.Loki.Embedding.Google.Tests.csproj" />

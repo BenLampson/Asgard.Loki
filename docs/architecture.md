@@ -2852,3 +2852,23 @@ CozeChatEvent --> CozeChatMetadata : fixed Bot service identity
 Chat.id and Message.id are distinct identity domains; message.chat_id/conversation_id/bot_id associate records, while opaque tool content and transport IDs remain untouched. Explicit identity/type/status drift fails. Repeated associations may be omitted within an established unambiguous chat without synthesizing payload fields. Multiple native answers/intermediate/tool/audio records stay separate; no content aggregation, tool execution, media decoding or workflow resume occurs. Known text-message deltas require message.completed before successful chat.completed; failed/requires_action may interrupt and remain original native outcomes.
 
 Message completion is not global completion. Native Chat completed/failed/requires_action begins a bounded held tail; real done requires the documented bare or quoted DONE data with the actual done event name. Terminal/tail publication waits for full framing/EOF, declared lengths, owned stream/response/client disposal, unchanged actual HTTP target and final cancellation. Missing/duplicate/late/mismatched/encoding/framing/resource/error tails cannot first expose global terminals. Raw error events even after held done preserve actual status/type/data. Unknown future events remain raw; control-only tails create no synthetic frames. State message counts and held tail are explicitly bounded and fingerprinted. HTTP/native JSON errors remain errors; JSON acknowledgements do not trigger a poll fallback. The161-case complete supplier suite validates public native JSON/SSE locally; no live Bot/model/option/output quality claim or new global test-total claim is made.
+
+### Dify fixed-app native chat
+
+LLM.Dify references only LLM, Infrastructure and standard HTTP. DifyChatClient binds a complete API root, app API key, explicit Chatbot/Agent/Chatflow profile, target/credential identity/version, named borrowed factory and positive byte policies. The app config selects its underlying model remotely. No fake UpstreamModel, LlmProtocol, model Session/cache, peer capability dependency or common business coordinator is introduced. Existing core model routing remains unchanged.
+
+```plantuml
+@startuml
+DifyChatClient --> DifyChatOptions : immutable fixed app target/profile
+DifyChatClient --> DifyChatTarget : snapshot and exact native POST
+DifyChatClient --> DifyChatRequest : explicit user/query/inputs and native parameters
+DifyChatClient --> HttpBodyReader : Infrastructure bounded raw body
+DifyChatClient --> DifyChatResponse : supplier-native schema/ID domains
+DifyChatClient --> DifyChatResult : complete original JSON
+DifyChatResult --> DifyChatMetadata : honest app service identity
+@enduml
+```
+
+SendAsync performs one blocking chat-messages POST for Chatbot/Chatflow; Agent blocking is rejected before HTTP. Native optional conversation_id/file/version/name fields remain caller data. No default user/inputs/title, message-history flattening, media transfer, workflow hosting, polling, resume or underlying-model discovery occurs. Response id, message_id, task_id and conversation_id are different domains. A non-empty requested conversation is checked; a native Chatflow pause remains original paused data. Native errors preserve raw bytes/status/media. Strict JSON/Unicode, body budgets/declared lengths, method/complete target, EOF, resource closure and final cancellation are checked before success. Factory ownership stays with the application.
+
+The initial Dify JSON scope passes60 offline fake-HTTP xUnit v3 cases with independent full native windows. This does not establish native SSE or live app/model acceptance. Public JSON/SSE examples remain supplier-specific and introduce no implicit protocol conversion.
