@@ -2814,3 +2814,24 @@ CloudflareTextProvider --> WorkersAiTextEvent : raw JSON or actual DONE
 One POST preserves original prompt/messages/tools/settings/unknown values and writes only method stream mode. Direct request snapshot precedes factory creation; public snapshot precedes Session waits. No model/default/template/role/tool association or usage is synthesized. Native complete results require actual success/result.response, retaining the whole original envelope. Text SSE retains every raw JSON frame and transport identity, while actual DONE remains non-JSON control data. Native errors retain raw actual status/body/type, including errors after a held DONE. Duplicate/late data, missing DONE, malformed/truncated/encoding/length/byte/resource/cancellation tails cannot first publish terminal. DONE waits through full framing/EOF/owned closure/final cancellation; control-only tails create no fake events. Factories/cache/coordinators stay borrowed; actual URI/method is checked through final publication. Positive request/complete/SSE byte policies participate in provider identity. No automatic protocol/model guessing, retry/failover, tool execution, host, gateway or background workflow is introduced. Offline contracts do not establish live account/model/setting acceptance or output quality.
 
 Native Cloudflare validation executes136 offline supplier cases with independent whole JSON/SSE windows and local fault-injected HTTP. Compatible OpenAI reuse has14 separate cases within its422-case executable. Core481 and Conversion2535 regressions passed at the public-contract checkpoint; Infrastructure98 passed at the bounded-transport checkpoint. These are scoped protocol/SDK checks, not a new full-suite/all-package/live result.
+
+### Coze v3 fixed-service native chat
+
+`LLM.Coze` references only LLM, Infrastructure and standard HTTP. CozeChatClient follows the supplier-native fixed-service pattern: the API selects a Bot, not an underlying model, so it introduces no fake UpstreamModel, model route, LlmProtocol, Responses continuation or generic business coordinator. Existing core Session binding remains unchanged. CozeChatOptions captures complete region/proxy/version root, Bot ID, target/credential identities, version, named borrowed factory and positive local byte policies. API token is supplied separately and never enters public options/metadata.
+
+```mermaid
+classDiagram
+CozeChatClient --> CozeChatOptions : immutable fixed native target
+CozeChatClient --> CozeChatTarget : native snapshot and exact request
+CozeChatClient --> CozeChatResult : full acknowledgement/status/message envelope
+CozeChatResult --> CozeChatMetadata : honest Bot service metadata
+CozeChatResult --> CozeChatReference : persisted full-target native IDs
+CozeChatClient --> CozeChatReference : explicit single GET queries
+CozeChatClient --> HttpBodyReader : Infrastructure bounded raw bytes only
+```
+
+CreateAsync is one POST, immediately returning native code/msg/data/detail and state. RetrieveAsync/GetMessagesAsync each issue one explicit GET; no create-and-poll, sleep, completion synthesis or last-answer projection is implemented. UserId is explicit, conversation_id belongs in the query, bot_id/method stream are fixed client fields and native extensions retain all roles/content/types/tools/media references/settings/unknown values. No history/default user/usage/model setting is injected. The full body snapshot precedes factory creation or any await; invalid routing aliases, Undefined and malformed original Unicode fail first.
+
+The reference contains only target fingerprint and native Conversation/Chat IDs, never an arbitrary URL or secret. It binds root/Bot/credential identity/key/version/implementation/policies and rejects wrong targets before I/O. Native Chat/Conversation/Bot echoes must match; message.id stays independent of chat_id. Fixed clients cannot reselect an upstream. Binding metadata does not authorize users; native permissions remain authoritative. Complete native success/error data is retained through strict JSON/bytes/length/actual URI/method/EOF/resource closure and final cancellation. All owned call resources close, the factory stays borrowed and no local cache or app workflow is introduced. Bot administration, model discovery, conversation CRUD, file/media transfer, training, billing and backend hosting remain outside scope. Offline native protocol checks establish no live region/Bot/option/model quality guarantee.
+
+The initial Coze JSON contract executes101 offline cases with independent full request/ack/status/messages windows and local fault-injected HTTP. This is neither stream verification nor live Bot/model acceptance; no ordinary model Session/core interface change is involved.

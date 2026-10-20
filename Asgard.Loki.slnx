@@ -34,6 +34,9 @@
     <Project Path="src/Asgard.Loki.Audio.Azure/Asgard.Loki.Audio.Azure.csproj" />
     <Project Path="src/Asgard.Loki.LLM.Azure/Asgard.Loki.LLM.Azure.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/Coze/">
+    <Project Path="src/Asgard.Loki.LLM.Coze/Asgard.Loki.LLM.Coze.csproj" />
+  </Folder>
   <Folder Name="/src/Providers/Cohere/">
     <Project Path="src/Asgard.Loki.LLM.Cohere/Asgard.Loki.LLM.Cohere.csproj" />
     <Project Path="src/Asgard.Loki.Rerank.Cohere/Asgard.Loki.Rerank.Cohere.csproj" />
@@ -143,6 +146,9 @@
     <Project Path="tests/Asgard.Loki.Image.Azure.Tests/Asgard.Loki.Image.Azure.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Audio.Azure.Tests/Asgard.Loki.Audio.Azure.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.Azure.Tests/Asgard.Loki.LLM.Azure.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Coze/">
+    <Project Path="tests/Asgard.Loki.LLM.Coze.Tests/Asgard.Loki.LLM.Coze.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Cohere/">
     <Project Path="tests/Asgard.Loki.LLM.Cohere.Tests/Asgard.Loki.LLM.Cohere.Tests.csproj" />
