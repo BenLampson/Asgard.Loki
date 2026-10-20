@@ -44,6 +44,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 视频 | `Asgard.Loki.Video.MiniMax` | MiniMax 原生 v1/v2 显式提交/查询、v1 视频结果元数据，保留媒体、用量和错误 |
 | 视频 | `Asgard.Loki.Video.Kling` | 可灵原生文生/图生视频提交与对应服务查询，显式 API Key 或 AK/SK JWT，保留完整原生结果 |
 | 视频 | `Asgard.Loki.Video.Vidu` | 显式文生/图生/首尾帧/参考生视频与 creations 查询，原生 Token 鉴权，保留全部结果及元数据 |
+| 视频 | `Asgard.Loki.Video.XAI` | xAI 原生生成/编辑/延长与单次查询，原始媒体、审核和用量，明确保留空正文 202 |
 | 视频素材库 | `Asgard.Loki.Video.Volcengine` | 方舟 Asset/AssetGroup 十个原生操作，独立 AK/SK 签名，显式分页和状态查询 |
 
 Video 结果可选保留原始 HTTP 状态、正文和媒体类型；空正文 202 的运行中窗口通过 `HasJsonData=false` 明确没有原生 JSON，不补造状态或对象，详见[结果契约](src/Asgard.Loki.Video/README.md)。
