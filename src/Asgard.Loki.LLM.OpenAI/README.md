@@ -223,6 +223,7 @@ Fourteen independent offline profile cases bring this supplier suite to 422 pass
 | --- | --- |
 | Responses Create/continuation | Original JSON or SSE, complete native reasoning/tools/schema/unknown data |
 | Responses compact | Original full native window under explicit ResponsesCompaction target feature |
+| `CodexSearchClient.SearchAsync` | One opaque native alpha/search HTTP call; complete original body/status/media |
 | Authentication | Borrowed ICodexAccessTokenSource, stable principal, fixed account ID, explicit optional Beta/originator |
 | Login, auth-file loading, token refresh, subscription/account management | Not implemented |
 | Live backend/account/model/parameter acceptance | Not verified; offline protocol tests only |
@@ -269,4 +270,26 @@ Each call uses explicit Bearer/account headers and exact application/json withou
 
 Defaults: 1 MiB request, 32 MiB complete/error/whole-SSE bytes and 128 held terminal-tail records. Factories, token source, clock and Session dependencies stay borrowed. Configure named transports with no automatic redirects/retries/hedging and appropriate timeouts. There is no token-triggered retry, failover, background polling or local tool/workflow/media execution.
 
-Validation uses independent full native JSON/compact/SSE resources and fake HTTP. The complete OpenAI supplier test executable passes509 offline cases, including87 Codex cases covering separate parallel tool IDs, native opaque fields, original wire/settings, source snapshots, complete Session drift/rotation/ownership and late transport/resource/auth failures. This is not live backend/model acceptance or a new full-repository suite result.
+Validation uses independent full native JSON/compact/SSE resources and fake HTTP. The complete OpenAI supplier test executable passes549 offline cases, including127 Codex cases covering separate parallel tool IDs, native opaque fields, original wire/settings, source snapshots, complete Session drift/rotation/ownership and late transport/resource/auth failures. This is not live backend/model acceptance or a new full-repository suite result.
+
+### Native Codex alpha search
+
+`CodexSearchClient` is an independent fixed-service auxiliary client in the same package. Its source/credential/account checks reuse the Codex authentication implementation; bounded original-body reading uses Infrastructure. It does not create a model route, protocol flag, Session, Responses ownership or search/tool execution loop. Optional native model/stream fields stay original caller data; they do not become invented actual-model metadata.
+
+```csharp
+var search = new CodexSearchClient(httpClientFactory, new CodexSearchOptions
+{
+    BaseAddress = new Uri(explicitBackendApiRoot),
+    Account = new CodexAccountOptions { AccountId = selectedAccountId },
+    TargetId = "my-codex-search"
+}, LlmCredential.External("codex-search-credential", stablePrincipalIdentity),
+   applicationTokenSource);
+var raw = await search.SearchAsync(nativeSearchParameters, cancellationToken);
+// Interpret raw.Body explicitly according to the actual upstream content type/contract.
+```
+
+Search sends one POST to alpha/search after freezing the entire original JSON before the token-source await. It preserves omission and all unknown fields instead of adding or replacing native model, stream, instructions or user data. No search-query schema, result DTO, citations/answer extraction, usage or terminal state is inferred. The complete HTTP-success body may be JSON, text, binary, SSE or empty; Body returns an independent byte copy and ContentType preserves the original header or absence. HTTP200 is an HTTP outcome, not model completion or material validity. Non-2xx failures retain raw bytes/status/media in LlmUpstreamException without a retry or token refresh.
+
+The fixed target/account/External principal/source and precise request headers remain checked through full bounded EOF/length/owned-resource closure and final cancellation. Defaults are 1 MiB request and 32 MiB complete response/error body. Application-owned factory/source/clock stay borrowed. Search results and URLs remain data; there is no browser/CDN downloader, webpage proxy, file manager or background workflow.
+
+Forty offline search cases cover the independent full request/result, immutable raw body copies, optional native fields/snapshots, exact/unknown data, binary/text/JSON-error/SSE/empty windows, one-call HTTP errors, invalid configuration/Unicode/duplicates/budgets, account/principal/source/expiry failures and EOF/length/disposal/target/final-cancellation boundaries. No backend/account/search/model result has been validated live.

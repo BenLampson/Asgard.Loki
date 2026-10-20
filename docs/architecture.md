@@ -2917,4 +2917,24 @@ Complete target/root/actual model/credential/principal plus account/Beta/origina
 
 Each request carries selected Bearer/account and exact application/json without charset. Omitted native headers cannot come from unbound factory defaults. Source/principal/account/expiry and actual method/root/authentication/media are checked through EOF/owned resource closure/final cancellation. Shared native terminal/response identity rules with bounded tails preserve original events without tool/answer/usage assembly. Errors retain original bytes/status/media. Backend-specific endpoints are not advertised as stable public Platform APIs or live account/model access.
 
-The supplier executable passes509 offline cases including87 new Codex native/auth/complete-Session/fault cases. No live token/backend/model or new full-suite/all-package validation is implied. Production graph stays63 projects/45 Infrastructure consumers/125 unique solution paths.
+The supplier executable passes549 offline cases including127 new Codex native/auth/complete-Session/fault cases. No live token/backend/model or new full-suite/all-package validation is implied. Production graph stays63 projects/45 Infrastructure consumers/125 unique solution paths.
+
+### Codex opaque auxiliary search
+
+The same LLM.OpenAI package exposes CodexSearchClient as a fixed-service auxiliary client. It reuses CodexAuthentication/CodexHttpCall for an explicit External principal and fixed account, while Infrastructure HttpBodyReader supplies bounded original body reads. No additional package, core protocol flag, fake model/Session, peer capability reference or search business coordinator is introduced. Target/credential/account/version metadata honestly describes a service rather than a selected generation model.
+
+```plantuml
+@startuml
+CodexSearchClient --> CodexSearchOptions : immutable fixed service/account
+CodexSearchClient --> CodexInput : snapshot full native JSON
+CodexSearchClient --> CodexAuthentication : borrowed explicit source/principal
+CodexAuthentication --> CodexHttpCall : precise target/auth/header guards
+CodexSearchClient --> HttpBodyReader : Infrastructure raw bounded body only
+CodexSearchClient --> CodexSearchResult : whole HTTP body/status/media
+CodexSearchResult --> CodexSearchMetadata : honest fixed service identity
+@enduml
+```
+
+Each SearchAsync call sends exactly one alpha/search POST, preserving original optional model/stream/unknown parameters without a schema/defaults or automatic model routing. The result retains a detached immutable raw byte window, actual status and raw content type, including JSON/text/binary/SSE/empty outcomes. A native HTTP200 object with an error-like property remains opaque body data, not an invented model answer or failure mapping. Non-2xx errors preserve complete bytes/status/media. All original method/root/account/source/expiry, byte/declared-length/EOF/closure/final-cancellation checks precede result delivery. No refresh/retry, local search, result URL download, usage or model terminal interpretation occurs.
+
+Forty independent offline search cases extend the supplier executable to549 passing cases (127 Codex). The graph remains63 production projects/45 Infrastructure consumers/125 solution paths; no live backend/account/model, new full-repository suite or all-package validation is claimed.

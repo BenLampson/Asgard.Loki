@@ -134,7 +134,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Video.XAI` | Native xAI generation/edit/extension, original status/results and HTTP metadata |
 | `Asgard.Loki.Video.Midjourney` | Explicit unofficial proxy video calls and original task results |
 | `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
-| `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider and explicit external-auth Codex Responses/compact |
+| `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider and explicit external-auth Codex Responses/compact/search |
 | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |
 | `Asgard.Loki.LLM.Google` | Native Gemini Developer API provider |
 | `Asgard.Loki.LLM.Ollama` | Native Ollama Chat/generate JSON/NDJSON; explicit anonymous or Bearer authentication |
@@ -438,3 +438,5 @@ Licensed under the [Apache License, Version 2.0](LICENSE).
 ### Explicit Codex backend calls
 
 The existing [OpenAI package](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-codex-backend-responses) also provides a separate CodexLlmProvider for explicit backend Responses JSON/SSE and compact. Complete root/model/principal/account/source configuration stays bound to the existing SDK Session, while short-lived tokens can rotate. Original tools/reasoning/encrypted/schema/unknown fields are preserved; no login, token refresh, account management, parameter sanitization or automatic retry is added. These backend-specific calls are offline-tested, not a stable public API or live entitlement claim.
+
+`CodexSearchClient` separately performs one fixed-account native alpha/search request and returns the complete original HTTP body/status/media. It shares explicit external authentication but creates no fake model Session, search-result schema, usage or model terminal. Optional native parameters stay original; result URLs remain data.
