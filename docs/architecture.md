@@ -31,9 +31,10 @@ GoogleVideoAdapter ..> Infrastructure
 GoogleVertexVideoAdapter ..> Infrastructure
 MiniMaxVideoAdapter ..> Infrastructure
 KlingVideoAdapter ..> Infrastructure
+ViduVideoAdapter ..> Infrastructure
 ```
 
-Fifteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax and Video.Kling. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Sixteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling and Video.Vidu. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 
@@ -192,6 +193,24 @@ VertexVideoOperation --> VideoTaskSnapshot : full videos/errors/filtering
 The target fingerprint includes root, actual full resource, stable principal, authentication-source identity, explicit native request project header, HTTP client, implementation and byte policies. Short-lived Bearer rotation retains that binding. Wrong/expired tokens and authentication-source drift fail without changing identities or retrying generation. The application owns login, scopes, refresh and the accuracy of the source's principal assertion; no credentials are discovered or JWTs interpreted. Expiry is rechecked immediately before send, including after factory creation. The source, factory and clock are borrowed, while all call-created resources finish disposal before source/final cancellation checks and result delivery.
 
 Original `instances/parameters` are snapshotted before authentication waits. Full operation names must match project, location, Google publisher, model and requested operation. Missing `done` means running; known terminals distinguish native errors, all-filtered failure and valid native output carriers. Multiple `response.videos`, GCS URIs, inline base64 strings, metadata and unknown fields remain unchanged; no Gemini API result wrapper, data URL, storage client or downloader is introduced. Malformed or contradictory terminals fail explicitly. See the [provider matrix, initialization and limits](../src/Asgard.Loki.Video.GoogleVertex/README.md).
+
+## Native Vidu video
+
+`Asgard.Loki.Video.Vidu` references Video, Infrastructure and Microsoft.Extensions.Http. It implements the existing task contract with an explicit text, image, start/end or reference generation operation. Original native JSON is snapshotted and only the fixed actual model is supplied; image counts, metadata actions and model names never change the configured route or inject generation defaults. Native Token authentication and the operation remain supplier-owned.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. ViduVideoAdapter
+ViduVideoAdapter --> ViduVideoOptions : immutable complete target
+ViduVideoOptions --> ViduVideoOperation : four explicit native routes
+ViduVideoAdapter --> ViduVideoJson : native task and creation semantics
+ViduVideoAdapter --> HttpBodyReader : shared bounded bytes
+ViduVideoAdapter --> VideoTaskSnapshot : complete original envelope
+```
+
+The persistent target identity includes root, actual model, operation, credential digest, client, implementation and limits; operation drift is rejected even though all four operations share a creations-query route. Native submission `task_id` and query `id` remain distinct and are not filled in for each other. A query must return the original task ID. Known state mapping is explicit, future states remain unknown, and known success requires all original creation identities/URLs with no contradictory native error. Full envelopes preserve ordered media/subjects, all creation links/covers/watermarks, native credits, raw passthrough strings and unknown fields without LLM accounting or format conversion.
+
+HTTP/nonzero numeric API errors retain raw bytes/status/content type; malformed original encoding, correlation and result carriers fail explicitly. Per-call resources finish reading/disposal and final cancellation before a result is delivered; the HTTP factory remains borrowed. There is no media fetch/rewrite, retry, poller, callback receiver, task-management host, billing or general file service. No new universal Video contract, capability dependency or external authentication library is added. See the [provider support matrix, initialization and offline-only validation](../src/Asgard.Loki.Video.Vidu/README.md).
 
 ## Native Kling video
 

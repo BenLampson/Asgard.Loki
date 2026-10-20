@@ -48,6 +48,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Video | `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo resource-scoped prediction/query, borrowed tokens, GCS and inline results | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.MiniMax` | Explicit native v1/v2 generation/query and v1 video-result metadata, original media/usage/errors | Caller-driven task snapshots/results |
 | Video | `Asgard.Loki.Video.Kling` | Native text2video/image2video submit/query, explicit API Key or AK/SK JWT, original task/video metadata | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.Vidu` | Four explicit native generation operations and creations query, Token authentication, all original media/metadata | Caller-driven task snapshots |
 | Video media assets | `Asgard.Loki.Video.Volcengine` | Ark native Asset/AssetGroup create/get/list/update/delete with independent AK/SK signing | One explicit native operation or page |
 
 Audio exposes an optional [native JSON speech contract](src/Asgard.Loki.Audio/README.md), with independent snapshots and delayed success until source enumeration/disposal finishes. [OpenAI speech](src/Asgard.Loki.Audio.OpenAI/README.md) implements native binary HTTP and explicit SSE aggregation/streaming, including custom voice objects and preserved audio/event data. Binary frames are SDK HTTP records; SSE envelopes retain native JSON/raw text, event identity and original usage.
@@ -93,6 +94,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo operations with complete resource/principal binding |
 | `Asgard.Loki.Video.MiniMax` | Native MiniMax video v1/v2 provider with explicit protocol selection |
 | `Asgard.Loki.Video.Kling` | Native Kling video provider with explicit operation and authentication |
+| `Asgard.Loki.Video.Vidu` | Native Vidu text/image/start-end/reference generation and creations query |
 | `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
 | `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider |
 | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |
