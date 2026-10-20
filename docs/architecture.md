@@ -1,5 +1,27 @@
 # Asgard.Loki Architecture Specification
 
+## Independent Video task contracts
+
+`AddVideo(VideoOptions)` and `.Video` use the same module mechanism as the other independent capabilities. The entry package still references only Abstractions. Video references only Abstractions; it does not reuse LLM Session/cache state, Audio flow or Image task coordination. `VideoTaskRequest` holds the public route and original supplier JSON parameters; a supplier adapter owns its actual server/model/credential/native operation. Submit snapshots input before waits and selects one complete target once. No generation retry/failover occurs.
+
+```mermaid
+classDiagram
+ILokiClientBuilder ..> VideoExtensions : AddVideo
+VideoExtensions --> VideoConfiguration : validates all targets
+VideoConfiguration --> VideoTarget : captures full identity
+VideoClient --> VideoRouteState : per-client initial selection
+VideoRouteState --> VideoTarget : fixed target lookup for query
+VideoTarget --> IVideoTaskAdapter : borrows
+VideoClient --> VideoTask : returns
+VideoTask --> VideoTaskReference : persistent routing identity
+VideoTask --> VideoTaskSnapshot : original native result
+IVideoTaskAdapter --> VideoTaskSnapshot : submit or explicit get
+```
+
+`VideoTaskReference` contains public model, target ID, fingerprint and original task ID, never raw credentials. Its fingerprint uses JSON component boundaries and covers the public route plus the adapter's complete stable identity. Each adapter must include server, actual model, credential identity, implementation/operation and resource policy in that identity. The reference is an application-owned routing/consistency record, not an authorization token. Reconstructing a client can use the persisted reference only against the same configured target; changed route/server/model/credential/implementation or a removed target fails before IO. Mutable custom-adapter identity is checked again before/after native calls. Returning another task's ID is a protocol error.
+
+`GetAsync(reference)` performs exactly one caller-requested native query and returns current status, original error, output metadata/URLs and unknown fields in `VideoTaskSnapshot.Data`. Suppliers map only known lifecycle values to `VideoTaskState`; original status stays separate. HTTP success, accepted submission and unknown states do not imply generation success. There is no implicit state cache, hosted polling, retry, media download, URL refresh, asset synchronization or format conversion. Adapters/factories remain borrowed; suppliers own per-call IO resources. This shared Video contract covers JSON task operations; distinct future native upload transports require explicit contracts rather than encoding uploads into unrelated capabilities.
+
 ## Native OpenAI Realtime
 
 Realtime adds independent `LlmProtocol.Realtime` (256), `IRealtimeClient`, `IRealtimeAdapter`, `IRealtimeConnection` and `RealtimeEvent` contracts to LLM. Registration requires the actual adapter interface, including for alternative targets. `LlmClient.Realtime.OpenAsync` resolves one complete upstream target and wraps the native connection with its original Session binding. Reads/writes validate this binding; expiration or configuration changes cannot silently recreate or move it. Realtime IDs are not HTTP Responses continuation ownership. Entry/abstraction dependencies and all six capability boundaries stay unchanged.

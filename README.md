@@ -40,7 +40,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Rerank | `Asgard.Loki.Rerank.Jina` | Native text/multimodal/listwise; original indices, optional document vectors and full JSON | — |
 | Rerank | `Asgard.Loki.Rerank.Ali` | Native DashScope nested text/media requests, original indices/documents, scores and usage | — |
 | Rerank | `Asgard.Loki.Rerank.SiliconFlow` | Native scalar/text/image requests, original indices/documents, optional native token metadata | — |
-| Video | — | Project scaffold only | — |
+| Video | Core native task contracts; suppliers in progress | Submit/query with persistent complete-target references | Caller-driven task snapshots |
 
 Audio exposes an optional [native JSON speech contract](src/Asgard.Loki.Audio/README.md), with independent snapshots and delayed success until source enumeration/disposal finishes. [OpenAI speech](src/Asgard.Loki.Audio.OpenAI/README.md) implements native binary HTTP and explicit SSE aggregation/streaming, including custom voice objects and preserved audio/event data. Binary frames are SDK HTTP records; SSE envelopes retain native JSON/raw text, event identity and original usage.
 
@@ -77,7 +77,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Embedding.Google` | Native Google single/synchronous-batch embeddings and provider-owned views |
 | `Asgard.Loki.Embedding.Ollama` | Native Ollama embedding inputs/settings, ordered vectors and provider-owned views |
 | `Asgard.Loki.Embedding.Jina` | Native Jina text/media/fused inputs, dense/per-token embeddings and provider-owned views |
-| `Asgard.Loki.Video` | Reserved video capability scaffold |
+| `Asgard.Loki.Video` | Native video tasks and complete-target reference binding |
 | `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
 | `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider |
 | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |
@@ -316,7 +316,7 @@ dotnet pack Asgard.Loki.slnx -c Release --no-build -o artifacts/packages
 pwsh -File eng/Verify-PackageBoundaries.ps1
 ```
 
-Tests use xUnit v3 / Microsoft.Testing.Platform, `MemoryDistributedCache`, an in-process test coordinator and stub HTTP handlers. They require no provider keys, network or Redis. The test script allows the no-tests exit code only for the reserved Video test project; all other test projects must discover tests. Remove that allowance when Video tests are implemented.
+Tests use xUnit v3 / Microsoft.Testing.Platform, `MemoryDistributedCache`, an in-process test coordinator and substitute transports. They require no provider keys, network or Redis. Every ordinary test project must discover and execute tests, including Video.
 
 Local protocol tests are not live-provider verification. Real account permissions, model availability and Redis cross-process coordination require separate integration checks. No real provider calls or package publication are performed by the unit tests.
 
