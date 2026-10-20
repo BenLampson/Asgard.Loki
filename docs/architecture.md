@@ -97,6 +97,19 @@ The adapter identity covers actual model, normalized root, credential digest, cl
 
 The private JSON-only transport delegates bounded byte reading to Infrastructure while retaining all native JSON/error/task interpretation. A result is returned only after full bounded body validation, declared-length agreement, resource disposal and final cancellation checks. The factory is borrowed; created clients and per-call messages/streams are disposed. Neither path retries, polls, downloads media, hosts callbacks nor refreshes URLs. See the [provider API and limits](../src/Asgard.Loki.Video.Volcengine/README.md).
 
+### Optional native Video HTTP response window
+
+`VideoTaskSnapshot` retains its original four-argument JSON-object constructor. An additive optional `VideoTaskHttpResponse` captures a copied status/body/content-type window; the Video capability still references only Abstractions and owns no HTTP client or transport coordinator. A provider may represent a genuinely zero-byte HTTP 202 query as running with no native status and no JSON: `HasJsonData=false`, `Data` is Undefined, and JSON serialization omits Data. Every other absent/non-object JSON combination is rejected. JSON-bearing calls keep their original data, with optional raw HTTP metadata kept separately. Both JSON-only and empty-response snapshots round-trip without synthesizing native fields. TaskId remains SDK call context when the native query does not echo it.
+
+```mermaid
+classDiagram
+VideoTaskSnapshot --> VideoTaskHttpResponse : optional immutable raw window
+VideoTaskSnapshot --> JsonElement : native object or explicit absence
+IVideoTaskAdapter --> VideoTaskSnapshot : supplier owns protocol and status
+```
+
+The response window copies input and output byte arrays and carries no authentication headers. Suppliers still own bounds, reading, disposal, final cancellation and native terminal validation. No new dependency, provider operation, poller, retry or capability-to-capability reference is introduced.
+
 ### Ark inference media assets
 
 `VolcengineAssetClient` is a supplier-owned native API in Video.Volcengine. It exposes ten explicit Create/Get/List/Update/Delete Asset/AssetGroup methods accepting original JSON, returning a complete owned `VolcengineAssetResult`. It adds no universal asset contract or capability dependency. The module entry and `IVideoTaskAdapter` remain unchanged. Assets are media inputs for native video generation via `asset://` references; they do not introduce general file storage or VOD functionality.

@@ -46,6 +46,8 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 视频 | `Asgard.Loki.Video.Vidu` | 显式文生/图生/首尾帧/参考生视频与 creations 查询，原生 Token 鉴权，保留全部结果及元数据 |
 | 视频素材库 | `Asgard.Loki.Video.Volcengine` | 方舟 Asset/AssetGroup 十个原生操作，独立 AK/SK 签名，显式分页和状态查询 |
 
+Video 结果可选保留原始 HTTP 状态、正文和媒体类型；空正文 202 的运行中窗口通过 `HasJsonData=false` 明确没有原生 JSON，不补造状态或对象，详见[结果契约](src/Asgard.Loki.Video/README.md)。
+
 供应商包仅引用所属能力，不会带入其他能力包。入口只引用统一抽象。音频核心的可选原生 JSON 调用契约保留 voice 对象和未知参数，并在源枚举及释放成功后才发出完成块；[OpenAI 语音](src/Asgard.Loki.Audio.OpenAI/README.md) 已接入二进制和显式 SSE 聚合/流式读取；SSE 信封保留原生 JSON、原始 data 文本、事件身份及原始用量，done 在尾部读取和释放成功后才交付。
 
 Loki 保持可嵌入应用的标准 SDK 定位。Claude 使用 `loki.LLM.ClaudeMessages`，Gemini 使用 `loki.LLM.Gemini`；目标需要明确设置对应 `Protocols`。调用者提供 HTTP 工厂、凭据和 Session 依赖，不增加转发服务、后台或计费功能。
