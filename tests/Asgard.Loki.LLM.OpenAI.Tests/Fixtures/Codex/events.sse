@@ -1,0 +1,35 @@
+id: transport-codex-a
+retry: 0
+event: response.created
+data: {"type":"response.created","sequence_number":0,"response":{"id":"resp-codex-a","status":"in_progress","output":[],"future":false}}
+
+event: response.output_item.added
+data: {"type":"response.output_item.added","sequence_number":1,"response_id":"resp-codex-a","output_index":0,"item":{"type":"reasoning","id":"rs-a","summary":[],"encrypted_content":"opaque-signed-reasoning"}}
+
+event: response.output_item.added
+data: {"type":"response.output_item.added","sequence_number":2,"response_id":"resp-codex-a","output_index":2,"item":{"type":"function_call","id":"fc-b","call_id":"call-b","name":"lookup","arguments":""}}
+
+event: response.output_item.added
+data: {"type":"response.output_item.added","sequence_number":3,"response_id":"resp-codex-a","output_index":1,"item":{"type":"function_call","id":"fc-a","call_id":"call-a","name":"lookup","arguments":""}}
+
+event: response.function_call_arguments.delta
+data: {"type":"response.function_call_arguments.delta","sequence_number":4,"response_id":"resp-codex-a","output_index":1,"item_id":"fc-a","delta":"{\"city\":\"北京\"}"}
+
+event: response.function_call_arguments.done
+data: {"type":"response.function_call_arguments.done","sequence_number":5,"response_id":"resp-codex-a","output_index":2,"item_id":"fc-b","arguments":"{\"city\":\"上海\"}"}
+
+event: response.function_call_arguments.done
+data: {"type":"response.function_call_arguments.done","sequence_number":6,"response_id":"resp-codex-a","output_index":1,"item_id":"fc-a","arguments":"{\"city\":\"北京\"}"}
+
+event: response.output_item.done
+data: {"type":"response.output_item.done","sequence_number":7,"response_id":"resp-codex-a","output_index":1,"item":{"type":"function_call","id":"fc-a","call_id":"call-a","name":"lookup","arguments":"{\"city\":\"北京\"}","status":"completed"}}
+
+event: response.output_item.done
+data: {"type":"response.output_item.done","sequence_number":8,"response_id":"resp-codex-a","output_index":2,"item":{"type":"function_call","id":"fc-b","call_id":"call-b","name":"lookup","arguments":"{\"city\":\"上海\"}","status":"completed"}}
+
+event: response.completed
+data: {"type":"response.completed","sequence_number":9,"response":{"id":"resp-codex-a","status":"completed","output":[{"type":"reasoning","id":"rs-a","encrypted_content":"opaque-signed-reasoning"},{"type":"function_call","id":"fc-a","call_id":"call-a","name":"lookup","arguments":"{\"city\":\"北京\"}","status":"completed"},{"type":"function_call","id":"fc-b","call_id":"call-b","name":"lookup","arguments":"{\"city\":\"上海\"}","status":"completed"}],"usage":{"input_tokens":0,"output_tokens":2,"output_tokens_details":{"reasoning_tokens":1}},"future":{"exact":9007199254740993,"null":null}}}
+
+event: future.metadata
+data: {"type":"future.metadata","response":{"id":"business-not-response","status":"failed"},"keep":false}
+
