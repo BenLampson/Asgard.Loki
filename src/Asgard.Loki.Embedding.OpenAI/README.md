@@ -14,7 +14,7 @@ Native OpenAI Embeddings provider for the Asgard.Loki .NET SDK. It references `A
 | Authentication | Fixed API Key/Bearer token, optional organization/project, explicit named HTTP factory |
 | Errors/cancellation | Original HTTP status/raw body/content type, 200 business-error detection, final cancellation after resource disposal, no retry or failover |
 | Local byte policies | `MaxRequestBytes` defaults to 32 MiB; `MaxResponseBytes` defaults to 64 MiB, including error bodies; no splitting |
-| Offline/live status | 136 substitute-HTTP tests, including 19 Jina cases, five canonical M3E cases, seven Workers AI profile cases and 18 raw transport/lifetime boundary cases; no live provider/model/vector-quality verification |
+| Offline/live status | 163 substitute-HTTP tests, including 19 Jina cases, five canonical M3E cases, seven Workers AI cases, 27 explicit text-profile cases and 18 raw transport/lifetime boundary cases; no live provider/model/vector-quality verification |
 
 ## Initialization
 
@@ -115,3 +115,23 @@ var target = new OpenAiEmbeddingAdapter(httpClientFactory, new OpenAiEmbeddingOp
 `accountScopedEmbeddingRoot` must be a caller-created URI such as `https://api.cloudflare.com/client/v4/accounts/<account_id>/ai/v1/`, with the actual account substituted. The provider appends only `embeddings`; it preserves proxy/account prefixes. Pass native text/string-array `input`. The model stays in the request body, including names containing `@` and `/`; the SDK performs no model-prefix routing or catalog lookup. Native unknown JSON is retained, but passing an extension does not certify model acceptance.
 
 Seven independent offline cases cover both text forms, roots with/without a trailing slash, complete account-scoped requests/Bearer headers, original indexed numeric vectors/native model/missing usage, errors and rejection of a different operation's output. The separate `ai/run/<model>` API with a `result.shape/data` wrapper is not implemented by this profile; it is not flattened or given synthetic indices. Token input, Base64, model-specific dimensions/options and native `ai/run` semantics are not certified here. No Vectorize/vector database, Worker hosting, AI Gateway configuration, automatic credential discovery or live embedding/model/quality verification is included.
+
+## Explicit compatible text targets
+
+The same adapter also has independent scalar/text-batch fixtures for these explicit root shapes. Supply your actual host, API root, model, credential, target Id and named client; the SDK does not recognize brands, select endpoints from a model name or install a separate vendor wrapper. This is a verified canonical text/indexed-numeric protocol subset, not a model catalog or proof of a hosted service's availability.
+
+| Explicit profile | API-root path shape before embeddings |
+| --- | --- |
+| Ark text embedding | `/api/v3/` |
+| DashScope compatible text embedding | `/compatible-mode/v1/` |
+| SiliconFlow compatible text embedding | `/v1/` |
+| Zhipu v4 text embedding | `/api/paas/v4/` |
+| Moonshot-style compatible target | `/v1/`; hosted embedding availability remains unverified |
+| OpenRouter-compatible target | `/api/v1/` |
+| Xinference-compatible target | `/v1/` |
+| Existing compatible upstream | Caller-defined root, including proxy prefixes |
+| Explicit custom compatible target | Caller-defined root, including tenant/version prefixes |
+
+Twenty-seven cases cover each target's complete scalar/batch request, fixed Bearer/client/model identity and complete errors. They preserve native response model, reordered indices, exact JSON numbers, unknown/null/false fields and missing usage. The profile adds no option aliases, missing defaults, model rewriting, prompt processing or document association table. Use the generic initialization above with your selected explicit configuration. API Key remains mandatory here, including for configured self-hosted Bearer targets; no anonymous authentication is implied by a profile name. Arbitrary route/auth templates do not automatically fit this provider.
+
+Native model-specific dimensions, encoding formats, extra settings, token-ID acceptance, multimodal embedding endpoints, asynchronous Batch operations and actual text/vector semantics remain separate from this tested subset. Passing unknown JSON demonstrates wire retention, not upstream acceptance. Additional native contract references are [Ark Embeddings](https://api.volcengine.com/api-docs/view?action=Embeddings&serviceCode=ark&version=2024-01-01), [DashScope compatible embedding](https://www.alibabacloud.com/help/en/model-studio/embedding) and [Zhipu v4 embedding](https://docs.bigmodel.cn/api-reference/模型-api/文本嵌入). No real server/model call has been made for these fixtures.

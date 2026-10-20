@@ -53,7 +53,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Image | `Asgard.Loki.Image.MiniMax` | Native image_generation JSON and subject-reference inputs; original URL/Base64 arrays and metadata | Complete result; native business errors retained |
 | Image | `Asgard.Loki.Image.SiliconFlow` | Native image_size/batch_size/reference fields and images/timings/seed result envelope | Complete original JSON; no implicit OpenAI field conversion |
 | Embedding | `Asgard.Loki.Embedding.Azure` | Native deployment-scoped embeddings with explicit API version/api-key, original text/token inputs and float/Base64 vectors | Original batch order and index coverage; complete errors and bounded HTTP ownership |
-| Embedding | `Asgard.Loki.Embedding.OpenAI` | Native Embeddings, text/token batch inputs, Float/Base64 and indexed results | Explicit canonical M3E/Workers AI text profiles; bounded raw errors and final cancellation |
+| Embedding | `Asgard.Loki.Embedding.OpenAI` | Native Embeddings, text/token batch inputs, Float/Base64 and indexed results | Explicit compatible text profiles, including M3E/Workers AI; bounded raw errors and final cancellation |
 | Embedding | `Asgard.Loki.Embedding.Google` | Native embedContent / synchronous batchEmbedContents, native settings/media JSON and ordered vectors | — |
 | Embedding | `Asgard.Loki.Embedding.Ollama` | Native embed text/media batches, original settings, ordered vectors and optional native counters | — |
 | Embedding | `Asgard.Loki.Embedding.Jina` | Native text/media/fused groups, indexed dense and per-token Float/Base64 embeddings | — |
