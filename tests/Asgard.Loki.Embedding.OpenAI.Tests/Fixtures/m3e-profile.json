@@ -1,0 +1,98 @@
+{
+  "source": "Independently authored canonical M3E indexed-JSON profile following the concrete model/input and data[index,embedding] fields used by the fixed Moka adaptor/DTO. No vendor availability, token-input, Base64 or hosted default is inferred. Existing provider reuse must be verified before claiming completion.",
+  "profile": {
+    "id": "explicit-m3e-profile",
+    "model": "caller-selected-m3e-model",
+    "api_key": "fixture-m3e-profile-key",
+    "base_address": "https://m3e-embedding.example.invalid/prefix/",
+    "http_client_name": "m3e-profile-tests"
+  },
+  "requests": [
+    {
+      "input": [
+        "  First original text 图像 😀  ",
+        "Second original text\nkeep line"
+      ],
+      "model": "caller-selected-m3e-model",
+      "user": "caller-original",
+      "future": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "flag": false
+      }
+    },
+    {
+      "input": "Original scalar input with spaces  ",
+      "model": "caller-selected-m3e-model",
+      "future": {
+        "empty": [],
+        "zero": 0
+      }
+    }
+  ],
+  "responses": [
+    {
+      "object": "list",
+      "data": [
+        {
+          "object": "embedding",
+          "index": 1,
+          "embedding": [
+            0.25,
+            0
+          ],
+          "future": null
+        },
+        {
+          "object": "embedding",
+          "index": 0,
+          "embedding": [
+            0.123456789012345678901,
+            -0.5
+          ],
+          "future": {
+            "nullable": null,
+            "flag": false
+          }
+        }
+      ],
+      "model": "native-m3e-reported-version",
+      "usage": {
+        "prompt_tokens": 0,
+        "total_tokens": 0,
+        "future": 9007199254740993
+      },
+      "future": {
+        "native_request_id": "m3e-fixture",
+        "flag": false
+      }
+    },
+    {
+      "data": [
+        {
+          "index": 0,
+          "embedding": [
+            0.123456789012345678901,
+            0
+          ]
+        }
+      ],
+      "usage": {
+        "future": 9007199254740993
+      },
+      "future": null
+    }
+  ],
+  "http_error": {
+    "detail": "Fictional native HTTP rejection",
+    "future": {
+      "exact": 9007199254740993,
+      "nullable": null
+    }
+  },
+  "binary_http_error": [
+    255,
+    0,
+    254
+  ]
+}
