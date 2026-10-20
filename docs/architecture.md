@@ -2340,7 +2340,7 @@ Text and token scalar/batch boundaries remain original, without tokenization, tr
 ```mermaid
 classDiagram
 class RerankResult {
-  +JsonElement Data : native object or array
+  +JsonElement Data
   +RerankResultMetadata Metadata
 }
 class IRerankAdapter {
@@ -2355,3 +2355,40 @@ class RerankUpstreamException {
 IRerankAdapter --> RerankResult : validated native snapshot
 IRerankAdapter --> RerankUpstreamException : original native failure
 ```
+
+### Native SGLang reranking
+
+`Rerank.SGLang` references only Rerank, Infrastructure and standard HTTP support. `SgLangRerankOptions` binds a caller-owned complete API root, configured served-model identity, explicit Anonymous/BearerToken mode, independent credentials/target identity, named HTTP client and positive 32/64 MiB request/response byte policies. SGLang v0.5.19 has no native request model selector, so both public/configured models stay metadata; no model field is injected. The adapter appends rerank under the explicit root, without hosting a server or probing its model.
+
+```mermaid
+classDiagram
+class IRerankAdapter
+class RerankResult
+class SgLangRerankAdapter {
+  +RerankAsync(request)
+}
+class SgLangRerankOptions {
+  +Uri BaseAddress
+  +string Model
+  +SgLangRerankAuthentication Authentication
+  +int MaxRequestBytes
+  +int MaxResponseBytes
+}
+class SgLangRerankItem {
+  +int Index
+  +double Score
+  +JsonElement Data
+  +JsonElement Document
+  +JsonElement MetaInfo
+}
+class HttpBodyReader
+SgLangRerankAdapter ..|> IRerankAdapter
+SgLangRerankAdapter --> SgLangRerankOptions
+SgLangRerankAdapter --> HttpBodyReader : Infrastructure raw transport only
+SgLangRerankAdapter --> RerankResult : original native array
+RerankResult ..> SgLangRerankItem : supplier-owned SgLangRankings view
+```
+
+The supplier snapshots native query/documents (text or original text/image_url/video_url parts), instruct, nullable positive top_n, return_documents and unknown JSON without tokenizing, rendering, fetching media, flattening or adding defaults. Exact top_n greater than input count caps expected result count only. Native root score/index arrays retain original ranking order and precise JSON, with unique exact input indices, complete expected count and matching required text echoes. Finite scores are not probability-clamped, sorted or recomputed. Optional meta_info stays native/absent/null, without estimated usage. Unsupported Jina envelopes, incomplete/wrong associations and unverifiable rendered multimodal echoes fail explicitly; explicit false return_documents avoids the pinned string-echo limitation for multimodal documents.
+
+Bounded raw read, declared-length/target checks, strict Unicode/duplicate-member validation, isolated authentication, normal EOF/stream-response-client disposal and final cancellation gate publication. Native HTTP/200 errors keep their raw status/bytes/content type. SSE is refused before reading a successful stream. Eighty-eight supplier offline cases plus all 559 existing Rerank-family regressions verify these contracts without a live server/model/quality claim. No provider-peer/cross-capability reference, common business coordinator, login, model catalog, server lifecycle or gateway feature is introduced.

@@ -61,6 +61,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Rerank | `Asgard.Loki.Rerank.Jina` | Native text/multimodal/listwise; original indices, optional document vectors and full JSON | — |
 | Rerank | `Asgard.Loki.Rerank.Ali` | Native DashScope nested text/media requests, original indices/documents, scores and usage | — |
 | Rerank | `Asgard.Loki.Rerank.SiliconFlow` | Native scalar/text/image requests, original indices/documents, optional native token metadata | — |
+| Rerank | `Asgard.Loki.Rerank.SGLang` | Native text/content-part inputs, score/index root arrays, original document echoes/meta_info | — |
 | Video | `Asgard.Loki.Video.Volcengine` | Ark native task submission/query, original media/asset references and result URLs | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Volcengine` | Jimeng Visual signed native submit/query, fixed req_key, original fields and optional query settings | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Ali` | DashScope native video-generation/image2video submission and task-query results | Caller-driven task snapshots |
@@ -105,6 +106,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Rerank.Jina` | Native Jina text/multimodal/listwise reranking and provider-owned views |
 | `Asgard.Loki.Rerank.Ali` | Native DashScope nested reranking and provider-owned ranking views |
 | `Asgard.Loki.Rerank.SiliconFlow` | Native SiliconFlow scalar/text/image reranking and provider-owned views |
+| `Asgard.Loki.Rerank.SGLang` | Native SGLang score arrays and provider-owned ranking views |
 | `Asgard.Loki.Embedding.Azure` | Native deployment-scoped Azure embeddings and original batch vectors |
 | `Asgard.Loki.Embedding.OpenAI` | Native OpenAI embeddings provider; provider-owned vector views |
 | `Asgard.Loki.Embedding.Google` | Native Google single/synchronous-batch embeddings and provider-owned views |

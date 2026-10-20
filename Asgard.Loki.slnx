@@ -206,4 +206,10 @@
   <Folder Name="/tests/Providers/Zhipu/">
     <Project Path="tests/Asgard.Loki.Image.Zhipu.Tests/Asgard.Loki.Image.Zhipu.Tests.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/SGLang/">
+    <Project Path="src/Asgard.Loki.Rerank.SGLang/Asgard.Loki.Rerank.SGLang.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/SGLang/">
+    <Project Path="tests/Asgard.Loki.Rerank.SGLang.Tests/Asgard.Loki.Rerank.SGLang.Tests.csproj" />
+  </Folder>
 </Solution>
