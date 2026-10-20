@@ -97,3 +97,26 @@ This package references `Asgard.Loki.Image`, `Asgard.Loki.Infrastructure` and st
 The same complete JSON generations wire can be used explicitly for xAI: configure a separate `OpenAiImageAdapter` with its own Id, actual xAI model, `BaseAddress = new("https://api.x.ai/v1/")`, independent API Key and HttpClientName. Leave Organization and Project unset. Native prompt/n/response_format and original extra JSON such as aspect_ratio pass unchanged; no default model, quality/size/format mapping, field removal or image download is performed. Results retain full original data[] objects, MIME/revised_prompt, null fields and usage extensions, including exact integers.
 
 This profile is verified by independent offline native request/result/error vectors and fake HTTP. It covers **complete JSON generation only**, not real xAI model/entitlement/image-quality verification. It does not establish xAI image SSE support. xAI edits use native JSON image.url/images[].url inputs and cannot be sent through this package's OpenAI JSON-reference or multipart editing methods. Native edit support is supplied by the separately installed [Image.XAI](../Asgard.Loki.Image.XAI/README.md) provider. See [xAI generation](https://docs.x.ai/developers/model-capabilities/images/generation) and [xAI JSON editing](https://docs.x.ai/developers/model-capabilities/images/editing).
+
+## Explicit protocol-compatible targets
+
+An upstream that explicitly implements the same OpenAI image endpoints, Bearer authentication and original JSON/multipart/SSE contract can use the existing adapters with a separate complete target:
+
+```csharp
+var compatible = new OpenAiImageOptions
+{
+    Id = "application-selected-image-target",
+    Model = actualNativeImageModel,
+    ApiKey = independentImageApiKey,
+    BaseAddress = applicationSelectedApiRoot, // Includes v1/ and any explicit prefix.
+    HttpClientName = "application-image-client"
+    // Organization/Project stay unset unless that target explicitly requires them.
+};
+var generation = new OpenAiImageAdapter(httpClientFactory, compatible);
+var editing = new OpenAiImageEditAdapter(httpClientFactory, compatible);
+// Register generation/editing in separate existing Image routes as needed.
+```
+
+Compatibility is a caller-declared protocol choice. It is not inferred from a hostname, provider brand, model name or placeholder route. The configured root, actual model, independent key and named client remain explicit; no new supplier wrapper, fallback or server-side routing configuration is added. The target must accept the same standard operation paths and authentication. Different header/query authentication, arbitrary path/method templates, task envelopes or supplier-specific image fields are not established by this profile and require their own explicitly supported contract.
+
+Twelve offline profile cases compare two independently configured targets against the original complete generation JSON/SSE and JSON/multipart edit JSON/SSE fixtures. Only the expected actual model changes. All image references, file IDs, mask roles, ordered upload parts, repeated/empty text fields, exact unknown numbers, native image results, original SSE identity and completed-event boundaries remain intact. Borrowed uploads/factories stay open. The scoped Image.OpenAI suite is now 367 cases; these local protocol checks do not prove a real compatible server, account, model, streaming enablement or image quality. Existing supplier-specific restrictions, including the separate xAI edit protocol, still apply.
