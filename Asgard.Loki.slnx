@@ -49,6 +49,9 @@
   <Folder Name="/src/Providers/Kling/">
     <Project Path="src/Asgard.Loki.Video.Kling/Asgard.Loki.Video.Kling.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/Midjourney/">
+    <Project Path="src/Asgard.Loki.Video.Midjourney/Asgard.Loki.Video.Midjourney.csproj" />
+  </Folder>
   <Folder Name="/src/Providers/MiniMax/">
     <Project Path="src/Asgard.Loki.Video.MiniMax/Asgard.Loki.Video.MiniMax.csproj" />
   </Folder>
@@ -124,6 +127,9 @@
   </Folder>
   <Folder Name="/tests/Providers/Kling/">
     <Project Path="tests/Asgard.Loki.Video.Kling.Tests/Asgard.Loki.Video.Kling.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Midjourney/">
+    <Project Path="tests/Asgard.Loki.Video.Midjourney.Tests/Asgard.Loki.Video.Midjourney.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/MiniMax/">
     <Project Path="tests/Asgard.Loki.Video.MiniMax.Tests/Asgard.Loki.Video.MiniMax.Tests.csproj" />

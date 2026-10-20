@@ -33,9 +33,10 @@ MiniMaxVideoAdapter ..> Infrastructure
 KlingVideoAdapter ..> Infrastructure
 ViduVideoAdapter ..> Infrastructure
 XaiVideoAdapter ..> Infrastructure
+MidjourneyVideoAdapter ..> Infrastructure
 ```
 
-Seventeen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu and Video.XAI. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Eighteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google, Video.GoogleVertex, Video.MiniMax, Video.Kling, Video.Vidu, Video.XAI and Video.Midjourney. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 
@@ -207,6 +208,25 @@ VertexVideoOperation --> VideoTaskSnapshot : full videos/errors/filtering
 The target fingerprint includes root, actual full resource, stable principal, authentication-source identity, explicit native request project header, HTTP client, implementation and byte policies. Short-lived Bearer rotation retains that binding. Wrong/expired tokens and authentication-source drift fail without changing identities or retrying generation. The application owns login, scopes, refresh and the accuracy of the source's principal assertion; no credentials are discovered or JWTs interpreted. Expiry is rechecked immediately before send, including after factory creation. The source, factory and clock are borrowed, while all call-created resources finish disposal before source/final cancellation checks and result delivery.
 
 Original `instances/parameters` are snapshotted before authentication waits. Full operation names must match project, location, Google publisher, model and requested operation. Missing `done` means running; known terminals distinguish native errors, all-filtered failure and valid native output carriers. Multiple `response.videos`, GCS URIs, inline base64 strings, metadata and unknown fields remain unchanged; no Gemini API result wrapper, data URL, storage client or downloader is introduced. Malformed or contradictory terminals fail explicitly. See the [provider matrix, initialization and limits](../src/Asgard.Loki.Video.GoogleVertex/README.md).
+
+## Native unofficial Midjourney proxy video
+
+`Asgard.Loki.Video.Midjourney` references Video, Infrastructure and Microsoft.Extensions.Http. It is an HTTP client for an explicitly supplied unofficial proxy root, with no service host, Discord connection or account pool. `MidjourneyVideoAdapter` uses the existing Video submit/query/reference contract; its complete immutable identity captures HTTP/HTTPS root and prefix, actual native VideoType, anonymous or mj-api-secret identity, operation/implementation, client and limits. No Image or other capability reference is introduced.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. MidjourneyVideoAdapter
+MidjourneyVideoAdapter --> MidjourneyVideoOptions : explicit proxy root and video type
+MidjourneyVideoAdapter --> MidjourneyVideoJson : strict original JSON and task ID
+MidjourneyVideoAdapter --> MidjourneyVideoProtocol : video states and output carriers
+MidjourneyVideoAdapter --> HttpBodyReader : bounded shared bytes
+MidjourneyVideoAdapter --> VideoTaskSnapshot : complete original envelope
+VideoTaskSnapshot --> VideoTaskHttpResponse : original HTTP window
+```
+
+Generation and extension share native submit/video; original parent taskId/index, prompt/media/settings and unknown JSON remain untouched, including index zero. Only configured videoType is injected; case-insensitive aliases cannot override it. Query uses the original escaped task ID and rejects another ID or an explicit non-VIDEO action. Native submission codes1/21/22 retain their meanings and original envelopes; existing-task status is read without rewriting its code or automatically querying. Other codes remain raw API failures even with a result ID.
+
+Known native task states map independently of progress/HTTP success, while modal/future states remain unknown. Complete success validates all video URLs; native legacy imageUrl is accepted only in established VIDEO context, without format guessing or synthetic fields. Original video lists/order/thumbnails, errors, buttons, times and metadata remain Data. Bounded EOF/declared length, outer disposal and final cancellation precede delivery, with a borrowed factory. There is no parent lookup, media fetch, retry, poller, callback receiver, image business coordinator or account/storage/billing service. See the [provider support matrix, initialization and offline-only status](../src/Asgard.Loki.Video.Midjourney/README.md).
 
 ## Native xAI video
 
