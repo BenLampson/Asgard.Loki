@@ -1,0 +1,37 @@
+{
+  "sources": [
+    "https://ai.google.dev/api/models#method:-models.predictlongrunning",
+    "https://ai.google.dev/gemini-api/docs/veo",
+    "https://ai.google.dev/gemini-api/docs/deprecations/"
+  ],
+  "model": "veo-3.1-generate-preview",
+  "operation": "models/veo-3.1-generate-preview/operations/fixture-01",
+  "submissions": [
+    {
+      "instances": [{ "prompt": "A paper boat on a moonlit lake. 紙船🌊" }],
+      "parameters": { "aspectRatio": "16:9", "durationSeconds": 8, "resolution": "1080p", "numberOfVideos": 1, "negativePrompt": "blur", "seed": 123 },
+      "labels": { "case": "fictional" },
+      "Future": { "large": 9007199254740993, "null": null, "case": "Kept" }
+    },
+    {
+      "instances": [{ "prompt": "Animate the fictional boat.", "image": { "inlineData": { "mimeType": "image/png", "data": "ZmFrZS1pbWFnZQ==" } }, "lastFrame": { "inlineData": { "mimeType": "image/png", "data": "ZmFrZS1lbmQ=" } } }],
+      "parameters": { "aspectRatio": "9:16", "personGeneration": "allow_adult", "durationSeconds": 8, "Future": [true, 9007199254740993] }
+    },
+    {
+      "instances": [{ "prompt": "Keep this fictional subject.", "referenceImages": [{ "referenceType": "asset", "image": { "inlineData": { "mimeType": "image/jpeg", "data": "ZmFrZQ==" } } }] }],
+      "parameters": { "numberOfVideos": 1, "durationSeconds": 8 }
+    },
+    {
+      "instances": [{ "prompt": "Continue the fictional scene.", "video": { "inlineData": { "mimeType": "video/mp4", "data": "ZmFrZS12aWRlbw==" } } }],
+      "parameters": { "numberOfVideos": 1, "resolution": "720p" }
+    }
+  ],
+  "queries": [
+    { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "metadata": { "Future": 9007199254740993 } },
+    { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": false },
+    { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": true, "error": { "code": 8, "message": "Fictional quota failure", "details": [{ "@type": "example.invalid/Detail", "Future": null }] } },
+    { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": true, "response": { "@type": "type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse", "generateVideoResponse": { "raiMediaFilteredCount": 1, "raiMediaFilteredReasons": ["Fictional safety filter"], "Future": false } } },
+    { "name": "models/veo-3.1-generate-preview/operations/fixture-01", "done": true, "response": { "@type": "type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse", "generateVideoResponse": { "generatedSamples": [{ "video": { "uri": "https://veo.invalid/v1beta/files/fixture-a:download?alt=media", "mimeType": "video/mp4", "Future": { "large": 9007199254740993 } } }, { "video": { "uri": "https://veo.invalid/v1beta/files/fixture-b:download?alt=media" }, "Future": "second sample" }], "raiMediaFilteredCount": 0, "Future": [null, true] } }, "Future": { "doNotDrop": "原文" } }
+  ],
+  "api_error": { "error": { "code": 429, "message": "Fictional rate limit", "status": "RESOURCE_EXHAUSTED", "details": [{ "Future": 9007199254740993 }] } }
+}
