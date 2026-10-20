@@ -11,7 +11,7 @@ Create `VolcengineLlmProvider(IHttpClientFactory)` and register it in `LlmOption
 
 Uses the named client `Asgard.Loki.LLM.Volcengine`; disable generation POST retries/hedging in that client's configuration. Raw tools, reasoning, caching parameters, IDs, usage, errors and unknown events are retained. Response streams require an actual terminal event.
 
-No native Responses WebSocket, protocol-to-protocol conversion or hard-coded model catalog. The supplier has 244 passing offline tests using local HTTP stubs. Separate real standard-Ark checks with `doubao-seed-evolving` passed Chat/Responses JSON/SSE, strict JSON Schema, tool calls with result return, thinking on/off, output limits, response continuation and opaque reasoning replay.
+No native Responses WebSocket, protocol-to-protocol conversion or hard-coded model catalog. The supplier has 258 passing offline tests using local HTTP stubs. Separate real standard-Ark checks with `doubao-seed-evolving` passed Chat/Responses JSON/SSE, strict JSON Schema, tool calls with result return, thinking on/off, output limits, response continuation and opaque reasoning replay.
 
 **Known live failure:** both protocols can return a function call despite a correctly transmitted `tool_choice="none"`; the strict integration tests remain failing. Loki preserves this upstream result and does not execute tools. Ark Responses currently reports token-limit truncation as `incomplete_details.reason="length"`, retained unchanged. See the [verification record](https://github.com/BenLampson/Asgard.Loki/blob/dev/docs/llm-parameter-verification.md) for the precise cases and limitations. Other accounts/models and Redis cross-process correctness require separate verification.
 
@@ -82,3 +82,24 @@ The caller supplies an original messages array and any native optional parameter
 Events preserve raw Data and immutable optional Json; actual [DONE] has Json=null. EventName/EventId/RetryMilliseconds remain separate from native request/plugin/tool/reference identities. A choice finish is not a global terminal. IsTerminal marks actual DONE or a native error after full EOF/length/encoding/resource/target/cancellation validation; it does not assert model success. Root business types from another protocol, including response.failed, do not become Bot failures. The factory remains borrowed; each HTTP request/client/response/body is owned. Limits come from HttpOptions and remain explicit, with no retry/failover/credential borrowing or execution loop.
 
 The [official migration scope](https://docs.volcengine.com/docs/ark/migrate-from-bot-api?lang=en) retains calls to already-published Bot apps. New application creation and managed-agent migration are outside this SDK client. See [native Bot fields](https://docs.volcengine.com/docs/ark/bot-api?lang=zh&redirect=1) for actual service-specific behavior. Thirty-seven Bot offline cases verify independent full JSON/SSE windows, separate app/model identities, original metadata/tools/references/multi-endpoint data, actual DONE, snapshots/omission, errors, budgets, missing/late terminals and async/sync/final-cancellation closure. They do not establish actual Bot access or parameter/model effects.
+
+## Explicit Coding Plan configuration
+
+Reuse this provider with a separate complete target and credential. The SDK appends `chat/completions` or `responses` to the configured root:
+
+```csharp
+var coding = new VolcengineLlmProvider(httpClientFactory,
+    id: "ark-coding", httpClientName: "Explicit.Ark.Coding");
+var target = new LlmTarget
+{
+    Id = "coding-target", ProviderId = coding.Id,
+    BaseAddress = new Uri("https://ark.cn-beijing.volces.com/api/coding/v3/"),
+    UpstreamModel = codingModel, CredentialId = "coding-key",
+    Protocols = LlmProtocol.ChatCompletions | LlmProtocol.Responses
+};
+// Register this provider, target and independent codingKey in ordinary LlmOptions.
+```
+
+Chat JSON/SSE and existing Responses JSON/SSE retain full native tools/history/reasoning/schema/unknown values. Complete root, selected model, credential, version and named client remain part of the existing Session binding. No coding-plan alias, model suffix, host inference, account login, CLI configuration or model catalog is added. Native Messages uses the [existing Anthropic package](../Asgard.Loki.LLM.Anthropic/README.md#explicit-ark-coding-plan-messages) with explicit Bearer and its complete `coding/v1/` root; this supplier has no reference to that package.
+
+Fourteen additional offline profile cases verify complete wire/results/events, both root trailing-slash forms, identity drift and cross-instance response ownership. Total: 258 cases (207 model HTTP, 37 published Bot, 14 Coding Plan). These verify transport fidelity only; current model entitlement, optional-setting acceptance and real Coding Plan behavior have not been tested. Endpoint contracts: [OpenCode configuration](https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-opencode?lang=en), [ZCode configuration](https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-zcode?lang=zh).

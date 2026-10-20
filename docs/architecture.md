@@ -2982,3 +2982,20 @@ VolcengineBotEvent --> VolcengineBotMetadata
 Each method makes one native chat/completions POST against an explicit complete Bots root. Original messages/group-chat/opaque user data, endpoint references, multiple model/plugin counters, references and tool associations remain native without execution, aggregation, retrieval or default injection. Model/stream root fields belong only to fixed Bot/method. Native error or actual DONE marks global termination after bounded EOF/length/UTF-8/owned closure/final target/cancellation checks; a choice finish or Responses-named business event cannot substitute it. The original DONE has no fabricated JSON. Factory ownership stays with the application. No Bot creation/admin, managed-agent migration, Session host, polling or file management occurs.
 
 The supplier executable passes244 offline cases (207 model-HTTP plus37 Bot cases) with independent whole windows and failure-injected local transport. No live app/model/plugin acceptance or new full-suite/all-package validation is claimed. Graph63/45/125 and own-capability/Infrastructure dependency directions remain unchanged.
+
+### Explicit Coding Plan native profiles
+
+Coding Plan reuses existing model-target providers independently: VolcengineLlmProvider appends Chat/Responses paths to explicit coding/v3/; AnthropicLlmProvider appends messages to explicit coding/v1/ with selected Bearer. There is no new package, protocol, provider-peer reference, host/model alias router or credential discovery. Each native call binds its own complete target/model/credential/configuration through existing Sessions; native result model fields are not rewritten. Profiles do not share published-Bot application identity or state.
+
+```plantuml
+@startuml
+LlmOptions --> "explicit coding/v3 target" : independent root/model/credential
+"explicit coding/v3 target" --> VolcengineLlmProvider : native Chat/Responses
+LlmOptions --> "explicit coding/v1 target" : independent root/model/credential
+"explicit coding/v1 target" --> AnthropicLlmProvider : native Messages / selected Bearer
+VolcengineLlmProvider --> LlmTarget : existing complete-target Session
+AnthropicLlmProvider --> LlmTarget : existing complete-target Session
+@enduml
+```
+
+Fourteen Ark and16 Messages profile cases verify full native windows, immutable requests, explicit route/auth, tool/signature/schema/unknown-field fidelity and Session binding/recovery. Messages missing-stop/late-error/resource/final-cancellation faults cannot release held success. Scoped executables pass258 Ark and143 Anthropic offline cases; no live Coding Plan or full-solution/all-package verification is claimed. Graph remains63 production projects,45 Infrastructure consumers and125 unique solution paths.

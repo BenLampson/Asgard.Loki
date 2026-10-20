@@ -36,7 +36,7 @@ var result = await loki.LLM.ClaudeMessages.CreateAsync(new ClaudeMessageRequest
 
 The target must be included in a route whose public `Model` is `assistant`. The model name and output limit are explicit caller choices. Authentication uses request-local `x-api-key` and `anthropic-version` headers; the default version is `2023-06-01`. Select another version with the constructor. Configure optional `anthropic-beta` headers on the named HTTP client `Asgard.Loki.LLM.Anthropic`. Changing version/client identity invalidates old Session bindings; change `LlmTarget.Version` when external HTTP defaults change semantics.
 
-The provider references only `Asgard.Loki.LLM` and standard Microsoft HTTP components. It does not convert Chat/Responses or execute tools. Optional explicit conversion is supplied separately by `Asgard.Loki.LLM.Conversion`. Disable generation POST retries and hedging in the supplied HTTP factory.
+The provider references only `Asgard.Loki.LLM`, capability-independent `Asgard.Loki.Infrastructure` and standard Microsoft HTTP components. It does not convert Chat/Responses or execute tools. Optional explicit conversion is supplied separately by `Asgard.Loki.LLM.Conversion`. Disable generation POST retries and hedging in the supplied HTTP factory.
 
 Verification uses xUnit v3 with substitute HTTP handlers, fragmented SSE, `MemoryDistributedCache` and a test coordinator. No Anthropic live account/model verification has been performed. See [Messages API](https://platform.claude.com/docs/en/api/messages/create) and [streaming](https://platform.claude.com/docs/en/build-with-claude/streaming).
 
@@ -81,3 +81,25 @@ A subsequent fixture audit aligns the full stream's content indices with its com
 ## Transport dependency
 
 This package references `Asgard.Loki.LLM`, `Asgard.Loki.Infrastructure` and standard HTTP support. Shared SSE framing is provided by Infrastructure; native requests, authentication, results and lifecycle remain supplier-owned.
+
+## Explicit Ark Coding Plan Messages
+
+Use this existing native Messages provider with explicitly selected Bearer authentication and the complete SDK root below. This SDK appends only `messages`, so the root includes `/v1/`:
+
+```csharp
+var coding = new AnthropicLlmProvider(httpClientFactory,
+    new AnthropicHttpOptions { Authentication = AnthropicAuthentication.Bearer },
+    id: "coding-messages", httpClientName: "Explicit.Coding.Messages");
+var target = new LlmTarget
+{
+    Id = "coding-messages-target", ProviderId = coding.Id,
+    BaseAddress = new Uri("https://ark.cn-beijing.volces.com/api/coding/v1/"),
+    UpstreamModel = codingModel, CredentialId = "coding-key",
+    Protocols = LlmProtocol.ClaudeMessages
+};
+// Register provider/target and independent codingKey through ordinary LlmOptions.
+```
+
+The request emits one Bearer header, no x-api-key, and the explicit/default anthropic-version. Original thinking/signatures, tool-use/result links and order, schema settings, exact integers and future fields remain native; the SDK does not convert them, choose models or certify endpoint acceptance of optional parameters. Returned native model data remains distinct from selected-target metadata. Full root/model/key/auth/version/client changes invalidate old Sessions normally. No reference to LLM.Volcengine, brand wrapper, CLI/login/settings writer, tool executor or retry loop is added.
+
+Sixteen independent-window profile tests verify JSON/SSE, both root forms, full wire/data/transport metadata, native message_stop and late-failure gates, binding drift and cross-instance recovery. The supplier executable passes 143 offline cases (127 existing plus16 profile cases). No live Coding Plan account/model/parameter validation has been performed. The [official configuration](https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-claude-code?lang=zh) supplies the native service contract; its external client base URL convention differs because those clients append `/v1/messages`.

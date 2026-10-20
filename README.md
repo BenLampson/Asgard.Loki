@@ -22,7 +22,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 
 | Capability | Provider package | Implemented APIs | Streaming |
 | --- | --- | --- | --- |
-| LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat Completions; Responses creation and continuation | SSE |
+| LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat/Responses; fixed published Bot calls; explicit Coding Plan Chat/Responses | SSE |
 | LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation/continuation; native Moderations; explicit compaction, Responses WebSocket and independent Realtime | SSE; JSON compaction; native JSON WebSocket events |
 | LLM | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages | SSE |
 | LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
@@ -133,7 +133,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Video.Vidu` | Native Vidu text/image/start-end/reference generation and creations query |
 | `Asgard.Loki.Video.XAI` | Native xAI generation/edit/extension, original status/results and HTTP metadata |
 | `Asgard.Loki.Video.Midjourney` | Explicit unofficial proxy video calls and original task results |
-| `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
+| `Asgard.Loki.LLM.Volcengine` | Ark LLM provider and fixed published Bot native client |
 | `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider and explicit external-auth Codex Responses/compact/search |
 | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |
 | `Asgard.Loki.LLM.Google` | Native Gemini Developer API provider |
@@ -446,3 +446,5 @@ The existing [OpenAI package](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-code
 The [Volcengine provider](src/Asgard.Loki.LLM.Volcengine/README.md#native-http-fidelity) retains complete Chat/Responses JSON and SSE under explicit byte/tail/choice limits. It freezes native requests before factory awaits, reads beyond actual Chat DONE to verify EOF/late errors, and holds ending frames through complete resource closure and final binding/cancellation checks. Original tool/reasoning/schema/encrypted/unknown data stays intact. The explicit HTTP policy and named client participate in the existing complete-target Session binding; no model-name routing, automatic retry or extra capability dependency is introduced.
 
 The same [Volcengine package](src/Asgard.Loki.LLM.Volcengine/README.md#published-bot-native-calls) provides VolcengineBotClient for explicit published-app JSON/SSE calls. Bot identity stays separate from returned underlying model/endpoint data; complete plugins/references/group-chat/usage fields and actual DONE are preserved. The client adds no model Session, app administrator, agent runtime, execution loop or URL downloader.
+
+Explicit Ark Coding Plan targets reuse [LLM.Volcengine](src/Asgard.Loki.LLM.Volcengine/README.md#explicit-coding-plan-configuration) for Chat/Responses at `coding/v3/` and [LLM.Anthropic](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-ark-coding-plan-messages) for native Messages at `coding/v1/` with selected Bearer. Roots, actual model and independent credential are caller-owned complete target configuration. Full native windows and Session identity are offline-tested; live Coding Plan entitlement and optional-setting effectiveness remain unverified.
