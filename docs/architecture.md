@@ -28,9 +28,10 @@ AwsMantleLlmProvider ..> Infrastructure
 OpenAiSpeechAdapter ..> Infrastructure
 OpenAiImageAdapter ..> Infrastructure
 GoogleVideoAdapter ..> Infrastructure
+GoogleVertexVideoAdapter ..> Infrastructure
 ```
 
-Twelve supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali and Video.Google. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
+Thirteen supplier projects directly reference this package: LLM.OpenAI, LLM.Volcengine, LLM.Anthropic, LLM.Google, LLM.Azure, LLM.GoogleVertex, LLM.AWS, Audio.OpenAI, Image.OpenAI, Video.Volcengine, Video.Ali, Video.Google and Video.GoogleVertex. They compile no copies of transport sources and use no friend-assembly access. Provider-native state stays in its owning package. Google's `NativeLlmHttp` remains a private Google implementation because it carries `LlmUpstreamException` and is used only there. There is no shared LLM/Audio/Video business coordinator. The entry still references only Abstractions, which remains limited to module contracts; capabilities never reference one another.
 
 Solution folders separate Foundation, Infrastructure, Capabilities and Conversion, with provider packages and corresponding tests grouped by vendor (GoogleVertex nested under Google). Display grouping preserves physical project paths, package IDs and namespaces. Infrastructure precedes dependent supplier packages in the pack/metadata/publication inventory; package checks verify its empty dependency set and all explicit incoming references.
 
@@ -150,6 +151,26 @@ GoogleVideoOperation --> VideoTaskSnapshot : full native envelope
 The model lives in the URL; native `instances/parameters` and unknown members remain unconverted. The original operation name must match the configured model and requested operation; persisted Video references retain full-target binding. Missing `done` means running. Completed native errors or an explicitly all-filtered result map to failure; valid `generatedSamples` map to success, including partial filtering. Original errors, metadata, all samples and filtering remain in the full JSON. Contradictory or incomplete terminal shapes fail explicitly rather than inventing success.
 
 `CopyContentToAsync(Uri, Stream)` is supplier-owned and caller-driven, without changing the Video capability contract. It authenticates only the configured root's native file-download URI, then follows bounded explicit HTTPS content redirects without forwarding the key. It does not prove file-to-operation ownership or expose file CRUD. The borrowed named HTTP client must disable automatic redirects/retries and default credential headers. Infrastructure supplies byte transfer only; URI/auth/status/media policy stays here. HTTP 200 binary video/octet-stream is copied into the borrowed destination, which can contain partial bytes after failure. Resources finish disposal before final cancellation and successful return. There is no polling, URL refresh, retry or background transfer.
+
+## Native Vertex Veo video
+
+`Asgard.Loki.Video.GoogleVertex` is independent of LLM.GoogleVertex and Video.Google, referencing only Video, Infrastructure and Microsoft.Extensions.Http. It uses explicit HTTPS versioned roots and full `projects/{project}/locations/{location}/publishers/google/models/{model}` resources. Submit calls `predictLongRunning`; each explicit query POSTs the original operation name to `fetchPredictOperation`. No host/project/model discovery, converted gateway ID or background poller is involved.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. GoogleVertexVideoAdapter
+GoogleVertexVideoAdapter --> GoogleVertexVideoOptions : captures full resource and principal
+GoogleVertexVideoAdapter --> IGoogleVertexVideoTokenSource : borrows
+IGoogleVertexVideoTokenSource --> GoogleVertexVideoAccessToken : one asserted principal/token/expiry
+GoogleVertexVideoAdapter --> TimeProvider : borrows expiry clock
+GoogleVertexVideoAdapter --> HttpBodyReader : bounded raw bytes
+GoogleVertexVideoAdapter --> VertexVideoOperation : native parser
+VertexVideoOperation --> VideoTaskSnapshot : full videos/errors/filtering
+```
+
+The target fingerprint includes root, actual full resource, stable principal, authentication-source identity, explicit native request project header, HTTP client, implementation and byte policies. Short-lived Bearer rotation retains that binding. Wrong/expired tokens and authentication-source drift fail without changing identities or retrying generation. The application owns login, scopes, refresh and the accuracy of the source's principal assertion; no credentials are discovered or JWTs interpreted. Expiry is rechecked immediately before send, including after factory creation. The source, factory and clock are borrowed, while all call-created resources finish disposal before source/final cancellation checks and result delivery.
+
+Original `instances/parameters` are snapshotted before authentication waits. Full operation names must match project, location, Google publisher, model and requested operation. Missing `done` means running; known terminals distinguish native errors, all-filtered failure and valid native output carriers. Multiple `response.videos`, GCS URIs, inline base64 strings, metadata and unknown fields remain unchanged; no Gemini API result wrapper, data URL, storage client or downloader is introduced. Malformed or contradictory terminals fail explicitly. See the [provider matrix, initialization and limits](../src/Asgard.Loki.Video.GoogleVertex/README.md).
 
 ## Native OpenAI Realtime
 

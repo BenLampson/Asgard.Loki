@@ -40,6 +40,7 @@
   </Folder>
   <Folder Name="/src/Providers/Google/Vertex/">
     <Project Path="src/Asgard.Loki.LLM.GoogleVertex/Asgard.Loki.LLM.GoogleVertex.csproj" />
+    <Project Path="src/Asgard.Loki.Video.GoogleVertex/Asgard.Loki.Video.GoogleVertex.csproj" />
   </Folder>
   <Folder Name="/src/Providers/Jina/">
     <Project Path="src/Asgard.Loki.Embedding.Jina/Asgard.Loki.Embedding.Jina.csproj" />
@@ -103,6 +104,7 @@
   </Folder>
   <Folder Name="/tests/Providers/Google/Vertex/">
     <Project Path="tests/Asgard.Loki.LLM.GoogleVertex.Tests/Asgard.Loki.LLM.GoogleVertex.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.GoogleVertex.Tests/Asgard.Loki.Video.GoogleVertex.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/Jina/">
     <Project Path="tests/Asgard.Loki.Embedding.Jina.Tests/Asgard.Loki.Embedding.Jina.Tests.csproj" />

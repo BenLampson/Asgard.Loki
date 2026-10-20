@@ -35,6 +35,7 @@ $packageIds = @(
     'Asgard.Loki.Video.Volcengine',
     'Asgard.Loki.Video.Ali',
     'Asgard.Loki.Video.Google',
+    'Asgard.Loki.Video.GoogleVertex',
     'Asgard.Loki.Audio.OpenAI',
     'Asgard.Loki.Image.OpenAI',
     'Asgard.Loki.Embedding.OpenAI',

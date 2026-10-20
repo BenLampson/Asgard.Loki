@@ -44,6 +44,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | Video | `Asgard.Loki.Video.Volcengine` | Ark native task submission/query, original media/asset references and result URLs | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Ali` | DashScope native video-generation/image2video submission and task-query results | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Google` | Native Gemini Veo predictLongRunning, operation query and explicit output copy; previews retire 2026-10-22 | Caller-driven task snapshots/content |
+| Video | `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo resource-scoped prediction/query, borrowed tokens, GCS and inline results | Caller-driven task snapshots |
 | Video media assets | `Asgard.Loki.Video.Volcengine` | Ark native Asset/AssetGroup create/get/list/update/delete with independent AK/SK signing | One explicit native operation or page |
 
 Audio exposes an optional [native JSON speech contract](src/Asgard.Loki.Audio/README.md), with independent snapshots and delayed success until source enumeration/disposal finishes. [OpenAI speech](src/Asgard.Loki.Audio.OpenAI/README.md) implements native binary HTTP and explicit SSE aggregation/streaming, including custom voice objects and preserved audio/event data. Binary frames are SDK HTTP records; SSE envelopes retain native JSON/raw text, event identity and original usage.
@@ -86,6 +87,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Video.Volcengine` | Ark native video generation provider |
 | `Asgard.Loki.Video.Ali` | Native DashScope video task provider with explicit service selection |
 | `Asgard.Loki.Video.Google` | Native Gemini Veo operations and explicit content transfer |
+| `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo operations with complete resource/principal binding |
 | `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
 | `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider |
 | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |
