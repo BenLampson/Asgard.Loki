@@ -10,6 +10,7 @@ internal sealed class HunyuanReadStream(byte[] bytes) : Stream
     internal bool FailRead { get; init; }
     internal bool FailDispose { get; init; }
     internal Action? OnEof { get; init; }
+    internal Action? OnAsyncDispose { get; init; }
     public override bool CanRead => !Disposed;
     public override bool CanSeek => false;
     public override bool CanWrite => false;
@@ -22,7 +23,7 @@ internal sealed class HunyuanReadStream(byte[] bytes) : Stream
         var count = Math.Min(Math.Min(buffer.Length, 3), bytes.Length - _offset); bytes.AsMemory(_offset, count).CopyTo(buffer); _offset += count; return ValueTask.FromResult(count);
     }
     protected override void Dispose(bool disposing) { Disposed = true; base.Dispose(disposing); }
-    public override ValueTask DisposeAsync() { Disposed = true; return FailDispose ? ValueTask.FromException(new IOException("fixture stream disposal failure")) : base.DisposeAsync(); }
+    public override ValueTask DisposeAsync() { Disposed = true; OnAsyncDispose?.Invoke(); return FailDispose ? ValueTask.FromException(new IOException("fixture stream disposal failure")) : base.DisposeAsync(); }
     public override void Flush() => throw new NotSupportedException();
     public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();

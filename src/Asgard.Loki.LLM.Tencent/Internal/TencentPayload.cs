@@ -25,7 +25,11 @@ internal static class TencentPayload
     internal static bool Error(JsonElement data)
     {
         if (data.ValueKind != JsonValueKind.Object) return false;
-        if (data.TryGetProperty("Response", out var response) && response.ValueKind == JsonValueKind.Object) data = response;
+        return HasError(data) || data.TryGetProperty("Response", out var response) && response.ValueKind == JsonValueKind.Object && HasError(response);
+    }
+    /// <summary>只识别当前原生根的错误，不把消息/工具参数中的业务字段当错误。</summary>
+    private static bool HasError(JsonElement data)
+    {
         if (data.TryGetProperty("Error", out var error) && error.ValueKind != JsonValueKind.Null) return true;
         if (!data.TryGetProperty("ErrorMsg", out error) || error.ValueKind == JsonValueKind.Null) return false;
         return error.ValueKind != JsonValueKind.Object || !error.TryGetProperty("Code", out var code) || code.ValueKind != JsonValueKind.Number || !code.TryGetInt64(out var number) || number != 0;

@@ -24,7 +24,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | LLM | `Asgard.Loki.LLM.Ollama` | 原生 Chat/generate JSON/NDJSON，保留工具关联、prompt/context、thinking、format；显式匿名或 Bearer 身份 |
 | LLM | `Asgard.Loki.LLM.Azure` | 显式 v1/日期版本 Chat、Responses 及原生文本补全 JSON/SSE；原生 Responses 压缩保留完整窗口，需目标显式声明能力；独立 Realtime JSON WebSocket；api-key 或借用外部主体令牌；过滤/用量尾帧及终态校验 |
 | LLM | `Asgard.Loki.LLM.DeepSeek` | 原生 Search／Fetch 完整 JSON；独立固定服务及凭据；保留原生排序、评分、完整页面内容和空结果，无需模型／Session |
-| LLM | `Asgard.Loki.LLM.Tencent` | 混元原生完整 JSON；供应商专属 TC3 和应用拥有的 External 主体凭据；当前不支持 SSE |
+| LLM | `Asgard.Loki.LLM.Tencent` | 混元原生 JSON／SSE；供应商专属 TC3 和应用拥有的 External 主体凭据；保留工具分片、多候选终态及完整尾帧 |
 | LLM | `Asgard.Loki.LLM.GoogleVertex` | 标准 Vertex Gemini/Claude JSON/SSE 与借用 External；独立 Express Gemini JSON/SSE 与显式 API Key；MaaS Chat JSON/SSE 与借用令牌 |
 | LLM | `Asgard.Loki.LLM.AWS` | Bedrock Claude、独立 Converse 与 Nova JSON/二进制 EventStream；显式目标，借用 SigV4 或显式 Bedrock API Key/Bearer |
 | 显式转换 | `Asgard.Loki.LLM.Conversion` | 四种文本协议间十二个方向的公共子集请求、响应和流；另支持 Nova ↔ Converse 原生完整 JSON 显式转换 |
@@ -101,7 +101,7 @@ LLM Session 使用标准 `IDistributedCache` 保存完整目标，首次绑定�
 
 本项目使用 [Apache-2.0 许可证](LICENSE)。贡献与安全问题见 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [SECURITY.md](SECURITY.md)。
 
-混元原生契约提供 `loki.LLM.Hunyuan.CompleteAsync`／`.StreamAsync`，要求目标显式声明 `LlmProtocol.Hunyuan` 并提供 `IHunyuanAdapter`。`HunyuanRequest.Parameters` 保留原生 PascalCase 消息、工具 schema／参数字符串、工具关联、推理、多模态及未知字段；方法只控制原生 `Model`／`Stream`，继续使用完整 Session 目标绑定。完整结果保留 `Response` 信封，流事件保留原始平铺 JSON 和 SSE 元数据，不转换原生 ID、终态或省略的索引。原生传输、认证和终态验证由适配器负责，见[原生契约](src/Asgard.Loki.LLM/README.md#native-hunyuan-contract)。
+混元原生契约提供 `loki.LLM.Hunyuan.CompleteAsync`／`.StreamAsync`，要求目标显式声明 `LlmProtocol.Hunyuan` 并提供 `IHunyuanAdapter`。`HunyuanRequest.Parameters` 保留原生 PascalCase 消息、工具 schema／参数字符串、工具关联、推理、多模态及未知字段；方法只控制原生 `Model`／`Stream`，继续使用完整 Session 目标绑定。完整结果保留 `Response` 信封，流事件保留原始平铺 JSON 和 SSE 元数据，不转换原生 ID、终态或省略的索引。[腾讯供应商包](src/Asgard.Loki.LLM.Tencent/README.md)已实现原生 TC3 JSON／SSE，并记录显式 TokenHub 兼容调用方式；原生传输、认证和终态验证由适配器负责，见[原生契约](src/Asgard.Loki.LLM/README.md#native-hunyuan-contract)。
 
 原生文本补全契约使用 `loki.LLM.TextCompletions.CompleteAsync`／`.StreamAsync`，目标需声明 `LlmProtocol.TextCompletions` 且供应商实现 `ITextCompletionsAdapter`。`TextCompletionRequest.Parameters` 保留原生 prompt 文本／token 批次、suffix、echo、logprobs 和未知字段，不生成 Chat 消息或隐式转换。原始 choices 顺序、索引、过滤／用量及 SSE 元数据保持，仍使用完整 Session 目标绑定。Azure 包已实现原生 JSON/SSE；具体端点及输入能力由供应商实现校验，见[原生契约](src/Asgard.Loki.LLM/README.md#native-text-completions)。
 

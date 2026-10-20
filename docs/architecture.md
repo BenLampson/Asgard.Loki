@@ -2582,9 +2582,9 @@ HunyuanEvent --|> LlmJsonEvent
 
 Complete results own the full native Response envelope; flat streaming records and SSE metadata remain independent immutable snapshots. `Response.Id` is not projected onto the inherited lowercase Id accessor or Responses continuation ownership. Optional native indices, native finish reasons, disclaimer/search/usage tail fields and raw tool deltas remain unmodified. Native signing, framing, terminal/EOF/error and resource validation belong to the supplier adapter. The core neither infers completion nor executes, aggregates, converts or retries generation. Existing full server/model/credential/provider fingerprint, coordinated initial binding and borrowed dependency rules apply unchanged.
 
-### Tencent native complete JSON and TC3
+### Tencent native JSON/SSE and TC3
 
-`LLM.Tencent` references only LLM, Infrastructure and standard HTTP dependencies. `TencentHunyuanProvider` implements the explicit Hunyuan adapter and External credential kind. Its application-owned `ITencentHunyuanCredentialSource` supplies immutable credentials once per call; stable source identity and logical principal remain independent of rotating SecretId/SecretKey/temporary Token. Source/principal drift and expiry fail at acquisition, dispatch and publication. No discovery, STS, refresh, key parsing or authentication heuristics are implemented. Native SSE currently reports unsupported without transport.
+`LLM.Tencent` references only LLM, Infrastructure and standard HTTP dependencies. `TencentHunyuanProvider` implements the explicit Hunyuan adapter and External credential kind. Its application-owned `ITencentHunyuanCredentialSource` supplies immutable credentials once per call; stable source identity and logical principal remain independent of rotating SecretId/SecretKey/temporary Token. Source/principal drift and expiry fail at acquisition, dispatch and publication. No discovery, STS, refresh, key parsing or authentication heuristics are implemented. Native SSE uses the same signing and wire guards with a supplier-owned lifecycle.
 
 ```mermaid
 classDiagram
@@ -2600,3 +2600,34 @@ TencentHunyuanProvider --> IHttpClientFactory : borrowed factory and owned per-c
 ```
 
 The native complete-body snapshot precedes credential waits and byte limits precede acquisition. TC3 signs actual application/json bytes, Host and action with UTC date/hunyuan scope and fixed canonical URI `/`; explicit optional SigningHost supports physical proxies without path inference. Region/temporary Token are explicit. Default credential/signing headers are refused; actual HTTP target/method/body/header mutation fails. Full raw HTTP/native errors and original complete Response envelope/choices/native finish reasons/unknown fields remain supplier-local. Results are withheld through EOF, byte/length/encoding checks, async source and HTTP/client closure, and final cancellation/source/principal/expiry validation. The core Session binding and Responses ownership rules do not change. No cross-capability state, conversion, history, retry, gateway or cloud administration layer is added.
+
+The Tencent stream transport owns `TencentStreamState` and a bounded raw `TencentReadStream`; Infrastructure only frames SSE. Native flat PascalCase objects remain unchanged, including optional Index, tool/argument fragments, reasoning, disclaimer, usage/search/recommendation tails and unknown fields. A stable native Id is required, while Created may vary. Implicit zero is state-only and valid solely for unambiguous single-choice streams; multichoice association requires explicit indices. The state never assembles tools or invents indices, IDs, finish reasons or DONE.
+
+```mermaid
+sequenceDiagram
+participant Caller
+participant Native as TencentHunyuanProvider
+participant Auth as Borrowed credential source
+participant HTTP as Fixed native HTTP target
+participant State as TencentStreamState
+Caller->>Native: StreamAsync, explicit Session target
+Native->>Native: Freeze native body and check bytes
+Native->>Auth: Acquire once for bound stable principal
+Native->>HTTP: TC3 signed exact bytes, Stream=true
+loop Native SSE records
+HTTP-->>Native: Original flat JSON and SSE metadata
+Native->>State: Observe stable Id, native choice indices and finishes
+alt Before first choice finish
+Native-->>Caller: Original incremental event
+else First finish and every subsequent record
+Native->>Native: Bound and buffer complete ordered tail
+end
+end
+Native->>State: All observed choices finished at normal EOF
+Native->>Native: Close source/response/client; validate wire, identity, expiry, cancellation
+Native-->>Caller: Release original terminal and metadata tail in order
+```
+
+A failure at EOF, async source/HTTP/client disposal, actual-wire mutation, source/principal/expiry or final cancellation prevents the whole pending terminal tail from being released. Late known generation for a finished choice and duplicate/missing/ambiguous terminals fail; other unfinished choices may continue and remain in that same ordered buffer. Byte/length/UTF8, maximum buffered-tail count and tracked-choice count are bounded; limit failures never truncate records. Native Hunyuan requires no OpenAI sentinel and rejects non-JSON DONE frames. Optional stream policy fields are omitted when null, retaining prior default complete-call identity bytes; explicit limits enter the identity.
+
+TokenHub compatible calls use a separately configured existing OpenAI supplier, API Key and explicit Chat target/root. Test-only references verify full JSON/SSE and opaque Bearer keys including `|`; production Tencent still references only its own capability and Infrastructure. There is no credential-shape dispatcher, automatic TC3/OpenAI conversion, host migration or claimed live service acceptance.

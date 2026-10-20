@@ -52,10 +52,4 @@ public sealed class HunyuanCompleteTests
     {
         using var source = new HunyuanSource(); using var factory = new HunyuanHttpFactory(); await Assert.ThrowsAsync<ArgumentException>(() => new TencentHunyuanProvider(factory, source, new() { MaximumRequestBytes = 1 }).CompleteAsync(HunyuanFixture.Body(), HunyuanFixture.Context(), TestContext.Current.CancellationToken)); Assert.Equal(0, source.Calls); Assert.Equal(0, factory.Creates);
     }
-    /// <summary>当前未实现的原生 SSE 明确拒绝，不发送请求或把 JSON 伪装为增量。</summary>
-    [Fact]
-    public void UnsupportedStreamDoesNotAcquireOrSend()
-    {
-        using var source = new HunyuanSource(); using var factory = new HunyuanHttpFactory(); Assert.Throws<NotSupportedException>(() => new TencentHunyuanProvider(factory, source).StreamAsync(HunyuanFixture.Body(), HunyuanFixture.Context(), TestContext.Current.CancellationToken)); Assert.Equal(0, source.Calls); Assert.Equal(0, factory.Creates);
-    }
 }

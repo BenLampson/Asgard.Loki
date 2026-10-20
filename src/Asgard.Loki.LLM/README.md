@@ -147,7 +147,7 @@ The existing required caller SessionId fixes the full server/model/credential/ad
 
 ## Native Hunyuan contract
 
-`loki.LLM.Hunyuan.CompleteAsync` / `.StreamAsync` use `HunyuanRequest`, `HunyuanCompletion` and `HunyuanEvent`. A configured target must explicitly declare `LlmProtocol.Hunyuan` and supply an `IHunyuanAdapter` implementation. Protocol declarations cannot replace that implementation. The conversion decorator does not advertise Hunyuan or project its native messages into Chat Completions.
+`loki.LLM.Hunyuan.CompleteAsync` / `.StreamAsync` use `HunyuanRequest`, `HunyuanCompletion` and `HunyuanEvent`. A configured target must explicitly declare `LlmProtocol.Hunyuan` and supply an `IHunyuanAdapter` implementation. Protocol declarations cannot replace that implementation. The conversion decorator does not advertise Hunyuan or project its native messages into Chat Completions. The [Tencent provider](../Asgard.Loki.LLM.Tencent/README.md) supplies native TC3 JSON/SSE transport with an application-owned credential source.
 
 `HunyuanRequest.Model` is the public route name and serializes as native PascalCase `Model`. `Parameters` contains the native `Messages`, `Tools`, reasoning/search options and unknown JSON. Native function schema/argument strings, tool-call IDs, multimodal blocks, number precision, absence/null/false and whitespace stay intact. The chosen method owns PascalCase `Stream`; case-insensitive `Model`/`Stream` overrides, Undefined values and malformed original Unicode fail before cache/target work. The full request is copied before the first asynchronous Session wait; only `Model` is subsequently replaced with the fixed target's actual model. No lowercase model/stream aliases or default messages are injected.
 

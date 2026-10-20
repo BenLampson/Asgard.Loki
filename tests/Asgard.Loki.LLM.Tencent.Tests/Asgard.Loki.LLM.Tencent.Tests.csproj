@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki.LLM.Tencent/Asgard.Loki.LLM.Tencent.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
   </ItemGroup>
   <ItemGroup><EmbeddedResource Include="Fixtures/*.json" /><EmbeddedResource Include="Fixtures/*.sse" /></ItemGroup>
 </Project>

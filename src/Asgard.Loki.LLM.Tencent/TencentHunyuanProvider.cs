@@ -24,6 +24,8 @@ public sealed partial class TencentHunyuanProvider : IHunyuanAdapter, ILlmCreden
         ArgumentNullException.ThrowIfNull(factory); ArgumentNullException.ThrowIfNull(credentialSource); ArgumentException.ThrowIfNullOrWhiteSpace(id); ArgumentException.ThrowIfNullOrWhiteSpace(httpClientName);
         TencentJson.Text(id); TencentJson.Text(httpClientName); options ??= new();
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumRequestBytes, 0); ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.MaximumResponseBytes, 0);
+        if (options.MaximumBufferedTerminalEvents is { } tail) ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(tail, 0);
+        if (options.MaximumTrackedChoices is { } choices) ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(choices, 0);
         if (options.Region is { } region && (region.Length == 0 || region.Any(c => !char.IsAsciiLetterLower(c) && !char.IsAsciiDigit(c) && c != '-'))) throw new ArgumentException("腾讯区域必须是显式小写 ASCII 区域标识。");
         if (options.SigningHost is { } host && (host.Any(c => c is < '!' or > '~') || !Uri.TryCreate("https://" + host + "/", UriKind.Absolute, out var uri) || uri.UserInfo.Length != 0 || !host.Equals(uri.Authority, StringComparison.OrdinalIgnoreCase))) throw new ArgumentException("签名 Host 必须仅含有效原生主机及可选端口。");
         _sourceIdentity = credentialSource.BindingIdentity; ArgumentException.ThrowIfNullOrWhiteSpace(_sourceIdentity); TencentJson.Text(_sourceIdentity);
@@ -71,9 +73,6 @@ public sealed partial class TencentHunyuanProvider : IHunyuanAdapter, ILlmCreden
             || header.CharSet is { } charset && !charset.Trim('"').Equals("utf-8", StringComparison.OrdinalIgnoreCase))) throw new InvalidDataException("混元成功结果必须是 UTF-8 JSON。");
         TencentPayload.Complete(data); var result = new HunyuanCompletion(data, context.Metadata); AssertIdentity(credentials, context.Credential.PrincipalIdentity!, token); return result;
     }
-    /// <summary>当前原生供应商仅提供完整 JSON；不把 JSON 响应伪装成流式事件。</summary>
-    public IAsyncEnumerable<HunyuanEvent> StreamAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
-        => throw new NotSupportedException("此混元适配器尚不支持原生 SSE。");
     /// <summary>完整和流式原生调用共享同一个显式身份、默认头隔离与实际字节签名规则。</summary>
     private void SignMessage(HttpClient client, HttpRequestMessage message, byte[] body, TencentHunyuanCredentials credentials, LlmAdapterContext context, bool stream, CancellationToken token)
     {
