@@ -62,25 +62,4 @@ public sealed class HttpTransferTests
         else Assert.IsType<IOException>((await Assert.ThrowsAsync<HttpRequestException>(() => content.CopyToAsync(destination, TestContext.Current.CancellationToken))).InnerException);
         Assert.False(source.Disposed); await Assert.ThrowsAsync<InvalidOperationException>(() => content.CopyToAsync(destination, TestContext.Current.CancellationToken));
     }
-    /// <summary>multipart 总预算包含 framing 和所有字段，不仅是文件字节。</summary>
-    [Theory] [InlineData(false)] [InlineData(true)]
-    public async Task BoundedMultipart_CountsEntireWireAndBorrowsFile(bool limited)
-    {
-        using var source = new UploadProbeStream([0xff, 0, 1]); var form = new MultipartFormDataContent("fixture-boundary");
-        form.Add(new StringContent("original text", Encoding.UTF8), "prompt"); form.Add(new BorrowedStreamContent(source), "input_reference", "frame.png");
-        using var content = new BoundedHttpContent(form, limited ? 10 : 10000); using var destination = new MemoryStream();
-        if (limited) await Assert.ThrowsAsync<InvalidDataException>(() => content.CopyToAsync(destination, TestContext.Current.CancellationToken));
-        else
-        {
-            await content.CopyToAsync(destination, TestContext.Current.CancellationToken); Assert.Contains("original text", Encoding.UTF8.GetString(destination.ToArray()));
-            await Assert.ThrowsAsync<InvalidOperationException>(() => content.CopyToAsync(destination, TestContext.Current.CancellationToken));
-        }
-        Assert.False(source.Disposed); Assert.True(destination.CanWrite); if (limited) Assert.InRange(destination.Length, 0, 10);
-    }
-    /// <summary>已知超限正文在取得包装所有权前拒绝，不消费输入或创建传输。</summary>
-    [Fact]
-    public void DeclaredUploadLimit_IsCheckedBeforeSending()
-    {
-        using var inner = new ByteArrayContent([1, 2, 3]); Assert.Throws<InvalidDataException>(() => new BoundedHttpContent(inner, 2));
-    }
 }

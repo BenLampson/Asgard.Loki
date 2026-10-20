@@ -2,7 +2,7 @@
 
 ## Shared transport infrastructure
 
-`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)`, `HttpBodyReader.ReadAsync/CopyToAsync`, `BorrowedStreamContent` and `BoundedHttpContent`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
+`Asgard.Loki.Infrastructure` is an independent packable .NET library with no capability, provider, Abstractions or external package dependency. Its public API provides `SseFrame`, `SseReader.ReadAsync(Stream, CancellationToken, bool strictUtf8)`, `HttpBodyReader.ReadAsync/CopyToAsync`, and `BorrowedStreamContent`. These types describe only complete Server-Sent Events, transport metadata and bounded raw bytes. Providers own HTTP/authentication, byte limits, JSON/protocol parsing, native lifecycle, terminal/error semantics and IO lifetime. The parser leaves its borrowed stream open and returns retry hints without retrying.
 
 ```mermaid
 classDiagram
@@ -42,13 +42,12 @@ HttpBodyReader --> HttpContent : borrows content
 HttpBodyReader --> Stream : reads and disposes
 ```
 
-`HttpBodyReader.CopyToAsync` shares the bounded EOF/length/cancellation path with buffered reading while writing into a borrowed destination. `BorrowedStreamContent` performs single-use upload from a borrowed input without length/position inspection, rewind, buffering or close. `BoundedHttpContent` owns its inner content, preserves original headers and limits the entire serialized body including multipart framing. Input/destination streams remain caller-owned according to those explicit contracts; partial destination writes can remain on failure. These .NET-only primitives carry no capability fields, credential discovery, model state or retries. Audio.OpenAI and Image.OpenAI share the same upload content implementation through their existing Infrastructure references.
+`HttpBodyReader.CopyToAsync` shares the bounded EOF/length/cancellation path with buffered reading while writing into a borrowed destination. `BorrowedStreamContent` performs single-use upload from a borrowed input without length/position inspection, rewind, buffering or close. Input/destination streams remain caller-owned according to those explicit contracts; partial destination writes can remain on failure. These .NET-only primitives carry no capability fields, credential discovery, model state or retries. Audio.OpenAI and Image.OpenAI share the same upload content implementation through their existing Infrastructure references.
 
 ```mermaid
 classDiagram
 OpenAiAudioFilePayload --> BorrowedStreamContent
 OpenAiImageEditPayload --> BorrowedStreamContent
-BoundedHttpContent --> HttpContent : owns inner content
 BorrowedStreamContent --> Stream : borrows input
 HttpBodyReader --> Stream : borrows copy destination
 ```
@@ -73,27 +72,7 @@ IVideoTaskAdapter --> VideoTaskSnapshot : submit or explicit get
 
 `VideoTaskReference` contains public model, target ID, fingerprint and original task ID, never raw credentials. Its fingerprint uses JSON component boundaries and covers the public route plus the adapter's complete stable identity. Each adapter must include server, actual model, credential identity, implementation/operation and resource policy in that identity. The reference is an application-owned routing/consistency record, not an authorization token. Reconstructing a client can use the persisted reference only against the same configured target; changed route/server/model/credential/implementation or a removed target fails before IO. Mutable custom-adapter identity is checked again before/after native calls. Returning another task's ID is a protocol error.
 
-`GetAsync(reference)` performs exactly one caller-requested native query and returns current status, original error, output metadata/URLs and unknown fields in `VideoTaskSnapshot.Data`. Suppliers map only known lifecycle values to `VideoTaskState`; original status stays separate. HTTP success, accepted submission and unknown states do not imply generation success. There is no implicit state cache, hosted polling, retry, automatic content transfer, URL refresh, asset synchronization or format conversion. Adapters/factories remain borrowed; suppliers own per-call IO resources. Video also owns explicit optional multipart, remix and native content contracts; these transports do not reuse unrelated capability types.
-
-### Optional Video upload, remix and native content contracts
-
-Video owns optional `IVideoMultipartTaskAdapter`, `IVideoRemixTaskAdapter` and `IVideoTaskContentAdapter` interfaces extending the existing complete-target contract. The entry and dependency graph remain unchanged; no Image/Audio/LLM upload or lifecycle type is referenced. JSON-only suppliers remain usable, and unsupported optional operations fail without protocol conversion or alternate-target selection.
-
-```mermaid
-classDiagram
-IVideoTaskAdapter <|-- IVideoMultipartTaskAdapter
-IVideoTaskAdapter <|-- IVideoRemixTaskAdapter
-IVideoTaskAdapter <|-- IVideoTaskContentAdapter
-VideoClient --> VideoMultipartTaskRequest : snapshots metadata
-VideoMultipartTaskRequest --> VideoUpload : borrows readable streams
-VideoClient --> VideoTaskReference : resolves original target for remix/content
-VideoClient --> VideoContentRequest : snapshots native query fields
-IVideoTaskContentAdapter --> VideoContentResult : native metadata after full transfer
-```
-
-Multipart text/file metadata is copied before waits; repeated ordered text fields and original file roles remain intact. Upload streams are borrowed at their current position, never inspected for length, rewound, decoded or closed by the core. Reusing a stream in multiple upload parts is rejected. Native field/media validation remains supplier-owned.
-
-Remix resolves the original complete target, requires the same public model, creates a new native task and retains the original fingerprint. Content operations similarly resolve the original target, copy native bytes only into the caller's explicit borrowed destination, and preserve original response metadata. Neither operation performs a status preflight query. Identity and cancellation are checked again after native calls, and returned task associations are validated. A copy can leave partial destination bytes on failure; callers retain control over commitment/discard and destination lifetime. No background transfer, implicit buffering policy, file path access, media conversion or shared capability coordinator is introduced.
+`GetAsync(reference)` performs exactly one caller-requested native query and returns current status, original error, output metadata/URLs and unknown fields in `VideoTaskSnapshot.Data`. Suppliers map only known lifecycle values to `VideoTaskState`; original status stays separate. HTTP success, accepted submission and unknown states do not imply generation success. There is no implicit state cache, hosted polling, retry, automatic content transfer, URL refresh, asset synchronization or format conversion. Adapters/factories remain borrowed; suppliers own per-call IO resources. Video currently owns native JSON task submission/query contracts. Supplier-specific media transports are added only when an in-scope native operation requires them.
 
 ### Native Ark video tasks
 
