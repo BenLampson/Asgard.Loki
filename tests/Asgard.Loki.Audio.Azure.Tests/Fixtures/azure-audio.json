@@ -1,0 +1,207 @@
+{
+  "sources": [
+    "https://learn.microsoft.com/en-us/azure/ai-foundry/openai/text-to-speech-quickstart?view=foundry-classic",
+    "https://learn.microsoft.com/en-us/azure/foundry/openai/reference-preview",
+    "https://learn.microsoft.com/en-us/azure/foundry/openai/reference"
+  ],
+  "target": {
+    "endpoint": "https://fixture-resource.example.invalid/",
+    "deployment": "fixture-deployment.v1",
+    "api_version": "2025-04-01-preview",
+    "api_key": "fixture-independent-audio-key",
+    "body_model": "fixture-body-model"
+  },
+  "speech_requests": [
+    {
+      "input": "原始内容 😀\n不要归一化",
+      "voice": "fixture-native-voice",
+      "response_format": "pcm",
+      "speed": 1.125,
+      "Future": {
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Big": 9007199254740993,
+        "Nested": [
+          {
+            "Text": "原样 😀"
+          }
+        ]
+      }
+    },
+    {
+      "input": "原始内容 😀\n不要归一化",
+      "voice": "fixture-native-voice",
+      "response_format": "pcm",
+      "speed": 1.125,
+      "Future": {
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Big": 9007199254740993,
+        "Nested": [
+          {
+            "Text": "原样 😀"
+          }
+        ]
+      },
+      "model": "fixture-body-model"
+    },
+    {
+      "input": "Original text",
+      "voice": "fixture-native-voice"
+    }
+  ],
+  "audio_base64": "AP+ADQoqAP4=",
+  "upload_base64": "UklGRioAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQYAAAAAAAEA/38=",
+  "transcription_parts": [
+    {
+      "headers": [
+        "Content-Type: audio/wav",
+        "Content-Disposition: form-data; name=file; filename=original.wav; filename*=utf-8''original.wav"
+      ],
+      "base64": "UklGRioAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQYAAAAAAAEA/38="
+    },
+    {
+      "headers": [
+        "Content-Type: text/plain; charset=utf-8",
+        "Content-Disposition: form-data; name=response_format"
+      ],
+      "text": "verbose_json"
+    },
+    {
+      "headers": [
+        "Content-Type: text/plain; charset=utf-8",
+        "Content-Disposition: form-data; name=language"
+      ],
+      "text": "zh"
+    },
+    {
+      "headers": [
+        "Content-Type: text/plain; charset=utf-8",
+        "Content-Disposition: form-data; name=temperature"
+      ],
+      "text": "0"
+    },
+    {
+      "headers": [
+        "Content-Type: text/plain; charset=utf-8",
+        "Content-Disposition: form-data; name=\"future[]\""
+      ],
+      "text": "false"
+    },
+    {
+      "headers": [
+        "Content-Type: text/plain; charset=utf-8",
+        "Content-Disposition: form-data; name=\"future[]\""
+      ],
+      "text": "null"
+    }
+  ],
+  "translation_parts": [
+    {
+      "headers": [
+        "Content-Type: audio/wav",
+        "Content-Disposition: form-data; name=file; filename=original.wav; filename*=utf-8''original.wav"
+      ],
+      "base64": "UklGRioAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQYAAAAAAAEA/38="
+    },
+    {
+      "headers": [
+        "Content-Type: text/plain; charset=utf-8",
+        "Content-Disposition: form-data; name=response_format"
+      ],
+      "text": "srt"
+    },
+    {
+      "headers": [
+        "Content-Type: text/plain; charset=utf-8",
+        "Content-Disposition: form-data; name=prompt"
+      ],
+      "text": "Original English hint"
+    },
+    {
+      "headers": [
+        "Content-Type: text/plain; charset=utf-8",
+        "Content-Disposition: form-data; name=empty"
+      ],
+      "text": ""
+    }
+  ],
+  "transcription_response": {
+    "task": "transcribe",
+    "language": "zh",
+    "duration": 0.375,
+    "text": "原始文本 😀",
+    "segments": [
+      {
+        "id": 0,
+        "seek": 0,
+        "start": 0,
+        "end": 0.375,
+        "text": "原始文本 😀",
+        "tokens": [
+          0,
+          1
+        ],
+        "temperature": 0,
+        "avg_logprob": -0.25,
+        "Future": {
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Big": 9007199254740993,
+          "Nested": [
+            {
+              "Text": "原样 😀"
+            }
+          ]
+        }
+      }
+    ],
+    "Future": {
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Big": 9007199254740993,
+      "Nested": [
+        {
+          "Text": "原样 😀"
+        }
+      ]
+    }
+  },
+  "translation_srt": "1\r\n00:00:00,000 --> 00:00:00,375\r\nOriginal English 😀\r\n",
+  "error_response": {
+    "error": {
+      "code": "InvalidRequest",
+      "message": "fictional native failure",
+      "target": "input",
+      "innererror": {
+        "code": "fixture_native_detail",
+        "Future": {
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Big": 9007199254740993,
+          "Nested": [
+            {
+              "Text": "原样 😀"
+            }
+          ]
+        }
+      }
+    },
+    "Future": {
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Big": 9007199254740993,
+      "Nested": [
+        {
+          "Text": "原样 😀"
+        }
+      ]
+    }
+  }
+}
