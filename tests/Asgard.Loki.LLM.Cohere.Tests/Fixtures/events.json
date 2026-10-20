@@ -1,0 +1,9 @@
+[
+{"event_type":"stream-start","generation_id":"generation/原始","future":null},
+{"event_type":"search-queries-generation","search_queries":[{"text":"上海天气","generation_id":"search/distinct"}]},
+{"event_type":"search-results","documents":[{"id":"doc/上海","text":"上海晴"}],"search_results":[{"document_ids":["doc/上海"],"search_query":{"text":"上海天气","generation_id":"search/distinct"}}]},
+{"event_type":"text-generation","text":"上海🌏","type":"stream-end","future":{"finish_reason":"ERROR"}},
+{"event_type":"citation-generation","citations":[{"start":0,"end":2,"text":"上海","document_ids":["doc/上海"]}]},
+{"event_type":"stream-end","finish_reason":"COMPLETE","response":{"response_id":"response/distinct","generation_id":"generation/原始","text":"上海🌏","finish_reason":"COMPLETE","citations":[{"start":0,"end":2,"text":"上海","document_ids":["doc/上海"]}],"documents":[{"id":"doc/上海","text":"上海晴"}],"chat_history":[{"role":"USER","message":"上海天气"},{"role":"CHATBOT","message":"上海🌏"}],"meta":{"tokens":{"input_tokens":9007199254740993,"output_tokens":0}},"future":null}},
+{"event_type":"future-metadata","type":"text-generation","generation_id":"generation/原始","future":{"is_finished":true,"text":"尾部业务字段"}}
+]
