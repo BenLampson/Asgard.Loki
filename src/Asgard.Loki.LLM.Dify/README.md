@@ -7,6 +7,7 @@ Native app-scoped `chat-messages` calls through a supplier-owned fixed-service c
 | Operation | Support |
 | --- | --- |
 | `DifyChatClient.SendAsync` | One native blocking POST for explicit Chatbot/Chatflow profiles; complete original message or Chatflow pause JSON |
+| `StreamAsync` | One native SSE POST for Chatbot/Agent/Chatflow; original data, separate transport identity, complete terminal/TTS tail |
 | Agent blocking | Rejected before HTTP; native Agent apps require streaming |
 | Native inputs/query/user, conversation/file references and optional parameters | Preserved without defaults, upload, media fetching, history flattening or thinking-markup transformations |
 | Target/authentication | Explicit complete versioned root, app API Key, app profile, target/credential identity/version and named borrowed factory |
@@ -45,6 +46,22 @@ Only response_mode belongs to the method. Reserved case aliases, Undefined, inva
 
 Defaults: 1 MiB request and 32 MiB complete/error body. Success requires strict UTF-8 JSON, valid declared lengths, matching method/complete URI, normal EOF, owned-resource closure and final cancellation checks. HTTP and native HTTP200 errors preserve raw bytes, HTTP status and content type in LlmUpstreamException. No automatic retry, target switch or follow-up occurs. Per-call clients/messages/responses/body streams are owned; the supplied factory remains borrowed. Configure the named HTTP transport to disable automatic redirects/retries and choose suitable timeouts.
 
-Offline validation: 60 passing xUnit v3 cases cover complete independent caller/wire/response windows, precise values and IDs, pause, strict inputs/errors, snapshots, limits, EOF/disposal/cancellation and target/authentication guards. No real credential/app/model request has been made.
+## Native streams
+
+```csharp
+await foreach (var frame in chat.StreamAsync(request, cancellationToken))
+{
+    // frame.Data and frame.Json retain each native record; the app chooses rendering.
+    ConsumeNativeEvent(frame);
+}
+```
+
+Use an explicit Agent profile for Agent/Legacy Agent applications. Root JSON event selects native lifecycle; SSE EventName/EventId/RetryMilliseconds remain separate transport data. Bare ping without data is a control frame and produces no invented model message. Message/agent_message/thought/file/replacement/node/run/audio/future records keep original order, values and opaque content. An Agent's final message may repeat the whole answer: the SDK does not concatenate it with preceding chunks. File/audio values are not fetched or decoded.
+
+Chatbot/Agent use native message_end. A started Chatflow needs message_end followed by successful workflow_finished; failed/stopped/paused outcomes retain their native semantics, including stopped workflow_finished before message_end. Native input-moderation/annotation direct answers can end with message_end without starting a workflow. That exception applies only when no workflow start, node event or known run identity was observed; incomplete observed runs fail. A node_finished or nested business event/type does not complete the call. Root event/response IDs, thought/file/node execution IDs, message IDs, task IDs, workflow IDs and run IDs stay in their own domains. Known identity drift, duplicate/lost terminals and late generation fail instead of rebinding.
+
+The SDK holds every record from the first ending stage through original TTS/metadata tails and normal strict bounded EOF, exact declared lengths, method/target/resource-close/final-cancellation checks. Native error after an ending stage still fails with its original body before any held terminal is delivered. There is no synthetic DONE, stop, answer, usage total, retry, tool execution or reconnect. IsTerminal identifies a native end, including failure/stop/pause; it is not a success flag. Defaults: 64 MiB entire raw SSE, including controls, and 128 held tail records.
+
+Offline validation: 127 passing xUnit v3 cases cover independent complete JSON and three-profile SSE windows, precise/unknown values and separate IDs, direct replies/paused/stopped/failed outcomes, strict inputs/errors, snapshots, byte/tail/length limits, EOF/disposal/cancellation and target/authentication guards. No real credential/app/model request has been made.
 
 Primary contracts: [Send Chat Message](https://docs.dify.ai/en/api-reference/chat-messages/send-chat-message) and [Streaming](https://docs.dify.ai/en/api-reference/guides/streaming).

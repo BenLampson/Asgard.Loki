@@ -2871,4 +2871,23 @@ DifyChatResult --> DifyChatMetadata : honest app service identity
 
 SendAsync performs one blocking chat-messages POST for Chatbot/Chatflow; Agent blocking is rejected before HTTP. Native optional conversation_id/file/version/name fields remain caller data. No default user/inputs/title, message-history flattening, media transfer, workflow hosting, polling, resume or underlying-model discovery occurs. Response id, message_id, task_id and conversation_id are different domains. A non-empty requested conversation is checked; a native Chatflow pause remains original paused data. Native errors preserve raw bytes/status/media. Strict JSON/Unicode, body budgets/declared lengths, method/complete target, EOF, resource closure and final cancellation are checked before success. Factory ownership stays with the application.
 
-The initial Dify JSON scope passes60 offline fake-HTTP xUnit v3 cases with independent full native windows. This does not establish native SSE or live app/model acceptance. Public JSON/SSE examples remain supplier-specific and introduce no implicit protocol conversion.
+Native blocking coverage uses independent full windows and fault-injected local HTTP. Supplier-specific JSON/SSE examples introduce no implicit protocol conversion or live app/model acceptance claim.
+
+### Dify native app SSE lifecycle
+
+The same DifyChatClient adds StreamAsync without a core protocol/model/Session change. Infrastructure SseReader.ReadBoundedAsync supplies only strict raw framing/UTF-8/length/byte limits. DifyChatStreamState owns app-specific terminal rules and independent task/message/conversation/workflow/run identities. Original root event IDs and thought/file/node IDs do not become these bindings. DifyChatEvent owns immutable complete JSON, original SSE Data and separate EventName/EventId/RetryMilliseconds with honest app metadata. No tool, workflow or media execution occurs.
+
+```plantuml
+@startuml
+DifyChatClient --> SseReader : Infrastructure bounded raw framing only
+DifyChatClient --> DifyChatStreamState : call-local native profile/lifecycle
+DifyChatStreamState --> DifyChatEvent : original data and independent transport identity
+DifyChatEvent --> DifyChatMetadata : fixed app target
+@enduml
+```
+
+Chatbot/Agent terminate natively at message_end; Agent closing full-answer message is not concatenated. A started Chatflow needs successful message_end then workflow_finished. Native failed/stopped/paused outcomes remain original data; stopped run finish may precede message_end. Native input-moderation/annotation direct answers can emit message_end without starting a run. This exception is accepted only without any observed workflow start, node event or known run identity; incomplete observed runs fail. Bare data-less ping is a control, never acceptance. Root event governs lifecycle; nested business event/type and node_finished cannot terminate a call.
+
+All frames from the first ending stage are buffered within explicit tail limits through normal strict EOF, declared/raw-byte checks, actual method/complete URI, owned source/response/client closure and final cancellation. Original TTS/metadata may follow generation terminals and remain intact. Native errors after a terminal stage still fail before held terminal delivery. Duplicate/missing/late known generation or changed native identities cannot be silently repaired. No synthetic DONE/stop/answer/usage, retry, polling, reconnect, resume host or file transfer is added.
+
+The complete supplier executable passes127 offline cases with independent full native JSON and three-profile SSE resources and fault-injected local HTTP. No live app/model/audio result or new full-suite/all-package run is claimed.
