@@ -3226,3 +3226,19 @@ OpenAiLlmProvider --> OpenAiHttpStreamState : actual DONE / identity / buffered 
 Original reasoning_content, thinking controls, function IDs/arguments/reverse outputs, schema settings, media URL/frame containers, prefix/suffix whitespace, native usage and unknown exact values remain raw. The SDK does not fabricate empty user messages, combine FIM code, invert flags, normalize effort, rename token fields, fetch media, execute tools or calculate billing. Source/method stream and selected actual model remain explicit; no hostname/model inference, Responses or Messages path is silently added.
 
 Native JSON/SSE and original HTTP code/message/data errors keep the existing contracts. Actual DONE, full EOF, owned-resource closure and final cancellation govern ending delivery; a native length reason and incomplete JSON text are not repaired. Complete Session identity and borrowed cache/coordinator/factory ownership remain unchanged. See the [supplier support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-siliconflow-native-chat-prefix-and-fim).
+
+### Explicit Baidu Qianfan v2 native Chat
+
+The existing OpenAiLlmProvider handles an explicitly selected complete v2 root, actual model and independent native API Key. Its target declares ChatCompletions only. Optional appid is a fixed application-owned named-client default; semantic app-context changes require a different client name or target Version to maintain Session affinity. No new supplier package, public protocol or capability dependency is introduced.
+
+```plantuml
+@startuml
+LlmOptions --> "Baidu v2 Chat target" : root / actual model / opaque Key / Version
+"Baidu v2 Chat target" --> OpenAiLlmProvider : native Chat JSON / SSE
+OpenAiLlmProvider --> IHttpClientFactory : explicit named client
+IHttpClientFactory --> "Caller HTTP configuration" : optional appid default header
+OpenAiLlmProvider --> "Native original data" : tools / reasoning / search / filter / usage
+@enduml
+```
+
+Search, safety, thinking, schema and token settings stay caller-supplied at their original positions. Native filtering metadata is data, not SDK policy execution. The SDK neither parses compound credentials nor strips model suffixes or injects search. Actual DONE, source EOF, owned-resource closure and final cancellation gate stream endings. Existing complete-target binding, limits and borrowed cache/coordinator/factory ownership apply. See the [support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-baidu-qianfan-v2-native-chat).
