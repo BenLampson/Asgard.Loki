@@ -1,0 +1,240 @@
+{
+  "sources": [
+    "https://developers.openai.com/api/reference/resources/videos",
+    "https://developers.openai.com/api/docs/guides/video-generation",
+    "https://developers.openai.com/api/docs/deprecations#2026-03-24-sora-2-video-generation-models-and-videos-api"
+  ],
+  "checked": "2026-10-20",
+  "availability": "Historical protocol only: OpenAI Videos API and Sora 2 shut down 2026-09-24. No live availability or media validity is claimed.",
+  "json_request": {
+    "model": "configured-historical-video-model",
+    "prompt": "A fictional paper lighthouse. 纸灯塔🌊",
+    "seconds": "8",
+    "size": "1280x720",
+    "input_reference": {
+      "image_url": "https://media.invalid/reference.png?opaque=a%2Fb"
+    },
+    "metadata": {
+      "opaque": "id-01",
+      "large": 9007199254740993
+    },
+    "Future": {
+      "flag": false,
+      "zero": 0,
+      "null": null
+    }
+  },
+  "multipart_fields": [
+    {
+      "name": "prompt",
+      "value": "A fictional paper lighthouse. 纸灯塔🌊"
+    },
+    {
+      "name": "seconds",
+      "value": "8"
+    },
+    {
+      "name": "metadata",
+      "value": "{\"opaque\":\"id-01\",\"large\":9007199254740993}"
+    },
+    {
+      "name": "future[]",
+      "value": "false"
+    },
+    {
+      "name": "future[]",
+      "value": "0"
+    },
+    {
+      "name": "empty",
+      "value": ""
+    }
+  ],
+  "upload": {
+    "name": "input_reference",
+    "filename": "fixture-frame.png",
+    "content_type": "image/png",
+    "hex": "89504e470d0a1a0a6f66666c696e652d66697874757265"
+  },
+  "remix_request": {
+    "prompt": "Change the fictional lighting to dusk.",
+    "Future": {
+      "flag": false,
+      "null": null,
+      "large": 9007199254740993
+    }
+  },
+  "responses": [
+    {
+      "id": "video_fixture_01",
+      "object": "video",
+      "model": "resolved-historical-model",
+      "status": "queued",
+      "progress": 0,
+      "created_at": 1700000000,
+      "completed_at": null,
+      "expires_at": null,
+      "error": null,
+      "seconds": "8",
+      "size": "1280x720",
+      "prompt": "Original fictional prompt",
+      "remixed_from_video_id": null,
+      "Future": {
+        "flag": false,
+        "large": 9007199254740993,
+        "null": null
+      }
+    },
+    {
+      "id": "video_fixture_01",
+      "object": "video",
+      "model": "resolved-historical-model",
+      "status": "in_progress",
+      "progress": 30,
+      "created_at": 1700000000,
+      "completed_at": null,
+      "expires_at": null,
+      "error": null,
+      "seconds": "8",
+      "size": "1280x720",
+      "prompt": "Original fictional prompt",
+      "remixed_from_video_id": null,
+      "Future": {
+        "flag": false,
+        "large": 9007199254740993,
+        "null": null
+      }
+    },
+    {
+      "id": "video_fixture_01",
+      "object": "video",
+      "model": "resolved-historical-model",
+      "status": "completed",
+      "progress": 100,
+      "created_at": 1700000000,
+      "completed_at": 1700000060,
+      "expires_at": 1700003600,
+      "error": null,
+      "seconds": "8",
+      "size": "1280x720",
+      "prompt": "Original fictional prompt",
+      "remixed_from_video_id": null,
+      "Future": {
+        "flag": false,
+        "large": 9007199254740993,
+        "null": null
+      }
+    },
+    {
+      "id": "video_fixture_01",
+      "object": "video",
+      "model": "resolved-historical-model",
+      "status": "failed",
+      "progress": 30,
+      "created_at": 1700000000,
+      "completed_at": null,
+      "expires_at": null,
+      "error": {
+        "code": "FixtureRenderFailure",
+        "message": "虚构渲染失败",
+        "Future": false
+      },
+      "seconds": "8",
+      "size": "1280x720",
+      "prompt": "Original fictional prompt",
+      "remixed_from_video_id": null,
+      "Future": {
+        "flag": false,
+        "large": 9007199254740993,
+        "null": null
+      }
+    },
+    {
+      "id": "video_fixture_01",
+      "object": "video",
+      "model": "resolved-historical-model",
+      "status": "future_state",
+      "progress": 30,
+      "created_at": 1700000000,
+      "completed_at": null,
+      "expires_at": null,
+      "error": null,
+      "seconds": "8",
+      "size": "1280x720",
+      "prompt": "Original fictional prompt",
+      "remixed_from_video_id": null,
+      "Future": {
+        "flag": false,
+        "large": 9007199254740993,
+        "null": null
+      }
+    },
+    {
+      "id": "video_fixture_01",
+      "object": "video",
+      "model": "resolved-historical-model",
+      "status": "cancelled",
+      "progress": 30,
+      "created_at": 1700000000,
+      "completed_at": null,
+      "expires_at": null,
+      "error": null,
+      "seconds": "8",
+      "size": "1280x720",
+      "prompt": "Original fictional prompt",
+      "remixed_from_video_id": null,
+      "Future": {
+        "flag": false,
+        "large": 9007199254740993,
+        "null": null
+      }
+    }
+  ],
+  "content": {
+    "hex": "00000018667479706d703432000000006d70343269736f6d",
+    "content_type": "video/mp4",
+    "headers": {
+      "X-Request-Id": [
+        "fixture-content"
+      ],
+      "X-Future": [
+        "one",
+        "two"
+      ],
+      "Content-Disposition": [
+        "attachment; filename=\"fixture.mp4\""
+      ]
+    }
+  },
+  "remix_response": {
+    "id": "video_remix_02",
+    "object": "video",
+    "model": "resolved-historical-model",
+    "status": "queued",
+    "progress": 0,
+    "created_at": 1700000000,
+    "completed_at": null,
+    "expires_at": null,
+    "error": null,
+    "seconds": "8",
+    "size": "1280x720",
+    "prompt": "Original fictional prompt",
+    "remixed_from_video_id": "video_fixture_01",
+    "Future": {
+      "flag": false,
+      "large": 9007199254740993,
+      "null": null
+    }
+  },
+  "api_error": {
+    "error": {
+      "code": "fixture_denied",
+      "message": "虚构 API 错误",
+      "param": null,
+      "Future": false
+    },
+    "Future": {
+      "zero": 0
+    }
+  }
+}
