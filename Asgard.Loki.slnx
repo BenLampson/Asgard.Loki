@@ -70,6 +70,9 @@
     <Project Path="src/Asgard.Loki.Image.OpenAI/Asgard.Loki.Image.OpenAI.csproj" />
     <Project Path="src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/SunoAPI/">
+    <Project Path="src/Asgard.Loki.Audio.SunoAPI/Asgard.Loki.Audio.SunoAPI.csproj" />
+  </Folder>
   <Folder Name="/src/Providers/SiliconFlow/">
     <Project Path="src/Asgard.Loki.Rerank.SiliconFlow/Asgard.Loki.Rerank.SiliconFlow.csproj" />
   </Folder>
@@ -153,6 +156,9 @@
     <Project Path="tests/Asgard.Loki.Embedding.OpenAI.Tests/Asgard.Loki.Embedding.OpenAI.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.OpenAI.Tests/Asgard.Loki.Image.OpenAI.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.OpenAI.Tests/Asgard.Loki.LLM.OpenAI.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/SunoAPI/">
+    <Project Path="tests/Asgard.Loki.Audio.SunoAPI.Tests/Asgard.Loki.Audio.SunoAPI.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Providers/SiliconFlow/">
     <Project Path="tests/Asgard.Loki.Rerank.SiliconFlow.Tests/Asgard.Loki.Rerank.SiliconFlow.Tests.csproj" />

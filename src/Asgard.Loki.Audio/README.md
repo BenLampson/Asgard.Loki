@@ -4,7 +4,7 @@ Independent audio capability for Asgard.Loki.
 
 ## Native audio tasks
 
-Optional `AudioOptions.TaskRoutes` exposes `.Audio.Tasks.SubmitAsync`, `GetAsync`, `GetBatchAsync` and `GetResultAsync`. Register application-owned `IAudioTaskAdapter` targets independently of speech/transcription/translation. `AudioTaskRequest.Model` selects a public route; `Operation` explicitly names the supplier operation (for example `MUSIC` or `LYRICS`), and `Parameters` retains supplier-native JSON. The core implements no supplier protocol by itself.
+Optional `AudioOptions.TaskRoutes` exposes `.Audio.Tasks.SubmitAsync`, `GetAsync`, `GetBatchAsync` and `GetResultAsync`. Register application-owned `IAudioTaskAdapter` targets independently of speech/transcription/translation. `AudioTaskRequest.Model` selects a public route; `Operation` explicitly names the supplier operation (for example `MUSIC` or `LYRICS`), and `Parameters` retains supplier-native JSON. The core implements no supplier protocol by itself. [SunoAPI](../Asgard.Loki.Audio.SunoAPI/README.md) supplies explicit native music/lyrics task calls on an application-configured proxy.
 
 ```csharp
 IAudioTaskAdapter target = applicationOwnedMusicAdapter;

@@ -32,6 +32,7 @@ SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六�
 | 音频 | `Asgard.Loki.Audio.MiniMax` | 原生同步 `t2a_v2`、完整 JSON、hex 音频或原始 URL；不自动下载音频或字幕 |
 | 音频识别/翻译 | `Asgard.Loki.Audio.Cloudflare` | 显式原始二进制识别或 JSON/Base64 原生 task；完整结果信封、借用上传，不自动切换格式 |
 | Azure 音频 | `Asgard.Loki.Audio.Azure` | 显式部署/API 版本/api-key；原生 JSON 语音与 multipart 转录/翻译，可选固定请求体模型，不猜部署映射 |
+| 音乐／歌词任务 | `Asgard.Loki.Audio.SunoAPI` | 应用显式配置代理；原生 MUSIC/LYRICS 提交、状态／批量 POST 与独立结果 GET | 单次原生 JSON；无后台轮询或媒体下载 |
 | 文件转录/翻译 | `Asgard.Loki.Audio.OpenAI` | 原生 multipart、完整 JSON/字幕结果及转录 delta/segment/done SSE |
 | 图片 | `Asgard.Loki.Image.OpenAI` | Images Generations、原生 JSON/multipart 编辑、Base64/URL、生成/编辑部分与最终图像 SSE |
 | 嵌入 | `Asgard.Loki.Embedding.OpenAI` | 原生 Embeddings、文本/token 批输入、Float/Base64、原始索引及完整 JSON |
