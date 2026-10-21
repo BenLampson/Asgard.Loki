@@ -674,4 +674,31 @@ These tests use synthetic signature/encrypted values and substitute HTTP/credent
 
 ### Native provider error boundaries
 
-Conversion preserves failures raised by the selected native provider. In particular, Gemini's native HTTP implementation withholds candidate endings through actual EOF/owned closure/final cancellation and raises LlmUpstreamException for a late native error/block. Actual HTTP status and the complete original error-frame body remain available; conversion does not replace them with a tool result or successful completion. If an error frame is instead supplied directly to the conversion codec, its existing semantic diagnostics still apply. These are different failure layers, not alternate successful outcomes. The complete conversion test executable passes 2535 offline cases; this is not a live model or full-repository result.
+Conversion preserves failures raised by the selected native provider. In particular, Gemini's native HTTP implementation withholds candidate endings through actual EOF/owned closure/final cancellation and raises LlmUpstreamException for a late native error/block. Actual HTTP status and the complete original error-frame body remain available; conversion does not replace them with a tool result or successful completion. If an error frame is instead supplied directly to the conversion codec, its existing semantic diagnostics still apply. These are different failure layers, not alternate successful outcomes. The complete conversion test executable passes 2563 offline cases; this is not a live model or full-repository result.
+
+### Explicit native transport beneath conversion
+
+ConvertingLlmProvider delegates credential support to its fixed native provider and includes the native provider BindingIdentity in its own Session identity. A caller-configured [OpenAiLlmProvider HTTP transport](../Asgard.Loki.LLM.OpenAI/README.md#explicit-native-http-endpoints-and-authentication) therefore retains its operation paths/fixed queries, selected Bearer/header/query/Anonymous credentials and actual target binding when wrapped by this existing decorator. Conversion changes only the explicitly selected supported native protocol fields; it does not choose authentication or infer a protocol from a path.
+
+```csharp
+var native = new OpenAiLlmProvider(factory, new OpenAiHttpOptions
+{
+    Transport = new OpenAiHttpTransportOptions
+    {
+        ChatCompletionsPath = "native/chat.run?existing=1",
+        Authentication = OpenAiHttpAuthentication.Query, CredentialName = "api_key"
+    }
+}, id: "native-http", httpClientName: "Explicit.Native.Http");
+var provider = new ConvertingLlmProvider(native, LlmProtocol.ChatCompletions, "converted");
+// Register this provider with the existing complete target, caller API Key,
+// requested public protocol, Session store and coordinator; target.ProviderId = provider.Id.
+```
+
+| Configuration | Behavior / limits |
+| --- | --- |
+| Explicit upstream | Fixed selected Chat provider in this example; no server/path/model detection |
+| Credential kind | Native None requires LlmCredential.Anonymous; other configured modes require API Key; AllowLoss cannot change support |
+| Session | Any native path/auth/client/policy change invalidates the complete converted binding before another send |
+| Native errors / ending | Native byte/status/media errors and EOF/closure/final-cancellation failures propagate; conversion cannot turn them into success |
+
+Twenty-eight additional offline cases exercise public Responses/Messages/Gemini to fixed Chat with four native authentication modes over JSON/SSE, plus path-change Session rejection. They reuse independent manually maintained protocol fixtures and verify actual address/auth/model/tool correlation, immutable source input and complete native JSON in Conversion metadata. Complete native transport snapshot/boundary tests live in the OpenAI supplier tests. The conversion executable passes 2563 offline cases; no real deployment/model/parameter validation is implied. Production conversion code, policies, dependency direction and existing semantic limits are unchanged. Byte and native state budgets remain with the selected provider; conversion retains its separate existing bounds. No gateway configuration or automatic authentication/conversion workflow is added.
