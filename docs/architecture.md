@@ -3275,3 +3275,23 @@ OpenAiLlmProvider --> "Original native events" : reasoning / tools / text / usag
 ```
 
 OpenRouter's finish-bearing usage frame repeats native finish metadata and remains a distinct original frame. Actual DONE and Responses controls retain their own validation and EOF/closure/cancellation gates. Native stateless Responses rejection inputs are preserved after existing response-ID affinity checks; no hidden history is kept. Semantic header changes participate through caller-updated client name or target Version. Existing limits, complete Session binding and borrowed infrastructure ownership remain unchanged. See the [support matrix, initialization, limits and live status](../src/Asgard.Loki.LLM.OpenAI/README.md#explicit-openrouter-xinference-and-submodel-profiles).
+
+### Native API-Key alpha/search client
+
+Asgard.Loki.LLM.NewAPI references only LLM, Infrastructure and standard HTTP factory support. NewApiSearchClient is a single-call native API-Key client for a configured existing New API/Sub2API upstream. It is separate from Codex external-account authentication and does not reference OpenAI or another supplier package. Existing provider packages retain ordinary Chat/Responses/compact/Messages/Gemini calls; this package supplies the distinct alpha/search authentication and raw HTTP contract.
+
+```plantuml
+@startuml
+NewApiSearchClient --> NewApiSearchOptions : complete root / actual model / client / version / limits
+NewApiSearchClient --> LlmCredential : explicit ApiKey identity
+NewApiSearchClient --> NewApiSearchInput : strict frozen native request + owned model
+NewApiSearchClient --> IHttpClientFactory : borrowed named factory
+NewApiSearchClient --> HttpBodyReader : bounded original bytes / actual EOF
+NewApiSearchClient --> NewApiSearchResult : status / media type / independent original body
+NewApiSearchResult --> NewApiSearchMetadata : fixed target / actual model / credential reference
+@enduml
+```
+
+The configured target owns model and rejects root model parameters/case aliases; caller native id/stream/query and unknown fields remain original. Model selection is explicit initialization, without a routing alias, default model, target rotation or hidden Session/history. Body snapshots precede factory creation; absolute endpoint, Host and selected Bearer identity override unrelated client defaults. Semantic HTTP pipeline configuration remains caller-owned.
+
+Native alpha/search returns an opaque complete HTTP window. JSON/text/binary/empty/SSE responses and 2xx business-error-shaped data are not parsed into a model terminal, result schema, usage or task state. Non-2xx failures preserve actual status and complete raw bytes/content type in LlmUpstreamException. Request/response byte budgets, declared-length consistency, actual EOF, all owned resource closures and final cancellation precede delivery. Factory is borrowed; each call owns its message/content/client/response/body stream. No local search, retrieval workflow, tool execution, gateway hosting/admin, billing, polling or model catalog is introduced. See the [support matrix, initialization, limits and real-test status](../src/Asgard.Loki.LLM.NewAPI/README.md).

@@ -1,0 +1,5 @@
+# Asgard.Loki.LLM.NewAPI.Tests
+
+81 passing offline xUnit v3 cases exercise the public fixed-target NewApiSearchClient. Independent native fixtures precede implementation and contain three separate roots/models/Keys, original query/id/stream/unknown values and raw JSON/text/binary/empty/SSE/error windows. There are no real credentials, network, Redis, provider accounts or remote CI calls.
+
+Cases verify complete wire/headers/metadata/caller immutability, original precision and error bytes/media, defensive result copies, snapshot before factory callbacks, fixed target over unrelated factory defaults, explicit credential kinds and model ownership, strict Unicode/duplicate input, exact byte/declared-length limits, actual EOF, resource-disposal failures and final cancellation. This standalone native operation creates no conversation Session/cache or tool/search workflow; model and Key are fixed at initialization. Results prove protocol handling only, not native query validity, model acceptance or search quality. Ordinary Chat/Responses/Messages/Gemini profiles belong to their existing supplier test projects.

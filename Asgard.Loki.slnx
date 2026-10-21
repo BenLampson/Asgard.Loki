@@ -260,4 +260,10 @@
   <Folder Name="/tests/Providers/Perplexity/">
     <Project Path="tests/Asgard.Loki.LLM.Perplexity.Tests/Asgard.Loki.LLM.Perplexity.Tests.csproj" />
   </Folder>
+  <Folder Name="/src/Providers/NewAPI/">
+    <Project Path="src/Asgard.Loki.LLM.NewAPI/Asgard.Loki.LLM.NewAPI.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/NewAPI/">
+    <Project Path="tests/Asgard.Loki.LLM.NewAPI.Tests/Asgard.Loki.LLM.NewAPI.Tests.csproj" />
+  </Folder>
 </Solution>

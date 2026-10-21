@@ -33,6 +33,7 @@ Fine-tuning jobs and general provider file management (upload/list/retrieve/down
 | LLM | `Asgard.Loki.LLM.Xunfei` | Native Spark signed WebSocket; complete ordered native message window | Original JSON messages; text/global terminal and normal-close validation |
 | LLM | `Asgard.Loki.LLM.MiniMax` | Native v2 Chat JSON, original reasoning/tool/sensitivity data and HTTP200 business errors | SSE with native choice finishes and complete snapshots |
 | LLM | `Asgard.Loki.LLM.Perplexity` | Native Responses and Sonar Chat JSON with original tool/search/citation data | SSE with native sparse failures, partial snapshots and Sonar global endings |
+| LLM | `Asgard.Loki.LLM.NewAPI` | Explicit fixed-target API-Key alpha/search against an existing upstream; original HTTP bytes/status/type | Complete HTTP body; SSE remains raw data |
 | LLM | `Asgard.Loki.LLM.Cohere` | Native v1 Chat JSON; full history, references and call-plus-parameters tool results | Native NDJSON; unchanged tool fragments and delayed stream-end |
 | LLM | `Asgard.Loki.LLM.Cloudflare` | Explicit native ai/run text JSON; full native envelope and tools | Original SSE JSON and actual DONE control frame; delayed terminal |
 | LLM | `Asgard.Loki.LLM.Coze` | Native v3 bot chat acknowledgement, explicit status/messages queries; complete-target references | Native two-level Chat/Message SSE, raw future events and actual done |
@@ -146,6 +147,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.LLM.Xunfei` | Native Spark WebSocket authentication and complete message windows |
 | `Asgard.Loki.LLM.MiniMax` | Native MiniMax v2 Chat JSON/SSE; supplier-owned base_resp and ending state |
 | `Asgard.Loki.LLM.Perplexity` | Native Perplexity Responses and Sonar Chat JSON/SSE; explicit endpoints and supplier-owned endings |
+| `Asgard.Loki.LLM.NewAPI` | Native API-Key alpha/search client; depends only on LLM, Infrastructure and standard HTTP factory support |
 | `Asgard.Loki.LLM.Cohere` | Native Cohere v1 Chat JSON/NDJSON; independent from Rerank |
 | `Asgard.Loki.LLM.Cloudflare` | Native Workers AI text ai/run JSON/SSE; independent from compatible OpenAI profile |
 | `Asgard.Loki.LLM.Coze` | Explicit Coze v3 JSON/SSE and status/messages; no polling or fake model route |
@@ -481,3 +483,5 @@ Explicit [SiliconFlow native Chat, Prefix and FIM](src/Asgard.Loki.LLM.OpenAI/RE
 [Zhipu v4 native Chat and Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-zhipu-v4-native-chat-and-responses) and [Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-zhipu-v4-native-messages) reuse existing packages with separate explicit roots, protocols, models and Keys. Native reasoning objects, tool history, search/filter metadata and raw usage remain original. Chat DONE, Responses terminals and Messages message_stop are verified separately offline; real model/settings and Coding Plan access are unverified.
 
 [Explicit OpenRouter, Xinference and Submodel profiles](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-openrouter-xinference-and-submodel-profiles) reuse the existing OpenAI package for declared native Chat/Responses/text operations. Complete roots/models/Keys and optional caller headers are explicit. Native reasoning, tools, text inputs, repeated OpenRouter usage finishes and original errors remain intact; wire/terminal/Session boundaries are verified offline. Legacy hosted endpoint and actual model acceptance remain unverified.
+
+The independent [API-Key native search client](src/Asgard.Loki.LLM.NewAPI/README.md) calls an explicitly configured existing New API/Sub2API upstream's alpha/search endpoint. A complete root, actual model and independent Key are fixed per client; caller id/stream/query/unknown values remain original. It returns raw complete HTTP status/content type/bytes, including binary, empty and SSE bodies, without interpreting model completion or fetching references. This is separate from Codex external-account authentication. Offline tests cover original wire/error data, strict input, byte/length boundaries, resource closure and final cancellation; real service/model/parameter effects are unverified.
