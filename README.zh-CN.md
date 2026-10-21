@@ -177,3 +177,5 @@ DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#
 已配置的 vLLM／SGLang 部署复用现有 [OpenAI 原生 Chat／文本补全／Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-vllm-and-sglang-native-presets) 和 [Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-vllm-and-sglang-messages) 包，明确完整地址、实际服务模型和 Bearer 凭据。完整离线样本覆盖原文、工具关联、Session 与终态边界；部署能力和模型接受情况需另行真实验证，不加入部署／中转管理。
 
 已有 OpenAI 原生协议部署可配置[操作路径及 Bearer／自定义头／查询参数／显式无认证](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-native-http-endpoints-and-authentication)。配置与完整目标共同参与 Session 绑定，保留原生正文及生命周期，不增加中转路由或模型／服务器发现。
+
+原生 Claude 兼容部署也支持[显式 Messages 路径及 ApiKey／Bearer／自定义头／查询参数／无认证](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-native-messages-endpoint-and-authentication)，保留原生工具／历史／流式语义及完整目标绑定；协议转换仍由独立装饰器显式配置。

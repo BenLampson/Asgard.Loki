@@ -34,7 +34,7 @@ var result = await loki.LLM.ClaudeMessages.CreateAsync(new ClaudeMessageRequest
 }, new LlmCallOptions { SessionId = "claude-conversation" }, cancellationToken);
 ```
 
-The target must be included in a route whose public `Model` is `assistant`. The model name and output limit are explicit caller choices. Authentication uses request-local `x-api-key` and `anthropic-version` headers; the default version is `2023-06-01`. Select another version with the constructor. Configure optional `anthropic-beta` headers on the named HTTP client `Asgard.Loki.LLM.Anthropic`. Changing version/client identity invalidates old Session bindings; change `LlmTarget.Version` when external HTTP defaults change semantics.
+The target must be included in a route whose public `Model` is `assistant`. The model name and output limit are explicit caller choices. Default authentication uses request-local `x-api-key` and `anthropic-version` headers; the default version is `2023-06-01`. Select another version with the constructor. Configure optional `anthropic-beta` headers on the named HTTP client `Asgard.Loki.LLM.Anthropic`. Changing version/client identity invalidates old Session bindings; change `LlmTarget.Version` when external HTTP defaults change semantics.
 
 The provider references only `Asgard.Loki.LLM`, capability-independent `Asgard.Loki.Infrastructure` and standard Microsoft HTTP components. It does not convert Chat/Responses or execute tools. Optional explicit conversion is supplied separately by `Asgard.Loki.LLM.Conversion`. Disable generation POST retries and hedging in the supplied HTTP factory.
 
@@ -54,7 +54,7 @@ var provider = new AnthropicLlmProvider(httpFactory, new AnthropicHttpOptions
 });
 ```
 
-Bearer emits only `Authorization: Bearer`; Key mode emits only `x-api-key`. Both consume an ordinary `LlmCredential` API Key identity; anonymous/external credentials are rejected before factory dispatch. There is no identity discovery, expiring-token refresh, SigV4 fallback, combined `Key|region` parsing or host/model inference. Changing a static credential requires a fresh binding. An unselected authentication/signing default fails before send. Selected auth/version/Host replace same-name defaults on the individual request, while unrelated beta defaults remain caller-owned and unchanged.
+Bearer emits only `Authorization: Bearer`; Key mode emits only `x-api-key`. Both consume an ordinary LlmCredential API Key identity. The defaults reject anonymous/external credentials before dispatch; explicit [None mode](#explicit-native-messages-endpoint-and-authentication) requires LlmCredential.Anonymous. There is no identity discovery, expiring-token refresh, SigV4 fallback, combined `Key|region` parsing or host/model inference. Changing a static credential requires a fresh binding. An unselected authentication/signing default fails before send. Selected auth/version/Host replace same-name defaults on the individual request, while unrelated beta defaults remain caller-owned and unchanged.
 
 Raw JSON/SSE reads are bounded, strict UTF-8 and duplicate-property checked, with exact declared lengths. Original HTTP/native complete errors retain status/body, including HTTP 200. Native source block indices/tool IDs/kinds and message closure are validated without assembling arguments or replacing text/signatures/encrypted data. `message_delta.stop_reason`, `message_stop` and unknown tails are withheld until real EOF, async source disposal, response/client disposal and final cancellation. A late native/transport error cannot release held success. Unknown typed metadata remains raw; it cannot reopen known content or replace a missing terminal. Initial deltas remain incremental and early exit releases only this call's resources. No retries, reconnect, tool execution or history management is added.
 
@@ -102,7 +102,7 @@ var target = new LlmTarget
 
 The request emits one Bearer header, no x-api-key, and the explicit/default anthropic-version. Original thinking/signatures, tool-use/result links and order, schema settings, exact integers and future fields remain native; the SDK does not convert them, choose models or certify endpoint acceptance of optional parameters. Returned native model data remains distinct from selected-target metadata. Full root/model/key/auth/version/client changes invalidate old Sessions normally. No reference to LLM.Volcengine, brand wrapper, CLI/login/settings writer, tool executor or retry loop is added.
 
-Sixteen independent-window profile tests verify JSON/SSE, both root forms, full wire/data/transport metadata, native message_stop and late-failure gates, binding drift and cross-instance recovery. The supplier executable passes 297 offline cases (127 native,16 Coding Plan,9 Ollama,15 DashScope,12 DeepSeek,28 Moonshot/Kimi 16 MiniMax,24 Zhipu,30 native upstream and20 inference preset profile cases). No live Coding Plan account/model/parameter validation has been performed. The [official configuration](https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-claude-code?lang=zh) supplies the native service contract; its external client base URL convention differs because those clients append `/v1/messages`.
+Sixteen independent-window profile tests verify JSON/SSE, both root forms, full wire/data/transport metadata, native message_stop and late-failure gates, binding drift and cross-instance recovery. The supplier executable passes 440 offline cases (127 native,16 Coding Plan,9 Ollama,15 DashScope,12 DeepSeek,28 Moonshot/Kimi,16 MiniMax,24 Zhipu,30 native upstream 20 inference preset and143 configured-native cases). No live Coding Plan account/model/parameter validation has been performed. The [official configuration](https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-claude-code?lang=zh) supplies the native service contract; its external client base URL convention differs because those clients append `/v1/messages`.
 
 ## Explicit Ollama Messages
 
@@ -110,7 +110,7 @@ Use the existing Bearer option with an explicit full target root. For this SDK, 
 
 The [official Messages guide](https://docs.ollama.com/api/anthropic-compatibility) accepts an explicit ignored Key placeholder for local SDK usage. Configure that value through an ordinary LlmCredential; no omitted Key is treated as anonymous. Local servers do not require authentication, while hosted Messages requires a real independent Bearer token and does not accept x-api-key alone. This provider's default API-Key mode stays unchanged; select Bearer explicitly. The native Ollama package separately supports explicit Anonymous credentials for its own native endpoints. There is no host/model/credential inference, login or model/server management.
 
-Nine additional full-window offline cases verify JSON/SSE over local/proxy/hosted configured targets, exact path/version/Bearer, tools and reversed results, reasoning/signature/unknown values, original model versus target metadata, transport event/id/retry, native message_stop and root/key binding drift. Current total:297 passing offline cases. No real local/cloud model, endpoint entitlement or optional-setting acceptance has been tested. Upstream supports a subset: tool_choice, metadata, caching, citations, PDF and image-URL behavior must follow the actual service contract; preserving native fields is not a claim those settings work. There is no conversion to/from Ollama-native JSON/NDJSON in this package.
+Nine additional full-window offline cases verify JSON/SSE over local/proxy/hosted configured targets, exact path/version/Bearer, tools and reversed results, reasoning/signature/unknown values, original model versus target metadata, transport event/id/retry, native message_stop and root/key binding drift. Current total:440 passing offline cases. No real local/cloud model, endpoint entitlement or optional-setting acceptance has been tested. Upstream supports a subset: tool_choice, metadata, caching, citations, PDF and image-URL behavior must follow the actual service contract; preserving native fields is not a claim those settings work. There is no conversion to/from Ollama-native JSON/NDJSON in this package.
 
 ## Explicit DashScope Messages
 
@@ -132,7 +132,7 @@ var target = new LlmTarget
 
 Original output_config.format schema/effort, thinking, tools/results and their order, explicit empty signatures, cache counters and future data remain native. They are not converted to another protocol or selected through model substrings. No automatic web-search tool insertion, workspace/model discovery, CLI configuration, login or local tool execution occurs. Each model's protocol and optional-setting support remains caller-owned; passing a field does not certify its effect. Legacy roots and explicit proxy prefixes are supported configuration without automatic migration.
 
-Fifteen full-window profile tests verify both header modes, JSON/SSE, complete paths, transport metadata, native message_stop, full original data, caller immutability and root/key Session drift. Current supplier total:297 passing offline cases. These are offline protocol checks, not live model/account/schema/reasoning/search validation. The package continues to depend only on its own LLM capability, Infrastructure and standard HTTP support.
+Fifteen full-window profile tests verify both header modes, JSON/SSE, complete paths, transport metadata, native message_stop, full original data, caller immutability and root/key Session drift. Current supplier total:440 passing offline cases. These are offline protocol checks, not live model/account/schema/reasoning/search validation. The package continues to depend only on its own LLM capability, Infrastructure and standard HTTP support.
 
 ## Explicit DeepSeek Messages
 
@@ -140,7 +140,7 @@ Use a separate complete target with `BaseAddress = new Uri("https://api.deepseek
 
 The [native compatibility contract](https://api-docs.deepseek.com/guides/anthropic_api/) supports thinking and output_config.effort; budget_tokens is ignored and output_config.format is not a supported schema option. Parameter preservation does not establish their effect. Native thinking without a signature stays without a signature. Original tool_use/tool_result links and order, server_tool_use/web_search_tool_result links, user metadata, cache/usage counters and future fields remain intact. No Claude model-name mapping, effort normalization, fabricated signature, local tool/search execution or peer-provider dependency is added. [Official agent integration](https://api-docs.deepseek.com/quick_start/agent_integrations/claude_code/) also documents the explicit Bearer token mode; no client installation, login or configuration writer is part of this SDK.
 
-Twelve independent-window cases cover JSON/SSE over native/proxy roots and both auth modes, whole wire/results/events, thinking/server-tool/client-tool identity, native message_stop, model-suffix fidelity and root/key Session drift. Current supplier total:297 passing offline cases. Missing message_stop fails without releasing held successful endings. Real account/model acceptance and reasoning/effort/search behavior remain unverified. Chat/Responses/beta FIM use the existing [OpenAI package](../Asgard.Loki.LLM.OpenAI/README.md#explicit-deepseek-native-endpoints) with their separately configured complete roots.
+Twelve independent-window cases cover JSON/SSE over native/proxy roots and both auth modes, whole wire/results/events, thinking/server-tool/client-tool identity, native message_stop, model-suffix fidelity and root/key Session drift. Current supplier total:440 passing offline cases. Missing message_stop fails without releasing held successful endings. Real account/model acceptance and reasoning/effort/search behavior remain unverified. Chat/Responses/beta FIM use the existing [OpenAI package](../Asgard.Loki.LLM.OpenAI/README.md#explicit-deepseek-native-endpoints) with their separately configured complete roots.
 
 ## Explicit Moonshot and Kimi Coding Messages
 
@@ -169,7 +169,7 @@ Select Bearer explicitly for the [native HTTP contract](https://platform.kimi.ai
 
 Original output_config.effort and format.json_schema, thinking/text/tool_use blocks, full prior thinking/signature/tool-result history, metadata and unknown fields remain native. Optional absent or explicit empty signatures retain that distinction. Top-level cache_control and nested markers are forwarded unchanged; the service documents only the top-level control as effective. Native input_tokens excludes cache reads/writes; cache_read_input_tokens, cache_creation_input_tokens, TTL breakdown and thinking token details remain separate original counters. No usage normalization or billing calculation occurs.
 
-Twenty-eight whole-window/fault cases verify five explicit platform/Coding/proxy roots over both auth modes and JSON/SSE, original data and transport metadata, unsigned/empty-signature behavior, reversed tool results, native message_stop and root/key/model/auth/client Session drift. Current supplier total:297 passing offline cases. No live account/model, cache/schema/effort effectiveness or Coding access has been verified. Native Chat/Partial/Responses uses the [existing OpenAI package](../Asgard.Loki.LLM.OpenAI/README.md#explicit-moonshot-and-kimi-coding-native-endpoints), with no supplier-peer reference or local tool execution.
+Twenty-eight whole-window/fault cases verify five explicit platform/Coding/proxy roots over both auth modes and JSON/SSE, original data and transport metadata, unsigned/empty-signature behavior, reversed tool results, native message_stop and root/key/model/auth/client Session drift. Current supplier total:440 passing offline cases. No live account/model, cache/schema/effort effectiveness or Coding access has been verified. Native Chat/Partial/Responses uses the [existing OpenAI package](../Asgard.Loki.LLM.OpenAI/README.md#explicit-moonshot-and-kimi-coding-native-endpoints), with no supplier-peer reference or local tool execution.
 
 ## Explicit MiniMax Messages
 
@@ -177,7 +177,7 @@ Use the existing provider with a complete `https://api.minimax.io/anthropic/v1/`
 
 The [official Messages contract](https://platform.minimax.io/docs/api-reference/text-anthropic-api) requires preserving full thinking/text/tool_use history in subsequent calls. The SDK retains original thinking blocks without inventing signatures, output_config.effort, tool/result order/IDs, metadata and unknown values. Model-specific thinking/effort and media restrictions remain caller-owned. The service ignores temperature/top_p/top_k and several management settings; forwarding them does not prove their effect. No schema support is inferred from effort support, no client/CLI setup or local tool execution occurs.
 
-Sixteen independent-window cases verify complete native/proxy roots, both auth modes and JSON/SSE, exact native wire/results/events, original thinking/effort/ignored sampling settings, reverse tool results, message_stop and root/key Session affinity. Current supplier total:297 passing offline cases. No real MiniMax model/account/optional-setting validation has been performed. Native v2 text/chatcompletion_v2 uses the independent [LLM.MiniMax package](../Asgard.Loki.LLM.MiniMax/README.md); no supplier-peer reference is required.
+Sixteen independent-window cases verify complete native/proxy roots, both auth modes and JSON/SSE, exact native wire/results/events, original thinking/effort/ignored sampling settings, reverse tool results, message_stop and root/key Session affinity. Current supplier total:440 passing offline cases. No real MiniMax model/account/optional-setting validation has been performed. Native v2 text/chatcompletion_v2 uses the independent [LLM.MiniMax package](../Asgard.Loki.LLM.MiniMax/README.md); no supplier-peer reference is required.
 
 ## Explicit Zhipu v4 native Messages
 
@@ -266,7 +266,7 @@ var result = await loki.LLM.ClaudeMessages.CreateAsync(new ClaudeMessageRequest
 }, new LlmCallOptions { SessionId = "native-messages-1" }, cancellationToken);
 ```
 
-Native reverse tool results, input_json_delta fragments, optional signatures and exact usage/extensions remain original. Absent signatures are not fabricated. Full root/model/Key/provider/client/authentication/policy/version Session affinity, raw HTTP errors, bounded native ending delivery and borrowed dependencies remain unchanged. Thirty new cases verify three complete roots, both explicit authentication modes, JSON/SSE, missing message_stop, root/key/model/auth/client/version/policy drift, replay, late read/final cancellation, original errors and early exit; current supplier total is 297 passing offline cases. Actual hosted model/parameter/ciphertext support is unverified. Use separate [OpenAI-compatible native targets](../Asgard.Loki.LLM.OpenAI/README.md#explicit-native-upstream-chat-responses-text-and-compact), [Gemini targets](../Asgard.Loki.LLM.Google/README.md#native-http-and-ending-policies) and [API-Key search](../Asgard.Loki.LLM.NewAPI/README.md) for those distinct operations, without provider-peer references or gateway coordination.
+Native reverse tool results, input_json_delta fragments, optional signatures and exact usage/extensions remain original. Absent signatures are not fabricated. Full root/model/Key/provider/client/authentication/policy/version Session affinity, raw HTTP errors, bounded native ending delivery and borrowed dependencies remain unchanged. Thirty new cases verify three complete roots, both explicit authentication modes, JSON/SSE, missing message_stop, root/key/model/auth/client/version/policy drift, replay, late read/final cancellation, original errors and early exit; current supplier total is 440 passing offline cases. Actual hosted model/parameter/ciphertext support is unverified. Use separate [OpenAI-compatible native targets](../Asgard.Loki.LLM.OpenAI/README.md#explicit-native-upstream-chat-responses-text-and-compact), [Gemini targets](../Asgard.Loki.LLM.Google/README.md#native-http-and-ending-policies) and [API-Key search](../Asgard.Loki.LLM.NewAPI/README.md) for those distinct operations, without provider-peer references or gateway coordination.
 
 ## Explicit vLLM and SGLang Messages
 
@@ -292,4 +292,60 @@ var target = new LlmTarget
 | Native headers | Selected Bearer Key and anthropic-version | No unselected credentials, anonymous/dummy-Key inference or dual-auth injection |
 | Ending / Session | Actual message_stop, EOF/owned closure/final cancellation; complete target and auth affinity | No retry, hidden history, model provisioning or background consumption |
 
-Twenty additional offline cases verify two complete roots, whole JSON/SSE windows, missing native stop, replay, server/model/Key/auth/client/policy/version drift, late read/final cancellation, original HTTP errors and early exit. Current supplier total: 297 passing offline cases. Existing request/body/tail limits and borrowed factory/cache/coordinator ownership apply. No real deployment/model/optional-setting acceptance has been verified. Chat/text/Responses remain in the [OpenAI package](../Asgard.Loki.LLM.OpenAI/README.md#explicit-vllm-and-sglang-native-presets); packages do not reference each other.
+Twenty additional offline cases verify two complete roots, whole JSON/SSE windows, missing native stop, replay, server/model/Key/auth/client/policy/version drift, late read/final cancellation, original HTTP errors and early exit. Current supplier total: 440 passing offline cases. Existing request/body/tail limits and borrowed factory/cache/coordinator ownership apply. No real deployment/model/optional-setting acceptance has been verified. Chat/text/Responses remain in the [OpenAI package](../Asgard.Loki.LLM.OpenAI/README.md#explicit-vllm-and-sglang-native-presets); packages do not reference each other.
+
+## Explicit native Messages endpoint and authentication
+
+AnthropicHttpOptions.Authentication remains the single authentication selector. Its original ApiKey/Bearer values keep their numeric values and default behavior; additional None/Header/Query modes are explicit choices for a caller-selected existing native upstream. Optional Transport supplies AnthropicHttpTransportOptions with MessagesPath and non-secret credential formatting. This provider still speaks native Messages and performs no endpoint/protocol detection or conversion.
+
+| Operation / mode | Support | Limits / live status |
+| --- | --- | --- |
+| Native Messages JSON / SSE | Complete native body/history/result/events, including thinking/signatures, reverse tool IDs and exact unknown fields | Existing body/tail/block limits; no real deployment/model verification |
+| ApiKey / Bearer | Selected x-api-key or Authorization: Bearer | Ordinary API-Key credential; original constructors/defaults retained |
+| Header | CredentialName header, CredentialPrefix + Key + CredentialSuffix | Explicit API Key; control/structural/version header names rejected |
+| Query | Escaped CredentialName and formatted Key appended once | Explicit API Key; conflicting encoded/case-variant fixed credential parameters rejected |
+| None | Explicit LlmCredential.Anonymous, no selected credential | Missing Key never implies anonymous; external account identities remain unsupported |
+
+```csharp
+using Asgard.Loki;
+using Asgard.Loki.LLM;
+using Asgard.Loki.LLM.Anthropic;
+
+// factory, sessionStore, selectedCompleteRoot, selectedModel and selectedApiKey are caller-owned.
+var provider = new AnthropicLlmProvider(factory, new AnthropicHttpOptions
+{
+    Authentication = AnthropicAuthentication.Query,
+    Transport = new AnthropicHttpTransportOptions
+    {
+        MessagesPath = "native/messages.run?existing=1",
+        CredentialName = "api_key"
+    }
+}, id: "native-messages", httpClientName: "Explicit.Native.Messages");
+await using var loki = new LokiClientBuilder().AddLLM(new LlmOptions
+{
+    SessionStore = sessionStore, Providers = [provider],
+    Credentials = [new LlmCredential("selected-key", selectedApiKey)],
+    Routes = [new LlmRoute
+    {
+        Model = "public", Targets = [new LlmTarget
+        {
+            Id = "selected-native", ProviderId = provider.Id,
+            BaseAddress = selectedCompleteRoot, UpstreamModel = selectedModel,
+            CredentialId = "selected-key", Protocols = LlmProtocol.ClaudeMessages,
+            Version = "deployment-context-v1"
+        }]
+    }]
+}).Build();
+```
+
+MessagesPath is appended beneath the complete target root, preserving its proxy prefix; one leading slash has the same append semantics. Fixed queries retain original order/values and repeated business parameters, including literal URL values. Absolute/scheme-relative addresses, fragments, traversal, templates, malformed percent/UTF-8 escapes and control characters are rejected. Select another complete target to change servers. Header and Query require a name; ApiKey/Bearer/None reject unused credential formatting. Header values use printable ASCII; query values can contain Unicode and reserved characters and are escaped once.
+
+For no authentication, set Authentication = AnthropicAuthentication.None and register LlmCredential.Anonymous("selected-key"). Transport can be omitted for None to retain the native messages path. Header/Query require Transport with a CredentialName. Do not put a Key in prefix/suffix or fixed query; the actual Key remains in LlmCredential. No dummy credential, account source, discovery or fallback is introduced.
+
+Complete target, actual model, credential identity, API version, named client, frozen path/query/auth formatting, local limits and target Version participate in the existing Session binding. Transport = null is omitted from options JSON and preserves previous ApiKey/Bearer binding bytes. Supplying Transport explicitly opts into stricter actual-wire verification and produces a distinct binding even for a default path. Changed semantics reject old Sessions before another HTTP send. Update target Version for identity-affecting application pipeline changes under a stable client name.
+
+Configured calls freeze the body, exact URI/Host, selected credential, anthropic-version and Accept before factory creation. Same-name defaults are overridden on the request; unselected authentication/signature/Cookie defaults fail without changing factory settings. Actual method/URI/Host/auth/version/content are rechecked across native events and final resource closure. Raw HTTP/late native errors preserve original status, media and arbitrary bytes in LlmUpstreamException.Body. Native message_delta/message_stop and unknown tails still wait for actual EOF, owned closure and final cancellation. Factory/cache/coordinator remain borrowed; early exit only closes the current call. Disable automatic retries, redirects, hedging or hidden auth changes in the application HTTP pipeline.
+
+The existing explicit Conversion decorator delegates native credential support and includes these settings in its binding. No protocol or model is inferred from MessagesPath. There is no local relay, route administration, model discovery, tool execution, hidden history or cross-provider dependency.
+
+143 additional offline supplier cases compare an independently retained literal native window over five authentication modes and JSON/SSE, including original tools/signature omissions/unknown values, native terminal failures, raw binary errors, fixed queries, complete binding drift/replay, selected/default credentials, actual request mutation, early exit and late EOF/final cancellation. Current supplier total: 440 passing offline cases. These tests establish protocol fidelity; actual service/model/optional-setting/signature acceptance remains unverified.

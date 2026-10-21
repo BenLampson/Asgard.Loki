@@ -3365,3 +3365,22 @@ OpenAiLlmProvider --> OpenAiHttpTransport : existing native JSON / SSE lifecycle
 ```
 
 All five native HTTP operations (Chat/Responses/compact/text/Moderations) honor the selected transport configuration and retain separate native request/result validation. Explicit policy includes stricter actual wire identity checks, raw binary HTTP errors, unselected default-auth rejection and final resource/cancellation gates. Session identity includes all frozen operation/auth policies; nullable omission preserves the old default binding bytes. Request/response/stream closures remain call-owned; factory/cache/coordinator remain borrowed. WebSocket/Realtime and Codex external-account authentication retain separate contracts. No incoming route matching, URL/body programming engine, management API, retry, credential discovery or model suffix repair is added. Support, initialization, limits and offline-only validation are in the supplier README.
+
+### Explicit native Messages transport configuration
+
+AnthropicHttpOptions keeps Authentication as the sole selector and extends AnthropicAuthentication with None/Header/Query while preserving original ApiKey/Bearer numeric values. Optional AnthropicHttpTransportOptions describes only one native Messages relative operation path/fixed query and non-secret credential formatting. The provider remains independent of other suppliers; its private URI/auth request helpers contain no shared model coordinator or conversion engine.
+
+```plantuml
+@startuml
+AnthropicLlmProvider --> AnthropicHttpOptions : frozen native policies / sole authentication selector
+AnthropicHttpOptions --> AnthropicHttpTransportOptions : optional relative Messages path / auth formatting
+AnthropicLlmProvider ..|> ILlmCredentialSupport : explicit API Key or Anonymous
+AnthropicLlmProvider --> AnthropicConfiguredHttpCall : immutable native URI / Host / body / version / auth
+AnthropicConfiguredHttpCall --> LlmTarget : selected complete server root
+AnthropicConfiguredHttpCall --> LlmCredential : selected API Key or explicit Anonymous
+AnthropicConfiguredHttpCall --> AnthropicConfiguredHttpEndpoint : strict same-origin operation / query validation
+AnthropicLlmProvider --> AnthropicStreamState : original Messages blocks / tools / native terminal
+@enduml
+```
+
+Default nullable omission preserves original binding bytes; explicit path/auth/client/version/policy changes invalidate complete Sessions normally. None can use the original operation without a path override but requires an explicit Anonymous identity. Header/Query require a named location; credentials are never stored in transport options. Actual wire identity, raw error bytes/status/media, owned resource closure and final cancellation gates remain native provider responsibilities. The existing Conversion decorator delegates kind support and binds the native implementation without a supplier-peer dependency. No incoming routing, gateway management, retries or hidden history is introduced. See the supplier support matrix, initialization, limits and offline validation status.
