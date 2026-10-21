@@ -30,6 +30,16 @@ $packageIds = @(
     'Asgard.Loki.LLM.Azure',
     'Asgard.Loki.LLM.GoogleVertex',
     'Asgard.Loki.LLM.AWS',
+    'Asgard.Loki.LLM.Cloudflare',
+    'Asgard.Loki.LLM.Cohere',
+    'Asgard.Loki.LLM.Coze',
+    'Asgard.Loki.LLM.DeepSeek',
+    'Asgard.Loki.LLM.Dify',
+    'Asgard.Loki.LLM.MiniMax',
+    'Asgard.Loki.LLM.NewAPI',
+    'Asgard.Loki.LLM.Perplexity',
+    'Asgard.Loki.LLM.Tencent',
+    'Asgard.Loki.LLM.Xunfei',
     'Asgard.Loki.LLM.Conversion',
     'Asgard.Loki.Audio.Volcengine',
     'Asgard.Loki.Video.Volcengine',
@@ -66,7 +76,9 @@ $packageIds = @(
     'Asgard.Loki.Rerank.Cohere',
     'Asgard.Loki.Rerank.Jina',
     'Asgard.Loki.Rerank.Ali',
-    'Asgard.Loki.Rerank.SiliconFlow'
+    'Asgard.Loki.Rerank.SiliconFlow',
+    'Asgard.Loki.Rerank.OpenAICompatible',
+    'Asgard.Loki.Rerank.SGLang'
 )
 $expectedNames = @(foreach ($id in $packageIds) { "$id.$Version.nupkg"; "$id.$Version.snupkg" })
 $actualNames = @(Get-ChildItem -LiteralPath $PackageDirectory -File |
