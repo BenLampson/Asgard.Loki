@@ -14,7 +14,7 @@ dotnet pack Asgard.Loki.slnx -c Release --no-build -o artifacts/packages
 pwsh -File eng/Verify-PackageBoundaries.ps1
 ```
 
-The test script requires tests in every test project except the reserved Video scaffold. Tests use xUnit v3, substitute HTTP handlers and `MemoryDistributedCache`. Unit tests must not require network, Redis or credentials. Report live-provider and Redis integration results separately.
+The test script requires discovered tests in every ordinary test project. Tests use xUnit v3, substitute HTTP handlers and `MemoryDistributedCache`. Unit tests must not require network, Redis or credentials. Report live-provider and Redis integration results separately.
 
 Run development checkpoints locally. GitHub CI runs only for pull requests targeting `main` and when reused by the explicitly invoked NuGet release workflow. Ordinary branch pushes, including merging into `main`, do not launch another CI run; the CI workflow has no standalone manual trigger. Do not dispatch remote CI for individual development commits. Both platforms remain required at the PR and release gates.
 

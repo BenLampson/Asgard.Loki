@@ -1,7 +1,0 @@
-# Native SGLang rerank protocol tests
-
-Tests use the public AddRerank/RerankAsync path or the actual supplier with substitute HTTP only. Independently authored [full native wire fixtures](Fixtures/native.json) predate executable implementation. The v0.5.19 schema returns a root score/index array, with optional document/meta_info, not a Jina results envelope. Six complete text/multimodal and anonymous/Bearer golden calls preserve exact unknown/score numbers, original indices/order, top_n subset, document echoes and missing/null metadata. Additional cases cover request snapshots, omitted options, huge exact top_n, native/HTTP errors and binary bytes/content type.
-
-Request/result rejection includes malformed text/content blocks/options, precise fractional and unrelated/duplicate indices, incomplete counts, missing/foreign document echoes, incorrect meta_info and foreign result envelopes. Raw transport tests cover byte/declared-length boundaries, unknown-field UTF-8/escaped Unicode/duplicate failures, media/charset mismatch, fast SSE refusal, actual target/header isolation, pre-cancellation and late read/stream/client-disposal/cancellation failures. All owned HTTP resources close before success; borrowed factories remain borrowed.
-
-No expectation is generated with a production converter. No real Key, live service, Redis, server process, tokenizer, template, media fetching or model/relevance-quality verification is used. Native multimodal acceptance and server/template configuration remain unverified.

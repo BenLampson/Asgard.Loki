@@ -1,9 +1,0 @@
-# Tencent Hunyuan offline tests
-
-This xUnit v3 project executes tests with substitute HTTP, a fixed logical clock, an application-owned credential-source double and `MemoryDistributedCache` plus an explicit test-only Session coordinator. No actual Key, Tencent/STS/model call, Redis or external network is used.
-
-The native JSON/SSE windows and eight Python standard-library HMAC vectors were authored before production code. All four complete and four stream signatures are exercised through actual captured public-provider request bytes and headers. Full native requests, Response envelopes and flat SSE records retain tool schema/argument strings, associations, unknown fields and exact numbers. A separate independent TokenHub JSON/SSE window verifies explicit existing OpenAI-provider reuse with ordinary and pipe-containing opaque Bearer keys; OpenAI is a test-only dependency here.
-
-Stream cases verify inherited SSE metadata, varying Created, absent native indices, explicit sparse multi-choice indices, empty generation and future finish reasons. Every record from first finish is held through all-choice completion, EOF and resource closure. Tests inject missing/duplicate/ambiguous/changed-ID/late-generation/error/encoding/size/length/read/disposal/cancellation/expiry/source/wire failures and assert no native terminal is released. Tests also cover pre-acquisition snapshots, borrowed ownership, early consumer disposal, stable-principal Key rotation, provider configuration drift, native error bytes, and unchanged default identity serialization with optional stream policies.
-
-After restoring/building Release locally, run `dotnet test --project tests/Asgard.Loki.LLM.Tencent.Tests/Asgard.Loki.LLM.Tencent.Tests.csproj -c Release --no-build`. These are protocol/signature contract checks, not live authentication, service availability or model quality verification.

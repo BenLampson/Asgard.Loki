@@ -2,16 +2,26 @@
 
 [English](README.md) | **简体中文**
 
-SDK 范围固定为 **LLM、音频、视频、图片、Embedding、Rerank** 六类；Embedding/Rerank 继续使用独立能力包及供应商分包，不并入 LLM。不做模型微调、独立文件管理、后台或计费。
+Asgard.Loki 是面向 **.NET 10 / C# 14** 的模型调用 SDK，通过统一 `LokiClient` 使用 **LLM、音频、视频、图片、Embedding、Rerank** 六类独立能力，按需安装供应商包。
 
-目前未实现模型微调或供应商通用文件管理（独立上传、列举、查询、下载、删除）。已有音频和图片上传，是为转写、翻译或图片编辑请求提供输入素材。
+原生调用保留供应商参数、结果和流式事件；协议转换只支持明确列出的可靠映射，不支持的转换直接报错。SDK 不托管网关、不执行工具、不做计费或后台轮询，生成请求不会自动重试或切换目标。供应商凭据由调用方提供。
 
-纯 .NET 10 / C# 14 类库：统一 `LokiClient` 入口，能力及供应商按需安装。英文 README 是完整使用说明，结构规则见 [架构规范](docs/architecture.md)。
+## 快速开始
 
-`Asgard.Loki.Infrastructure` 提供共享的底层 SSE/NDJSON 分帧和有界 HTTP 字节读取；入口仍只引用统一抽象，六类能力各自维护协议、结果和状态。Video 提供原生提交/查询与持久化完整目标引用契约；[方舟视频包](src/Asgard.Loki.Video.Volcengine/README.md) 、[万相视频包](src/Asgard.Loki.Video.Ali/README.md)和[Gemini Veo 视频包](src/Asgard.Loki.Video.Google/README.md) 支持各自原生视频任务。
+1. 从[支持矩阵](#已实现)选择能力和供应商。
+2. 安装相同版本的入口包和供应商包，例如 `Asgard.Loki` 与 `Asgard.Loki.LLM.Volcengine`，参见[安装说明](README.md#installation)。也可[本地构建 NuGet 包](README.md#build-and-test)。
+3. 按[LLM 初始化示例](README.md#initialize-llm)配置 HTTP 工厂、缓存、会话协调器和目标；音频、图片及其他能力见相应包 README。
 
+| 用途 | 文档 |
+| --- | --- |
+| 文本调用、会话及协议转换 | [完整英文使用说明](README.md) |
+| 语音合成 | [示例](README.md#volcengine-speech) |
+| 图片生成 | [示例](README.md#openai-images) |
+| 视频提交与查询 | [Video](src/Asgard.Loki.Video/README.md) |
+| 音乐和歌词任务 | [SunoAPI](src/Asgard.Loki.Audio.SunoAPI/README.md) |
+| 包依赖及扩展规则 | [包清单](README.md#packages-and-dependencies) · [架构](docs/architecture.md) |
 
-可选的[原生音频任务契约](src/Asgard.Loki.Audio/README.md#native-audio-tasks)支持显式提交、绑定原目标的状态查询、原生批量查询与独立结果读取，由应用提供适配器。批量缺失任务明确报告，不用媒体地址推断完成；能力核心本身不实现供应商音乐协议。
+不提供模型微调和通用文件管理；音频、图片及视频上传是模型输入。[火山方舟资产库](src/Asgard.Loki.Video.Volcengine/README.md)是面向模型素材的供应商专属能力。各供应商 README 说明初始化、支持范围、限制和真实联调状态；离线测试通过不等于实际模型效果已验证。
 
 ## 已实现
 

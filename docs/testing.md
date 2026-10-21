@@ -1,4 +1,57 @@
-# Live LLM test configuration
+# Testing Asgard.Loki
+
+## Run offline tests
+
+Use .NET 10 and run from the repository root:
+
+```powershell
+dotnet restore Asgard.Loki.slnx
+dotnet build Asgard.Loki.slnx -c Release --no-restore -warnaserror
+pwsh -File eng/Test.ps1
+```
+
+For one project after building the matching Release configuration:
+
+```powershell
+dotnet test --project tests/Asgard.Loki.LLM.OpenAI.Tests/Asgard.Loki.LLM.OpenAI.Tests.csproj -c Release --no-build
+```
+
+Ordinary `*.Tests.csproj` projects use xUnit v3 / Microsoft.Testing.Platform. Each project must discover and execute tests; zero discovered tests is a failure. HTTP, sockets, clocks and external credential sources are test doubles. Session tests use `MemoryDistributedCache` with an explicit in-process coordinator, which does not prove distributed locking. Ordinary tests do not read real credentials, contact suppliers, open a service or require Redis.
+
+## Test ownership
+
+| Layer | Tests belong here |
+| --- | --- |
+| Entry and Abstractions | Module registration, initialization, isolation and disposal |
+| Infrastructure | Shared body/transfer bounds, framing, encoding, cancellation and borrowed-stream ownership; see the [boundary ownership table](../tests/Asgard.Loki.Infrastructure.Tests/README.md#shared-boundary-ownership) |
+| Capability core | Public contracts, snapshots, routing, Session/task ownership and application-owned adapter lifecycle |
+| Native supplier | Actual path/auth/signature, original request/result fields, native tool/task associations, provider-owned parser and terminal policy, plus necessary integration with shared transport |
+| Compatible profile | Full native wire and path/auth configuration, identity binding and a small wiring regression; reuse the native suite's protocol matrices |
+| Conversion | Supported mappings, diagnostics, original field/tool/citation association and iterator ownership; supplier byte/framing matrices stay in their own suites |
+
+Tests and their names define the executable cases. The corresponding `src/Asgard.Loki.*` README documents supported operations, initialization and limits. A second coverage inventory is not maintained in every test project.
+
+## Fixture conventions
+
+- Caller inputs, expected final requests, native responses and expected events are independently authored. Do not generate or automatically rewrite expected data with production serializers, converters or signers.
+- Compare the complete native structures and original array/event order. Preserve exact numbers, explicit absence/null/false/zero, unknown values, tool IDs and reversed result associations. Normalize only deliberately synthetic values; multipart comparisons may normalize the random boundary.
+- Fixture credentials, hosts, media and signatures are synthetic. Arbitrary Base64 or binary media is a transport sample, not evidence of a valid image/audio/video/PDF or of live model acceptance. CRC and HMAC/signature vectors use independently specified bytes and inputs.
+- SSE/NDJSON transcripts and expected JSON event lists serve different purposes. Spark JSONL resources store individual WebSocket messages; their line format is not an NDJSON upstream protocol. Native completion, actual transport controls and SDK ownership metadata remain distinct.
+- Binary EventStream resources must retain exact bytes. The [AWS fixture guide](../tests/Asgard.Loki.LLM.AWS.Tests/README.md) explains frame/signature manifests and CRC-valid negative examples. Do not apply text or newline conversion to them.
+
+The fixture guides below retain interpretation rules that cannot be inferred from ordinary JSON field names:
+
+| Fixture set | Interpretation guide |
+| --- | --- |
+| Chat/Responses/Claude/Gemini conversion | [Source and target goldens, citations and index units](../tests/Asgard.Loki.LLM.Conversion.Tests/Fixtures/README.md) |
+| Shared Nova/Converse data | [Dialect, binary and ID normalization rules](../tests/Shared/Fixtures/README.md) |
+| Compatible audio | [Native byte carriers and profile limits](../tests/Asgard.Loki.Audio.OpenAI.Tests/Fixtures/Compatible/README.md) |
+| Dify | [Native Chatbot/Agent/Chatflow event ordering](../tests/Asgard.Loki.LLM.Dify.Tests/Fixtures/README.md) |
+| Codex backend | [Opaque backend/search examples](../tests/Asgard.Loki.LLM.OpenAI.Tests/Fixtures/Codex/README.md) |
+| Native text completions | [Generic transport samples and supplier restrictions](../tests/Asgard.Loki.LLM.OpenAI.Tests/Fixtures/Text/README.md) |
+| Ark | [Native model and published Bot identities](../tests/Asgard.Loki.LLM.Volcengine.Tests/Fixtures/README.md) |
+
+## Live LLM test configuration
 
 This is a test-fixture contract, not a production configuration API. Library consumers continue to supply typed options and dependencies explicitly. At present only Volcengine LLM has configured live credentials; other capabilities and providers are not selected or probed.
 
@@ -13,7 +66,7 @@ Use exactly these four variables for the current live suite:
 | `ASGARD_LOKI_TEST_VOLCENGINE_LLM_CHAT_MODEL` | Actual upstream Chat model or inference endpoint ID. |
 | `ASGARD_LOKI_TEST_VOLCENGINE_LLM_RESPONSES_MODEL` | Actual upstream Responses model or inference endpoint ID. |
 
-Both model variables can contain `doubao-seed-evolving`; they remain independent so a future tester can choose different authorized models. Credentials alone must not enable network calls. Do not implicitly read generic variables such as `OPENAI_API_KEY`, or credentials from another project.
+Both model variables can contain `doubao-seed-evolving`; they remain independent so each protocol can use its own authorized model. Credentials alone must not enable network calls. Do not implicitly read generic variables such as `OPENAI_API_KEY`, or credentials from another project.
 
 The current fixture fixes its standard Ark API root to `https://ark.cn-beijing.volces.com/api/v3/`. This is the standard API, not the Coding Plan endpoint. `LiveLlmContext` accepts an explicit address override in test code, and production callers can configure `LlmTarget.BaseAddress`. There is no additional address environment variable. See the [official address/authentication documentation](https://docs.volcengine.com/docs/ark/base-url-and-authentication?lang=en).
 
@@ -38,7 +91,7 @@ The script reads these four process environment variables. On Windows it fills m
 
 With live testing disabled, xUnit reports selected cases as skipped. With it enabled, all three required target settings are validated before any network request; a missing setting fails and reports only the variable name. HTTP or protocol failures fail the test and must never be described as successful connectivity. The script builds with warnings as errors and runs cases sequentially using the native xUnit runner.
 
-| Suite | Cases | Planned maximum requests |
+| Suite | Cases | Maximum requests |
 | --- | --- | --- |
 | `Smoke` (default) | 1 | 5 |
 | `Parameters` | 21 | 26 |
@@ -74,9 +127,9 @@ Offline protocol/fixture acceptance is separate from actual model output quality
 
 Use [.env.example](../.env.example) as a naming checklist. It contains only the four names and no credentials. A local `.env` is ignored by Git but is not loaded automatically. Prefer process or current-user environment variables; never execute a dotenv file as shell code or dump the complete environment for diagnostics.
 
-Future live provider fixtures must be separate and explicitly invoked. Use uppercase ASCII names with the `ASGARD_LOKI_TEST_` prefix and keep different capability credentials independent. Keep generation parameter matrices in test data. Check observable constraints and meaningful combinations; statistical or perceptual effects require repeated comparison or manual evaluation rather than a fixed generated sentence.
+Live provider fixtures must be separate and explicitly invoked. Use uppercase ASCII names with the `ASGARD_LOKI_TEST_` prefix and keep different capability credentials independent. Keep generation parameter matrices in test data. Check observable constraints and meaningful combinations; statistical or perceptual effects require repeated comparison or manual evaluation rather than a fixed generated sentence.
 
-Redis integration, audio, images and OpenAI live verification remain outside this current fixture. Future Redis tests must explicitly provide a dedicated test cache and shared coordinator, isolate keys per run and never flush the database. No real-provider credentials are supplied to ordinary CI or fork PRs. Running a live test does not authorize NuGet publication.
+Redis integration, audio, images and OpenAI live verification remain outside this current fixture. Redis integration tests must explicitly provide a dedicated test cache and shared coordinator, isolate keys per run and never flush the database. No real-provider credentials are supplied to ordinary CI or fork PRs. Running a live test does not authorize NuGet publication.
 
 ## Offline unit-test runner
 

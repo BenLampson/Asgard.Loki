@@ -1,7 +1,0 @@
-# Asgard.Loki.Video.Vidu.Tests
-
-Independent offline native wire fixtures for Vidu text2video, img2video, start-end2video and reference2video. The SDK uses explicit operations with original JSON, native Token authentication, a submission task_id and a creation-query id. Original payload/meta_data strings, ordered media, zero/false/null, numeric precision, all creation URLs and native credits remain distinct from SDK routing and token accounting.
-
-Fixtures follow official [text](https://platform.vidu.com/docs/api-reference/video-models/vidu-q1/text-to-video), [image](https://platform.vidu.com/docs/api-reference/video-models/vidu-q2/image-to-video), [start/end](https://platform.vidu.com/docs/api-reference/video-models/vidu-q2/start-end-to-video), [reference](https://platform.vidu.com/docs/api-reference/video-models/vidu-q2/reference-to-video) and [error](https://platform.vidu.com/docs/api-reference/other-documentation/error-codes) contracts. The native numeric code/reason/message error-envelope example is also documented by the [task API](https://platform.vidu.com/docs/api-reference/task-management/cancel-task); cancellation is not added to these generation fixtures.
-
-All keys, media, task IDs and outputs are fictional. Additional unknown members deliberately test preservation, not upstream acceptance. These fixtures and later substituted HTTP tests do not establish live account/model availability, model-specific field acceptance, media validity or generation quality.

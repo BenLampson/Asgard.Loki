@@ -7,17 +7,33 @@
 
 A modular .NET 10 / C# 14 client library for model APIs. Use one `LokiClient` and install only the capabilities and providers you need.
 
-The SDK scope is six capability families: **LLM, Audio, Video, Image, Embedding and Rerank**. Embedding and Rerank retain independent capability/provider packages. Fine-tuning, independent provider file management, gateway administration and billing are outside this scope.
+Use Loki for **LLM, Audio, Video, Image, Embedding and Rerank** calls. Provider packages preserve native request parameters, responses and streaming events. Optional protocol conversion supports only the mappings documented by the conversion package; unsupported mappings fail explicitly.
 
-The architecture contract, UML, dependency rules and provider extension requirements live in [docs/architecture.md](docs/architecture.md). All namespaces start with `Asgard`.
+| Start here | Guide |
+| --- | --- |
+| Choose a capability and provider | [Support matrix](#supported-capabilities) |
+| Install the required packages | [Installation](#installation) and [package dependencies](#packages-and-dependencies) |
+| Make a text-model call | [LLM initialization](#initialize-llm) |
+| Generate speech or images | [Speech example](#volcengine-speech) · [Image example](#openai-images) |
+| Work with asynchronous media | [Video](src/Asgard.Loki.Video/README.md) · [Music and lyrics](src/Asgard.Loki.Audio.SunoAPI/README.md) |
+| Build or extend Loki | [Build and test](#build-and-test) · [Architecture](docs/architecture.md) |
 
-Native protocols preserve original parameters, results and unknown fields. Explicit [protocol conversion](src/Asgard.Loki.LLM.Conversion/README.md) supports its documented reliable subset, including bounded opt-in Chat/Gemini candidate streams; unsupported mappings fail explicitly. [Realtime](src/Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket) is caller-driven. [Video](src/Asgard.Loki.Video/README.md) provides independent native task contracts and persistent complete-target references; the [Ark](src/Asgard.Loki.Video.Volcengine/README.md), [DashScope](src/Asgard.Loki.Video.Ali/README.md) and [Gemini Veo](src/Asgard.Loki.Video.Google/README.md) providers submit and query native video generation tasks. Video snapshots optionally retain raw HTTP metadata and explicitly distinguish an empty HTTP 202 from native JSON; see the [result contract](src/Asgard.Loki.Video/README.md).
+## Installation
 
-Optional [native Audio task contracts](src/Asgard.Loki.Audio/README.md#native-audio-tasks) provide explicit submission, bound status queries, native batch queries and result-only retrieval through application-owned adapters. Missing batch tasks remain explicit; media presence never implies completion. The core supplies no native music protocol by itself.
+Target **.NET 10**. Install the entry package and the provider packages you use; their capability and infrastructure dependencies are resolved transitively. Replace `<version>` below with a matching Loki version available from your configured NuGet feed:
+
+```sh
+dotnet add package Asgard.Loki --version <version>
+dotnet add package Asgard.Loki.LLM.Volcengine --version <version>
+```
+
+Use matching Loki package versions. To build packages from this checkout instead, follow [Build and test](#build-and-test) and use `artifacts/packages` as a local NuGet source. Each provider README contains its initialization, native operations, limits and live-verification status.
+
+Loki is a client library: it does not host a gateway, execute tools, manage billing or run background polling. Generation calls do not automatically retry or switch targets. Applications own credentials and explicitly query asynchronous tasks. General file management and fine-tuning are outside the API; the [Ark media asset library](src/Asgard.Loki.Video.Volcengine/README.md) is a provider-specific feature for model inputs.
 
 ## Supported capabilities
 
-Fine-tuning jobs and general provider file management (upload/list/retrieve/download/delete as independent operations) are **not implemented**. Existing audio/image uploads supply inputs to transcription, translation or image editing requests.
+Audio, image and video uploads are model inputs. The provider-specific Ark asset client is documented separately from ordinary upload operations.
 
 | Capability | Provider package | Implemented APIs | Streaming |
 | --- | --- | --- | --- |
@@ -274,7 +290,7 @@ await foreach (var item in loki.LLM.Responses.StreamAsync(
 
 A route may contain any valid combination of server, actual model, credential and provider. New Sessions use the configured selector; existing Sessions always reuse the stored complete binding. Switching protocol or public model within a Session is rejected.
 
-Custom LLM providers can explicitly support `LlmCredential.Anonymous("local-instance")` through `ILlmCredentialSupport`. It retains a stable credential identity in the complete Session binding; a missing Key never selects this mode automatically. Existing providers without that optional contract remain API-Key-only. The separate [Ollama LLM provider](src/Asgard.Loki.LLM.Ollama/README.md) implements native Chat/generate JSON/NDJSON and explicit header isolation; cloud token refresh/signing remains pending; see the [LLM credential contract](src/Asgard.Loki.LLM/README.md#explicit-credential-kinds).
+Custom LLM providers can explicitly support `LlmCredential.Anonymous("local-instance")` through `ILlmCredentialSupport`. It retains a stable credential identity in the complete Session binding; a missing Key never selects this mode automatically. Existing providers without that optional contract remain API-Key-only. The separate [Ollama LLM provider](src/Asgard.Loki.LLM.Ollama/README.md) implements native Chat/generate JSON/NDJSON and explicit header isolation; external token sources and signing are configured through their provider-specific contracts; see the [LLM credential contract](src/Asgard.Loki.LLM/README.md#explicit-credential-kinds).
 
 ### Native Spark contract
 
@@ -402,27 +418,7 @@ ReadOnlyMemory<byte> imageBytes = result.Images[0].Decode();
 
 Use `loki.Image.StreamAsync(...)` for partial/final image events when supported by the configured upstream model. Image count, size, quality, compression, transparency and other parameters are passed through unchanged. Provider URLs are returned without downloading them. The library does not rewrite prompts or infer model availability.
 
-## Build and test
-
-```powershell
-dotnet restore Asgard.Loki.slnx
-dotnet build Asgard.Loki.slnx -c Release --no-restore
-pwsh -File eng/Test.ps1
-dotnet pack Asgard.Loki.slnx -c Release --no-build -o artifacts/packages
-pwsh -File eng/Verify-PackageBoundaries.ps1
-```
-
-Tests use xUnit v3 / Microsoft.Testing.Platform, `MemoryDistributedCache`, an in-process test coordinator and substitute transports. They require no provider keys, network or Redis. Every ordinary test project must discover and execute tests, including Video.
-
-Local protocol tests are not live-provider verification. Real account permissions, model availability and Redis cross-process coordination require separate integration checks. No real provider calls or package publication are performed by the unit tests.
-
-The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SECURITY.md](SECURITY.md) for reporting vulnerabilities, and [docs/releasing.md](docs/releasing.md) for the package release checklist. Development uses local validation. GitHub CI runs on Windows/Linux only for PRs into `main` or reuse by the explicit NuGet release workflow; ordinary pushes and standalone manual CI runs are disabled. Dependabot checks NuGet dependencies and GitHub Actions weekly.
-
-## License
-
-Licensed under the [Apache License, Version 2.0](LICENSE).
+## Additional provider guides
 
 ### Native Cohere v1 Chat contract
 
@@ -497,3 +493,25 @@ Native Claude-compatible deployments also support [explicit Messages paths and A
 Native Gemini deployments support [explicit model paths or declared fixed-model endpoints, with ApiKey/Bearer/header/query/Anonymous authentication](src/Asgard.Loki.LLM.Google/README.md#explicit-native-gemini-endpoints-and-authentication). Actual models and credentials remain explicit and fully bound; native bodies, tool associations and candidate endings retain their own protocol semantics.
 
 The [native alpha/search client](src/Asgard.Loki.LLM.NewAPI/README.md#explicit-search-endpoint-and-authentication) also accepts an explicitly configured operation path and Bearer/header/query/Anonymous authentication. It preserves one opaque native HTTP result; returned operation metadata excludes injected query credentials and no search workflow or Session is created.
+
+## Build and test
+
+```powershell
+dotnet restore Asgard.Loki.slnx
+dotnet build Asgard.Loki.slnx -c Release --no-restore
+pwsh -File eng/Test.ps1
+dotnet pack Asgard.Loki.slnx -c Release --no-build -o artifacts/packages
+pwsh -File eng/Verify-PackageBoundaries.ps1
+```
+
+Tests use xUnit v3 / Microsoft.Testing.Platform, `MemoryDistributedCache`, an in-process test coordinator and substitute transports. They require no provider keys, network or Redis. Every ordinary test project must discover and execute tests, including Video.
+
+Local protocol tests are not live-provider verification. Real account permissions, model availability and Redis cross-process coordination require separate integration checks. No real provider calls or package publication are performed by the unit tests.
+
+The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SECURITY.md](SECURITY.md) for reporting vulnerabilities, and [docs/releasing.md](docs/releasing.md) for the package release checklist. Development uses local validation. GitHub CI runs on Windows/Linux only for PRs into `main` or reuse by the explicit NuGet release workflow; ordinary pushes and standalone manual CI runs are disabled. Dependabot checks NuGet dependencies and GitHub Actions weekly.
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE).
