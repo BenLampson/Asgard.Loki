@@ -51,6 +51,9 @@ $expectedDependencies = [ordered]@{
     'Asgard.Loki.LLM.Dify' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Cloudflare' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Cohere' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.MiniMax' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.NewAPI' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
+    'Asgard.Loki.LLM.Perplexity' = @('Asgard.Loki.LLM', 'Asgard.Loki.Infrastructure', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.Xunfei' = @('Asgard.Loki.LLM')
     'Asgard.Loki.LLM.GoogleVertex' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
     'Asgard.Loki.LLM.AWS' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.LLM', 'Microsoft.Extensions.Http')
@@ -73,6 +76,14 @@ $expectedDependencies = [ordered]@{
     'Asgard.Loki.Image.Ali' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Image', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Image.Volcengine' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Image', 'Microsoft.Extensions.Http')
     'Asgard.Loki.Image.OpenAI' = @('Asgard.Loki.Infrastructure', 'Asgard.Loki.Image', 'Microsoft.Extensions.Http')
+}
+
+# 新增生产项目必须同时纳入包边界清单，避免只验证旧包仍报告成功。
+$productionPackageIds = @(Get-ChildItem -LiteralPath (Join-Path $repositoryRoot 'src') -Recurse -Filter '*.csproj' |
+    ForEach-Object { $_.BaseName } | Sort-Object)
+$expectedPackageIds = @($expectedDependencies.Keys | Sort-Object)
+if (($productionPackageIds -join '|') -ne ($expectedPackageIds -join '|')) {
+    throw 'Production projects and package boundary inventory differ.'
 }
 
 foreach ($packageId in $expectedDependencies.Keys) {
