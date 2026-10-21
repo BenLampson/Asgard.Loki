@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.MiniMax.Tests
 
-117 passing offline xUnit v3 cases cover the native v2 provider and public ChatCompletions SDK. Independent Fixtures/native.json contains full caller/wire/result/expected-events/literal SSE before implementation. Substitute HTTP handlers and fragmented streams require no real Keys/network/Redis; Session tests use MemoryDistributedCache with the explicit test coordinator.
+Tests cover the native v2 provider and public ChatCompletions SDK. Independent Fixtures/native.json contains full caller/wire/result/expected-events/independently authored literal SSE. Substitute HTTP handlers and fragmented streams require no real Keys/network/Redis; Session tests use MemoryDistributedCache with the explicit test coordinator.
 
 - Whole JSON/SSE over independent platform/proxy roots; reverse tool results, complete reasoning, exact integers, original counters/sensitivity/unknown fields and selected versus returned model metadata.
 - Request freezing before factory callbacks, strict Unicode/containers/reserved aliases, credential/target/header boundaries, positive local limits and complete Session drift/recovery.

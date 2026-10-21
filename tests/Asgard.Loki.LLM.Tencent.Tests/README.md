@@ -1,6 +1,6 @@
 # Tencent Hunyuan offline tests
 
-This xUnit v3 project executes 168 offline cases with substitute HTTP, a fixed logical clock, an application-owned credential-source double and `MemoryDistributedCache` plus an explicit test-only Session coordinator. No actual Key, Tencent/STS/model call, Redis or external network is used.
+This xUnit v3 project executes tests with substitute HTTP, a fixed logical clock, an application-owned credential-source double and `MemoryDistributedCache` plus an explicit test-only Session coordinator. No actual Key, Tencent/STS/model call, Redis or external network is used.
 
 The native JSON/SSE windows and eight Python standard-library HMAC vectors were authored before production code. All four complete and four stream signatures are exercised through actual captured public-provider request bytes and headers. Full native requests, Response envelopes and flat SSE records retain tool schema/argument strings, associations, unknown fields and exact numbers. A separate independent TokenHub JSON/SSE window verifies explicit existing OpenAI-provider reuse with ordinary and pipe-containing opaque Bearer keys; OpenAI is a test-only dependency here.
 
