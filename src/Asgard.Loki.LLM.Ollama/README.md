@@ -89,7 +89,7 @@ if (completion.Data.TryGetProperty("context", out var context))
     generate.Parameters["context"] = context.Clone();
 ```
 
-`OllamaGenerateRequest` names only the routed model; native `prompt`, `suffix`, `system`, `template`, `context`, images and settings use extension JSON. This preserves omission, empty strings and explicit null without injecting prompt/history defaults. The SDK neither templates prompts nor automatically persists/replays returned context. Local Session affinity does not imply a server-side conversational history. The provider identity now includes `generate-v1`; bindings made by the preceding Chat-only implementation must use a fresh Session or caller-managed expiration rather than silently resuming under a changed implementation.
+`OllamaGenerateRequest` names only the routed model; native `prompt`, `suffix`, `system`, `template`, `context`, images and settings use extension JSON. This preserves omission, empty strings and explicit null without injecting prompt/history defaults. The SDK neither templates prompts nor automatically persists/replays returned context. Local Session affinity does not imply a server-side conversational history. The provider identity includes `generate-v1`; bindings made by the preceding Chat-only implementation must use a fresh Session or caller-managed expiration rather than silently resuming under a changed implementation.
 
 ## Fidelity and lifecycle
 
@@ -103,10 +103,10 @@ Native `done:true` and error records are held until EOF and response/client disp
 
 ## Verification
 
-167 deterministic xUnit v3 cases (97 Chat, 62 generate and eight shared public-snapshot encoding cases) cover independent full request/result/event fixtures, native tool/history association, exact numbers, reasoning/schema settings, mode/identity binding, pre-await snapshots, default authorization, framing and failure/ownership boundaries. Generate additionally verifies prompt omission/null/empty distinctions, explicit-only context replay and independent protocol/record validation. They use substitute HTTP handlers, byte-fragmented streams and `MemoryDistributedCache`; no live server, Key, Redis or model is required.
+167 deterministic xUnit v3 cases (97 Chat, 62 generate and tests) cover independent full request/result/event fixtures, native tool/history association, exact numbers, reasoning/schema settings, mode/identity binding, pre-await snapshots, default authorization, framing and failure/ownership boundaries. Generate additionally verifies prompt omission/null/empty distinctions, explicit-only context replay and independent protocol/record validation. They use substitute HTTP handlers, byte-fragmented streams and `MemoryDistributedCache`; no live server, Key, Redis or model is required.
 
 Primary contract references: [Chat](https://docs.ollama.com/api/chat), [generate](https://docs.ollama.com/api/generate), [streaming](https://docs.ollama.com/api/streaming), [errors](https://docs.ollama.com/api/errors), [authentication](https://docs.ollama.com/api/authentication). Independent fixtures were authored against these contracts and the native [v0.40.6 types](https://github.com/ollama/ollama/blob/v0.40.6/api/types.go); they are not copied mapper output.
 
-The public LLM clients now validate raw native DOM/extension Unicode before snapshots and Session work. Eight additional Chat/generate complete/stream cases verify malformed extension keys and escaped strings fail before cache/HTTP. Direct provider Unicode handling and well-formed native data remain unchanged; see the [LLM snapshot contract](../Asgard.Loki.LLM/README.md#native-json-snapshot-encoding).
+The public LLM clients validate raw native DOM/extension Unicode before snapshots and Session work. Tests verify malformed extension keys and escaped strings fail before cache/HTTP. Direct provider Unicode handling and well-formed native data remain unchanged; see the [LLM snapshot contract](../Asgard.Loki.LLM/README.md#native-json-snapshot-encoding).
 
 NDJSON raw LF framing uses `Infrastructure.NdjsonReader`; Ollama retains its own blank-line, strict JSON, error and terminal interpretation. Existing per-record byte limits still include CR and exclude LF; streaming does not gain a new total-byte policy. The shared reader leaves the stream open for the provider-owned HTTP lifetime.

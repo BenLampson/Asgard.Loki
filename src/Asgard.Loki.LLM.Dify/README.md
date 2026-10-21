@@ -62,6 +62,6 @@ Chatbot/Agent use native message_end. A started Chatflow needs message_end follo
 
 The SDK holds every record from the first ending stage through original TTS/metadata tails and normal strict bounded EOF, exact declared lengths, method/target/resource-close/final-cancellation checks. Native error after an ending stage still fails with its original body before any held terminal is delivered. There is no synthetic DONE, stop, answer, usage total, retry, tool execution or reconnect. IsTerminal identifies a native end, including failure/stop/pause; it is not a success flag. Defaults: 64 MiB entire raw SSE, including controls, and 128 held tail records.
 
-Offline validation: 127 passing xUnit v3 cases cover independent complete JSON and three-profile SSE windows, precise/unknown values and separate IDs, direct replies/paused/stopped/failed outcomes, strict inputs/errors, snapshots, byte/tail/length limits, EOF/disposal/cancellation and target/authentication guards. No real credential/app/model request has been made.
+Offline validation: tests cover independent complete JSON and three-profile SSE windows, precise/unknown values and separate IDs, direct replies/paused/stopped/failed outcomes, strict inputs/errors, snapshots, byte/tail/length limits, EOF/disposal/cancellation and target/authentication guards. No real credential/app/model request has been made.
 
 Primary contracts: [Send Chat Message](https://docs.dify.ai/en/api-reference/chat-messages/send-chat-message) and [Streaming](https://docs.dify.ai/en/api-reference/guides/streaming).

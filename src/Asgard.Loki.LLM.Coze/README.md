@@ -62,7 +62,7 @@ LlmUpstreamException keeps actual HTTP status, original body bytes and content t
 
 References: [create](https://docs.coze.cn/developer_guides_chat_v3), [retrieve](https://docs.coze.cn/developer_guides_retrieve_chat), [chat messages](https://docs.coze.cn/developer_guides_list_chat_messages), [official SDK](https://github.com/coze-dev/coze-py/blob/main/cozepy/chat/__init__.py). Region/root/Bot availability and actual native option acceptance must be validated by the application; fixtures do not establish live service/model quality.
 
-Offline JSON evidence: 101 cases compare independent full native request/response windows and injected binding/transport faults. They do not verify live Bot/account access, option effects or model answer quality.
+Offline JSON evidence: tests compare independent full native request/response windows and injected binding/transport faults. They do not verify live Bot/account access, option effects or model answer quality.
 
 ## Native stream lifecycle
 
@@ -74,4 +74,4 @@ Actual `event: done` accepts the documented bare `[DONE]` and JSON-string `"[DON
 
 Default stream policies are 64 MiB original total bytes, 128 held terminal/tail frames and 4096 tracked messages; explicit positive changes participate in target fingerprint. The shared Infrastructure ReadBoundedAsync frames raw transport only; Coze owns its separate two-level lifecycle. Error events retain actual HTTP status/content type and original data bytes, including opaque errors after held done. A JSON acknowledgement on the streaming path is refused rather than polled; HTTP/native JSON errors stay original errors. Early consumer disposal closes owned resources without reading/retrying the remainder.
 
-The complete suite now passes **161 offline cases**, including 60 native stream cases beyond the JSON checkpoint. Independent literal SSE/expected windows and public-client fault injection cover both DONE forms, message/chat/transport identity domains, full raw tools/answers/reasoning/unknown data, incomplete/late/faulted tails and explicit post-stream queries. No live Bot/account/model/option or audio/answer-quality verification is claimed.
+Independent literal SSE/expected windows and public-client fault injection cover both DONE forms, message/chat/transport identity domains, full raw tools/answers/reasoning/unknown data, incomplete/late/faulted tails and explicit post-stream queries. No live Bot/account/model/option or audio/answer-quality verification is claimed.
