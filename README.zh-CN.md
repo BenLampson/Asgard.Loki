@@ -171,3 +171,5 @@ DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#
 独立的 [API Key 原生搜索客户端](src/Asgard.Loki.LLM.NewAPI/README.md) 只调用已配置 New API／Sub2API 上游的 alpha/search。完整地址、实际模型和独立 Key 固定在客户端；id／stream／query 与未知参数保持原文。结果保留完整 HTTP 状态、媒体类型及字节，允许二进制、空正文和 SSE，不推导生成终态或抓取引用。它与 Codex 外部账户鉴权分开；离线测试验证协议、输入、字节／长度限制、资源关闭和最终取消，未验证真实服务、模型或参数效果。
 
 [Gemini 原生传输策略](src/Asgard.Loki.LLM.Google/README.md#native-http-and-ending-policies) 提供显式字节／尾帧／候选上限、严格 JSON／SSE 及原始错误字节。原生响应身份、每个已观察候选和 EOF／资源关闭／最终取消边界已离线验证；晚期原生错误通过转换链保持原文。完整 Session 绑定包含这些策略与实现版本。
+
+对已配置的 New API／Sub2API 上游，[OpenAI 协议族](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-native-upstream-chat-responses-text-and-compact)、[Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-native-upstream-messages) 和 [Gemini](src/Asgard.Loki.LLM.Google/README.md#native-http-and-ending-policies) 继续复用现有供应商包；API Key alpha/search 使用独立固定目标客户端。完整地址／模型／Key／协议、不透明历史／工具关联及原生终态／Session 边界已离线验证，不推导托管部署、模型或参数可用性，也不引入中转业务流程。

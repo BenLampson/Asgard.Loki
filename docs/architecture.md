@@ -3313,3 +3313,19 @@ GoogleStreamState --> "Bounded ending tail" : first candidate finish / global fa
 ```
 
 Native responseId/modelVersion identity is distinct from unknown business type metadata. Every observed candidate needs a native finish unless a native global error/block occurs. No candidate, index, signature, tool association, STOP or DONE is synthesized. Native late failures withdraw buffered endings and preserve raw payload/status/media in LlmUpstreamException through the conversion decorator. HTTP JSON/SSE errors never pass through lossy text decoding. Early exit releases current owned HTTP resources only. Cache/coordinator/factory remain borrowed; no local tool execution, model catalog, gateway business layer or retry is added. See the [support matrix, initialization, limits and real-test status](../src/Asgard.Loki.LLM.Google/README.md).
+
+### Explicit native upstream protocol configurations
+
+Existing New API/Sub2API-compatible upstream calls reuse the provider implementing the selected native protocol. Complete roots, actual models, independent Keys, explicit protocol/feature grants, named clients and versions remain target configuration. OpenAiLlmProvider handles Chat/Responses/text/compact, AnthropicLlmProvider handles Messages, and GoogleLlmProvider handles Gemini. Native API-Key alpha/search alone uses the independent NewAPI client. No supplier-peer dependency, new general business coordinator or gateway host is added.
+
+```plantuml
+@startuml
+LlmOptions --> "Explicit native target" : root / model / Key / protocol / version
+"Explicit native target" --> OpenAiLlmProvider : Chat / Responses / text / granted compact
+"Explicit native target" --> AnthropicLlmProvider : Messages / explicit native authentication
+"Explicit native target" --> GoogleLlmProvider : Gemini / native model path
+"Fixed native search target" --> NewApiSearchClient : API-Key alpha/search only
+@enduml
+```
+
+Every original history, tool association, encrypted/signature item and unknown setting remains in its own native body/result. Protocol conversion is an explicit separate decorator, not endpoint detection. Compact IDs never become generation continuation bindings; compact rejects stream and requires its explicit target feature. Native controls, EOF/owned closure/final cancellation, bounded endings and complete Session affinity remain provider-owned. See the linked supplier support matrices, initialization, limits and live status in the root README. These are offline compatibility checks, not proof of hosted service/model/setting acceptance.

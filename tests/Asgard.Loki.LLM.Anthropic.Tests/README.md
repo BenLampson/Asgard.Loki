@@ -1,6 +1,6 @@
 # Asgard.Loki.LLM.Anthropic.Tests
 
-**247 passing offline xUnit v3 cases** exercise the actual provider through direct adapters and the public SDK. HTTP is replaced locally; Session tests use MemoryDistributedCache with the explicit test coordinator. There are no real Keys, provider/Redis requests or live model/setting claims. See [testing](../../docs/testing.md).
+**277 passing offline xUnit v3 cases** exercise the actual provider through direct adapters and the public SDK. HTTP is replaced locally; Session tests use MemoryDistributedCache with the explicit test coordinator. There are no real Keys, provider/Redis requests or live model/setting claims. See [testing](../../docs/testing.md).
 
 | Native contract | Cases / coverage |
 | --- | --- |
@@ -21,3 +21,5 @@ HTTP matrices check raw UTF-8/JSON/declared-length/body bounds, original native/
 Complete Session tests cover static Key/auth/version/client/policy/root/model changes, genuine predecessor identity rejection, delimiter collision prevention and same-configuration cross-instance recovery. Borrowed factories/cache/coordinators stay caller-owned. No model-prefix routing, host inference, login/source refresh, CLI/server/workspace management or production supplier-peer reference is introduced. Optional field passthrough and configured-profile tests do not establish live entitlement, model behavior, schema validity or parameter effectiveness.
 
 Twenty-four Zhipu v4 native/proxy Messages cases verify complete headers/body/result/literal SSE with explicit authentication, original tool associations/thinking/absent signatures, message_stop, Session drift/replay, native errors, late EOF/final cancellation and early exit. Original source windows are independently authored; tests use fake HTTP and MemoryDistributedCache with an explicit coordinator. No real model/optional-setting claim follows.
+
+Thirty native upstream cases cover three complete roots, explicit ApiKey/Bearer modes, full JSON/SSE windows, absent signatures, reverse tool histories, native stop and resource failures, raw HTTP errors, complete binding drift/replay and early exit. Fixtures are independently authored before SDK checks; no real service/model/setting/ciphertext validation is claimed.
