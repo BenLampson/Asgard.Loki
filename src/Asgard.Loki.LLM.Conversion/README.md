@@ -674,7 +674,7 @@ These tests use synthetic signature/encrypted values and substitute HTTP/credent
 
 ### Native provider error boundaries
 
-Conversion preserves failures raised by the selected native provider. In particular, Gemini's native HTTP implementation withholds candidate endings through actual EOF/owned closure/final cancellation and raises LlmUpstreamException for a late native error/block. Actual HTTP status and the complete original error-frame body remain available; conversion does not replace them with a tool result or successful completion. If an error frame is instead supplied directly to the conversion codec, its existing semantic diagnostics still apply. These are different failure layers, not alternate successful outcomes. The complete conversion test executable passes 2598 offline cases; this is not a live model or full-repository result.
+Conversion preserves failures raised by the selected native provider. In particular, Gemini's native HTTP implementation withholds candidate endings through actual EOF/owned closure/final cancellation and raises LlmUpstreamException for a late native error/block. Actual HTTP status and the complete original error-frame body remain available; conversion does not replace them with a tool result or successful completion. If an error frame is instead supplied directly to the conversion codec, its existing semantic diagnostics still apply. These are different failure layers, not alternate successful outcomes. The complete conversion test executable passes 2633 offline cases; this is not a live model or full-repository result.
 
 ### Explicit native transport beneath conversion
 
@@ -701,7 +701,7 @@ var provider = new ConvertingLlmProvider(native, LlmProtocol.ChatCompletions, "c
 | Session | Any native path/auth/client/policy change invalidates the complete converted binding before another send |
 | Native errors / ending | Native byte/status/media errors and EOF/closure/final-cancellation failures propagate; conversion cannot turn them into success |
 
-Twenty-eight additional offline cases exercise public Responses/Messages/Gemini to fixed Chat with four native authentication modes over JSON/SSE, plus path-change Session rejection. They reuse independent manually maintained protocol fixtures and verify actual address/auth/model/tool correlation, immutable source input and complete native JSON in Conversion metadata. Complete native transport snapshot/boundary tests live in the OpenAI supplier tests. The conversion executable passes 2598 offline cases; no real deployment/model/parameter validation is implied. Production conversion code, policies, dependency direction and existing semantic limits are unchanged. Byte and native state budgets remain with the selected provider; conversion retains its separate existing bounds. No gateway configuration or automatic authentication/conversion workflow is added.
+Twenty-eight additional offline cases exercise public Responses/Messages/Gemini to fixed Chat with four native authentication modes over JSON/SSE, plus path-change Session rejection. They reuse independent manually maintained protocol fixtures and verify actual address/auth/model/tool correlation, immutable source input and complete native JSON in Conversion metadata. Complete native transport snapshot/boundary tests live in the OpenAI supplier tests. The conversion executable passes 2633 offline cases; no real deployment/model/parameter validation is implied. Production conversion code, policies, dependency direction and existing semantic limits are unchanged. Byte and native state budgets remain with the selected provider; conversion retains its separate existing bounds. No gateway configuration or automatic authentication/conversion workflow is added.
 
 ### Explicit native Messages transport beneath conversion
 
@@ -727,4 +727,32 @@ var provider = new ConvertingLlmProvider(native, LlmProtocol.ClaudeMessages, "co
 | Native errors and endings | Original raw HTTP/late native status/media/body failures propagate; message_stop/EOF/owned closure/final cancellation remain native gates |
 | Changed operation/auth context | Existing converted Session fails before another HTTP send |
 
-35 additional offline cases exercise three public protocols to fixed native Messages over JSON/SSE and all five credential modes, plus one endpoint-change binding test per mode. They reuse independent manually maintained conversion samples and check the actual URI/auth/version/model/tool correlation, immutable caller and complete native JSON in Conversion metadata. Native complete byte/field/SSE snapshots and fault boundaries remain in the supplier tests. The conversion executable passes 2598 offline cases. No real deployment/model/setting validation is implied; production conversion algorithms, options and dependencies are unchanged. There is no token discovery, refresh, tool execution, hidden history or gateway routing.
+35 additional offline cases exercise three public protocols to fixed native Messages over JSON/SSE and all five credential modes, plus one endpoint-change binding test per mode. They reuse independent manually maintained conversion samples and check the actual URI/auth/version/model/tool correlation, immutable caller and complete native JSON in Conversion metadata. Native complete byte/field/SSE snapshots and fault boundaries remain in the supplier tests. The conversion executable passes 2633 offline cases. No real deployment/model/setting validation is implied; production conversion algorithms, options and dependencies are unchanged. There is no token discovery, refresh, tool execution, hidden history or gateway routing.
+
+### Explicit native Gemini transport beneath conversion
+
+The existing decorator also composes with [GoogleLlmProvider's explicit native Gemini model paths and authentication](../Asgard.Loki.LLM.Google/README.md#explicit-native-gemini-endpoints-and-authentication). Native ApiKey/Bearer/Header/Query modes use the selected API-Key identity; native None requires explicit Anonymous support. Credential support and provider binding are delegated unchanged. Operation paths, escaped actual model or explicit fixed-model declaration, auth formatting, client and local native policies remain with the selected provider and complete target.
+
+```csharp
+var native = new GoogleLlmProvider(factory, new GoogleHttpOptions
+{
+    Authentication = GoogleHttpAuthentication.Query,
+    Transport = new GoogleHttpTransportOptions
+    {
+        GenerateContentPath = "native/{model}:generate?existing=1",
+        StreamGenerateContentPath = "native/{model}:stream?alt=sse&existing=1",
+        CredentialName = "api_key"
+    }
+}, id: "native-gemini", httpClientName: "Explicit.Native.Gemini");
+var provider = new ConvertingLlmProvider(native, LlmProtocol.Gemini, "converted-gemini");
+// Register the complete target, requested public protocol, selected credential and existing Session dependencies.
+```
+
+| Configuration | Behavior / limits |
+| --- | --- |
+| Fixed native Gemini protocol | Explicit public Chat/Responses/Messages conversion; no endpoint-driven protocol selection |
+| Selected native model | Native path escaping/fixed declaration remains provider-owned; no body model/stream injection |
+| Five credential modes | Support is delegated; AllowLoss cannot enable another kind or combine credentials |
+| Native failure / Session | Original raw HTTP/late-native status/media/body and candidate terminal gates propagate; path/auth/model context changes invalidate complete binding |
+
+35 additional offline composition cases run three public protocols against actual native Gemini JSON/SSE over all five authentication modes, plus per-mode endpoint-change Session rejection. They reuse independent manually maintained conversion fixtures and verify actual URI/auth/model/tool correlation, immutable source input and complete native JSON retained in Conversion metadata. Complete native bytes/fields/model escaping/candidate/closure snapshots remain in the Google supplier tests. The conversion executable passes 2633 offline cases; no real service/model/setting/signature acceptance is implied. Production conversion algorithms/options/dependencies are unchanged. No provider-peer dependency, token discovery, tool execution, hidden history or gateway routing is introduced.
