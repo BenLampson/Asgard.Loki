@@ -3329,3 +3329,20 @@ LlmOptions --> "Explicit native target" : root / model / Key / protocol / versio
 ```
 
 Every original history, tool association, encrypted/signature item and unknown setting remains in its own native body/result. Protocol conversion is an explicit separate decorator, not endpoint detection. Compact IDs never become generation continuation bindings; compact rejects stream and requires its explicit target feature. Native controls, EOF/owned closure/final cancellation, bounded endings and complete Session affinity remain provider-owned. See the linked supplier support matrices, initialization, limits and live status in the root README. These are offline compatibility checks, not proof of hosted service/model/setting acceptance.
+
+### Explicit inference deployment presets
+
+Configured vLLM/SGLang Chat, text and Responses reuse OpenAiLlmProvider; native Messages uses AnthropicLlmProvider in explicit Bearer mode. Complete API roots include the chosen proxy prefix and `/v1/`; actual served model, credential identity, native protocol, named client, policies and target version remain part of the existing complete binding. Gemini/compact and anonymous access are not inferred from the deployment name. Existing separate Embedding and SGLang Rerank packages keep their own capability contracts.
+
+```plantuml
+@startuml
+"Explicit inference LlmTarget" --> OpenAiLlmProvider : native Chat / text / Responses
+"Explicit inference LlmTarget" --> AnthropicLlmProvider : native Messages / explicit Bearer
+OpenAiLlmProvider --> LLM : own capability only
+AnthropicLlmProvider --> LLM : own capability only
+OpenAiLlmProvider --> Infrastructure : transport primitives only
+AnthropicLlmProvider --> Infrastructure : transport primitives only
+@enduml
+```
+
+No deployment controller, model catalog, route administration or supplier wrapper is added. Native fields, exact values, encrypted items and tool associations remain in their original protocol windows. Native ending gates and owned-resource closure remain provider-owned; cache/coordinator/factory remain borrowed. The supplier READMEs document explicit initialization, supported operations, limits and offline-only validation status.
