@@ -15,4 +15,9 @@ The five `file-*-request.json` goldens independently describe every serialized m
 
 ## Explicit compatible configurations
 
-Independent Fixtures/Compatible/siliconflow-audio.json goldens verify configured SiliconFlow voice-based binary speech and multipart transcription through the existing public SDK adapters. Cases cover actual model/public route and independent credentials, complete native/custom JSON retention, absent defaults, literal/repeated/empty multipart parts, original audio/result/errors, borrowed ownership and delayed terminal state. No brand package, relaxed voice policy, live provider call, reference-only voice/SSE/translation acceptance or model-quality claim is added by these tests. The complete suite executes 393 offline cases, including 15 compatible-configuration cases.
+Independent Fixtures/Compatible/siliconflow-audio.json goldens verify configured SiliconFlow voice-based binary speech and multipart transcription through the existing public SDK adapters. Cases cover actual model/public route and independent credentials, complete native/custom JSON retention, absent defaults, literal/repeated/empty multipart parts, original audio/result/errors, borrowed ownership and delayed terminal state. No brand package, relaxed voice policy, live provider call, reference-only voice/SSE/translation acceptance or model-quality claim is added by these tests. The complete suite executes 386 offline cases, including 8 compatible-configuration cases.
+
+
+## Test ownership
+
+Compatible audio profiles retain their complete JSON/multipart/binary wire vectors and one partial-read failure regression. SpeechLifecycleTests and SpeechValidationTests own the shared OpenAiSpeechAdapter transport, voice/sample-rate and input matrices; provider-specific speech terminal policies remain here, not in Infrastructure.

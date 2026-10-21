@@ -14,7 +14,7 @@ Native OpenAI Embeddings provider for the Asgard.Loki .NET SDK. It references `A
 | Authentication | Fixed API Key/Bearer token, optional organization/project, explicit named HTTP factory |
 | Errors/cancellation | Original HTTP status/raw body/content type, 200 business-error detection, final cancellation after resource disposal, no retry or failover |
 | Local byte policies | `MaxRequestBytes` defaults to 32 MiB; `MaxResponseBytes` defaults to 64 MiB, including error bodies; no splitting |
-| Offline/live status | 163 substitute-HTTP tests, including 19 Jina cases, five canonical M3E cases, seven Workers AI cases, 27 explicit text-profile cases and 18 raw transport/lifetime boundary cases; no live provider/model/vector-quality verification |
+| Offline/live status | 160 substitute-HTTP tests, including 19 Jina cases, five canonical M3E cases, seven Workers AI cases, 27 explicit text-profile cases and 18 raw transport/lifetime boundary cases; no live provider/model/vector-quality verification |
 
 ## Initialization
 

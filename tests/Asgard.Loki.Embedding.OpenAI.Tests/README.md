@@ -8,8 +8,13 @@ The Jina compatibility checkpoint adds 19 cases (original 106 cases before the M
 
 `m3e-profile.json` is an independently authored explicit canonical M3E text-embedding profile. It retains raw native model/input, original reordered indices/float values, optional missing root/item fields, usage/unknown metadata and HTTP error bytes. Five public SDK/profile cases verify canonical scalar/batch request and result fidelity, snapshot timing, raw HTTP errors and duplicate-index rejection. They do not establish a hosted Moka service, model acceptance, token/Base64 support or live availability.
 
-Eighteen additional transport cases cover binary error bytes/content type, byte and declared-length limits, invalid raw/escaped Unicode (including unknown fields), media/charset mismatch and malformed raw content-type retention/rejection, duplicate unknown members, request rejection before factory creation, exact response limits, target/header isolation and late read/stream/client-disposal/cancellation failures. Together with the Workers AI and explicit target cases below, the complete project has 163 offline cases.
+Fifteen transport cases cover binary error bytes/content type, byte and declared-length limits, invalid raw/escaped Unicode (including unknown fields), media/charset mismatch and malformed raw content-type retention/rejection, duplicate unknown members, request rejection before factory creation, exact response limits, target/header isolation and late read/stream/client-disposal/cancellation failures. Together with the Workers AI and explicit target cases below, the complete project has 160 offline cases.
 
 Seven Workers AI compatibility cases use independently authored [full wire vectors](Fixtures/cloudflare-profile.json): four scalar/batch and trailing-root combinations through the public SDK, HTTP/native business-error byte retention, and incompatible `ai/run` envelope rejection. They verify only the account-scoped canonical OpenAI Embeddings operation, not live Cloudflare model execution or native run wrapper conversion.
 
 Twenty-seven explicit compatible target cases use separately authored [complete profiles](Fixtures/compatible-profiles.json): scalar/batch wire plus full raw HTTP errors for nine independent root/model/key/Id/client configurations. No production converter builds expected requests/results. These verify the canonical text/indexed-numeric subset, not brand routing, model-specific option acceptance, anonymous auth or a live hosted service. In particular the Moonshot-style source-compatible operation is not proof that a hosted Moonshot embedding model is available.
+
+
+## Test ownership
+
+Infrastructure.Tests owns HttpBodyReader length, EOF and stream-disposal fault matrices. This suite retains actual adapter budget wiring, exact raw results, encoding/media/error semantics, target headers and outer client-disposal/final-cancellation behavior.
