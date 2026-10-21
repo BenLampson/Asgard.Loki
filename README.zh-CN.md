@@ -181,3 +181,5 @@ DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#
 原生 Claude 兼容部署也支持[显式 Messages 路径及 ApiKey／Bearer／自定义头／查询参数／无认证](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-native-messages-endpoint-and-authentication)，保留原生工具／历史／流式语义及完整目标绑定；协议转换仍由独立装饰器显式配置。
 
 原生 Gemini 部署支持[显式模型路径或声明固定模型端点，以及 ApiKey／Bearer／自定义头／查询参数／无认证](src/Asgard.Loki.LLM.Google/README.md#explicit-native-gemini-endpoints-and-authentication)。实际模型和凭据仍须明确提供并完整绑定，保留原生正文、工具关联和候选终态语义。
+
+[原生 alpha/search 客户端](src/Asgard.Loki.LLM.NewAPI/README.md#explicit-search-endpoint-and-authentication) 也支持显式操作路径与 Bearer／自定义头／查询参数／无认证，保留一次完整原始 HTTP 结果；返回操作信息排除 SDK 注入的查询凭据，不创建搜索工作流或 Session。

@@ -3403,3 +3403,22 @@ GoogleLlmProvider --> GoogleStreamState : native candidates / response identity 
 ```
 
 Configured URI/auth/body/Host/Accept identity is checked before send, across native frames and after owned closure. Fixed declarations, both paths, auth formatting, client and policies participate in the existing complete Session binding. Native JSON, tool/signature/history, sparse candidate indices, unknown metadata and raw error status/media/bytes remain Google-owned. EOF/length/owned closure/final cancellation precede held terminal delivery. Cache/coordinator/factory remain borrowed. The existing Conversion decorator delegates credential support and binds the selected native implementation; no production supplier-peer edge is added. See the supplier README for initialization, support, limits and offline-only validation status.
+
+### Explicit single-call native search transport
+
+NewApiSearchOptions adds one Authentication selector (default Bearer omitted) and optional frozen NewApiSearchTransportOptions. The native client keeps its complete fixed root/model/credential/client/version and resource budgets, with a single relative SearchPath/fixed query and non-secret credential formatting. None requires explicit Anonymous; all other modes require API-Key identity. No generation provider, Session, response-chain ownership or native SSE state is inferred.
+
+```plantuml
+@startuml
+NewApiSearchClient --> NewApiSearchOptions : immutable complete native target
+NewApiSearchOptions --> NewApiSearchTransportOptions : optional single operation / non-secret auth formatting
+NewApiSearchClient --> LlmCredential : selected API Key or explicit Anonymous
+NewApiSearchClient --> NewApiSearchConfiguredCall : frozen actual URI / Host / auth / original body
+NewApiSearchConfiguredCall --> NewApiSearchConfiguredEndpoint : same-origin relative operation / query validation
+NewApiSearchClient --> HttpBodyReader : bounded original bytes / real EOF
+NewApiSearchClient --> NewApiSearchResult : original status / media / defensive body
+NewApiSearchResult --> NewApiSearchMetadata : no Key; optional non-secret configuration snapshot
+@enduml
+```
+
+Configured calls verify actual method/URI/Host/auth/content and final resource closure/cancellation. Returned operation Endpoint excludes SDK-injected authentication query values; metadata extensions are omitted for original default calls. Native response bytes are never redacted or interpreted into results/terminals/usage. The package still references only LLM, Infrastructure and standard HTTP support; factories remain borrowed. No incoming route engine, gateway administration, credential discovery, tool/search orchestration, retry or background flow is introduced. See the supplier support matrix, initialization, limits and offline verification status.

@@ -9,7 +9,7 @@ public sealed class NewApiSearchResult
     /// <summary>仅在真实 EOF、自有资源关闭与最终取消检查之后建立独立正文。</summary>
     internal NewApiSearchResult(Uri endpoint, HttpStatusCode status, string? contentType, ReadOnlySpan<byte> body, NewApiSearchMetadata metadata)
     { Endpoint = endpoint; StatusCode = status; ContentType = contentType; _body = body.ToArray(); Metadata = metadata; }
-    /// <summary>本次固定目标的实际 alpha/search 地址，不是正文中的外部资料 URL。</summary>
+    /// <summary>本次固定操作地址，排除 SDK 注入的认证查询；不是正文中的外部资料 URL。</summary>
     public Uri Endpoint { get; }
     /// <summary>实际 HTTP 状态，不等同于模型生成完成或资料有效。</summary>
     public HttpStatusCode StatusCode { get; }
