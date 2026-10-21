@@ -3295,3 +3295,21 @@ NewApiSearchResult --> NewApiSearchMetadata : fixed target / actual model / cred
 The configured target owns model and rejects root model parameters/case aliases; caller native id/stream/query and unknown fields remain original. Model selection is explicit initialization, without a routing alias, default model, target rotation or hidden Session/history. Body snapshots precede factory creation; absolute endpoint, Host and selected Bearer identity override unrelated client defaults. Semantic HTTP pipeline configuration remains caller-owned.
 
 Native alpha/search returns an opaque complete HTTP window. JSON/text/binary/empty/SSE responses and 2xx business-error-shaped data are not parsed into a model terminal, result schema, usage or task state. Non-2xx failures preserve actual status and complete raw bytes/content type in LlmUpstreamException. Request/response byte budgets, declared-length consistency, actual EOF, all owned resource closures and final cancellation precede delivery. Factory is borrowed; each call owns its message/content/client/response/body stream. No local search, retrieval workflow, tool execution, gateway hosting/admin, billing, polling or model catalog is introduced. See the [support matrix, initialization, limits and real-test status](../src/Asgard.Loki.LLM.NewAPI/README.md).
+
+### Bounded Gemini native HTTP and ending delivery
+
+GoogleLlmProvider keeps its existing constructor and adds an explicit GoogleHttpOptions overload. Options define request/body bytes, ending-tail events and candidate association counts. The implementation has a versioned Session binding containing the selected named client and frozen policies. It references only LLM, Infrastructure and standard HTTP support; native state/auth/result semantics remain in Google.
+
+```plantuml
+@startuml
+GoogleLlmProvider --> GoogleHttpOptions : frozen byte / tail / candidate policies
+GoogleLlmProvider --> GoogleHttpJson : strict original JSON snapshot
+GoogleLlmProvider --> GoogleStreamState : native response / candidate identities
+GoogleLlmProvider --> HttpBodyReader : bounded JSON / original error bytes / actual EOF
+GoogleLlmProvider --> SseReader : strict UTF-8 / bounded whole stream / declared length
+GoogleStreamState --> "Bounded ending tail" : first candidate finish / global failure
+"Bounded ending tail" --> GeminiContentEvent : only after EOF + owned closure + final cancellation
+@enduml
+```
+
+Native responseId/modelVersion identity is distinct from unknown business type metadata. Every observed candidate needs a native finish unless a native global error/block occurs. No candidate, index, signature, tool association, STOP or DONE is synthesized. Native late failures withdraw buffered endings and preserve raw payload/status/media in LlmUpstreamException through the conversion decorator. HTTP JSON/SSE errors never pass through lossy text decoding. Early exit releases current owned HTTP resources only. Cache/coordinator/factory remain borrowed; no local tool execution, model catalog, gateway business layer or retry is added. See the [support matrix, initialization, limits and real-test status](../src/Asgard.Loki.LLM.Google/README.md).

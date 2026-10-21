@@ -56,6 +56,11 @@ public sealed class GroundingCitationStreamProviderTests
             var error = await Assert.ThrowsAsync<LlmConversionException>(() => Collect(client, seen, TestContext.Current.CancellationToken));
             Assert.Contains(error.Diagnostics, diagnostic => diagnostic.Code == "grounding_stream_layout_not_representable");
         }
+        else if (kind == "blocked")
+        {
+            var error = await Assert.ThrowsAsync<LlmUpstreamException>(() => Collect(client, seen, TestContext.Current.CancellationToken));
+            Assert.Equal(HttpStatusCode.OK, error.StatusCode); CustomToolConversionTests.Equal(source[^1], JsonNode.Parse(error.ResponseBody));
+        }
         else await Assert.ThrowsAsync<InvalidDataException>(() => Collect(client, seen, TestContext.Current.CancellationToken));
         NoCitationOrTerminal(seen); Assert.Equal(1, handler.Calls);
     }

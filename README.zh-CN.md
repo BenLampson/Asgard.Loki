@@ -169,3 +169,5 @@ DeepSeek 的 [Chat／Responses／beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#
 [OpenRouter、Xinference 与 Submodel 显式配置](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-openrouter-xinference-and-submodel-profiles) 复用现有 OpenAI 包，按实际协议声明 Chat／Responses／文本补全，并显式绑定完整地址、实际模型、Key 和可选调用者请求头。原生推理、工具关联、文本输入、OpenRouter 重复 finish 用量帧与错误均保持原文。协议／终态／Session 边界已离线验证，未验证历史托管端点或真实模型可用性。
 
 独立的 [API Key 原生搜索客户端](src/Asgard.Loki.LLM.NewAPI/README.md) 只调用已配置 New API／Sub2API 上游的 alpha/search。完整地址、实际模型和独立 Key 固定在客户端；id／stream／query 与未知参数保持原文。结果保留完整 HTTP 状态、媒体类型及字节，允许二进制、空正文和 SSE，不推导生成终态或抓取引用。它与 Codex 外部账户鉴权分开；离线测试验证协议、输入、字节／长度限制、资源关闭和最终取消，未验证真实服务、模型或参数效果。
+
+[Gemini 原生传输策略](src/Asgard.Loki.LLM.Google/README.md#native-http-and-ending-policies) 提供显式字节／尾帧／候选上限、严格 JSON／SSE 及原始错误字节。原生响应身份、每个已观察候选和 EOF／资源关闭／最终取消边界已离线验证；晚期原生错误通过转换链保持原文。完整 Session 绑定包含这些策略与实现版本。

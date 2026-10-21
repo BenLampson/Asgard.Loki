@@ -44,8 +44,8 @@ public sealed class GroundingStreamProviderTests
         List<LlmJsonEvent> seen = [];
         if (kind == "native-error")
         {
-            var error = await Assert.ThrowsAsync<LlmConversionException>(() => Collect(client, seen));
-            Assert.Contains(error.Diagnostics, d => d.Code == "upstream_stream_error");
+            var error = await Assert.ThrowsAsync<LlmUpstreamException>(() => Collect(client, seen));
+            Assert.Equal(HttpStatusCode.OK, error.StatusCode); CustomToolConversionTests.Equal(source[^1], JsonNode.Parse(error.ResponseBody));
         }
         else await Assert.ThrowsAsync<InvalidDataException>(() => Collect(client, seen));
         Assert.All(seen, item => Assert.Equal(JsonValueKind.Null, item.Data.GetProperty("choices")[0].GetProperty("finish_reason").ValueKind));
@@ -87,10 +87,12 @@ public sealed class GroundingStreamProviderTests
     [Theory] [InlineData(false)] [InlineData(true)]
     public async Task PublicSdk_BlockedMetadataTailDoesNotLeakSuccess(bool metadata)
     {
-        using var handler = Handler(metadata ? GroundingStreamFixtures.BlockedMetadataTail() : GroundingStreamFixtures.BlockedUsageTail());
+        var source = (metadata ? GroundingStreamFixtures.BlockedMetadataTail() : GroundingStreamFixtures.BlockedUsageTail()).ToArray();
+        using var handler = Handler(source);
         await using var client = ConvertingProviderTests.Build(handler, LlmProtocol.ChatCompletions, LlmProtocol.Gemini, options: GroundingStreamFixtures.Options);
         List<LlmJsonEvent> seen = [];
-        await Assert.ThrowsAsync<InvalidDataException>(() => Collect(client, seen));
+        var error = await Assert.ThrowsAsync<LlmUpstreamException>(() => Collect(client, seen));
+        Assert.Equal(HttpStatusCode.OK, error.StatusCode); CustomToolConversionTests.Equal(source[^1], JsonNode.Parse(error.ResponseBody));
         Assert.All(seen, item => Assert.Equal(JsonValueKind.Null, item.Data.GetProperty("choices")[0].GetProperty("finish_reason").ValueKind)); Assert.Equal(1, handler.Calls);
     }
     /// <summary>只使用三字节分片的替代 HTTP；不执行真实 Gemini、Google Search、客户端工具或网络请求。</summary>

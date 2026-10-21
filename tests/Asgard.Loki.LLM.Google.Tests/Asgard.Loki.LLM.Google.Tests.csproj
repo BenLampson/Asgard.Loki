@@ -9,5 +9,8 @@
     <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLock.cs" Link="TestSessionLock.cs" />
     <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLease.cs" Link="TestSessionLease.cs" />
     <Compile Include="../Shared/NativeLlmTests.cs" Link="NativeLlmTests.cs" />
+    <EmbeddedResource Include="upstream-native.json" />
+    <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaBodyStream.cs" Link="OllamaBodyStream.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaHttpClient.cs" Link="OllamaHttpClient.cs" />
   </ItemGroup>
 </Project>
