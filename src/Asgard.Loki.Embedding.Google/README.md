@@ -15,7 +15,7 @@ Native Google Gemini Developer API embeddings for the Asgard.Loki .NET SDK. This
 | Output | Original `embedding` / ordered `embeddings`, finite numerical `values`, raw metadata/usage/unknown fields |
 | Views | Provider-owned `result.GoogleEmbeddings` / `GoogleEmbeddingVector`, without invented `index` fields |
 | Validation | Complete count/order-position association and explicitly declared per-item dimensions; malformed/error responses fail |
-| Verification | 114 offline public SDK/HTTP/negative/lifecycle cases; no live model or vector-quality verification |
+| Verification | tests; no live model or vector-quality verification |
 
 ## Initialization
 

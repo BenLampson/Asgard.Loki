@@ -42,7 +42,7 @@ Core does not infer an input shape, tokenize text, normalize vectors, reorder ba
 
 Only one explicit native operation is called. Synchronous multi-input requests are not an asynchronous Batch service. There is no conversational Session, cache, shared LLM scheduler, vector database, search engine, RAG pipeline, tool executor, automatic chunking, background job, billing or HTTP listener. Adapters remain caller-owned after client disposal. Do not mutate request dictionaries concurrently while a call snapshots them; once dispatched, subsequent source dictionary/document changes cannot alter the adapter's copy.
 
-The separately tested native providers do not change these core contracts. Thirty-seven offline core cases use custom in-memory adapters to verify native JSON, configuration/request snapshots, exact and concurrent routing, cancellation, failure propagation and borrowed ownership. They do not verify an upstream embedding model, HTTP protocol or vector quality. No live embedding call has been made.
+The separately tested native providers do not change these core contracts. Tests use custom in-memory adapters to verify native JSON, configuration/request snapshots, exact and concurrent routing, cancellation, failure propagation and borrowed ownership. They do not verify an upstream embedding model, HTTP protocol or vector quality. No live embedding call has been made.
 
 ## Original upstream error bytes
 

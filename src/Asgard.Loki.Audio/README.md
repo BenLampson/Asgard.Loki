@@ -98,6 +98,6 @@ var result = await loki.Audio.Transcriptions.CreateAsync(new AudioFileRequest
 
 ## Verification and remaining operations
 
-The 122 offline core cases include 84 file-operation contract cases and the existing 38 speech cases. File cases use application-owned in-memory adapters, complete authored JSON/WEBVTT body samples and nonseekable observed uploads. They check literal form snapshots, independent routing, raw results/events, cancellation, non-failover, optional streaming gates and success-after-source-end/disposal. They do not implement or verify actual multipart wire encoding, OpenAI transcription/translation, speech recognition quality or live models.
+The tests include tests and the existing tests. File cases use application-owned in-memory adapters, complete authored JSON/WEBVTT body samples and nonseekable observed uploads. They check literal form snapshots, independent routing, raw results/events, cancellation, non-failover, optional streaming gates and success-after-source-end/disposal. They do not implement or verify actual multipart wire encoding, OpenAI transcription/translation, speech recognition quality or live models.
 
 The speech subset covers native objects/unknown JSON, snapshots, target choice/non-failover, optional-interface compatibility, borrowed ownership and shared completion/error/cancellation/disposal semantics. Music generation and bidirectional speech remain unimplemented; Other native file suppliers, music generation and bidirectional operations remain future work.

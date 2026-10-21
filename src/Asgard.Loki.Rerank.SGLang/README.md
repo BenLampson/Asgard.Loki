@@ -14,7 +14,7 @@ Native SGLang v0.5.19 `POST rerank` support for the .NET SDK. The package refere
 | Authentication | Explicit Anonymous or fixed BearerToken mode, independent target/named HTTP client |
 | Local bounds | Positive MaxRequestBytes (32 MiB), MaxResponseBytes (64 MiB including error bodies) |
 | Errors/lifetime | Original status/raw bytes/content type, native errors in HTTP 200, EOF/disposal/final cancellation before success; no retry/failover |
-| Offline/live | 88 substitute-HTTP cases with independently authored protocol fixtures; no live server/model/relevance verification |
+| Offline/live | tests with independently authored protocol fixtures; no live server/model/relevance verification |
 
 ## Initialization
 
@@ -56,7 +56,7 @@ The caller supplies the entire API root and served-model identity. The native re
 
 ## Fidelity and limits
 
-Whitespace, document order, native content-part boundaries, null/false, exact JSON numbers and unknown fields remain unchanged. Query/documents must be nonempty native text or content-part arrays. The SDK does not tokenize, truncate, split, join, render prompts/templates or download media. Actual multimodal support, server mode/template/model configuration and handling of unknown options belong to the server. For multimodal documents, use explicit return_documents=false: the pinned native response schema only defines string echoes. Any returned echo that cannot match its original indexed text fails rather than being fabricated or assumed equivalent.
+Whitespace, document order, native content-part boundaries, null/false, exact JSON numbers and unknown fields remain unchanged. Query/documents must be nonempty native text or content-part arrays. The SDK does not tokenize, truncate, split, join, render prompts/templates or download media. Actual multimodal support, server mode/template/model configuration and handling of unknown options belong to the server. For multimodal documents, use explicit return_documents=false: the native response schema only defines string echoes. Any returned echo that cannot match its original indexed text fails rather than being fabricated or assumed equivalent.
 
 Absent top_n returns all input documents; explicit null remains null. A positive top_n larger than input count caps the expected output count without changing the native parameter or allocating by its value. return_documents defaults to true on the server; this is validated without inserting the field. Missing/null echoes fail when required; present string echoes must equal the indexed original text. Empty, partial, duplicate or unrelated indices fail. An explicit stream request is unsupported and SSE is rejected before reading a successful stream body.
 

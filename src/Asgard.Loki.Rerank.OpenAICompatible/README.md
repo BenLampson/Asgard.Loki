@@ -14,7 +14,7 @@ An explicit native `model/query/documents` to `results/index/relevance_score` HT
 | Scores | Finite native numbers, including negative or greater-than-one values; no sorting/normalization |
 | Authentication | Explicit Anonymous or BearerToken mode, independent Id/model/key/root/named client |
 | Limits/lifetime | Positive 32/64 MiB request/response defaults, raw error bytes/type/status, EOF/disposal/final cancellation before publication |
-| Offline/live | 97 substitute-HTTP cases with independent complete fixtures; live service/model/relevance acceptance remains unverified |
+| Offline/live | tests with independent complete fixtures; live service/model/relevance acceptance remains unverified |
 
 ## Initialization
 

@@ -63,6 +63,6 @@ The native response requires a string model and usage with exact nonnegative int
 
 ## Validation
 
-The 133 offline xUnit v3 cases use substitute HTTP handlers and fragmented in-memory UTF-8 streams, never real API Keys, Redis or provider calls. Seven independently authored full-wire fixtures cover native text/object, nullable/suppressed options, text/image queries with multimodal candidates, and listwise vectors. Negative and lifecycle tests check shape/association/count/usage, exact integers, malformed/truncated/duplicate JSON, native errors, successful SSE refusal, snapshots, cancellation and ownership. These do not establish real ranking quality or live model acceptance. Development validation is local; GitHub CI is reserved for PR/release gates.
+The tests use substitute HTTP handlers and fragmented in-memory UTF-8 streams, never real API Keys, Redis or provider calls. Seven independently authored full-wire fixtures cover native text/object, nullable/suppressed options, text/image queries with multimodal candidates, and listwise vectors. Negative and lifecycle tests check shape/association/count/usage, exact integers, malformed/truncated/duplicate JSON, native errors, successful SSE refusal, snapshots, cancellation and ownership. These do not establish real ranking quality or live model acceptance. Development validation is local; GitHub CI is reserved for PR/release gates.
 
 References: [Jina API documentation](https://api.jina.ai/docs), [official OpenAPI contract](https://api.jina.ai/openapi.json), [Jina Reranker](https://jina.ai/reranker/).
