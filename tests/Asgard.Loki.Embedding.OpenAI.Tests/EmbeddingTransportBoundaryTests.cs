@@ -19,7 +19,7 @@ public sealed class EmbeddingTransportBoundaryTests
     }
     /// <summary>未知字段中的坏编码也不能被解码器有损替换，原始字节和声明长度均有界。</summary>
     [Theory]
-    [InlineData("limit")] [InlineData("length")] [InlineData("utf8")] [InlineData("unicode")] [InlineData("charset")] [InlineData("type")] [InlineData("invalid-type")]
+    [InlineData("limit")] [InlineData("utf8")] [InlineData("unicode")] [InlineData("charset")] [InlineData("type")] [InlineData("invalid-type")]
     public async Task FullRawResponseMustMeetByteEncodingAndMediaContract(string kind)
     {
         var bytes = Encoding.UTF8.GetBytes(M3eProfileFixture.Part("responses")[1].GetRawText());
@@ -29,7 +29,7 @@ public sealed class EmbeddingTransportBoundaryTests
         {
             var content = new StreamContent(source); content.Headers.ContentType = new(kind == "type" ? "text/plain" : "application/json");
             if (kind == "invalid-type") { content.Headers.Remove("Content-Type"); content.Headers.TryAddWithoutValidation("Content-Type", "not a media type"); }
-            if (kind == "charset") content.Headers.ContentType!.CharSet = "utf-16"; if (kind == "length") content.Headers.ContentLength = bytes.Length + 1;
+            if (kind == "charset") content.Headers.ContentType!.CharSet = "utf-16";
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
         };
         await Assert.ThrowsAsync<InvalidDataException>(() => new OpenAiEmbeddingAdapter(factory, M3eProfileFixture.Options(responseLimit: kind == "limit" ? bytes.Length - 1 : bytes.Length + 100)).EmbedAsync(M3eProfileFixture.Request(1), TestContext.Current.CancellationToken));
@@ -81,13 +81,13 @@ public sealed class EmbeddingTransportBoundaryTests
         using var factory = M3eProfileFixture.Factory(); factory.OnSend = (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(source), RequestMessage = actual });
         await Assert.ThrowsAsync<InvalidDataException>(() => new OpenAiEmbeddingAdapter(factory, M3eProfileFixture.Options()).EmbedAsync(M3eProfileFixture.Request(1), TestContext.Current.CancellationToken)); Assert.False(source.Eof); Assert.True(source.Disposed); Assert.Equal(1, factory.Disposals);
     }
-    /// <summary>读完数据后发生的读取/流/客户端释放/取消失败不能先交付成功结果。</summary>
+    /// <summary>公共读取/流关闭矩阵由 Infrastructure.Tests 覆盖；客户端关闭和最终取消仍由供应商验证。</summary>
     [Theory]
-    [InlineData("read")] [InlineData("dispose")] [InlineData("client")] [InlineData("cancel")]
+    [InlineData("client")] [InlineData("cancel")]
     public async Task LateFailuresPreventSuccessAfterNativeBodyWasRead(string kind)
     {
         using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
-        using var source = new EmbeddingTransportReadStream(Encoding.UTF8.GetBytes(M3eProfileFixture.Part("responses")[1].GetRawText())) { FailRead = kind == "read", FailDispose = kind == "dispose" };
+        using var source = new EmbeddingTransportReadStream(Encoding.UTF8.GetBytes(M3eProfileFixture.Part("responses")[1].GetRawText()));
         using var factory = M3eProfileFixture.Factory(); factory.OnSend = (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(source) });
         if (kind == "client") factory.OnDisposeClient = () => throw new IOException("fixture client disposal"); if (kind == "cancel") factory.OnDisposeClient = cancellation.Cancel;
         if (kind == "cancel") await Assert.ThrowsAnyAsync<OperationCanceledException>(() => new OpenAiEmbeddingAdapter(factory, M3eProfileFixture.Options()).EmbedAsync(M3eProfileFixture.Request(1), cancellation.Token));

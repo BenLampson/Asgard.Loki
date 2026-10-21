@@ -34,15 +34,15 @@ public sealed class CodexSearchBoundaryTests
         using (source) using (var handler = new StubHttpHandler((_, _) => Task.FromResult(CompactionFixture.Json())))
         { var factory = new OpenAiHttpFactory(handler); await Assert.ThrowsAnyAsync<Exception>(() => new CodexSearchClient(factory, SearchOptions(), Credential(), source, new CodexTestClock()).SearchAsync(new(), TestContext.Current.CancellationToken)); Assert.Equal(1, source.Calls); Assert.Empty(factory.Clients); Assert.Equal(0, handler.Calls); }
     }
-    /// <summary>正常 EOF、完整字节和资源关闭之前不能返回原始成功窗口；实际目标或来源变化也失败。</summary>
-    [Theory] [InlineData("read")] [InlineData("dispose")] [InlineData("client")] [InlineData("cancel-eof")] [InlineData("cancel-client")] [InlineData("source-body")] [InlineData("expired")] [InlineData("late-uri")] [InlineData("method")] [InlineData("redirect")] [InlineData("length-short")] [InlineData("length-long")] [InlineData("bytes")] [InlineData("unbound-auth")]
+    /// <summary>公共读取边界由 Infrastructure.Tests 覆盖；此处保留预算接线、外层关闭及账户/目标复查。</summary>
+    [Theory] [InlineData("client")] [InlineData("cancel-client")] [InlineData("source-body")] [InlineData("expired")] [InlineData("late-uri")] [InlineData("method")] [InlineData("redirect")] [InlineData("bytes")] [InlineData("unbound-auth")]
     public async Task TransportAndClosureFaults_PreventSuccessfulResult(string fault)
     {
         using var cancellation = new CancellationTokenSource(); using var source = new CodexFixtureSource(); var clock = new CodexTestClock(); var bytes = Bytes(Part("search_response").GetRawText());
-        var body = new OllamaBodyStream(bytes) { FailAtEof = fault == "read", FailDispose = fault == "dispose", OnEof = () => { if (fault == "cancel-eof") cancellation.Cancel(); if (fault == "expired") clock.Current = Now.AddHours(1); }, OnDispose = () => { if (fault == "source-body") source.BindingIdentity = "changed"; } };
+        var body = new OllamaBodyStream(bytes) { OnEof = () => { if (fault == "expired") clock.Current = Now.AddHours(1); }, OnDispose = () => { if (fault == "source-body") source.BindingIdentity = "changed"; } };
         HttpRequestMessage? actual = null; using var handler = new StubHttpHandler((message, _) =>
         {
-            actual = message; if (fault == "method") message.Method = HttpMethod.Get; var response = OpenAiHttpFixture.Reply(body, false, fault == "length-long" ? bytes.Length + 1 : fault == "length-short" ? bytes.Length - 1 : null);
+            actual = message; if (fault == "method") message.Method = HttpMethod.Get; var response = OpenAiHttpFixture.Reply(body, false);
             if (fault == "redirect") response.RequestMessage = new(HttpMethod.Post, "https://other.invalid/search"); return Task.FromResult(response);
         });
         var factory = new OpenAiHttpFactory(handler) { Configure = c => { if (fault == "unbound-auth") c.DefaultRequestHeaders.Add("api-key", "other"); }, OnDispose = () => { if (fault == "client") throw new IOException("client close"); if (fault == "cancel-client") cancellation.Cancel(); if (fault == "late-uri") actual!.RequestUri = new("https://other.invalid/search"); } };
