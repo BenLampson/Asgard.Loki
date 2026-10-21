@@ -1,6 +1,6 @@
 # OpenAI Image offline protocol tests
 
-350 xUnit v3 cases: five original generation JSON/SSE cases, 94 additional generation boundary regressions, 119 native nonstream image-editing cases and 132 editing SSE cases. Tests use the public SDK or the explicit adapter with local HTTP substitutes, fake credentials and `.invalid` domains. No network, actual image codec/rendering, real key, live model or mask-quality check is used.
+Offline xUnit v3 tests cover generation and JSON/multipart editing, including native event streams and boundary regressions. Tests use the public SDK or the explicit adapter with local HTTP substitutes, fake credentials and `.invalid` domains. No network, actual image codec/rendering, real key, live model or mask-quality check is used.
 
 `Fixtures/edit-json-input.json` is an authored native request. The independent complete `edit-json-wire.json` expected request changes only the bound actual model. Three complete MIME goldens cover multiple images/mask, multiple images without mask and a minimal single upload with omitted content type/defaults. The test-only MIME reader decodes actual serialized bytes into full ordered header/body entries and normalizes only the random boundary; it does not call production builders to create expected output. `edit-json-response.json` retains native Base64/URL items, revised prompt, usage, nested null/false and integers/decimals beyond common floating-point precision. Arbitrary upload/result bytes do not prove a valid image format.
 
@@ -18,4 +18,4 @@ XaiImageCompatibilityTests uses independent xai-generation.json native vectors t
 
 `compatible-targets.json` defines independent explicit standard-wire target profiles. Their generation/edit JSON, native SSE and multipart expectations come from the independently authored full original fixtures, rebinding only the expected actual model. The tests verify compatible IO through existing adapters; a configured target must actually accept the same endpoints, Bearer auth and native request/result protocol. They do not infer support from a gateway brand, route placeholder or hostname.
 
-The two explicit standard-wire profiles have 12 generation/edit JSON, multipart and SSE snapshot cases. The complete scoped Image.OpenAI suite is 367 offline cases; no real server or supplier acceptance is established. Only the expected fixed target model is changed in independently authored original wire fixtures.
+The two explicit standard-wire profiles have 12 generation/edit JSON, multipart and SSE snapshot cases. The complete scoped Image.OpenAI suite is tests; no real server or supplier acceptance is established. Only the expected fixed target model is changed in independently authored original wire fixtures.

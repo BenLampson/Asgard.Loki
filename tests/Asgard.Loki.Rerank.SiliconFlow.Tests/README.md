@@ -1,6 +1,6 @@
 # Asgard.Loki.Rerank.SiliconFlow.Tests
 
-143 offline xUnit v3 cases verify the native SiliconFlow supplier through substitute HTTP and the public SDK. Six independently authored [full wire fixtures](Fixtures/native.json) cover scalar documents, arrays with empty text, mixed ImageDoc/TextDoc/string inputs, explicit settings, images and an empty scalar document. The fixtures retain Unicode, original indices, duplicate document values, optional metadata and future null/false fields. Expected wire/result JSON is not produced by the adapter.
+Tests verify the native SiliconFlow supplier through substitute HTTP and the public SDK. Six independently authored [full wire fixtures](Fixtures/native.json) cover scalar documents, arrays with empty text, mixed ImageDoc/TextDoc/string inputs, explicit settings, images and an empty scalar document. The fixtures retain Unicode, original indices, duplicate document values, optional metadata and future null/false fields. Expected wire/result JSON is not produced by the adapter.
 
 Tests check exact native endpoint/auth/model/body, scalar versus array preservation, complete ranked counts and original document association; no sorting, default options or synthetic Jina model/usage fields are accepted. Precise number tests distinguish integer semantics from floating-point rounding and retain large/exponent values. Request dictionaries may change during await without changing the dispatched/validated snapshot.
 

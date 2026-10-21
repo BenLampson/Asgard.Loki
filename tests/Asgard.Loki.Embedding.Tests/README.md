@@ -4,4 +4,4 @@ xUnit v3 tests run through the public `LokiClientBuilder.AddEmbedding` and `loki
 
 These tests use no keys, HTTP, Redis or LLM Session. Native OpenAI/Google protocol and actual vector/model verification are separate work; synthetic native-shaped JSON does not certify model acceptance or embedding quality.
 
-Three additional error-contract cases cover the unchanged named text constructor, byte-buffer copying/original status/content type, and lossless binary error access with explicit strict UTF-8 text failure. No network or supplier acceptance is involved.
+Tests cover the unchanged named text constructor, byte-buffer copying/original status/content type, and lossless binary error access with explicit strict UTF-8 text failure. No network or supplier acceptance is involved.
