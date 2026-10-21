@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 namespace Asgard.Loki.LLM.OpenAI;
 
 /// <summary>实现 OpenAI Chat/Responses HTTP/JSON、SSE、原生 Moderations 及可选双工协议。</summary>
-public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter, IResponsesWebSocketAdapter, IRealtimeAdapter, IModerationsAdapter, ITextCompletionsAdapter
+public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IResponsesAdapter, IResponsesCompactionAdapter, IResponsesWebSocketAdapter, IRealtimeAdapter, IModerationsAdapter, ITextCompletionsAdapter, ILlmCredentialSupport
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _httpClientName;
@@ -54,7 +54,8 @@ public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IRespon
         _httpClientName = httpClientName;
         _webSocketFactory = webSocketFactory ?? new DefaultResponsesWebSocketFactory();
         _webSocketOptions = webSocketOptions is null ? new() : webSocketOptions with { };
-        _httpOptions = httpOptions is null ? new() : httpOptions with { };
+        _httpOptions = httpOptions is null ? new() : httpOptions with { Transport = httpOptions.Transport is null ? null : httpOptions.Transport with { } };
+        if (_httpOptions.Transport is not null) OpenAiConfiguredHttpEndpoint.Validate(_httpOptions.Transport);
         _realtimeOptions = realtimeOptions is null ? new() : realtimeOptions with { };
         _realtimeFactory = realtimeFactory ?? new DefaultResponsesWebSocketFactory();
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_realtimeOptions.MaximumMessageBytes, 0);
@@ -74,6 +75,9 @@ public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IRespon
     /// <inheritdoc />
     public string Id { get; }
 
+    /// <summary>显式无认证只接受 Anonymous；默认及其他 HTTP 方式只接受 API Key，不接受外部账户。</summary>
+    public bool SupportsCredential(LlmCredentialKind kind) => kind == (_httpOptions.Transport?.Authentication == OpenAiHttpAuthentication.None ? LlmCredentialKind.Anonymous : LlmCredentialKind.ApiKey);
+
     /// <summary>HTTP 终态/资源语义使用新域；HTTP、WebSocket 策略和自定义连接工厂均参与完整绑定。</summary>
     public string BindingIdentity => _realtimeFactory is DefaultResponsesWebSocketFactory && _realtimeOptions == new OpenAiRealtimeOptions()
         ? ResponsesBindingIdentity
@@ -91,6 +95,7 @@ public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IRespon
     public async Task<IResponsesWebSocketConnection> OpenWebSocketAsync(LlmAdapterContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context); cancellationToken.ThrowIfCancellationRequested();
+        if (_httpOptions.Transport?.Authentication == OpenAiHttpAuthentication.None && context.Credential.Kind != LlmCredentialKind.ApiKey) throw new NotSupportedException("原生 WebSocket 需要独立的 API Key 认证，不继承 HTTP 无认证配置。");
         var baseUri = context.Target.BaseAddress;
         if (!baseUri.IsAbsoluteUri || baseUri.Scheme is not ("http" or "https") || baseUri.Query.Length != 0 || baseUri.Fragment.Length != 0 || baseUri.UserInfo.Length != 0)
             throw new ArgumentException("WebSocket 目标必须使用没有凭据、查询和片段的 HTTP(S) 基础地址。", nameof(context));

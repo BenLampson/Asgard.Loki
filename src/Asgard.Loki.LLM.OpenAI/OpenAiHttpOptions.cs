@@ -20,4 +20,7 @@ public sealed record OpenAiHttpOptions
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? MaximumTrackedTextChoices { get; init; }
 
+    /// <summary>可选明确 HTTP 地址与认证；省略保留原路径、认证及既有绑定字节，不影响 WebSocket。</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public OpenAiHttpTransportOptions? Transport { get; init; }
 }

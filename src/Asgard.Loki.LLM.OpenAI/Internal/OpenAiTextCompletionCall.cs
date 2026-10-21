@@ -7,25 +7,31 @@ namespace Asgard.Loki.LLM.OpenAI.Internal;
 /// <summary>单次原生文本请求快照和实际线协议校验；仅 method/model/stream 由已选调用拥有。</summary>
 internal sealed class OpenAiTextCompletionCall
 {
-    private readonly string _key;
+    private readonly string _key = "";
+    private readonly OpenAiConfiguredHttpCall? _configured;
     private readonly string _endpoint;
     private readonly string _host;
     private readonly string _accept;
     private readonly HttpContent _content;
     internal HttpRequestMessage Request { get; }
     /// <summary>任何工厂等待之前冻结完整 UTF-8 请求，独立 Key 不借用其他认证或默认值。</summary>
-    internal OpenAiTextCompletionCall(JsonObject payload, LlmAdapterContext context, bool stream, int maximum)
+    internal OpenAiTextCompletionCall(JsonObject payload, LlmAdapterContext context, bool stream, int maximum, OpenAiHttpTransportOptions? transport = null)
     {
         ArgumentNullException.ThrowIfNull(payload); ArgumentNullException.ThrowIfNull(context); ArgumentNullException.ThrowIfNull(context.Target); ArgumentNullException.ThrowIfNull(context.Credential);
         var root = context.Target.BaseAddress; ArgumentNullException.ThrowIfNull(root);
         if (!root.IsAbsoluteUri || root.Scheme is not ("http" or "https") || root.UserInfo.Length != 0 || root.Query.Length != 0 || root.Fragment.Length != 0) throw new ArgumentException("文本补全需要无凭据、查询或片段的 HTTP(S) 完整根。");
         ArgumentException.ThrowIfNullOrWhiteSpace(context.Target.UpstreamModel); OpenAiHttpJson.Text(context.Target.UpstreamModel);
-        if (context.Credential.Kind != LlmCredentialKind.ApiKey) throw new NotSupportedException("兼容文本补全需要显式 API Key 凭据。");
-        _key = context.Credential.ApiKey; if (_key.Any(c => c is < '!' or > '~')) throw new ArgumentException("原生 Key 必须为无空白/控制字符的 ASCII 文本。");
         ValidateOriginal(payload);
         foreach (var property in payload) if (new[] { "model", "stream" }.Any(x => x.Equals(property.Key, StringComparison.OrdinalIgnoreCase) && x != property.Key)) throw new ArgumentException("文本补全不能使用 model/stream 字段别名。");
         var body = payload.DeepClone().AsObject(); body["model"] = context.Target.UpstreamModel; body["stream"] = stream;
         var json = body.ToJsonString(); var utf8 = new UTF8Encoding(false, true); if (utf8.GetByteCount(json) > maximum) throw new InvalidDataException("文本补全请求超过 UTF-8 字节上限。");
+        if (transport is not null)
+        {
+            _configured = new(utf8.GetBytes(json), context, transport, "completions", stream); Request = _configured.Request;
+            _content = Request.Content!; _endpoint = Request.RequestUri!.OriginalString; _host = Request.Headers.Host!; _accept = stream ? "text/event-stream" : "application/json"; return;
+        }
+        if (context.Credential.Kind != LlmCredentialKind.ApiKey) throw new NotSupportedException("兼容文本补全需要显式 API Key 凭据。");
+        _key = context.Credential.ApiKey; if (_key.Any(c => c is < '!' or > '~')) throw new ArgumentException("原生 Key 必须为无空白/控制字符的 ASCII 文本。");
         _endpoint = root.AbsoluteUri.TrimEnd('/') + "/completions"; _host = root.Authority; _accept = stream ? "text/event-stream" : "application/json";
         Request = new(HttpMethod.Post, _endpoint); _content = new ByteArrayContent(utf8.GetBytes(json));
         try { Request.Content = _content; _content.Headers.ContentType = new("application/json") { CharSet = "utf-8" }; Request.Headers.Host = _host; Request.Headers.Authorization = new("Bearer", _key); Request.Headers.Accept.ParseAdd(_accept); }
@@ -50,6 +56,7 @@ internal sealed class OpenAiTextCompletionCall
     /// <summary>显式请求覆盖同名 Bearer/Host 默认值，但禁止工厂补入未选择的 Key 或签名。</summary>
     internal void BeforeSend(HttpClient client)
     {
+        if (_configured is not null) { _configured.BeforeSend(client); return; }
         foreach (var name in new[] { "api-key", "x-api-key", "x-goog-api-key", "x-amz-date", "x-amz-security-token", "x-amz-content-sha256" })
             if (client.DefaultRequestHeaders.Contains(name)) throw new InvalidOperationException("文本补全命名客户端包含未选择的认证或签名。");
         Verify(null);
@@ -57,6 +64,7 @@ internal sealed class OpenAiTextCompletionCall
     /// <summary>读取和所有拥有资源关闭后仍校验原始方法、完整根/模型请求及选中凭据；不跟随改写。</summary>
     internal void Verify(HttpResponseMessage? response)
     {
+        if (_configured is not null) { _configured.Verify(response); return; }
         if (Request.Method != HttpMethod.Post || Request.RequestUri?.OriginalString != _endpoint || Request.Headers.Host != _host
             || response?.RequestMessage is { } actual && (actual.Method != HttpMethod.Post || actual.RequestUri?.OriginalString != _endpoint)
             || Request.Headers.Authorization?.Scheme != "Bearer" || Request.Headers.Authorization.Parameter != _key

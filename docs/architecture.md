@@ -3346,3 +3346,22 @@ AnthropicLlmProvider --> Infrastructure : transport primitives only
 ```
 
 No deployment controller, model catalog, route administration or supplier wrapper is added. Native fields, exact values, encrypted items and tool associations remain in their original protocol windows. Native ending gates and owned-resource closure remain provider-owned; cache/coordinator/factory remain borrowed. The supplier READMEs document explicit initialization, supported operations, limits and offline-only validation status.
+
+### Explicit OpenAI native HTTP transport configuration
+
+OpenAiHttpOptions adds an optional Transport snapshot owned by OpenAiLlmProvider. OpenAiHttpTransportOptions describes only relative native operation paths/fixed queries and one explicit Bearer/Header/Query/None credential placement. Server/root and actual model remain in LlmTarget; credential identity remains in LlmCredential. None requires explicit Anonymous support through ILlmCredentialSupport, which the existing Conversion decorator delegates. No shared capability business coordinator or supplier-peer reference is introduced.
+
+```plantuml
+@startuml
+OpenAiLlmProvider --> OpenAiHttpOptions : frozen HTTP policies
+OpenAiHttpOptions --> OpenAiHttpTransportOptions : optional paths / auth formatting, no Key
+OpenAiLlmProvider ..|> ILlmCredentialSupport : explicit API Key or Anonymous HTTP
+OpenAiLlmProvider --> OpenAiConfiguredHttpCall : immutable URI / Host / body / selected credential
+OpenAiConfiguredHttpCall --> LlmTarget : complete server root
+OpenAiConfiguredHttpCall --> LlmCredential : selected Key or explicit Anonymous
+OpenAiConfiguredHttpCall --> OpenAiConfiguredHttpEndpoint : relative path / fixed-query validation
+OpenAiLlmProvider --> OpenAiHttpTransport : existing native JSON / SSE lifecycle
+@enduml
+```
+
+All five native HTTP operations (Chat/Responses/compact/text/Moderations) honor the selected transport configuration and retain separate native request/result validation. Explicit policy includes stricter actual wire identity checks, raw binary HTTP errors, unselected default-auth rejection and final resource/cancellation gates. Session identity includes all frozen operation/auth policies; nullable omission preserves the old default binding bytes. Request/response/stream closures remain call-owned; factory/cache/coordinator remain borrowed. WebSocket/Realtime and Codex external-account authentication retain separate contracts. No incoming route matching, URL/body programming engine, management API, retry, credential discovery or model suffix repair is added. Support, initialization, limits and offline-only validation are in the supplier README.

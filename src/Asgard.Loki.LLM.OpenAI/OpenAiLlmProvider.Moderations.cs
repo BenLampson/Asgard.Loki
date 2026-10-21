@@ -18,18 +18,24 @@ public sealed partial class OpenAiLlmProvider
         var root = context.Target.BaseAddress;
         if (!root.IsAbsoluteUri || root.Scheme is not ("http" or "https") || root.UserInfo.Length != 0 || root.Query.Length != 0 || root.Fragment.Length != 0)
             throw new ArgumentException("Moderations 根地址必须为无凭据、查询参数和片段的 HTTP(S) 绝对地址。");
-        if (context.Credential.Kind != LlmCredentialKind.ApiKey) throw new NotSupportedException("OpenAI Moderations 需要目标显式 API Key 凭据。");
-        var key = context.Credential.ApiKey;
-        if (string.IsNullOrWhiteSpace(key) || key.Any(c => c is < '!' or > '~')) throw new ArgumentException("原生认证凭据必须为无空白/控制字符的 ASCII 文本。");
-        var endpoint = new Uri(new Uri(root.AbsoluteUri.TrimEnd('/') + "/"), "moderations"); byte[] bytes; System.Net.HttpStatusCode status; string? type;
-        using (var message = new HttpRequestMessage(HttpMethod.Post, endpoint))
+        OpenAiConfiguredHttpCall? call = null;
+        if (_httpOptions.Transport is not null) call = new(payload.Bytes, context, _httpOptions.Transport, "moderations", false);
+        var endpoint = call?.Request.RequestUri ?? new Uri(new Uri(root.AbsoluteUri.TrimEnd('/') + "/"), "moderations"); byte[] bytes; System.Net.HttpStatusCode status; string? type; HttpResponseMessage? actualResponse = null;
+        using (var message = call?.Request ?? new HttpRequestMessage(HttpMethod.Post, endpoint))
         {
-            message.Headers.Authorization = new("Bearer", key); message.Headers.Accept.ParseAdd("application/json");
-            message.Content = new ByteArrayContent(payload.Bytes); message.Content.Headers.ContentType = new("application/json") { CharSet = "utf-8" };
+            if (call is null)
+            {
+                if (context.Credential.Kind != LlmCredentialKind.ApiKey) throw new NotSupportedException("OpenAI Moderations 需要目标显式 API Key 凭据。");
+                var key = context.Credential.ApiKey; if (key.Any(c => c is < '!' or > '~')) throw new ArgumentException("原生认证凭据必须为无空白/控制字符的 ASCII 文本。");
+                message.Headers.Authorization = new("Bearer", key); message.Headers.Accept.ParseAdd("application/json");
+                message.Content = new ByteArrayContent(payload.Bytes); message.Content.Headers.ContentType = new("application/json") { CharSet = "utf-8" };
+            }
             using var client = _httpClientFactory.CreateClient(_httpClientName);
-            foreach (var headerName in new[] { "Authorization", "api-key", "x-api-key" }) client.DefaultRequestHeaders.Remove(headerName);
+            if (call is not null) call.BeforeSend(client);
+            else foreach (var headerName in new[] { "Authorization", "api-key", "x-api-key" }) client.DefaultRequestHeaders.Remove(headerName);
             cancellationToken.ThrowIfCancellationRequested();
             using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            actualResponse = response; call?.Verify(response);
             if (response.RequestMessage is { } actual && (actual.Method != HttpMethod.Post || actual.RequestUri != endpoint)) throw new InvalidDataException("Moderations 实际响应目标或方法改变。");
             if (response.IsSuccessStatusCode && string.Equals(response.Content.Headers.ContentType?.MediaType, "text/event-stream", StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Moderations 不支持 SSE。");
             var length = response.Content.Headers.ContentLength;
@@ -37,7 +43,7 @@ public sealed partial class OpenAiLlmProvider
             bytes = await HttpBodyReader.ReadAsync(response.Content, _httpOptions.MaximumBodyBytes, cancellationToken).ConfigureAwait(false);
             status = response.StatusCode; type = response.Content.Headers.TryGetValues("Content-Type", out var types) ? string.Join(", ", types) : null;
         }
-        cancellationToken.ThrowIfCancellationRequested();
+        cancellationToken.ThrowIfCancellationRequested(); call?.Verify(actualResponse);
         if ((int)status is < 200 or >= 300) throw new LlmUpstreamException("OpenAI Moderations HTTP 调用失败。", status, bytes, type);
         JsonElement data;
         try { data = OpenAiHttpJson.Parse(bytes); }

@@ -27,6 +27,7 @@ public sealed partial class OpenAiLlmProvider
     public async Task<IRealtimeConnection> OpenRealtimeAsync(LlmAdapterContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context); cancellationToken.ThrowIfCancellationRequested();
+        if (_httpOptions.Transport?.Authentication == OpenAiHttpAuthentication.None && context.Credential.Kind != LlmCredentialKind.ApiKey) throw new NotSupportedException("原生 Realtime 需要独立的 API Key 认证，不继承 HTTP 无认证配置。");
         var root = context.Target.BaseAddress;
         if (!root.IsAbsoluteUri || root.Scheme is not ("http" or "https") || root.UserInfo.Length != 0 || root.Query.Length != 0 || root.Fragment.Length != 0)
             throw new ArgumentException("Realtime 目标必须是无凭据、查询和片段的 HTTP(S) 基础地址。", nameof(context));
