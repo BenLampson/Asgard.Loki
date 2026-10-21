@@ -3384,3 +3384,22 @@ AnthropicLlmProvider --> AnthropicStreamState : original Messages blocks / tools
 ```
 
 Default nullable omission preserves original binding bytes; explicit path/auth/client/version/policy changes invalidate complete Sessions normally. None can use the original operation without a path override but requires an explicit Anonymous identity. Header/Query require a named location; credentials are never stored in transport options. Actual wire identity, raw error bytes/status/media, owned resource closure and final cancellation gates remain native provider responsibilities. The existing Conversion decorator delegates kind support and binds the native implementation without a supplier-peer dependency. No incoming routing, gateway management, retries or hidden history is introduced. See the supplier support matrix, initialization, limits and offline validation status.
+
+### Explicit native Gemini model and authentication transport
+
+GoogleHttpOptions adds an Authentication selector omitted at default ApiKey and an optional GoogleHttpTransportOptions snapshot omitted at null. Default four-policy binding bytes remain identical. Separate GenerateContentPath/StreamGenerateContentPath values each carry one known native {model} path position, filled with the escaped actual target model once. Explicit static endpoints instead require FixedUpstreamModel matching the actual target; both paths must then omit the model position. No general route/template interpreter or hidden server/model selection is introduced.
+
+```plantuml
+@startuml
+GoogleLlmProvider --> GoogleHttpOptions : frozen native budgets / sole authentication selector
+GoogleHttpOptions --> GoogleHttpTransportOptions : two relative paths / optional fixed-model declaration / auth formatting
+GoogleLlmProvider ..|> ILlmCredentialSupport : explicit API Key or Anonymous
+GoogleLlmProvider --> GoogleConfiguredHttpCall : immutable URI / Host / native body / selected auth
+GoogleConfiguredHttpCall --> GoogleConfiguredHttpEndpoint : validate model position / same-origin paths / fixed queries
+GoogleConfiguredHttpCall --> LlmTarget : complete server / actual model
+GoogleConfiguredHttpCall --> LlmCredential : selected identity, no Key in options
+GoogleLlmProvider --> GoogleStreamState : native candidates / response identity / terminal gates
+@enduml
+```
+
+Configured URI/auth/body/Host/Accept identity is checked before send, across native frames and after owned closure. Fixed declarations, both paths, auth formatting, client and policies participate in the existing complete Session binding. Native JSON, tool/signature/history, sparse candidate indices, unknown metadata and raw error status/media/bytes remain Google-owned. EOF/length/owned closure/final cancellation precede held terminal delivery. Cache/coordinator/factory remain borrowed. The existing Conversion decorator delegates credential support and binds the selected native implementation; no production supplier-peer edge is added. See the supplier README for initialization, support, limits and offline-only validation status.

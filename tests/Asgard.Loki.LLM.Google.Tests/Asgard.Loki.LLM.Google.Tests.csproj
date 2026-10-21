@@ -10,6 +10,7 @@
     <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLease.cs" Link="TestSessionLease.cs" />
     <Compile Include="../Shared/NativeLlmTests.cs" Link="NativeLlmTests.cs" />
     <EmbeddedResource Include="upstream-native.json" />
+    <EmbeddedResource Include="configured-http.json" />
     <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaBodyStream.cs" Link="OllamaBodyStream.cs" />
     <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaHttpClient.cs" Link="OllamaHttpClient.cs" />
   </ItemGroup>

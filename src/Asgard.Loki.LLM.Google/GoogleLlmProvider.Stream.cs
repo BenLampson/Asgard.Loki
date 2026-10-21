@@ -14,14 +14,14 @@ public sealed partial class GoogleLlmProvider
     private async IAsyncEnumerable<GeminiContentEvent> StreamCoreAsync(JsonObject payload, LlmAdapterContext context, [EnumeratorCancellation] CancellationToken token)
     {
         token.ThrowIfCancellationRequested(); var state = new GoogleStreamState(_options.MaximumTrackedCandidates); List<GeminiContentEvent> tail = [];
-        byte[]? rejected = null; HttpStatusCode status = default; string? type = null;
-        using (var request = Request(payload, context, true))
+        byte[]? rejected = null; HttpStatusCode status = default; string? type = null; HttpResponseMessage? actual = null; GoogleConfiguredHttpCall? configured;
+        using (var request = Request(payload, context, true, out configured))
         using (var client = _factory.CreateClient(_clientName))
         {
-            token.ThrowIfCancellationRequested(); ValidateDefaults(client);
+            token.ThrowIfCancellationRequested(); if (configured is null) ValidateDefaults(client); else configured.BeforeSend(client);
             using (var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false))
             {
-                status = response.StatusCode; type = ContentType(response.Content); var length = Length(response.Content);
+                actual = response; configured?.Verify(response); status = response.StatusCode; type = ContentType(response.Content); var length = Length(response.Content);
                 if (!response.IsSuccessStatusCode || !string.Equals(response.Content.Headers.ContentType?.MediaType, "text/event-stream", StringComparison.OrdinalIgnoreCase))
                     rejected = await HttpBodyReader.ReadAsync(response.Content, _options.MaximumBodyBytes, token).ConfigureAwait(false);
                 else
@@ -31,7 +31,7 @@ public sealed partial class GoogleLlmProvider
                     while (true)
                     {
                         bool moved; try { moved = await frames.MoveNextAsync().ConfigureAwait(false); } catch (DecoderFallbackException error) { throw new InvalidDataException("Gemini SSE 不是有效 UTF-8。", error); }
-                        if (!moved) break; token.ThrowIfCancellationRequested(); var frame = frames.Current; var original = GoogleHttpJson.Utf8.GetBytes(frame.Data); JsonElement data;
+                        if (!moved) break; token.ThrowIfCancellationRequested(); configured?.Verify(response); var frame = frames.Current; var original = GoogleHttpJson.Utf8.GetBytes(frame.Data); JsonElement data;
                         try { data = GoogleHttpJson.Parse(original); }
                         catch (Exception error) when (frame.EventName == "error" && error is JsonException or InvalidDataException) { throw new LlmUpstreamException("Gemini 返回原生错误事件。", status, original, type); }
                         if (state.LateFailure(data, frame.EventName)) throw new LlmUpstreamException("Gemini 在可能终态之后返回原生失败。", status, original, type);
@@ -43,7 +43,7 @@ public sealed partial class GoogleLlmProvider
                 }
             }
         }
-        token.ThrowIfCancellationRequested(); if (rejected is not null) throw new LlmUpstreamException("Gemini 流式调用失败或未返回 SSE。", status, rejected, type);
+        token.ThrowIfCancellationRequested(); configured?.Verify(actual); if (rejected is not null) throw new LlmUpstreamException("Gemini 流式调用失败或未返回 SSE。", status, rejected, type);
         foreach (var item in tail) { token.ThrowIfCancellationRequested(); yield return item; }
     }
 }
