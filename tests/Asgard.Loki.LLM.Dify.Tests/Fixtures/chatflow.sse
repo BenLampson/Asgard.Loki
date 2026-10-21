@@ -1,0 +1,16 @@
+event: ping
+
+data: {"event":"workflow_started","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","workflow_run_id":"run-a","data":{"id":"run-a","workflow_id":"flow-a","inputs":{"exact":9007199254740993}}}
+
+data: {"event":"node_started","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","workflow_run_id":"run-a","data":{"id":"node-exec-b","node_id":"llm-b","index":9007199254740993,"inputs":null}}
+
+data: {"event":"node_finished","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","workflow_run_id":"run-a","data":{"id":"node-exec-b","node_id":"llm-b","status":"succeeded","outputs":{"event":"workflow_finished","answer":"业务字段"}}}
+
+data: {"event":"message","id":"reply-event","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","answer":"回答","from_variable_selector":["llm-b","text"]}
+
+data: {"event":"message_end","id":"reply-end-event","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","metadata":{"reasoning":{"llm-b":"<think>原文</think>"},"usage":{"total_tokens":0}}}
+
+data: {"event":"workflow_finished","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","workflow_run_id":"run-a","data":{"id":"run-a","status":"succeeded","outputs":{"answer":"回答","unknown":false},"error":null,"elapsed_time":1e-30,"total_tokens":0,"total_steps":2}}
+
+data: {"event":"tts_message_end","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","audio":""}
+

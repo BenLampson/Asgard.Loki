@@ -1,0 +1,74 @@
+[
+  {
+    "publicSdk": false,
+    "arn": false,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke-with-response-stream",
+    "canonicalPath": "/proxy/model/anthropic.configured-model-v1%253A0/invoke-with-response-stream",
+    "payloadHash": "c60784ccaf39b08dec245923ea2382e3cb90cd8aadfef1f59a09b58035c31252",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amzn-bedrock-accept, Signature=e3e7e4e16ed43d790e4ebd4610eddb2cfb347f0139b6b0fb64ead03455ba3f4a"
+  },
+  {
+    "publicSdk": false,
+    "arn": false,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke-with-response-stream",
+    "canonicalPath": "/proxy/model/anthropic.configured-model-v1%253A0/invoke-with-response-stream",
+    "payloadHash": "c60784ccaf39b08dec245923ea2382e3cb90cd8aadfef1f59a09b58035c31252",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-accept;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=96e15b8c654c9d80fffaeac1b16dace3d29a53d55bedf3da6c054d690c611441"
+  },
+  {
+    "publicSdk": false,
+    "arn": true,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke-with-response-stream",
+    "canonicalPath": "/proxy/model/arn%253Aaws%253Abedrock%253Aus-east-1%253A123456789012%253Ainference-profile%252Fprofile%253A0/invoke-with-response-stream",
+    "payloadHash": "c60784ccaf39b08dec245923ea2382e3cb90cd8aadfef1f59a09b58035c31252",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amzn-bedrock-accept, Signature=e086d8deac5180150c9c4720b4842432622d5c3daaf2f817e4b6e00dc0a48721"
+  },
+  {
+    "publicSdk": false,
+    "arn": true,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke-with-response-stream",
+    "canonicalPath": "/proxy/model/arn%253Aaws%253Abedrock%253Aus-east-1%253A123456789012%253Ainference-profile%252Fprofile%253A0/invoke-with-response-stream",
+    "payloadHash": "c60784ccaf39b08dec245923ea2382e3cb90cd8aadfef1f59a09b58035c31252",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-accept;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=701d75d98adb391978e436605696ee0747b55c53db58a849db19619f6d56bc94"
+  },
+  {
+    "publicSdk": true,
+    "arn": false,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke-with-response-stream",
+    "canonicalPath": "/proxy/model/anthropic.configured-model-v1%253A0/invoke-with-response-stream",
+    "payloadHash": "6a965e9ad2069fbc1c5336fdaed68f77ace5855050030c9ee5f197d4f9aeefcc",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amzn-bedrock-accept, Signature=18acba912a47cda4a931f29b9ab4a28052dc7e846b18afad75bd490940f435fe"
+  },
+  {
+    "publicSdk": true,
+    "arn": false,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke-with-response-stream",
+    "canonicalPath": "/proxy/model/anthropic.configured-model-v1%253A0/invoke-with-response-stream",
+    "payloadHash": "6a965e9ad2069fbc1c5336fdaed68f77ace5855050030c9ee5f197d4f9aeefcc",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-accept;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=77de5577fc282416f61d5feb64ce0e77a67360d7f5f5d17ea5f2c0aa2938117e"
+  },
+  {
+    "publicSdk": true,
+    "arn": true,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke-with-response-stream",
+    "canonicalPath": "/proxy/model/arn%253Aaws%253Abedrock%253Aus-east-1%253A123456789012%253Ainference-profile%252Fprofile%253A0/invoke-with-response-stream",
+    "payloadHash": "6a965e9ad2069fbc1c5336fdaed68f77ace5855050030c9ee5f197d4f9aeefcc",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amzn-bedrock-accept, Signature=a4fc90c51c8526d4c796915eaa458608a072647e92861d09d4fc3bb5b8cbdbf2"
+  },
+  {
+    "publicSdk": true,
+    "arn": true,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke-with-response-stream",
+    "canonicalPath": "/proxy/model/arn%253Aaws%253Abedrock%253Aus-east-1%253A123456789012%253Ainference-profile%252Fprofile%253A0/invoke-with-response-stream",
+    "payloadHash": "6a965e9ad2069fbc1c5336fdaed68f77ace5855050030c9ee5f197d4f9aeefcc",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-accept;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=ee6ff0b45202bccdc4b679d935ab034d37979431d511ed7c7ffbbc79ba6f674c"
+  }
+]

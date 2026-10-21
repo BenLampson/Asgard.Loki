@@ -1,0 +1,474 @@
+{
+  "single-legacy": {
+    "model": "public",
+    "content": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "原生😀"
+        },
+        {
+          "text": " second "
+        }
+      ]
+    },
+    "taskType": "RETRIEVAL_QUERY",
+    "outputDimensionality": 2,
+    "future": {
+      "model": "opaque",
+      "enabled": false,
+      "value": null
+    }
+  },
+  "single-legacy-wire": {
+    "content": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "原生😀"
+        },
+        {
+          "text": " second "
+        }
+      ]
+    },
+    "taskType": "RETRIEVAL_QUERY",
+    "outputDimensionality": 2,
+    "future": {
+      "model": "opaque",
+      "enabled": false,
+      "value": null
+    }
+  },
+  "single-legacy-response": {
+    "embedding": {
+      "values": [
+        0.1,
+        0.2
+      ],
+      "shape": [
+        2
+      ],
+      "future": {
+        "kept": null
+      }
+    },
+    "usageMetadata": {
+      "promptTokenCount": 3,
+      "promptTokenDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3
+        }
+      ]
+    },
+    "future": false
+  },
+  "single-config": {
+    "model": "public",
+    "content": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "原生😀"
+        },
+        {
+          "text": " second "
+        }
+      ]
+    },
+    "embedContentConfig": {
+      "taskType": "RETRIEVAL_QUERY",
+      "outputDimensionality": "2",
+      "autoTruncate": false,
+      "documentOcr": false,
+      "audioTrackExtraction": false,
+      "future": null
+    },
+    "future": false
+  },
+  "single-config-wire": {
+    "content": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "原生😀"
+        },
+        {
+          "text": " second "
+        }
+      ]
+    },
+    "embedContentConfig": {
+      "taskType": "RETRIEVAL_QUERY",
+      "outputDimensionality": "2",
+      "autoTruncate": false,
+      "documentOcr": false,
+      "audioTrackExtraction": false,
+      "future": null
+    },
+    "future": false
+  },
+  "single-config-response": {
+    "embedding": {
+      "values": [
+        0.1,
+        0.2
+      ],
+      "shape": [
+        2
+      ],
+      "future": {
+        "kept": null
+      }
+    },
+    "usageMetadata": {
+      "promptTokenCount": 3,
+      "promptTokenDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3
+        }
+      ]
+    },
+    "future": false
+  },
+  "single-snake": {
+    "model": "public",
+    "content": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "原生😀"
+        },
+        {
+          "text": " second "
+        }
+      ]
+    },
+    "embed_content_config": {
+      "task_type": "RETRIEVAL_QUERY",
+      "output_dimensionality": 2,
+      "auto_truncate": false
+    },
+    "future": null
+  },
+  "single-snake-wire": {
+    "content": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "原生😀"
+        },
+        {
+          "text": " second "
+        }
+      ]
+    },
+    "embed_content_config": {
+      "task_type": "RETRIEVAL_QUERY",
+      "output_dimensionality": 2,
+      "auto_truncate": false
+    },
+    "future": null
+  },
+  "single-snake-response": {
+    "embedding": {
+      "values": [
+        0.1,
+        0.2
+      ],
+      "shape": [
+        2
+      ],
+      "future": {
+        "kept": null
+      }
+    },
+    "usageMetadata": {
+      "promptTokenCount": 3,
+      "promptTokenDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3
+        }
+      ]
+    },
+    "future": false
+  },
+  "single-media": {
+    "model": "public",
+    "content": {
+      "parts": [
+        {
+          "text": "image and document"
+        },
+        {
+          "inlineData": {
+            "mimeType": "image/png",
+            "data": "AQID"
+          }
+        },
+        {
+          "fileData": {
+            "mimeType": "application/pdf",
+            "fileUri": "https://files.invalid/input.pdf"
+          }
+        }
+      ]
+    },
+    "embedContentConfig": {
+      "outputDimensionality": 2,
+      "documentOcr": false
+    }
+  },
+  "single-media-wire": {
+    "content": {
+      "parts": [
+        {
+          "text": "image and document"
+        },
+        {
+          "inlineData": {
+            "mimeType": "image/png",
+            "data": "AQID"
+          }
+        },
+        {
+          "fileData": {
+            "mimeType": "application/pdf",
+            "fileUri": "https://files.invalid/input.pdf"
+          }
+        }
+      ]
+    },
+    "embedContentConfig": {
+      "outputDimensionality": 2,
+      "documentOcr": false
+    }
+  },
+  "single-media-response": {
+    "embedding": {
+      "values": [
+        0.1,
+        0.2
+      ],
+      "shape": [
+        2
+      ],
+      "future": {
+        "kept": null
+      }
+    },
+    "usageMetadata": {
+      "promptTokenCount": 3,
+      "promptTokenDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3
+        }
+      ]
+    },
+    "future": false
+  },
+  "batch-legacy": {
+    "model": "public",
+    "requests": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "document"
+            }
+          ]
+        },
+        "taskType": "RETRIEVAL_DOCUMENT",
+        "title": "title😀",
+        "outputDimensionality": 2,
+        "future": false
+      },
+      {
+        "model": "models/embedding-test",
+        "content": {
+          "parts": [
+            {
+              "text": "query"
+            }
+          ]
+        },
+        "taskType": "RETRIEVAL_QUERY",
+        "outputDimensionality": "1e0",
+        "future": {
+          "model": "opaque"
+        }
+      }
+    ],
+    "future": null
+  },
+  "batch-legacy-wire": {
+    "requests": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "document"
+            }
+          ]
+        },
+        "taskType": "RETRIEVAL_DOCUMENT",
+        "title": "title😀",
+        "outputDimensionality": 2,
+        "future": false,
+        "model": "models/embedding-test"
+      },
+      {
+        "model": "models/embedding-test",
+        "content": {
+          "parts": [
+            {
+              "text": "query"
+            }
+          ]
+        },
+        "taskType": "RETRIEVAL_QUERY",
+        "outputDimensionality": "1e0",
+        "future": {
+          "model": "opaque"
+        }
+      }
+    ],
+    "future": null
+  },
+  "batch-legacy-response": {
+    "embeddings": [
+      {
+        "values": [
+          0.1,
+          0.2
+        ],
+        "future": false
+      },
+      {
+        "values": [
+          0.3
+        ],
+        "statistics": {
+          "truncated": false,
+          "token_count": 1
+        }
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 0,
+      "promptTokenDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 0
+        }
+      ]
+    },
+    "future": null
+  },
+  "batch-config": {
+    "model": "public",
+    "requests": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "document"
+            }
+          ]
+        },
+        "embedContentConfig": {
+          "taskType": "RETRIEVAL_DOCUMENT",
+          "title": "doc",
+          "outputDimensionality": 2,
+          "autoTruncate": false
+        }
+      },
+      {
+        "model": "models/embedding-test",
+        "content": {
+          "parts": [
+            {
+              "text": "query"
+            }
+          ]
+        },
+        "embedContentConfig": {
+          "taskType": "RETRIEVAL_QUERY",
+          "outputDimensionality": 1,
+          "autoTruncate": false
+        }
+      }
+    ],
+    "future": false
+  },
+  "batch-config-wire": {
+    "requests": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "document"
+            }
+          ]
+        },
+        "embedContentConfig": {
+          "taskType": "RETRIEVAL_DOCUMENT",
+          "title": "doc",
+          "outputDimensionality": 2,
+          "autoTruncate": false
+        },
+        "model": "models/embedding-test"
+      },
+      {
+        "model": "models/embedding-test",
+        "content": {
+          "parts": [
+            {
+              "text": "query"
+            }
+          ]
+        },
+        "embedContentConfig": {
+          "taskType": "RETRIEVAL_QUERY",
+          "outputDimensionality": 1,
+          "autoTruncate": false
+        }
+      }
+    ],
+    "future": false
+  },
+  "batch-config-response": {
+    "embeddings": [
+      {
+        "values": [
+          0.1,
+          0.2
+        ],
+        "future": false
+      },
+      {
+        "values": [
+          0.3
+        ],
+        "statistics": {
+          "truncated": false,
+          "token_count": 1
+        }
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 0,
+      "promptTokenDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 0
+        }
+      ]
+    },
+    "future": null
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "model": "public",
+  "max_tokens": 2048,
+  "system": [
+    {
+      "type": "text",
+      "text": "原生中文",
+      "cache_control": {
+        "type": "ephemeral"
+      }
+    }
+  ],
+  "messages": [
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "thinking",
+          "thinking": "已有推理",
+          "signature": "signature-state"
+        },
+        {
+          "type": "redacted_thinking",
+          "data": "opaque-state"
+        },
+        {
+          "type": "tool_use",
+          "id": "call_prev",
+          "name": "lookup",
+          "input": {
+            "n": 9007199254740993
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_prev",
+          "content": "known result",
+          "is_error": false
+        },
+        {
+          "type": "image",
+          "source": {
+            "type": "base64",
+            "media_type": "image/png",
+            "data": "AAE="
+          }
+        },
+        {
+          "type": "document",
+          "source": {
+            "type": "base64",
+            "media_type": "application/pdf",
+            "data": "JVBERi0="
+          },
+          "title": "原生文档"
+        },
+        {
+          "type": "text",
+          "text": "继续"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "lookup",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "n"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "thinking": {
+    "type": "enabled",
+    "budget_tokens": 1024
+  },
+  "output_config": {
+    "format": {
+      "type": "json_schema",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "future": {
+    "integer": 9007199254740993,
+    "zero": 0,
+    "disabled": false,
+    "nil": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "Responses": {
+    "model":"model-a","max_output_tokens":128,
+    "input":[
+      {"type":"message","role":"user","content":[{"type":"input_text","text":"before"},{"type":"input_file","file_data":"data:text/plain;base64,6aaW8J+YgGXMgQ0K5bC+AO+7vw=="},{"type":"input_text","text":"between"},{"type":"input_file","file_data":"data:text/plain;base64,c2Vjb25kCg=="},{"type":"input_text","text":"after"}]},
+      {"type":"function_call","call_id":"call_text","name":"lookup","arguments":"{\"x\":0}"},
+      {"type":"function_call_output","call_id":"call_text","output":"{\"ok\":true}"}
+    ],
+    "tools":[{"type":"function","name":"lookup","parameters":{"type":"object","properties":{"x":{"type":"integer"}}}}]
+  },
+  "ClaudeMessages": {
+    "model":"model-a","max_tokens":128,
+    "messages":[
+      {"role":"user","content":[{"type":"text","text":"before"},{"type":"document","source":{"type":"text","media_type":"text/plain","data":"首😀é\r\n尾\u0000\uFEFF"}},{"type":"text","text":"between"},{"type":"document","source":{"type":"text","media_type":"text/plain","data":"second\n"}},{"type":"text","text":"after"}]},
+      {"role":"assistant","content":[{"type":"tool_use","id":"call_text","name":"lookup","input":{"x":0}}]},
+      {"role":"user","content":[{"type":"tool_result","tool_use_id":"call_text","content":"{\"ok\":true}"}]}
+    ],
+    "tools":[{"name":"lookup","input_schema":{"type":"object","properties":{"x":{"type":"integer"}}}}]
+  },
+  "Gemini": {
+    "model":"model-a","generationConfig":{"maxOutputTokens":128},
+    "contents":[
+      {"role":"user","parts":[{"text":"before"},{"inlineData":{"mimeType":"text/plain","data":"6aaW8J+YgGXMgQ0K5bC+AO+7vw=="}},{"text":"between"},{"inlineData":{"mimeType":"text/plain","data":"c2Vjb25kCg=="}},{"text":"after"}]},
+      {"role":"model","parts":[{"functionCall":{"id":"call_text","name":"lookup","args":{"x":0}}}]},
+      {"role":"user","parts":[{"functionResponse":{"id":"call_text","name":"lookup","response":{"ok":true}}}]}
+    ],
+    "tools":[{"functionDeclarations":[{"name":"lookup","parametersJsonSchema":{"type":"object","properties":{"x":{"type":"integer"}}}}]}]
+  }
+}

@@ -1,0 +1,391 @@
+{
+  "sources": [
+    "https://platform.vidu.com/docs/api-reference/video-models/vidu-q1/text-to-video",
+    "https://platform.vidu.com/docs/api-reference/video-models/vidu-q2/image-to-video",
+    "https://platform.vidu.com/docs/api-reference/video-models/vidu-q2/start-end-to-video",
+    "https://platform.vidu.com/docs/api-reference/video-models/vidu-q2/reference-to-video",
+    "https://platform.vidu.com/docs/api-reference/other-documentation/error-codes",
+    "https://platform.vidu.com/docs/api-reference/task-management/cancel-task"
+  ],
+  "submissions": [
+    {
+      "operation": "TextToVideo",
+      "path": "ent/v2/text2video",
+      "wire_request": {
+        "model": "viduq1",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "watermark": false,
+        "wm_position": 1,
+        "wm_url": "https://media.example/watermark.png",
+        "meta_data": "{\"Label\":\"fictional\",\"ReservedCode1\":\"保留\"}",
+        "callback_url": "https://caller.example/callback",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Preserve": "大小写"
+            }
+          ]
+        },
+        "prompt": "纸船在湖面航行 🛶",
+        "aspect_ratio": "4:3",
+        "audio": false
+      },
+      "wire_response": {
+        "task_id": "vidu-fixture-01",
+        "state": "created",
+        "model": "viduq1",
+        "prompt": "纸船在湖面航行 🛶",
+        "duration": 5,
+        "seed": 0,
+        "aspect_ratio": "4:3",
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "credits": 4,
+        "created_at": "2026-10-20T03:00:00.123456Z",
+        "Future": {
+          "Keep": null,
+          "Big": 9007199254740993
+        }
+      }
+    },
+    {
+      "operation": "ImageToVideo",
+      "path": "ent/v2/img2video",
+      "wire_request": {
+        "model": "viduq2-turbo",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "watermark": false,
+        "wm_position": 1,
+        "wm_url": "https://media.example/watermark.png",
+        "meta_data": "{\"Label\":\"fictional\",\"ReservedCode1\":\"保留\"}",
+        "callback_url": "https://caller.example/callback",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Preserve": "大小写"
+            }
+          ]
+        },
+        "images": [
+          "data:image/png;base64,ZmFrZS1pbWFnZQ=="
+        ],
+        "prompt": "让纸船轻轻摇晃",
+        "movement_amplitude": "small",
+        "is_rec": false
+      },
+      "wire_response": {
+        "task_id": "vidu-fixture-01",
+        "state": "created",
+        "model": "viduq2-turbo",
+        "prompt": "让纸船轻轻摇晃",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "credits": 4,
+        "created_at": "2026-10-20T03:00:00.123456Z",
+        "Future": {
+          "Keep": null,
+          "Big": 9007199254740993
+        },
+        "images": [
+          "data:image/png;base64,ZmFrZS1pbWFnZQ=="
+        ]
+      }
+    },
+    {
+      "operation": "StartEndToVideo",
+      "path": "ent/v2/start-end2video",
+      "wire_request": {
+        "model": "viduq2-pro",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "watermark": false,
+        "wm_position": 1,
+        "wm_url": "https://media.example/watermark.png",
+        "meta_data": "{\"Label\":\"fictional\",\"ReservedCode1\":\"保留\"}",
+        "callback_url": "https://caller.example/callback",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Preserve": "大小写"
+            }
+          ]
+        },
+        "images": [
+          "https://media.example/first.png",
+          "https://media.example/last.png"
+        ],
+        "prompt": "从首帧移动至尾帧"
+      },
+      "wire_response": {
+        "task_id": "vidu-fixture-01",
+        "state": "created",
+        "model": "viduq2-pro",
+        "prompt": "从首帧移动至尾帧",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "credits": 4,
+        "created_at": "2026-10-20T03:00:00.123456Z",
+        "Future": {
+          "Keep": null,
+          "Big": 9007199254740993
+        },
+        "images": [
+          "https://media.example/first.png",
+          "https://media.example/last.png"
+        ]
+      }
+    },
+    {
+      "operation": "ReferenceToVideo",
+      "path": "ent/v2/reference2video",
+      "wire_request": {
+        "model": "viduq2",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "watermark": false,
+        "wm_position": 1,
+        "wm_url": "https://media.example/watermark.png",
+        "meta_data": "{\"Label\":\"fictional\",\"ReservedCode1\":\"保留\"}",
+        "callback_url": "https://caller.example/callback",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Preserve": "大小写"
+            }
+          ]
+        },
+        "images": [
+          "https://media.example/ref-a.png",
+          "https://media.example/ref-b.png"
+        ],
+        "prompt": "保持角色外观不变",
+        "auto_subjects": false,
+        "subjects": [
+          {
+            "name": "boat",
+            "images": [
+              "https://media.example/ref-a.png"
+            ]
+          }
+        ]
+      },
+      "wire_response": {
+        "task_id": "vidu-fixture-01",
+        "state": "created",
+        "model": "viduq2",
+        "prompt": "保持角色外观不变",
+        "duration": 5,
+        "seed": 0,
+        "resolution": "1080p",
+        "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+        "off_peak": false,
+        "credits": 4,
+        "created_at": "2026-10-20T03:00:00.123456Z",
+        "Future": {
+          "Keep": null,
+          "Big": 9007199254740993
+        },
+        "images": [
+          "https://media.example/ref-a.png",
+          "https://media.example/ref-b.png"
+        ]
+      }
+    }
+  ],
+  "submit_response": {
+    "task_id": "vidu-fixture-01",
+    "state": "created",
+    "model": "viduq1",
+    "prompt": "纸船在湖面航行 🛶",
+    "duration": 5,
+    "seed": 0,
+    "aspect_ratio": "4:3",
+    "resolution": "1080p",
+    "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+    "off_peak": false,
+    "credits": 4,
+    "created_at": "2026-10-20T03:00:00.123456Z",
+    "Future": {
+      "Keep": null,
+      "Big": 9007199254740993
+    }
+  },
+  "queries": [
+    {
+      "id": "vidu-fixture-01",
+      "state": "created",
+      "err_code": "",
+      "credits": 4,
+      "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+      "bgm": false,
+      "off_peak": false,
+      "creations": [],
+      "Future": {
+        "Keep": [
+          null,
+          false,
+          0
+        ],
+        "Big": 9007199254740993
+      }
+    },
+    {
+      "id": "vidu-fixture-01",
+      "state": "queueing",
+      "err_code": "",
+      "credits": 4,
+      "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+      "bgm": false,
+      "off_peak": false,
+      "creations": [],
+      "Future": {
+        "Keep": [
+          null,
+          false,
+          0
+        ],
+        "Big": 9007199254740993
+      }
+    },
+    {
+      "id": "vidu-fixture-01",
+      "state": "processing",
+      "err_code": "",
+      "credits": 4,
+      "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+      "bgm": false,
+      "off_peak": false,
+      "creations": [],
+      "Future": {
+        "Keep": [
+          null,
+          false,
+          0
+        ],
+        "Big": 9007199254740993
+      }
+    },
+    {
+      "id": "vidu-fixture-01",
+      "state": "failed",
+      "err_code": "ContentModeration",
+      "credits": 4,
+      "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+      "bgm": false,
+      "off_peak": false,
+      "creations": [],
+      "Future": {
+        "Keep": [
+          null,
+          false,
+          0
+        ],
+        "Big": 9007199254740993
+      }
+    },
+    {
+      "id": "vidu-fixture-01",
+      "state": "future_state",
+      "err_code": "",
+      "credits": 4,
+      "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+      "bgm": false,
+      "off_peak": false,
+      "creations": [],
+      "Future": {
+        "Keep": [
+          null,
+          false,
+          0
+        ],
+        "Big": 9007199254740993
+      }
+    },
+    {
+      "id": "vidu-fixture-01",
+      "state": "success",
+      "err_code": "",
+      "credits": 4,
+      "payload": "{\"request\":\"caller-原样\",\"n\":9007199254740993}",
+      "bgm": false,
+      "off_peak": false,
+      "creations": [
+        {
+          "id": "9007199254740993",
+          "url": "https://output.example/video-a.mp4?signature=original%2Bvalue",
+          "cover_url": "https://output.example/cover-a.png",
+          "watermarked_url": "https://output.example/watermark-a.mp4",
+          "Future": {
+            "Keep": null
+          }
+        },
+        {
+          "id": "9007199254740994",
+          "url": "https://output.example/video-b.mp4",
+          "cover_url": "https://output.example/cover-b.png",
+          "watermarked_url": "https://output.example/watermark-b.mp4",
+          "Future": [
+            false,
+            0
+          ]
+        }
+      ],
+      "Future": {
+        "Keep": [
+          null,
+          false,
+          0
+        ],
+        "Big": 9007199254740993
+      }
+    }
+  ],
+  "api_error": {
+    "code": 400,
+    "reason": "BadRequest",
+    "message": "fictional invalid input",
+    "metadata": {
+      "trace_id": "fixture-trace"
+    },
+    "Future": {
+      "Keep": null
+    }
+  }
+}

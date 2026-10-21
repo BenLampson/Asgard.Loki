@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Explicit native OpenAI-compatible rerank wire for Asgard.Loki.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Rerank/Asgard.Loki.Rerank.csproj" />
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>

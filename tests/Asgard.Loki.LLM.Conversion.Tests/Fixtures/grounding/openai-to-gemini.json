@@ -1,0 +1,807 @@
+{
+  "ChatCompletionsUnicodeScalar": {
+    "id": "ground_reply",
+    "object": "chat.completion",
+    "created": 0,
+    "model": "model-a",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "前😀重😀é!重😀é!",
+          "annotations": [
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 0,
+                "end_index": 2
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 3,
+                "end_index": 6
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 3,
+                "end_index": 6
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 3,
+                "end_index": 6
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 7,
+                "end_index": 8
+              }
+            }
+          ],
+          "tool_calls": [
+            {
+              "id": "call_exact",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"q\":\"😀\",\"n\":0}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2,
+      "completion_tokens": 3,
+      "total_tokens": 5
+    }
+  },
+  "ResponsesUnicodeScalar": {
+    "id": "ground_reply",
+    "object": "response",
+    "created_at": 0,
+    "model": "model-a",
+    "status": "completed",
+    "output": [
+      {
+        "type": "message",
+        "id": "msg_ground_reply_0",
+        "status": "completed",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "前😀",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 0,
+                "end_index": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "fc_source",
+        "call_id": "call_exact",
+        "name": "lookup",
+        "arguments": "{\"q\":\"😀\",\"n\":0}",
+        "status": "completed"
+      },
+      {
+        "type": "message",
+        "id": "msg_after",
+        "status": "completed",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "重😀é!",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 1,
+                "end_index": 4
+              },
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 1,
+                "end_index": 4
+              },
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 1,
+                "end_index": 4
+              }
+            ]
+          },
+          {
+            "type": "output_text",
+            "text": "重😀é!",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 0,
+                "end_index": 1
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 3,
+      "total_tokens": 5
+    }
+  },
+  "ChatCompletionsUtf16CodeUnit": {
+    "id": "ground_reply",
+    "object": "chat.completion",
+    "created": 0,
+    "model": "model-a",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "前😀重😀é!重😀é!",
+          "annotations": [
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 0,
+                "end_index": 3
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 4,
+                "end_index": 8
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 4,
+                "end_index": 8
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 4,
+                "end_index": 8
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 9,
+                "end_index": 10
+              }
+            }
+          ],
+          "tool_calls": [
+            {
+              "id": "call_exact",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"q\":\"😀\",\"n\":0}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2,
+      "completion_tokens": 3,
+      "total_tokens": 5
+    }
+  },
+  "ResponsesUtf16CodeUnit": {
+    "id": "ground_reply",
+    "object": "response",
+    "created_at": 0,
+    "model": "model-a",
+    "status": "completed",
+    "output": [
+      {
+        "type": "message",
+        "id": "msg_ground_reply_0",
+        "status": "completed",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "前😀",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 0,
+                "end_index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "fc_source",
+        "call_id": "call_exact",
+        "name": "lookup",
+        "arguments": "{\"q\":\"😀\",\"n\":0}",
+        "status": "completed"
+      },
+      {
+        "type": "message",
+        "id": "msg_after",
+        "status": "completed",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "重😀é!",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 1,
+                "end_index": 5
+              },
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 1,
+                "end_index": 5
+              },
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 1,
+                "end_index": 5
+              }
+            ]
+          },
+          {
+            "type": "output_text",
+            "text": "重😀é!",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 0,
+                "end_index": 1
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 3,
+      "total_tokens": 5
+    }
+  },
+  "ChatCompletionsUtf8Byte": {
+    "id": "ground_reply",
+    "object": "chat.completion",
+    "created": 0,
+    "model": "model-a",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "前😀重😀é!重😀é!",
+          "annotations": [
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 0,
+                "end_index": 7
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 10,
+                "end_index": 17
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 10,
+                "end_index": 17
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 10,
+                "end_index": 17
+              }
+            },
+            {
+              "type": "url_citation",
+              "url_citation": {
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 18,
+                "end_index": 21
+              }
+            }
+          ],
+          "tool_calls": [
+            {
+              "id": "call_exact",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"q\":\"😀\",\"n\":0}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2,
+      "completion_tokens": 3,
+      "total_tokens": 5
+    }
+  },
+  "ResponsesUtf8Byte": {
+    "id": "ground_reply",
+    "object": "response",
+    "created_at": 0,
+    "model": "model-a",
+    "status": "completed",
+    "output": [
+      {
+        "type": "message",
+        "id": "msg_ground_reply_0",
+        "status": "completed",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "前😀",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 0,
+                "end_index": 7
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "fc_source",
+        "call_id": "call_exact",
+        "name": "lookup",
+        "arguments": "{\"q\":\"😀\",\"n\":0}",
+        "status": "completed"
+      },
+      {
+        "type": "message",
+        "id": "msg_after",
+        "status": "completed",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "重😀é!",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 3,
+                "end_index": 10
+              },
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "甲😀",
+                "start_index": 3,
+                "end_index": 10
+              },
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 3,
+                "end_index": 10
+              }
+            ]
+          },
+          {
+            "type": "output_text",
+            "text": "重😀é!",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url": "https://a.invalid/p?q=1#x",
+                "title": "重复来源",
+                "start_index": 0,
+                "end_index": 3
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 3,
+      "total_tokens": 5
+    }
+  },
+  "GeminiChatCompletions": {
+    "responseId": "ground_reply",
+    "modelVersion": "model-a",
+    "candidates": [
+      {
+        "index": 0,
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "前😀重😀é!重😀é!"
+            },
+            {
+              "functionCall": {
+                "id": "call_exact",
+                "name": "lookup",
+                "args": {
+                  "q": "😀",
+                  "n": 0
+                }
+              }
+            }
+          ]
+        },
+        "finishReason": "STOP",
+        "groundingMetadata": {
+          "groundingChunks": [
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "甲😀"
+              }
+            },
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "重复来源"
+              }
+            },
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "甲😀"
+              }
+            },
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "重复来源"
+              }
+            },
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "重复来源"
+              }
+            }
+          ],
+          "groundingSupports": [
+            {
+              "segment": {
+                "partIndex": 0,
+                "startIndex": 0,
+                "endIndex": 7,
+                "text": "前😀"
+              },
+              "groundingChunkIndices": [
+                0
+              ]
+            },
+            {
+              "segment": {
+                "partIndex": 0,
+                "startIndex": 10,
+                "endIndex": 17,
+                "text": "😀é"
+              },
+              "groundingChunkIndices": [
+                1
+              ]
+            },
+            {
+              "segment": {
+                "partIndex": 0,
+                "startIndex": 10,
+                "endIndex": 17,
+                "text": "😀é"
+              },
+              "groundingChunkIndices": [
+                2
+              ]
+            },
+            {
+              "segment": {
+                "partIndex": 0,
+                "startIndex": 10,
+                "endIndex": 17,
+                "text": "😀é"
+              },
+              "groundingChunkIndices": [
+                3
+              ]
+            },
+            {
+              "segment": {
+                "partIndex": 0,
+                "startIndex": 18,
+                "endIndex": 21,
+                "text": "重"
+              },
+              "groundingChunkIndices": [
+                4
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2,
+      "candidatesTokenCount": 3,
+      "totalTokenCount": 5
+    }
+  },
+  "GeminiResponses": {
+    "responseId": "ground_reply",
+    "modelVersion": "model-a",
+    "candidates": [
+      {
+        "index": 0,
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "前😀"
+            },
+            {
+              "functionCall": {
+                "id": "call_exact",
+                "name": "lookup",
+                "args": {
+                  "q": "😀",
+                  "n": 0
+                }
+              }
+            },
+            {
+              "text": "重😀é!"
+            },
+            {
+              "text": "重😀é!"
+            }
+          ]
+        },
+        "finishReason": "STOP",
+        "groundingMetadata": {
+          "groundingChunks": [
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "甲😀"
+              }
+            },
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "重复来源"
+              }
+            },
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "甲😀"
+              }
+            },
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "重复来源"
+              }
+            },
+            {
+              "web": {
+                "uri": "https://a.invalid/p?q=1#x",
+                "title": "重复来源"
+              }
+            }
+          ],
+          "groundingSupports": [
+            {
+              "segment": {
+                "partIndex": 0,
+                "startIndex": 0,
+                "endIndex": 7,
+                "text": "前😀"
+              },
+              "groundingChunkIndices": [
+                0
+              ]
+            },
+            {
+              "segment": {
+                "partIndex": 2,
+                "startIndex": 3,
+                "endIndex": 10,
+                "text": "😀é"
+              },
+              "groundingChunkIndices": [
+                1
+              ]
+            },
+            {
+              "segment": {
+                "partIndex": 2,
+                "startIndex": 3,
+                "endIndex": 10,
+                "text": "😀é"
+              },
+              "groundingChunkIndices": [
+                2
+              ]
+            },
+            {
+              "segment": {
+                "partIndex": 2,
+                "startIndex": 3,
+                "endIndex": 10,
+                "text": "😀é"
+              },
+              "groundingChunkIndices": [
+                3
+              ]
+            },
+            {
+              "segment": {
+                "partIndex": 3,
+                "startIndex": 0,
+                "endIndex": 3,
+                "text": "重"
+              },
+              "groundingChunkIndices": [
+                4
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 2,
+      "candidatesTokenCount": 3,
+      "totalTokenCount": 5
+    }
+  },
+  "Request": {
+    "model": "public",
+    "contents": [
+      {
+        "role": "user",
+        "parts": [
+          {
+            "text": "start"
+          }
+        ]
+      }
+    ]
+  },
+  "RequestChatCompletions": {
+    "model": "model-a",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "start"
+          }
+        ]
+      }
+    ],
+    "stream": false
+  },
+  "RequestResponses": {
+    "model": "model-a",
+    "input": [
+      {
+        "type": "message",
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "start"
+          }
+        ]
+      }
+    ],
+    "stream": false
+  }
+}

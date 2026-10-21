@@ -1,0 +1,67 @@
+{
+  "model": "model-a",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "你好"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "call_1",
+          "name": "lookup",
+          "input": {
+            "x": 0
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_1",
+          "content": "{\"ok\":false}"
+        }
+      ]
+    }
+  ],
+  "system": [
+    {
+      "type": "text",
+      "text": "rules"
+    }
+  ],
+  "temperature": 0,
+  "top_p": 1,
+  "max_tokens": 128,
+  "tools": [
+    {
+      "name": "lookup",
+      "description": "Find a value",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "x"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "tool_choice": {
+    "type": "auto"
+  }
+}

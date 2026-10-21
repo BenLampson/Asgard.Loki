@@ -1,0 +1,579 @@
+{
+  "source": [
+    "https://docs.perplexity.ai/api-reference/agent-post.md",
+    "https://docs.perplexity.ai/docs/agent-api/openai-compatibility.md"
+  ],
+  "root": "https://api.perplexity.ai/v1/",
+  "endpoint": "https://api.perplexity.ai/v1/responses",
+  "key": "fixture-perplexity-key",
+  "model": "openai/gpt-5.2",
+  "caller": {
+    "model": "public",
+    "stream": false,
+    "input": [
+      {
+        "type": "message",
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "Compare the two results."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "call_id": "call-A",
+        "name": "lookup",
+        "arguments": "{\"city\":\"北京\"}",
+        "thought_signature": "sig-A"
+      },
+      {
+        "type": "function_call",
+        "call_id": "call-B",
+        "name": "lookup",
+        "arguments": "{\"city\":\"上海\"}",
+        "thought_signature": "sig-B"
+      },
+      {
+        "type": "function_call_output",
+        "id": "out-B",
+        "call_id": "call-B",
+        "name": "lookup",
+        "output": "{\"value\":2}",
+        "status": "completed",
+        "thought_signature": "sig-B"
+      },
+      {
+        "type": "function_call_output",
+        "id": "out-A",
+        "call_id": "call-A",
+        "name": "lookup",
+        "output": [
+          {
+            "type": "input_text",
+            "text": "一"
+          }
+        ],
+        "status": "completed",
+        "thought_signature": "sig-A"
+      }
+    ],
+    "instructions": "Use the provided results.",
+    "tools": [
+      {
+        "type": "function",
+        "name": "lookup",
+        "description": "Lookup a city",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "city"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "tool_choice": "auto",
+    "reasoning": {
+      "effort": "high"
+    },
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "answer",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "answer"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    },
+    "max_output_tokens": 256,
+    "store": false,
+    "vendor_extension": {
+      "exact": 9007199254740993,
+      "nullable": null,
+      "enabled": false,
+      "zero": 0,
+      "model": "nested-business-model",
+      "error": {
+        "message": "ordinary data"
+      }
+    }
+  },
+  "wire": {
+    "model": "openai/gpt-5.2",
+    "stream": false,
+    "input": [
+      {
+        "type": "message",
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "Compare the two results."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "call_id": "call-A",
+        "name": "lookup",
+        "arguments": "{\"city\":\"北京\"}",
+        "thought_signature": "sig-A"
+      },
+      {
+        "type": "function_call",
+        "call_id": "call-B",
+        "name": "lookup",
+        "arguments": "{\"city\":\"上海\"}",
+        "thought_signature": "sig-B"
+      },
+      {
+        "type": "function_call_output",
+        "id": "out-B",
+        "call_id": "call-B",
+        "name": "lookup",
+        "output": "{\"value\":2}",
+        "status": "completed",
+        "thought_signature": "sig-B"
+      },
+      {
+        "type": "function_call_output",
+        "id": "out-A",
+        "call_id": "call-A",
+        "name": "lookup",
+        "output": [
+          {
+            "type": "input_text",
+            "text": "一"
+          }
+        ],
+        "status": "completed",
+        "thought_signature": "sig-A"
+      }
+    ],
+    "instructions": "Use the provided results.",
+    "tools": [
+      {
+        "type": "function",
+        "name": "lookup",
+        "description": "Lookup a city",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "city"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "tool_choice": "auto",
+    "reasoning": {
+      "effort": "high"
+    },
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "answer",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "answer"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    },
+    "max_output_tokens": 256,
+    "store": false,
+    "vendor_extension": {
+      "exact": 9007199254740993,
+      "nullable": null,
+      "enabled": false,
+      "zero": 0,
+      "model": "nested-business-model",
+      "error": {
+        "message": "ordinary data"
+      }
+    }
+  },
+  "wire_stream": {
+    "model": "openai/gpt-5.2",
+    "stream": true,
+    "input": [
+      {
+        "type": "message",
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "Compare the two results."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "call_id": "call-A",
+        "name": "lookup",
+        "arguments": "{\"city\":\"北京\"}",
+        "thought_signature": "sig-A"
+      },
+      {
+        "type": "function_call",
+        "call_id": "call-B",
+        "name": "lookup",
+        "arguments": "{\"city\":\"上海\"}",
+        "thought_signature": "sig-B"
+      },
+      {
+        "type": "function_call_output",
+        "id": "out-B",
+        "call_id": "call-B",
+        "name": "lookup",
+        "output": "{\"value\":2}",
+        "status": "completed",
+        "thought_signature": "sig-B"
+      },
+      {
+        "type": "function_call_output",
+        "id": "out-A",
+        "call_id": "call-A",
+        "name": "lookup",
+        "output": [
+          {
+            "type": "input_text",
+            "text": "一"
+          }
+        ],
+        "status": "completed",
+        "thought_signature": "sig-A"
+      }
+    ],
+    "instructions": "Use the provided results.",
+    "tools": [
+      {
+        "type": "function",
+        "name": "lookup",
+        "description": "Lookup a city",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "city"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "tool_choice": "auto",
+    "reasoning": {
+      "effort": "high"
+    },
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "answer",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "answer"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    },
+    "max_output_tokens": 256,
+    "store": false,
+    "vendor_extension": {
+      "exact": 9007199254740993,
+      "nullable": null,
+      "enabled": false,
+      "zero": 0,
+      "model": "nested-business-model",
+      "error": {
+        "message": "ordinary data"
+      }
+    }
+  },
+  "complete": {
+    "id": "pplx-response-A",
+    "object": "response",
+    "created_at": 1792512000,
+    "model": "openai/gpt-5.2",
+    "status": "completed",
+    "output": [
+      {
+        "type": "message",
+        "id": "msg-A",
+        "role": "assistant",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "{\"answer\":\"一，二\"}",
+            "annotations": []
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item-C",
+        "call_id": "call-C",
+        "name": "lookup",
+        "arguments": "{\"city\":\"杭州\"}",
+        "thought_signature": "sig-C",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 53,
+      "output_tokens": 12,
+      "total_tokens": 65,
+      "vendor_exact": 9007199254740993
+    },
+    "vendor_extension": {
+      "model": "ordinary",
+      "error": {
+        "message": "ordinary"
+      },
+      "nullable": null,
+      "enabled": false,
+      "zero": 0
+    }
+  },
+  "events": [
+    {
+      "type": "response.created",
+      "sequence_number": 0,
+      "response": {
+        "id": "pplx-response-A",
+        "status": "in_progress"
+      }
+    },
+    {
+      "type": "response.reasoning.started",
+      "sequence_number": 1,
+      "thought": "Compare the supplied results."
+    },
+    {
+      "type": "response.reasoning.search_queries",
+      "sequence_number": 2,
+      "queries": [
+        "city comparison"
+      ]
+    },
+    {
+      "type": "response.reasoning.search_results",
+      "sequence_number": 3,
+      "results": [
+        {
+          "id": 7,
+          "url": "https://example.invalid/source",
+          "title": "Source",
+          "snippet": "Original source"
+        }
+      ]
+    },
+    {
+      "type": "response.reasoning.image_search_queries",
+      "sequence_number": 4,
+      "queries": [
+        "city image"
+      ],
+      "call_id": "image-call-A"
+    },
+    {
+      "type": "response.reasoning.image_search_results",
+      "sequence_number": 5,
+      "results": [],
+      "call_id": "image-call-A"
+    },
+    {
+      "type": "response.reasoning.fetch_url_queries",
+      "sequence_number": 6,
+      "urls": [
+        "https://example.invalid/source"
+      ]
+    },
+    {
+      "type": "response.reasoning.fetch_url_results",
+      "sequence_number": 7,
+      "contents": []
+    },
+    {
+      "type": "response.reasoning.stopped",
+      "sequence_number": 8
+    },
+    {
+      "type": "response.output_item.added",
+      "sequence_number": 9,
+      "output_index": 0,
+      "item": {
+        "type": "message",
+        "id": "msg-A",
+        "role": "assistant",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "{\"answer\":\"一，二\"}",
+            "annotations": []
+          }
+        ]
+      }
+    },
+    {
+      "type": "response.output_text.delta",
+      "sequence_number": 10,
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "{\"answer\":\"一，二\"}"
+    },
+    {
+      "type": "response.output_text.done",
+      "sequence_number": 11,
+      "output_index": 0,
+      "content_index": 0,
+      "text": "{\"answer\":\"一，二\"}"
+    },
+    {
+      "type": "response.output_item.done",
+      "sequence_number": 12,
+      "output_index": 0,
+      "item": {
+        "type": "message",
+        "id": "msg-A",
+        "role": "assistant",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "{\"answer\":\"一，二\"}",
+            "annotations": []
+          }
+        ]
+      }
+    },
+    {
+      "type": "response.completed",
+      "sequence_number": 13,
+      "response": {
+        "id": "pplx-response-A",
+        "object": "response",
+        "created_at": 1792512000,
+        "model": "openai/gpt-5.2",
+        "status": "completed",
+        "output": [
+          {
+            "type": "message",
+            "id": "msg-A",
+            "role": "assistant",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "{\"answer\":\"一，二\"}",
+                "annotations": []
+              }
+            ]
+          },
+          {
+            "type": "function_call",
+            "id": "item-C",
+            "call_id": "call-C",
+            "name": "lookup",
+            "arguments": "{\"city\":\"杭州\"}",
+            "thought_signature": "sig-C",
+            "status": "completed"
+          }
+        ],
+        "usage": {
+          "input_tokens": 53,
+          "output_tokens": 12,
+          "total_tokens": 65,
+          "vendor_exact": 9007199254740993
+        },
+        "vendor_extension": {
+          "model": "ordinary",
+          "error": {
+            "message": "ordinary"
+          },
+          "nullable": null,
+          "enabled": false,
+          "zero": 0
+        }
+      }
+    },
+    {
+      "type": "vendor.trace",
+      "id": "business-ID",
+      "error": {
+        "message": "business"
+      },
+      "sequence_number": -99,
+      "exact": 9007199254740993
+    }
+  ],
+  "literal_sse": ": native comment\n\nevent: response.created\nid: transport-0\nretry: 250\ndata: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"pplx-response-A\",\"status\":\"in_progress\"}}\n\nevent: response.reasoning.started\nid: transport-1\nretry: 250\ndata: {\"type\":\"response.reasoning.started\",\"sequence_number\":1,\"thought\":\"Compare the supplied results.\"}\n\nevent: response.reasoning.search_queries\nid: transport-2\nretry: 250\ndata: {\"type\":\"response.reasoning.search_queries\",\"sequence_number\":2,\"queries\":[\"city comparison\"]}\n\nevent: response.reasoning.search_results\nid: transport-3\nretry: 250\ndata: {\"type\":\"response.reasoning.search_results\",\"sequence_number\":3,\"results\":[{\"id\":7,\"url\":\"https://example.invalid/source\",\"title\":\"Source\",\"snippet\":\"Original source\"}]}\n\nevent: response.reasoning.image_search_queries\nid: transport-4\nretry: 250\ndata: {\"type\":\"response.reasoning.image_search_queries\",\"sequence_number\":4,\"queries\":[\"city image\"],\"call_id\":\"image-call-A\"}\n\nevent: response.reasoning.image_search_results\nid: transport-5\nretry: 250\ndata: {\"type\":\"response.reasoning.image_search_results\",\"sequence_number\":5,\"results\":[],\"call_id\":\"image-call-A\"}\n\nevent: response.reasoning.fetch_url_queries\nid: transport-6\nretry: 250\ndata: {\"type\":\"response.reasoning.fetch_url_queries\",\"sequence_number\":6,\"urls\":[\"https://example.invalid/source\"]}\n\nevent: response.reasoning.fetch_url_results\nid: transport-7\nretry: 250\ndata: {\"type\":\"response.reasoning.fetch_url_results\",\"sequence_number\":7,\"contents\":[]}\n\nevent: response.reasoning.stopped\nid: transport-8\nretry: 250\ndata: {\"type\":\"response.reasoning.stopped\",\"sequence_number\":8}\n\nevent: response.output_item.added\nid: transport-9\nretry: 250\ndata: {\"type\":\"response.output_item.added\",\"sequence_number\":9,\"output_index\":0,\"item\":{\"type\":\"message\",\"id\":\"msg-A\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"answer\\\":\\\"一，二\\\"}\",\"annotations\":[]}]}}\n\nevent: response.output_text.delta\nid: transport-10\nretry: 250\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":10,\"output_index\":0,\"content_index\":0,\"delta\":\"{\\\"answer\\\":\\\"一，二\\\"}\"}\n\nevent: response.output_text.done\nid: transport-11\nretry: 250\ndata: {\"type\":\"response.output_text.done\",\"sequence_number\":11,\"output_index\":0,\"content_index\":0,\"text\":\"{\\\"answer\\\":\\\"一，二\\\"}\"}\n\nevent: response.output_item.done\nid: transport-12\nretry: 250\ndata: {\"type\":\"response.output_item.done\",\"sequence_number\":12,\"output_index\":0,\"item\":{\"type\":\"message\",\"id\":\"msg-A\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"answer\\\":\\\"一，二\\\"}\",\"annotations\":[]}]}}\n\nevent: response.completed\nid: transport-13\nretry: 250\ndata: {\"type\":\"response.completed\",\"sequence_number\":13,\"response\":{\"id\":\"pplx-response-A\",\"object\":\"response\",\"created_at\":1792512000,\"model\":\"openai/gpt-5.2\",\"status\":\"completed\",\"output\":[{\"type\":\"message\",\"id\":\"msg-A\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"answer\\\":\\\"一，二\\\"}\",\"annotations\":[]}]},{\"type\":\"function_call\",\"id\":\"item-C\",\"call_id\":\"call-C\",\"name\":\"lookup\",\"arguments\":\"{\\\"city\\\":\\\"杭州\\\"}\",\"thought_signature\":\"sig-C\",\"status\":\"completed\"}],\"usage\":{\"input_tokens\":53,\"output_tokens\":12,\"total_tokens\":65,\"vendor_exact\":9007199254740993},\"vendor_extension\":{\"model\":\"ordinary\",\"error\":{\"message\":\"ordinary\"},\"nullable\":null,\"enabled\":false,\"zero\":0}}}\n\nevent: vendor.trace\nid: transport-14\nretry: 250\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-ID\",\"error\":{\"message\":\"business\"},\"sequence_number\":-99,\"exact\":9007199254740993}\n\n",
+  "sparse_failed": {
+    "type": "response.failed",
+    "sequence_number": 0,
+    "error": {
+      "message": "Upstream generation failed",
+      "code": "generation_failed",
+      "type": "upstream_error"
+    },
+    "vendor": {
+      "exact": 9007199254740993
+    }
+  },
+  "partial_completed": {
+    "type": "response.completed",
+    "sequence_number": 0,
+    "response": {
+      "status": "incomplete",
+      "incomplete_details": {
+        "reason": "max_output_tokens"
+      }
+    }
+  }
+}

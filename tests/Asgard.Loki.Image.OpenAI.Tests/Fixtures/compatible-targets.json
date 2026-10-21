@@ -1,0 +1,19 @@
+{
+  "source": "Independent explicit standard OpenAI wire target profiles. No discovery, model-name routing, gateway configuration, real key or live server. Existing complete JSON/SSE/multipart fixtures remain independent wire expectations.",
+  "profiles": [
+    {
+      "id": "forwarded-image-profile",
+      "model": "native-forwarded-image",
+      "api_key": "fixture-forwarded-image-key",
+      "base_address": "https://forwarded-images.example.invalid/prefix/v1/",
+      "http_client_name": "forwarded-image-tests"
+    },
+    {
+      "id": "custom-standard-image-profile",
+      "model": "native-custom-image",
+      "api_key": "fixture-custom-image-key",
+      "base_address": "https://custom-images.example.invalid/configured-api/v1/",
+      "http_client_name": "custom-image-tests"
+    }
+  ]
+}

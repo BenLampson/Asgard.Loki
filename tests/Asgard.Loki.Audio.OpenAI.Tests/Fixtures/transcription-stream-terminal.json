@@ -1,0 +1,8 @@
+{
+  "Data":{"type":"transcript.text.done","text":"你好。 Hello!","languages":[{"code":"zh","future":false},{"code":"en"}],"usage":{"type":"tokens","input_tokens":14,"input_token_details":{"audio_tokens":12,"text_tokens":2},"output_tokens":10,"total_tokens":31,"future":null},"logprobs":[{"token":"!","bytes":[33],"logprob":-0.2}],"future":[null,false,"完成"]},
+  "IsCompleted":true,
+  "Metadata":{"PublicModel":"recording","UpstreamModel":"file-upstream-fixture","ProviderId":"file-target-one"},
+  "EventName":"transcript.text.done",
+  "EventId":"wire_done",
+  "RetryMilliseconds":123
+}

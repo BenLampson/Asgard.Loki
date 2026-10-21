@@ -1,0 +1,576 @@
+{
+  "source": "Independent literal native Gemini windows retained verbatim from prior independently authored vectors. Custom URI/model/auth expectations authored before implementation, never SDK output. Original numeric tokens and native history/candidate/signature/events unchanged. Offline wire evidence only, not actual model/server/parameter acceptance.",
+  "root": "https://configured.invalid/native/api/",
+  "profiles": [
+    {
+      "authentication": "ApiKey",
+      "key": "fixture-native",
+      "name": null,
+      "prefix": "",
+      "suffix": "",
+      "header": "x-goog-api-key",
+      "value": "fixture-native",
+      "query_suffix": ""
+    },
+    {
+      "authentication": "Bearer",
+      "key": "fixture-bearer",
+      "name": null,
+      "prefix": "",
+      "suffix": "",
+      "header": "Authorization",
+      "value": "Bearer fixture-bearer",
+      "query_suffix": ""
+    },
+    {
+      "authentication": "None",
+      "key": null,
+      "name": null,
+      "prefix": "",
+      "suffix": "",
+      "header": null,
+      "value": null,
+      "query_suffix": ""
+    },
+    {
+      "authentication": "Header",
+      "key": "fixture-header",
+      "name": "x-native-key",
+      "prefix": "Token  ",
+      "suffix": "/tail",
+      "header": "x-native-key",
+      "value": "Token  fixture-header/tail",
+      "query_suffix": ""
+    },
+    {
+      "authentication": "Query",
+      "key": "k/+?&=%雪",
+      "name": "api_key",
+      "prefix": "key=",
+      "suffix": "/ok",
+      "header": null,
+      "value": null,
+      "query_suffix": "&api_key=key%3Dk%2F%2B%3F%26%3D%25%E9%9B%AA%2Fok"
+    }
+  ],
+  "model": "served/model?%雪",
+  "path": "gemini/served%2Fmodel%3F%25%E9%9B%AA:generate?existing=1&reference=https://example.invalid/a&tag=1&tag=2",
+  "stream_path": "gemini/served%2Fmodel%3F%25%E9%9B%AA:stream?alt=sse&existing=1&tag=1&tag=2",
+  "caller": {
+    "model": "public",
+    "contents": [
+      {
+        "role": "user",
+        "parts": [
+          {
+            "text": "原生工具与媒体"
+          },
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": "AAEC"
+            }
+          },
+          {
+            "fileData": {
+              "mimeType": "image/png",
+              "fileUri": "https://media.invalid/a?sig=opaque"
+            }
+          }
+        ]
+      },
+      {
+        "role": "model",
+        "parts": [
+          {
+            "text": "历史思考",
+            "thought": true,
+            "thoughtSignature": "opaque-old+/="
+          },
+          {
+            "functionCall": {
+              "id": "g-call-A",
+              "name": "lookup",
+              "args": {
+                "city": "杭州"
+              }
+            }
+          },
+          {
+            "functionCall": {
+              "id": "g-call-B",
+              "name": "lookup",
+              "args": {
+                "city": "苏州"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "g-call-B",
+              "name": "lookup",
+              "response": {
+                "value": 2
+              }
+            }
+          },
+          {
+            "functionResponse": {
+              "id": "g-call-A",
+              "name": "lookup",
+              "response": {
+                "value": 1
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "systemInstruction": {
+      "parts": [
+        {
+          "text": "保持原生数据"
+        }
+      ]
+    },
+    "tools": [
+      {
+        "functionDeclarations": [
+          {
+            "name": "lookup",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "city": {
+                  "type": "STRING"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "toolConfig": {
+      "functionCallingConfig": {
+        "mode": "AUTO"
+      }
+    },
+    "generationConfig": {
+      "responseMimeType": "application/json",
+      "responseJsonSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        }
+      },
+      "thinkingConfig": {
+        "includeThoughts": true,
+        "thinkingBudget": 0
+      },
+      "temperature": 0
+    },
+    "native_extra": {
+      "exact": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": [],
+      "error": {
+        "message": "business metadata"
+      }
+    }
+  },
+  "wire": {
+    "contents": [
+      {
+        "role": "user",
+        "parts": [
+          {
+            "text": "原生工具与媒体"
+          },
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": "AAEC"
+            }
+          },
+          {
+            "fileData": {
+              "mimeType": "image/png",
+              "fileUri": "https://media.invalid/a?sig=opaque"
+            }
+          }
+        ]
+      },
+      {
+        "role": "model",
+        "parts": [
+          {
+            "text": "历史思考",
+            "thought": true,
+            "thoughtSignature": "opaque-old+/="
+          },
+          {
+            "functionCall": {
+              "id": "g-call-A",
+              "name": "lookup",
+              "args": {
+                "city": "杭州"
+              }
+            }
+          },
+          {
+            "functionCall": {
+              "id": "g-call-B",
+              "name": "lookup",
+              "args": {
+                "city": "苏州"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "g-call-B",
+              "name": "lookup",
+              "response": {
+                "value": 2
+              }
+            }
+          },
+          {
+            "functionResponse": {
+              "id": "g-call-A",
+              "name": "lookup",
+              "response": {
+                "value": 1
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "systemInstruction": {
+      "parts": [
+        {
+          "text": "保持原生数据"
+        }
+      ]
+    },
+    "tools": [
+      {
+        "functionDeclarations": [
+          {
+            "name": "lookup",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "city": {
+                  "type": "STRING"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "toolConfig": {
+      "functionCallingConfig": {
+        "mode": "AUTO"
+      }
+    },
+    "generationConfig": {
+      "responseMimeType": "application/json",
+      "responseJsonSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        }
+      },
+      "thinkingConfig": {
+        "includeThoughts": true,
+        "thinkingBudget": 0
+      },
+      "temperature": 0
+    },
+    "native_extra": {
+      "exact": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": [],
+      "error": {
+        "message": "business metadata"
+      }
+    }
+  },
+  "result": {
+    "responseId": "g-response-native",
+    "modelVersion": "reported-native-gemini",
+    "candidates": [
+      {
+        "index": 0,
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "原生思考",
+              "thought": true,
+              "thoughtSignature": "opaque-current+/="
+            },
+            {
+              "functionCall": {
+                "id": "g-call-C",
+                "name": "lookup",
+                "args": {
+                  "city": "杭州"
+                }
+              }
+            },
+            {
+              "text": "{\"ok\":false}"
+            }
+          ]
+        },
+        "finishReason": "STOP",
+        "safetyRatings": [
+          {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "probability": "NEGLIGIBLE"
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "second"
+            }
+          ]
+        },
+        "finishReason": "MAX_TOKENS"
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 41,
+      "candidatesTokenCount": 17,
+      "totalTokenCount": 999,
+      "thoughtsTokenCount": 5,
+      "cachedContentTokenCount": 0,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business metadata"
+        }
+      }
+    },
+    "native_extra": {
+      "exact": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": [],
+      "error": {
+        "message": "business metadata"
+      }
+    }
+  },
+  "events": [
+    {
+      "responseId": "g-response-native",
+      "modelVersion": "reported-native-gemini",
+      "candidates": [
+        {
+          "index": 0,
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "原生思考",
+                "thought": true,
+                "thoughtSignature": "opaque-current+/="
+              }
+            ]
+          }
+        },
+        {
+          "index": 3,
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "second"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "responseId": "g-response-native",
+      "modelVersion": "reported-native-gemini",
+      "candidates": [
+        {
+          "index": 0,
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "functionCall": {
+                  "id": "g-call-C",
+                  "name": "lookup",
+                  "args": {
+                    "city": "杭州"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "responseId": "g-response-native",
+      "modelVersion": "reported-native-gemini",
+      "candidates": [
+        {
+          "index": 0,
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "{\"ok\":false}"
+              }
+            ]
+          },
+          "finishReason": "STOP",
+          "safetyRatings": [
+            {
+              "category": "HARM_CATEGORY_HATE_SPEECH",
+              "probability": "NEGLIGIBLE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "responseId": "g-response-native",
+      "modelVersion": "reported-native-gemini",
+      "candidates": [
+        {
+          "index": 3,
+          "finishReason": "MAX_TOKENS"
+        }
+      ]
+    },
+    {
+      "responseId": "g-response-native",
+      "modelVersion": "reported-native-gemini",
+      "usageMetadata": {
+        "promptTokenCount": 41,
+        "candidatesTokenCount": 17,
+        "totalTokenCount": 999,
+        "thoughtsTokenCount": 5,
+        "cachedContentTokenCount": 0,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": [],
+          "error": {
+            "message": "business metadata"
+          }
+        }
+      }
+    },
+    {
+      "type": "vendor.trace",
+      "responseId": "business-response",
+      "error": {
+        "message": "business metadata"
+      },
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business metadata"
+        }
+      }
+    },
+    {
+      "type": "vendor.accounting",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business metadata"
+        }
+      }
+    }
+  ],
+  "sse": ": native upstream\n\nid: upstream-native\nretry: 0\ndata: {\"responseId\":\"g-response-native\",\"modelVersion\":\"reported-native-gemini\",\"candidates\":[{\"index\":0,\"content\":{\"role\":\"model\",\"parts\":[{\"text\":\"原生思考\",\"thought\":true,\"thoughtSignature\":\"opaque-current+/=\"}]}},{\"index\":3,\"content\":{\"role\":\"model\",\"parts\":[{\"text\":\"second\"}]}}]}\n\nid: upstream-native\nretry: 0\ndata: {\"responseId\":\"g-response-native\",\"modelVersion\":\"reported-native-gemini\",\"candidates\":[{\"index\":0,\"content\":{\"role\":\"model\",\"parts\":[{\"functionCall\":{\"id\":\"g-call-C\",\"name\":\"lookup\",\"args\":{\"city\":\"杭州\"}}}]}}]}\n\nid: upstream-native\nretry: 0\ndata: {\"responseId\":\"g-response-native\",\"modelVersion\":\"reported-native-gemini\",\"candidates\":[{\"index\":0,\"content\":{\"role\":\"model\",\"parts\":[{\"text\":\"{\\\"ok\\\":false}\"}]},\"finishReason\":\"STOP\",\"safetyRatings\":[{\"category\":\"HARM_CATEGORY_HATE_SPEECH\",\"probability\":\"NEGLIGIBLE\"}]}]}\n\nid: upstream-native\nretry: 0\ndata: {\"responseId\":\"g-response-native\",\"modelVersion\":\"reported-native-gemini\",\"candidates\":[{\"index\":3,\"finishReason\":\"MAX_TOKENS\"}]}\n\nid: upstream-native\nretry: 0\ndata: {\"responseId\":\"g-response-native\",\"modelVersion\":\"reported-native-gemini\",\"usageMetadata\":{\"promptTokenCount\":41,\"candidatesTokenCount\":17,\"totalTokenCount\":999,\"thoughtsTokenCount\":5,\"cachedContentTokenCount\":0,\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business metadata\"}}}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"responseId\":\"business-response\",\"error\":{\"message\":\"business metadata\"},\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business metadata\"}}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"vendor.accounting\",\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business metadata\"}}}\n\n",
+  "error": {
+    "error": {
+      "code": 429,
+      "status": "RESOURCE_EXHAUSTED",
+      "message": "原始上游错误",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business metadata"
+        }
+      }
+    }
+  },
+  "blocked": {
+    "promptFeedback": {
+      "blockReason": "SAFETY",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business metadata"
+        }
+      }
+    }
+  }
+}

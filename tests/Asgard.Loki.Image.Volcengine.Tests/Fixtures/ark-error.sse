@@ -1,0 +1,7 @@
+: native heartbeat
+
+id: original-error
+retry: 9
+event: error
+data: {"error":{"code":"InvalidParameter","message":"原生请求错误 😀","type":"BadRequest","param":"image","request_id":"native-request-id","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原文 😀\r\n保留换行"}}
+

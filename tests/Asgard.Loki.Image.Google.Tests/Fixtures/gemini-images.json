@@ -1,0 +1,143 @@
+{
+  "request": {
+    "contents": [
+      {
+        "role": "user",
+        "parts": [
+          {
+            "text": "原生图片参考"
+          },
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": "AQID"
+            },
+            "thoughtSignature": "signed-value==",
+            "future": false
+          }
+        ]
+      },
+      {
+        "role": "model",
+        "parts": [
+          {
+            "text": "history",
+            "thoughtSignature": "original-signature=="
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "parts": [
+          {
+            "text": "edit using history"
+          },
+          {
+            "fileData": {
+              "mimeType": "image/png",
+              "fileUri": "https://images.example.invalid/a%2Fb.png?sig=A%2BB"
+            }
+          }
+        ]
+      }
+    ],
+    "generationConfig": {
+      "responseModalities": [
+        "TEXT",
+        "IMAGE"
+      ],
+      "imageConfig": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "seed": 9007199254740993,
+      "temperature": 0
+    },
+    "safetySettings": [],
+    "future": {
+      "flag": false,
+      "value": null
+    }
+  },
+  "response": {
+    "candidates": [
+      {
+        "index": 2,
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "image explanation",
+              "thought": true,
+              "thoughtSignature": "unchanged=="
+            },
+            {
+              "inlineData": {
+                "mimeType": "image/png",
+                "data": "AQID"
+              },
+              "thoughtSignature": "signed-image==",
+              "future": null
+            }
+          ]
+        },
+        "finishReason": "STOP",
+        "safetyRatings": [
+          {
+            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+            "probability": "NEGLIGIBLE"
+          }
+        ],
+        "groundingMetadata": {
+          "future": false
+        }
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 9007199254740993,
+      "candidatesTokenCount": 10,
+      "thoughtsTokenCount": 2
+    },
+    "modelVersion": "native-image-version",
+    "responseId": "google-response",
+    "future": null
+  },
+  "blocked": {
+    "promptFeedback": {
+      "blockReason": "SAFETY",
+      "blockReasonMessage": "fixture block",
+      "future": false
+    },
+    "usageMetadata": {
+      "promptTokenCount": 5
+    },
+    "responseId": "blocked"
+  },
+  "filtered": {
+    "candidates": [
+      {
+        "index": 0,
+        "finishReason": "IMAGE_SAFETY",
+        "safetyRatings": [
+          {
+            "blocked": true
+          }
+        ]
+      }
+    ],
+    "responseId": "filtered",
+    "future": false
+  },
+  "error": {
+    "error": {
+      "code": 429,
+      "message": "fixture quota",
+      "status": "RESOURCE_EXHAUSTED",
+      "details": [
+        {
+          "future": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,1312 @@
+{
+  "provenance": "Independently authored complete text requests, native Converse targets and complete native/normalized text responses. No production converter or model capture.",
+  "ChatCompletions": {
+    "request": {
+      "model": "public",
+      "max_completion_tokens": 256,
+      "temperature": 0,
+      "top_p": 1,
+      "messages": [
+        {
+          "role": "system",
+          "content": "rules"
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "你好 é 🚀"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "data:image/png;base64,AQID"
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "history-a",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"n\":9007199254740993,\"error\":{\"type\":\"error\"}}"
+              }
+            },
+            {
+              "id": "history-b",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"n\":null}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "history-b",
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":false,\"nil\":null}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "history-a",
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":false,\"n\":9007199254740993}"
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": "done"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "description": "原始工具",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                },
+                "ok": {
+                  "type": "boolean",
+                  "const": false
+                }
+              },
+              "required": [
+                "n"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        }
+      ],
+      "tool_choice": {
+        "type": "function",
+        "function": {
+          "name": "lookup"
+        }
+      },
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 9007199254740993
+              },
+              "ok": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "n",
+              "ok"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "nativeRequest": {
+      "model": "public",
+      "system": [
+        {
+          "text": "rules"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "你好 é 🚀"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "history-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "history-b",
+                "name": "lookup",
+                "input": {
+                  "n": null
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "history-b",
+                "content": [
+                  {
+                    "text": "{\"ok\":false,\"nil\":null}"
+                  }
+                ]
+              }
+            },
+            {
+              "toolResult": {
+                "toolUseId": "history-a",
+                "content": [
+                  {
+                    "text": "{\"ok\":false,\"n\":9007199254740993}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "done"
+            }
+          ]
+        }
+      ],
+      "inferenceConfig": {
+        "maxTokens": 256,
+        "temperature": 0,
+        "topP": 1
+      },
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "ok": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "strict": true
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "outputConfig": {
+        "textFormat": {
+          "type": "json_schema",
+          "structure": {
+            "jsonSchema": {
+              "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993},\"ok\":{\"type\":\"boolean\"}},\"required\":[\"n\",\"ok\"],\"additionalProperties\":false}",
+              "name": "answer"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "id": "__ID__",
+      "object": "chat.completion",
+      "created": 0,
+      "model": "public",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "查询 é 🚀",
+            "tool_calls": [
+              {
+                "id": "next-a",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"n\":9007199254740993,\"error\":{\"type\":\"error\"}}"
+                }
+              },
+              {
+                "id": "next-b",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"n\":null}"
+                }
+              }
+            ]
+          },
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 17,
+        "completion_tokens": 8,
+        "total_tokens": 25
+      }
+    }
+  },
+  "Responses": {
+    "request": {
+      "model": "public",
+      "max_output_tokens": 256,
+      "temperature": 0,
+      "top_p": 1,
+      "instructions": "rules",
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "你好 é 🚀"
+            },
+            {
+              "type": "input_image",
+              "image_url": "data:image/png;base64,AQID"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "call_id": "history-a",
+          "name": "lookup",
+          "arguments": "{\"n\":9007199254740993,\"error\":{\"type\":\"error\"}}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "history-b",
+          "name": "lookup",
+          "arguments": "{\"n\":null}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "history-b",
+          "output": [
+            {
+              "type": "input_text",
+              "text": "{\"ok\":false,\"nil\":null}"
+            }
+          ]
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "history-a",
+          "output": [
+            {
+              "type": "input_text",
+              "text": "{\"ok\":false,\"n\":9007199254740993}"
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": "done"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup",
+          "description": "原始工具",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 9007199254740993
+              },
+              "ok": {
+                "type": "boolean",
+                "const": false
+              }
+            },
+            "required": [
+              "n"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ],
+      "tool_choice": {
+        "type": "function",
+        "name": "lookup"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 9007199254740993
+              },
+              "ok": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "n",
+              "ok"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "nativeRequest": {
+      "model": "public",
+      "system": [
+        {
+          "text": "rules"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "你好 é 🚀"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "history-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "history-b",
+                "name": "lookup",
+                "input": {
+                  "n": null
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "history-b",
+                "content": [
+                  {
+                    "text": "{\"ok\":false,\"nil\":null}"
+                  }
+                ]
+              }
+            },
+            {
+              "toolResult": {
+                "toolUseId": "history-a",
+                "content": [
+                  {
+                    "text": "{\"ok\":false,\"n\":9007199254740993}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "done"
+            }
+          ]
+        }
+      ],
+      "inferenceConfig": {
+        "maxTokens": 256,
+        "temperature": 0,
+        "topP": 1
+      },
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "ok": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "strict": true
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "outputConfig": {
+        "textFormat": {
+          "type": "json_schema",
+          "structure": {
+            "jsonSchema": {
+              "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993},\"ok\":{\"type\":\"boolean\"}},\"required\":[\"n\",\"ok\"],\"additionalProperties\":false}",
+              "name": "answer"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "id": "__ID__",
+      "object": "response",
+      "created_at": 0,
+      "model": "public",
+      "status": "completed",
+      "output": [
+        {
+          "type": "message",
+          "id": "msg___ID___0",
+          "status": "completed",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "查询 é 🚀",
+              "annotations": []
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "id": "fc_next-a",
+          "call_id": "next-a",
+          "name": "lookup",
+          "arguments": "{\"n\":9007199254740993,\"error\":{\"type\":\"error\"}}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call",
+          "id": "fc_next-b",
+          "call_id": "next-b",
+          "name": "lookup",
+          "arguments": "{\"n\":null}",
+          "status": "completed"
+        }
+      ],
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 8,
+        "total_tokens": 25
+      }
+    }
+  },
+  "ClaudeMessages": {
+    "request": {
+      "model": "public",
+      "max_tokens": 256,
+      "temperature": 0,
+      "top_p": 1,
+      "system": "rules",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "你好 é 🚀"
+            },
+            {
+              "type": "image",
+              "source": {
+                "type": "base64",
+                "media_type": "image/png",
+                "data": "AQID"
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "history-a",
+              "name": "lookup",
+              "input": {
+                "n": 9007199254740993,
+                "error": {
+                  "type": "error"
+                }
+              }
+            },
+            {
+              "type": "tool_use",
+              "id": "history-b",
+              "name": "lookup",
+              "input": {
+                "n": null
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "tool_result",
+              "tool_use_id": "history-b",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"ok\":false,\"nil\":null}"
+                }
+              ]
+            },
+            {
+              "type": "tool_result",
+              "tool_use_id": "history-a",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"ok\":false,\"n\":9007199254740993}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": "done"
+        }
+      ],
+      "tools": [
+        {
+          "name": "lookup",
+          "description": "原始工具",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 9007199254740993
+              },
+              "ok": {
+                "type": "boolean",
+                "const": false
+              }
+            },
+            "required": [
+              "n"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ],
+      "tool_choice": {
+        "type": "tool",
+        "name": "lookup"
+      },
+      "output_config": {
+        "format": {
+          "type": "json_schema",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 9007199254740993
+              },
+              "ok": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "n",
+              "ok"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "nativeRequest": {
+      "model": "public",
+      "system": [
+        {
+          "text": "rules"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "你好 é 🚀"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "history-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "history-b",
+                "name": "lookup",
+                "input": {
+                  "n": null
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "history-b",
+                "content": [
+                  {
+                    "text": "{\"ok\":false,\"nil\":null}"
+                  }
+                ]
+              }
+            },
+            {
+              "toolResult": {
+                "toolUseId": "history-a",
+                "content": [
+                  {
+                    "text": "{\"ok\":false,\"n\":9007199254740993}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "done"
+            }
+          ]
+        }
+      ],
+      "inferenceConfig": {
+        "maxTokens": 256,
+        "temperature": 0,
+        "topP": 1
+      },
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "ok": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "strict": true
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "outputConfig": {
+        "textFormat": {
+          "type": "json_schema",
+          "structure": {
+            "jsonSchema": {
+              "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993},\"ok\":{\"type\":\"boolean\"}},\"required\":[\"n\",\"ok\"],\"additionalProperties\":false}"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "id": "__ID__",
+      "type": "message",
+      "role": "assistant",
+      "model": "public",
+      "content": [
+        {
+          "type": "text",
+          "text": "查询 é 🚀"
+        },
+        {
+          "type": "tool_use",
+          "id": "next-a",
+          "name": "lookup",
+          "input": {
+            "n": 9007199254740993,
+            "error": {
+              "type": "error"
+            }
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "next-b",
+          "name": "lookup",
+          "input": {
+            "n": null
+          }
+        }
+      ],
+      "stop_reason": "tool_use",
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 8
+      }
+    }
+  },
+  "Gemini": {
+    "request": {
+      "model": "public",
+      "generationConfig": {
+        "maxOutputTokens": 256,
+        "temperature": 0,
+        "topP": 1,
+        "responseMimeType": "application/json",
+        "responseJsonSchema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 9007199254740993
+            },
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "n",
+            "ok"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "systemInstruction": {
+        "parts": [
+          {
+            "text": "rules"
+          }
+        ]
+      },
+      "contents": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "你好 é 🚀"
+            },
+            {
+              "inlineData": {
+                "mimeType": "image/png",
+                "data": "AQID"
+              }
+            }
+          ]
+        },
+        {
+          "role": "model",
+          "parts": [
+            {
+              "functionCall": {
+                "id": "history-a",
+                "name": "lookup",
+                "args": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "functionCall": {
+                "id": "history-b",
+                "name": "lookup",
+                "args": {
+                  "n": null
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "functionResponse": {
+                "id": "history-b",
+                "name": "lookup",
+                "response": {
+                  "ok": false,
+                  "nil": null
+                }
+              }
+            },
+            {
+              "functionResponse": {
+                "id": "history-a",
+                "name": "lookup",
+                "response": {
+                  "ok": false,
+                  "n": 9007199254740993
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "done"
+            }
+          ]
+        }
+      ],
+      "tools": [
+        {
+          "functionDeclarations": [
+            {
+              "name": "lookup",
+              "description": "原始工具",
+              "parametersJsonSchema": {
+                "type": "object",
+                "properties": {
+                  "n": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 9007199254740993
+                  },
+                  "ok": {
+                    "type": "boolean",
+                    "const": false
+                  }
+                },
+                "required": [
+                  "n"
+                ],
+                "additionalProperties": false
+              }
+            }
+          ]
+        }
+      ],
+      "toolConfig": {
+        "functionCallingConfig": {
+          "mode": "ANY",
+          "allowedFunctionNames": [
+            "lookup"
+          ]
+        }
+      }
+    },
+    "nativeRequest": {
+      "model": "public",
+      "system": [
+        {
+          "text": "rules"
+        }
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "你好 é 🚀"
+            },
+            {
+              "image": {
+                "format": "png",
+                "source": {
+                  "bytes": "AQID"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "toolUse": {
+                "toolUseId": "history-a",
+                "name": "lookup",
+                "input": {
+                  "n": 9007199254740993,
+                  "error": {
+                    "type": "error"
+                  }
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "toolUseId": "history-b",
+                "name": "lookup",
+                "input": {
+                  "n": null
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "toolResult": {
+                "toolUseId": "history-b",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false,
+                      "nil": null
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "toolResult": {
+                "toolUseId": "history-a",
+                "content": [
+                  {
+                    "json": {
+                      "ok": false,
+                      "n": 9007199254740993
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "text": "done"
+            }
+          ]
+        }
+      ],
+      "inferenceConfig": {
+        "maxTokens": 256,
+        "temperature": 0,
+        "topP": 1
+      },
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "name": "lookup",
+              "description": "原始工具",
+              "inputSchema": {
+                "json": {
+                  "type": "object",
+                  "properties": {
+                    "n": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 9007199254740993
+                    },
+                    "ok": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "n"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ],
+        "toolChoice": {
+          "tool": {
+            "name": "lookup"
+          }
+        }
+      },
+      "outputConfig": {
+        "textFormat": {
+          "type": "json_schema",
+          "structure": {
+            "jsonSchema": {
+              "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993},\"ok\":{\"type\":\"boolean\"}},\"required\":[\"n\",\"ok\"],\"additionalProperties\":false}"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "responseId": "__ID__",
+      "modelVersion": "public",
+      "candidates": [
+        {
+          "index": 0,
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "查询 é 🚀"
+              },
+              {
+                "functionCall": {
+                  "id": "next-a",
+                  "name": "lookup",
+                  "args": {
+                    "n": 9007199254740993,
+                    "error": {
+                      "type": "error"
+                    }
+                  }
+                }
+              },
+              {
+                "functionCall": {
+                  "id": "next-b",
+                  "name": "lookup",
+                  "args": {
+                    "n": null
+                  }
+                }
+              }
+            ]
+          },
+          "finishReason": "STOP"
+        }
+      ],
+      "usageMetadata": {
+        "promptTokenCount": 17,
+        "candidatesTokenCount": 8,
+        "totalTokenCount": 25
+      }
+    }
+  },
+  "nativeResponse": {
+    "output": {
+      "message": {
+        "role": "assistant",
+        "content": [
+          {
+            "text": "查询 é 🚀"
+          },
+          {
+            "toolUse": {
+              "toolUseId": "next-a",
+              "name": "lookup",
+              "input": {
+                "n": 9007199254740993,
+                "error": {
+                  "type": "error"
+                }
+              }
+            }
+          },
+          {
+            "toolUse": {
+              "toolUseId": "next-b",
+              "name": "lookup",
+              "input": {
+                "n": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    "stopReason": "tool_use",
+    "usage": {
+      "inputTokens": 17,
+      "outputTokens": 8,
+      "totalTokens": 25
+    },
+    "metrics": {
+      "latencyMs": 9
+    }
+  }
+}

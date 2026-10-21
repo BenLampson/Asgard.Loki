@@ -1,0 +1,188 @@
+{
+  "source": "Independent literal native alpha/search request and opaque HTTP windows, retained from earlier independent vectors without SDK output or numeric reformatting. Explicit configured endpoint/auth expectations authored before implementation. No real model/service/parameter validation.",
+  "path": "native/search.run?existing=1&reference=https://example.invalid/a&tag=1&tag=2",
+  "root": "https://configured.invalid/search/api/",
+  "model": "selected-configured-search",
+  "profiles": [
+    {
+      "authentication": "Bearer",
+      "key": "fixture-configured-search",
+      "name": null,
+      "prefix": "",
+      "suffix": "",
+      "header": "Authorization",
+      "value": "Bearer fixture-configured-search",
+      "query_suffix": ""
+    },
+    {
+      "authentication": "None",
+      "key": null,
+      "name": null,
+      "prefix": "",
+      "suffix": "",
+      "header": null,
+      "value": null,
+      "query_suffix": ""
+    },
+    {
+      "authentication": "Header",
+      "key": "fixture-header",
+      "name": "x-search-key",
+      "prefix": "Token  ",
+      "suffix": "/tail",
+      "header": "x-search-key",
+      "value": "Token  fixture-header/tail",
+      "query_suffix": ""
+    },
+    {
+      "authentication": "Query",
+      "key": "k/+?&=%雪",
+      "name": "api_key",
+      "prefix": "key=",
+      "suffix": "/ok",
+      "header": null,
+      "value": null,
+      "query_suffix": "&api_key=key%3Dk%2F%2B%3F%26%3D%25%E9%9B%AA%2Fok"
+    }
+  ],
+  "requests": {
+    "omitted": {
+      "query": "原生查询，保持输入",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business field"
+        }
+      }
+    },
+    "null": {
+      "query": {
+        "text": "opaque query",
+        "urls": [
+          "https://source.invalid/a?sig=opaque"
+        ]
+      },
+      "id": null,
+      "stream": null,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business field"
+        }
+      }
+    },
+    "false": {
+      "query": [
+        "a",
+        "b"
+      ],
+      "id": "original-associated-id",
+      "stream": false,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business field"
+        }
+      }
+    },
+    "true": {
+      "query": "原始请求",
+      "id": "原始关联",
+      "stream": true,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business field"
+        }
+      }
+    }
+  },
+  "responses": [
+    {
+      "name": "json",
+      "status": 200,
+      "type": "application/json; profile=\"native\"",
+      "body": "{\"id\":\"upstream-search\",\"results\":[{\"url\":\"https://source.invalid/a?sig=opaque\",\"title\":\"原始资料\",\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business field\"}}}],\"usage\":null,\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business field\"}}}"
+    },
+    {
+      "name": "text",
+      "status": 201,
+      "type": "text/plain; charset=utf-8",
+      "body": "  原始文本\n保持空行\n\n"
+    },
+    {
+      "name": "binary",
+      "status": 200,
+      "type": "application/octet-stream",
+      "base64": "AP+AQQ=="
+    },
+    {
+      "name": "empty",
+      "status": 204,
+      "type": null,
+      "base64": ""
+    },
+    {
+      "name": "json-array",
+      "status": 200,
+      "type": "application/json",
+      "body": "[1,null,false,{\"exact\":9007199254740993}]"
+    },
+    {
+      "name": "sse",
+      "status": 200,
+      "type": "text/event-stream",
+      "body": ": original source\n\nevent: vendor.partial\ndata: {\"raw\":true}\n\n"
+    },
+    {
+      "name": "missing-type",
+      "status": 202,
+      "type": null,
+      "body": "  {\"pending\":true,\"unknown\":null}\n"
+    },
+    {
+      "name": "json-error",
+      "status": 200,
+      "type": "application/json",
+      "body": "{\"error\":{\"message\":\"原始业务结果\",\"code\":123},\"unknown\":false}"
+    }
+  ],
+  "errors": [
+    {
+      "status": 400,
+      "type": "application/problem+json",
+      "body": "{\"error\":{\"message\":\"原生参数拒绝\"},\"exact\":9007199254740993}"
+    },
+    {
+      "status": 401,
+      "type": "text/plain",
+      "body": "Original authentication failure"
+    },
+    {
+      "status": 429,
+      "type": "application/octet-stream",
+      "base64": "AP+AQQ=="
+    },
+    {
+      "status": 503,
+      "type": null,
+      "base64": ""
+    }
+  ]
+}

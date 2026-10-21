@@ -1,0 +1,1181 @@
+{
+  "source": "Independent native Zhipu v4 source windows; no SDK-captured output or live availability claim. Official Chat/Responses/Claude guides cached read-only; pinned native operations only.",
+  "profiles": [
+    {
+      "chat_root": "https://open.bigmodel.cn/api/paas/v4/",
+      "responses_root": "https://open.bigmodel.cn/api/v1/",
+      "key": "fixture-z-independent-A"
+    },
+    {
+      "chat_root": "https://proxy.invalid/explicit-z/v4/",
+      "responses_root": "https://proxy.invalid/explicit-z/responses/v1/",
+      "key": "fixture-z-independent-B"
+    }
+  ],
+  "chat": {
+    "model": "glm-selected-native",
+    "path": "chat/completions",
+    "caller": {
+      "model": "public",
+      "stream": false,
+      "messages": [
+        {
+          "role": "user",
+          "content": "比较杭州与苏州"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "reasoning_content": "需要两个原生结果",
+          "tool_calls": [
+            {
+              "id": "z-tool-A",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"杭州\"}"
+              }
+            },
+            {
+              "id": "z-tool-B",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"苏州\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "z-tool-B",
+          "name": "lookup",
+          "content": "{\"city\":\"苏州\",\"value\":2}"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "z-tool-A",
+          "name": "lookup",
+          "content": "{\"city\":\"杭州\",\"value\":1}"
+        }
+      ],
+      "thinking": {
+        "type": "enabled",
+        "clear_thinking": false
+      },
+      "reasoning_effort": "medium",
+      "top_p": 1,
+      "stop": [
+        "END"
+      ],
+      "max_tokens": 128,
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        },
+        {
+          "type": "web_search",
+          "web_search": {
+            "enable": true,
+            "search_result": true
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "request_id": "native-z-request",
+      "user_id": "native-z-user",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    },
+    "wire": {
+      "model": "glm-selected-native",
+      "stream": false,
+      "messages": [
+        {
+          "role": "user",
+          "content": "比较杭州与苏州"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "reasoning_content": "需要两个原生结果",
+          "tool_calls": [
+            {
+              "id": "z-tool-A",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"杭州\"}"
+              }
+            },
+            {
+              "id": "z-tool-B",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"苏州\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "z-tool-B",
+          "name": "lookup",
+          "content": "{\"city\":\"苏州\",\"value\":2}"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "z-tool-A",
+          "name": "lookup",
+          "content": "{\"city\":\"杭州\",\"value\":1}"
+        }
+      ],
+      "thinking": {
+        "type": "enabled",
+        "clear_thinking": false
+      },
+      "reasoning_effort": "medium",
+      "top_p": 1,
+      "stop": [
+        "END"
+      ],
+      "max_tokens": 128,
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        },
+        {
+          "type": "web_search",
+          "web_search": {
+            "enable": true,
+            "search_result": true
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "request_id": "native-z-request",
+      "user_id": "native-z-user",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    },
+    "wire_stream": {
+      "model": "glm-selected-native",
+      "stream": true,
+      "messages": [
+        {
+          "role": "user",
+          "content": "比较杭州与苏州"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "reasoning_content": "需要两个原生结果",
+          "tool_calls": [
+            {
+              "id": "z-tool-A",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"杭州\"}"
+              }
+            },
+            {
+              "id": "z-tool-B",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"苏州\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "z-tool-B",
+          "name": "lookup",
+          "content": "{\"city\":\"苏州\",\"value\":2}"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "z-tool-A",
+          "name": "lookup",
+          "content": "{\"city\":\"杭州\",\"value\":1}"
+        }
+      ],
+      "thinking": {
+        "type": "enabled",
+        "clear_thinking": false
+      },
+      "reasoning_effort": "medium",
+      "top_p": 1,
+      "stop": [
+        "END"
+      ],
+      "max_tokens": 128,
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        },
+        {
+          "type": "web_search",
+          "web_search": {
+            "enable": true,
+            "search_result": true
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "request_id": "native-z-request",
+      "user_id": "native-z-user",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    },
+    "result": {
+      "id": "z-chat-A",
+      "request_id": "native-z-request",
+      "created": 1792512000,
+      "model": "reported-native-z-model",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "reasoning_content": "原生思考",
+            "tool_calls": [
+              {
+                "id": "z-tool-C",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"杭州\"}"
+                }
+              },
+              {
+                "id": "z-tool-D",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"city\":\"苏州\"}"
+                }
+              }
+            ]
+          },
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 41,
+        "completion_tokens": 17,
+        "total_tokens": 999,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "native_exact": 9007199254740993
+      },
+      "web_search": [
+        {
+          "icon": "https://source.invalid/icon",
+          "title": "原生来源",
+          "link": "https://source.invalid/a?sig=opaque",
+          "media": "fixture",
+          "publish_date": "2026-10-21",
+          "content": "原文引用",
+          "refer": "ref_1"
+        }
+      ],
+      "content_filter": [
+        {
+          "role": "history",
+          "level": 3
+        }
+      ],
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    },
+    "events": [
+      {
+        "id": "z-chat-A",
+        "request_id": "native-z-request",
+        "created": 1792512000,
+        "model": "reported-native-z-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "content": ""
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "z-chat-A",
+        "request_id": "native-z-request",
+        "created": 1792512000,
+        "model": "reported-native-z-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "reasoning_content": "原生思考"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "z-chat-A",
+        "request_id": "native-z-request",
+        "created": 1792512000,
+        "model": "reported-native-z-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "z-tool-C",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup",
+                    "arguments": "{\"city\":"
+                  }
+                },
+                {
+                  "index": 1,
+                  "id": "z-tool-D",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup",
+                    "arguments": "{\"city\":"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "z-chat-A",
+        "request_id": "native-z-request",
+        "created": 1792512000,
+        "model": "reported-native-z-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "\"苏州\"}"
+                  }
+                },
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "\"杭州\"}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "z-chat-A",
+        "request_id": "native-z-request",
+        "created": 1792512000,
+        "model": "reported-native-z-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "native_exact": 9007199254740993
+        },
+        "web_search": [
+          {
+            "icon": "https://source.invalid/icon",
+            "title": "原生来源",
+            "link": "https://source.invalid/a?sig=opaque",
+            "media": "fixture",
+            "publish_date": "2026-10-21",
+            "content": "原文引用",
+            "refer": "ref_1"
+          }
+        ],
+        "content_filter": [
+          {
+            "role": "history",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "type": "vendor.trace",
+        "id": "business-only",
+        "native_extra": {
+          "exact": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": [],
+          "error": {
+            "message": "business data"
+          }
+        }
+      }
+    ],
+    "sse": ": native bytewise source\n\nid: z-native-transport\nretry: 0\ndata: {\"id\":\"z-chat-A\",\"request_id\":\"native-z-request\",\"created\":1792512000,\"model\":\"reported-native-z-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\nid: z-native-transport\nretry: 0\ndata: {\"id\":\"z-chat-A\",\"request_id\":\"native-z-request\",\"created\":1792512000,\"model\":\"reported-native-z-model\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning_content\":\"原生思考\"},\"finish_reason\":null}]}\n\nid: z-native-transport\nretry: 0\ndata: {\"id\":\"z-chat-A\",\"request_id\":\"native-z-request\",\"created\":1792512000,\"model\":\"reported-native-z-model\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"z-tool-C\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"city\\\":\"}},{\"index\":1,\"id\":\"z-tool-D\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"city\\\":\"}}]},\"finish_reason\":null}]}\n\nid: z-native-transport\nretry: 0\ndata: {\"id\":\"z-chat-A\",\"request_id\":\"native-z-request\",\"created\":1792512000,\"model\":\"reported-native-z-model\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"\\\"苏州\\\"}\"}},{\"index\":0,\"function\":{\"arguments\":\"\\\"杭州\\\"}\"}}]},\"finish_reason\":null}]}\n\nid: z-native-transport\nretry: 0\ndata: {\"id\":\"z-chat-A\",\"request_id\":\"native-z-request\",\"created\":1792512000,\"model\":\"reported-native-z-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"prompt_tokens_details\":{\"cached_tokens\":0},\"native_exact\":9007199254740993},\"web_search\":[{\"icon\":\"https://source.invalid/icon\",\"title\":\"原生来源\",\"link\":\"https://source.invalid/a?sig=opaque\",\"media\":\"fixture\",\"publish_date\":\"2026-10-21\",\"content\":\"原文引用\",\"refer\":\"ref_1\"}],\"content_filter\":[{\"role\":\"history\",\"level\":3}]}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-only\",\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business data\"}}}\n\ndata: [DONE]\n\n"
+  },
+  "responses": {
+    "model": "glm-selected-native",
+    "path": "responses",
+    "caller": {
+      "model": "public",
+      "stream": false,
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "原生结果保留关联"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "z-reason-old",
+          "content": {
+            "type": "reasoning_text",
+            "text": "历史思考"
+          }
+        },
+        {
+          "type": "function_call",
+          "id": "z-item-A",
+          "call_id": "z-call-A",
+          "name": "lookup",
+          "arguments": "{\"city\":\"杭州\"}"
+        },
+        {
+          "type": "function_call",
+          "id": "z-item-B",
+          "call_id": "z-call-B",
+          "name": "lookup",
+          "arguments": "{\"city\":\"苏州\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "z-call-B",
+          "output": "{\"value\":2}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "z-call-A",
+          "output": "{\"value\":1}"
+        }
+      ],
+      "reasoning": {
+        "effort": "medium"
+      },
+      "text": {
+        "format": {
+          "type": "json_object"
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "tool_choice": "auto",
+      "max_output_tokens": 256,
+      "top_p": 1,
+      "stop": [
+        "END"
+      ],
+      "store": false,
+      "prompt_cache_key": "explicit-cache",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    },
+    "wire": {
+      "model": "glm-selected-native",
+      "stream": false,
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "原生结果保留关联"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "z-reason-old",
+          "content": {
+            "type": "reasoning_text",
+            "text": "历史思考"
+          }
+        },
+        {
+          "type": "function_call",
+          "id": "z-item-A",
+          "call_id": "z-call-A",
+          "name": "lookup",
+          "arguments": "{\"city\":\"杭州\"}"
+        },
+        {
+          "type": "function_call",
+          "id": "z-item-B",
+          "call_id": "z-call-B",
+          "name": "lookup",
+          "arguments": "{\"city\":\"苏州\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "z-call-B",
+          "output": "{\"value\":2}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "z-call-A",
+          "output": "{\"value\":1}"
+        }
+      ],
+      "reasoning": {
+        "effort": "medium"
+      },
+      "text": {
+        "format": {
+          "type": "json_object"
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "tool_choice": "auto",
+      "max_output_tokens": 256,
+      "top_p": 1,
+      "stop": [
+        "END"
+      ],
+      "store": false,
+      "prompt_cache_key": "explicit-cache",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    },
+    "wire_stream": {
+      "model": "glm-selected-native",
+      "stream": true,
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "原生结果保留关联"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "z-reason-old",
+          "content": {
+            "type": "reasoning_text",
+            "text": "历史思考"
+          }
+        },
+        {
+          "type": "function_call",
+          "id": "z-item-A",
+          "call_id": "z-call-A",
+          "name": "lookup",
+          "arguments": "{\"city\":\"杭州\"}"
+        },
+        {
+          "type": "function_call",
+          "id": "z-item-B",
+          "call_id": "z-call-B",
+          "name": "lookup",
+          "arguments": "{\"city\":\"苏州\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "z-call-B",
+          "output": "{\"value\":2}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "z-call-A",
+          "output": "{\"value\":1}"
+        }
+      ],
+      "reasoning": {
+        "effort": "medium"
+      },
+      "text": {
+        "format": {
+          "type": "json_object"
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "tool_choice": "auto",
+      "max_output_tokens": 256,
+      "top_p": 1,
+      "stop": [
+        "END"
+      ],
+      "store": false,
+      "prompt_cache_key": "explicit-cache",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    },
+    "result": {
+      "id": "z-response-A",
+      "object": "response",
+      "created_at": 1792512000,
+      "model": "reported-native-z-model",
+      "status": "completed",
+      "output": [
+        {
+          "type": "reasoning",
+          "id": "z-r-1",
+          "status": "completed",
+          "content": {
+            "type": "reasoning_text",
+            "text": "原生对象而非数组"
+          }
+        },
+        {
+          "type": "function_call",
+          "id": "z-f-1",
+          "call_id": "z-call-C",
+          "name": "lookup",
+          "arguments": "{\"city\":\"杭州\"}",
+          "status": "completed"
+        },
+        {
+          "type": "message",
+          "role": "assistant",
+          "id": "z-m-1",
+          "status": "completed",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "{\"city\":\"杭州\"}",
+              "annotations": []
+            }
+          ]
+        },
+        {
+          "type": "web_search_call",
+          "id": "z-s-1",
+          "status": "completed",
+          "native_extra": {
+            "exact": 9007199254740993,
+            "null": null,
+            "false": false,
+            "zero": 0,
+            "empty": [],
+            "error": {
+              "message": "business data"
+            }
+          }
+        }
+      ],
+      "error": null,
+      "incomplete_details": null,
+      "usage": {
+        "input_tokens": 41,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 17,
+        "output_tokens_details": {
+          "reasoning_tokens": 5
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": [],
+          "error": {
+            "message": "business data"
+          }
+        }
+      },
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    },
+    "events": [
+      {
+        "type": "response.created",
+        "response": {
+          "id": "z-response-A",
+          "object": "response",
+          "created_at": 1792512000,
+          "model": "reported-native-z-model",
+          "status": "in_progress",
+          "output": [],
+          "error": null,
+          "incomplete_details": null,
+          "usage": null,
+          "native_extra": {
+            "exact": 9007199254740993,
+            "null": null,
+            "false": false,
+            "zero": 0,
+            "empty": [],
+            "error": {
+              "message": "business data"
+            }
+          }
+        },
+        "sequence_number": 0
+      },
+      {
+        "type": "response.output_item.added",
+        "response_id": "z-response-A",
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "z-r-1",
+          "status": "in_progress",
+          "content": {
+            "type": "reasoning_text",
+            "text": "原生对象而非数组"
+          }
+        },
+        "sequence_number": 1
+      },
+      {
+        "type": "response.reasoning_text.delta",
+        "response_id": "z-response-A",
+        "item_id": "z-r-1",
+        "output_index": 0,
+        "content_index": 0,
+        "delta": "原生对象而非数组",
+        "sequence_number": 2
+      },
+      {
+        "type": "response.reasoning_text.done",
+        "response_id": "z-response-A",
+        "item_id": "z-r-1",
+        "output_index": 0,
+        "content_index": 0,
+        "text": "原生对象而非数组",
+        "sequence_number": 3
+      },
+      {
+        "type": "response.output_item.done",
+        "response_id": "z-response-A",
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "z-r-1",
+          "status": "completed",
+          "content": {
+            "type": "reasoning_text",
+            "text": "原生对象而非数组"
+          }
+        },
+        "sequence_number": 4
+      },
+      {
+        "type": "response.output_item.added",
+        "response_id": "z-response-A",
+        "output_index": 1,
+        "item": {
+          "type": "function_call",
+          "id": "z-f-1",
+          "call_id": "z-call-C",
+          "name": "lookup",
+          "arguments": "",
+          "status": "in_progress"
+        },
+        "sequence_number": 5
+      },
+      {
+        "type": "response.function_call_arguments.delta",
+        "response_id": "z-response-A",
+        "item_id": "z-f-1",
+        "output_index": 1,
+        "delta": "{\"city\":",
+        "sequence_number": 6
+      },
+      {
+        "type": "response.function_call_arguments.delta",
+        "response_id": "z-response-A",
+        "item_id": "z-f-1",
+        "output_index": 1,
+        "delta": "\"杭州\"}",
+        "sequence_number": 7
+      },
+      {
+        "type": "response.function_call_arguments.done",
+        "response_id": "z-response-A",
+        "item_id": "z-f-1",
+        "output_index": 1,
+        "arguments": "{\"city\":\"杭州\"}",
+        "sequence_number": 8
+      },
+      {
+        "type": "response.output_item.done",
+        "response_id": "z-response-A",
+        "output_index": 1,
+        "item": {
+          "type": "function_call",
+          "id": "z-f-1",
+          "call_id": "z-call-C",
+          "name": "lookup",
+          "arguments": "{\"city\":\"杭州\"}",
+          "status": "completed"
+        },
+        "sequence_number": 9
+      },
+      {
+        "type": "response.web_search_call.in_progress",
+        "response_id": "z-response-A",
+        "item_id": "z-s-1",
+        "output_index": 3,
+        "sequence_number": 10
+      },
+      {
+        "type": "response.web_search_call.searching",
+        "response_id": "z-response-A",
+        "item_id": "z-s-1",
+        "output_index": 3,
+        "sequence_number": 11
+      },
+      {
+        "type": "response.web_search_call.completed",
+        "response_id": "z-response-A",
+        "item_id": "z-s-1",
+        "output_index": 3,
+        "sequence_number": 12
+      },
+      {
+        "type": "response.output_item.done",
+        "response_id": "z-response-A",
+        "output_index": 2,
+        "item": {
+          "type": "message",
+          "role": "assistant",
+          "id": "z-m-1",
+          "status": "completed",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "{\"city\":\"杭州\"}",
+              "annotations": []
+            }
+          ]
+        },
+        "sequence_number": 13
+      },
+      {
+        "type": "response.completed",
+        "response": {
+          "id": "z-response-A",
+          "object": "response",
+          "created_at": 1792512000,
+          "model": "reported-native-z-model",
+          "status": "completed",
+          "output": [
+            {
+              "type": "reasoning",
+              "id": "z-r-1",
+              "status": "completed",
+              "content": {
+                "type": "reasoning_text",
+                "text": "原生对象而非数组"
+              }
+            },
+            {
+              "type": "function_call",
+              "id": "z-f-1",
+              "call_id": "z-call-C",
+              "name": "lookup",
+              "arguments": "{\"city\":\"杭州\"}",
+              "status": "completed"
+            },
+            {
+              "type": "message",
+              "role": "assistant",
+              "id": "z-m-1",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "{\"city\":\"杭州\"}",
+                  "annotations": []
+                }
+              ]
+            },
+            {
+              "type": "web_search_call",
+              "id": "z-s-1",
+              "status": "completed",
+              "native_extra": {
+                "exact": 9007199254740993,
+                "null": null,
+                "false": false,
+                "zero": 0,
+                "empty": [],
+                "error": {
+                  "message": "business data"
+                }
+              }
+            }
+          ],
+          "error": null,
+          "incomplete_details": null,
+          "usage": {
+            "input_tokens": 41,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 17,
+            "output_tokens_details": {
+              "reasoning_tokens": 5
+            },
+            "native_extra": {
+              "exact": 9007199254740993,
+              "null": null,
+              "false": false,
+              "zero": 0,
+              "empty": [],
+              "error": {
+                "message": "business data"
+              }
+            }
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "null": null,
+            "false": false,
+            "zero": 0,
+            "empty": [],
+            "error": {
+              "message": "business data"
+            }
+          }
+        },
+        "sequence_number": 14
+      },
+      {
+        "type": "vendor.trace",
+        "native_extra": {
+          "exact": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": [],
+          "error": {
+            "message": "business data"
+          }
+        },
+        "sequence_number": 15
+      }
+    ],
+    "sse": ": native bytewise source\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.created\",\"response\":{\"id\":\"z-response-A\",\"object\":\"response\",\"created_at\":1792512000,\"model\":\"reported-native-z-model\",\"status\":\"in_progress\",\"output\":[],\"error\":null,\"incomplete_details\":null,\"usage\":null,\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business data\"}}},\"sequence_number\":0}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.output_item.added\",\"response_id\":\"z-response-A\",\"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"z-r-1\",\"status\":\"in_progress\",\"content\":{\"type\":\"reasoning_text\",\"text\":\"原生对象而非数组\"}},\"sequence_number\":1}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_text.delta\",\"response_id\":\"z-response-A\",\"item_id\":\"z-r-1\",\"output_index\":0,\"content_index\":0,\"delta\":\"原生对象而非数组\",\"sequence_number\":2}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_text.done\",\"response_id\":\"z-response-A\",\"item_id\":\"z-r-1\",\"output_index\":0,\"content_index\":0,\"text\":\"原生对象而非数组\",\"sequence_number\":3}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.output_item.done\",\"response_id\":\"z-response-A\",\"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"z-r-1\",\"status\":\"completed\",\"content\":{\"type\":\"reasoning_text\",\"text\":\"原生对象而非数组\"}},\"sequence_number\":4}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.output_item.added\",\"response_id\":\"z-response-A\",\"output_index\":1,\"item\":{\"type\":\"function_call\",\"id\":\"z-f-1\",\"call_id\":\"z-call-C\",\"name\":\"lookup\",\"arguments\":\"\",\"status\":\"in_progress\"},\"sequence_number\":5}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.function_call_arguments.delta\",\"response_id\":\"z-response-A\",\"item_id\":\"z-f-1\",\"output_index\":1,\"delta\":\"{\\\"city\\\":\",\"sequence_number\":6}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.function_call_arguments.delta\",\"response_id\":\"z-response-A\",\"item_id\":\"z-f-1\",\"output_index\":1,\"delta\":\"\\\"杭州\\\"}\",\"sequence_number\":7}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.function_call_arguments.done\",\"response_id\":\"z-response-A\",\"item_id\":\"z-f-1\",\"output_index\":1,\"arguments\":\"{\\\"city\\\":\\\"杭州\\\"}\",\"sequence_number\":8}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.output_item.done\",\"response_id\":\"z-response-A\",\"output_index\":1,\"item\":{\"type\":\"function_call\",\"id\":\"z-f-1\",\"call_id\":\"z-call-C\",\"name\":\"lookup\",\"arguments\":\"{\\\"city\\\":\\\"杭州\\\"}\",\"status\":\"completed\"},\"sequence_number\":9}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.web_search_call.in_progress\",\"response_id\":\"z-response-A\",\"item_id\":\"z-s-1\",\"output_index\":3,\"sequence_number\":10}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.web_search_call.searching\",\"response_id\":\"z-response-A\",\"item_id\":\"z-s-1\",\"output_index\":3,\"sequence_number\":11}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.web_search_call.completed\",\"response_id\":\"z-response-A\",\"item_id\":\"z-s-1\",\"output_index\":3,\"sequence_number\":12}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.output_item.done\",\"response_id\":\"z-response-A\",\"output_index\":2,\"item\":{\"type\":\"message\",\"role\":\"assistant\",\"id\":\"z-m-1\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"city\\\":\\\"杭州\\\"}\",\"annotations\":[]}]},\"sequence_number\":13}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"response.completed\",\"response\":{\"id\":\"z-response-A\",\"object\":\"response\",\"created_at\":1792512000,\"model\":\"reported-native-z-model\",\"status\":\"completed\",\"output\":[{\"type\":\"reasoning\",\"id\":\"z-r-1\",\"status\":\"completed\",\"content\":{\"type\":\"reasoning_text\",\"text\":\"原生对象而非数组\"}},{\"type\":\"function_call\",\"id\":\"z-f-1\",\"call_id\":\"z-call-C\",\"name\":\"lookup\",\"arguments\":\"{\\\"city\\\":\\\"杭州\\\"}\",\"status\":\"completed\"},{\"type\":\"message\",\"role\":\"assistant\",\"id\":\"z-m-1\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"city\\\":\\\"杭州\\\"}\",\"annotations\":[]}]},{\"type\":\"web_search_call\",\"id\":\"z-s-1\",\"status\":\"completed\",\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business data\"}}}],\"error\":null,\"incomplete_details\":null,\"usage\":{\"input_tokens\":41,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":17,\"output_tokens_details\":{\"reasoning_tokens\":5},\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business data\"}}},\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business data\"}}},\"sequence_number\":14}\n\nid: z-native-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business data\"}},\"sequence_number\":15}\n\n"
+  },
+  "http_error": {
+    "error": {
+      "code": "1210",
+      "message": "原生参数拒绝"
+    },
+    "native_extra": {
+      "exact": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": [],
+      "error": {
+        "message": "business data"
+      }
+    }
+  }
+}

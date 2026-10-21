@@ -1,0 +1,93 @@
+{
+  "requests": [
+    {
+      "model": "native-xai-fixture",
+      "prompt": "keep original image",
+      "image": {
+        "url": "https://input.example.invalid/a%2Fb.png?sig=A%2BB",
+        "type": "image_url",
+        "future": false
+      },
+      "response_format": "url",
+      "n": 1,
+      "future": {
+        "integer": 9007199254740993,
+        "none": null
+      }
+    },
+    {
+      "model": "native-xai-fixture",
+      "prompt": "use original inline image",
+      "image": {
+        "url": "data:image/png;base64,AQID",
+        "future": null
+      },
+      "response_format": "b64_json",
+      "future": false
+    },
+    {
+      "model": "native-xai-fixture",
+      "prompt": "preserve source order",
+      "images": [
+        {
+          "type": "image_url",
+          "url": "https://input.example.invalid/first.png",
+          "future": false
+        },
+        {
+          "url": "data:image/png;base64,AQID"
+        },
+        {
+          "file_id": "fixture-existing-image-id",
+          "future": null
+        }
+      ],
+      "aspect_ratio": "3:2",
+      "n": 1,
+      "future": 0
+    }
+  ],
+  "url": {
+    "created": null,
+    "data": [
+      {
+        "url": "https://result.example.invalid/a%2Fb.jpg?sig=A%2BB",
+        "mime_type": "image/jpeg",
+        "revised_prompt": "",
+        "future": false
+      }
+    ],
+    "usage": {
+      "input_tokens": null,
+      "cost_in_usd_ticks": 9007199254740993,
+      "future": null
+    },
+    "future": false
+  },
+  "base64": {
+    "data": [
+      {
+        "url": null,
+        "b64_json": "AQID",
+        "mime_type": "image/png",
+        "revised_prompt": "native revision",
+        "future": {
+          "zero": 0
+        }
+      }
+    ],
+    "usage": {
+      "cost_in_usd_ticks": 22,
+      "future": false
+    },
+    "future": null
+  },
+  "error": {
+    "code": "fixture_error_code",
+    "error": "original fixture error",
+    "future": {
+      "integer": 9007199254740993,
+      "flag": false
+    }
+  }
+}

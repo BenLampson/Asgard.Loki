@@ -1,0 +1,80 @@
+{
+  "model": "model-a",
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        {
+          "text": "你好"
+        }
+      ]
+    },
+    {
+      "role": "model",
+      "parts": [
+        {
+          "functionCall": {
+            "id": "call_1",
+            "name": "lookup",
+            "args": {
+              "x": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "parts": [
+        {
+          "functionResponse": {
+            "id": "call_1",
+            "name": "lookup",
+            "response": {
+              "ok": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "systemInstruction": {
+    "parts": [
+      {
+        "text": "rules"
+      }
+    ]
+  },
+  "generationConfig": {
+    "temperature": 0,
+    "topP": 1,
+    "maxOutputTokens": 128
+  },
+  "tools": [
+    {
+      "functionDeclarations": [
+        {
+          "name": "lookup",
+          "description": "Find a value",
+          "parametersJsonSchema": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    }
+  ],
+  "toolConfig": {
+    "functionCallingConfig": {
+      "mode": "AUTO"
+    }
+  }
+}

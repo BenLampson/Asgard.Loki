@@ -1,0 +1,511 @@
+{
+  "model": "selected-native-upstream",
+  "path": "claude/message.run?existing=1&reference=https://example.invalid/a&tag=1&tag=2",
+  "caller": {
+    "model": "public",
+    "stream": false,
+    "max_tokens": 128,
+    "system": [
+      {
+        "type": "text",
+        "text": "原生工具关联"
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "比较两地"
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "历史思考"
+          },
+          {
+            "type": "tool_use",
+            "id": "z-m-A",
+            "name": "lookup",
+            "input": {
+              "city": "杭州"
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "z-m-B",
+            "name": "lookup",
+            "input": {
+              "city": "苏州"
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "z-m-B",
+            "content": "{\"value\":2}"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "z-m-A",
+            "content": "{\"value\":1}"
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "name": "lookup",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "city"
+          ]
+        }
+      }
+    ],
+    "native_extra": {
+      "exact": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": [],
+      "error": {
+        "message": "business data"
+      }
+    }
+  },
+  "wire": {
+    "model": "selected-native-upstream",
+    "stream": false,
+    "max_tokens": 128,
+    "system": [
+      {
+        "type": "text",
+        "text": "原生工具关联"
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "比较两地"
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "历史思考"
+          },
+          {
+            "type": "tool_use",
+            "id": "z-m-A",
+            "name": "lookup",
+            "input": {
+              "city": "杭州"
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "z-m-B",
+            "name": "lookup",
+            "input": {
+              "city": "苏州"
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "z-m-B",
+            "content": "{\"value\":2}"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "z-m-A",
+            "content": "{\"value\":1}"
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "name": "lookup",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "city"
+          ]
+        }
+      }
+    ],
+    "native_extra": {
+      "exact": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": [],
+      "error": {
+        "message": "business data"
+      }
+    }
+  },
+  "wire_stream": {
+    "model": "selected-native-upstream",
+    "stream": true,
+    "max_tokens": 128,
+    "system": [
+      {
+        "type": "text",
+        "text": "原生工具关联"
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "比较两地"
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "历史思考"
+          },
+          {
+            "type": "tool_use",
+            "id": "z-m-A",
+            "name": "lookup",
+            "input": {
+              "city": "杭州"
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "z-m-B",
+            "name": "lookup",
+            "input": {
+              "city": "苏州"
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "z-m-B",
+            "content": "{\"value\":2}"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "z-m-A",
+            "content": "{\"value\":1}"
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "name": "lookup",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "city"
+          ]
+        }
+      }
+    ],
+    "native_extra": {
+      "exact": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": [],
+      "error": {
+        "message": "business data"
+      }
+    }
+  },
+  "result": {
+    "type": "message",
+    "id": "z-message-A",
+    "role": "assistant",
+    "model": "reported-native-z-model",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "原生思考无签名"
+      },
+      {
+        "type": "tool_use",
+        "id": "z-m-C",
+        "name": "lookup",
+        "input": {
+          "city": "杭州"
+        }
+      },
+      {
+        "type": "text",
+        "text": "原生结果"
+      }
+    ],
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 41,
+      "output_tokens": 17,
+      "cache_read_input_tokens": 0,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    },
+    "native_extra": {
+      "exact": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": [],
+      "error": {
+        "message": "business data"
+      }
+    }
+  },
+  "events": [
+    {
+      "type": "message_start",
+      "message": {
+        "type": "message",
+        "id": "z-message-A",
+        "role": "assistant",
+        "model": "reported-native-z-model",
+        "content": [],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 41,
+          "output_tokens": 0
+        },
+        "native_extra": {
+          "exact": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": [],
+          "error": {
+            "message": "business data"
+          }
+        }
+      }
+    },
+    {
+      "type": "content_block_start",
+      "index": 0,
+      "content_block": {
+        "type": "thinking",
+        "thinking": ""
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 0,
+      "delta": {
+        "type": "thinking_delta",
+        "thinking": "原生思考无签名"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 0
+    },
+    {
+      "type": "content_block_start",
+      "index": 1,
+      "content_block": {
+        "type": "tool_use",
+        "id": "z-m-C",
+        "name": "lookup",
+        "input": {}
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 1,
+      "delta": {
+        "type": "input_json_delta",
+        "partial_json": "{\"city\":"
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 1,
+      "delta": {
+        "type": "input_json_delta",
+        "partial_json": "\"杭州\"}"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 1
+    },
+    {
+      "type": "content_block_start",
+      "index": 2,
+      "content_block": {
+        "type": "text",
+        "text": ""
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 2,
+      "delta": {
+        "type": "text_delta",
+        "text": "原生结果"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 2
+    },
+    {
+      "type": "message_delta",
+      "delta": {
+        "stop_reason": "tool_use",
+        "stop_sequence": null
+      },
+      "usage": {
+        "input_tokens": 41,
+        "output_tokens": 17,
+        "cache_read_input_tokens": 0,
+        "native_extra": {
+          "exact": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": [],
+          "error": {
+            "message": "business data"
+          }
+        }
+      }
+    },
+    {
+      "type": "message_stop"
+    },
+    {
+      "type": "vendor.trace",
+      "native_extra": {
+        "exact": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": [],
+        "error": {
+          "message": "business data"
+        }
+      }
+    }
+  ],
+  "sse": ": native upstream\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"message_start\",\"message\":{\"type\":\"message\",\"id\":\"z-message-A\",\"role\":\"assistant\",\"model\":\"reported-native-z-model\",\"content\":[],\"stop_reason\":null,\"stop_sequence\":null,\"usage\":{\"input_tokens\":41,\"output_tokens\":0},\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business data\"}}}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"原生思考无签名\"}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"tool_use\",\"id\":\"z-m-C\",\"name\":\"lookup\",\"input\":{}}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"city\\\":\"}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"\\\"杭州\\\"}\"}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_stop\",\"index\":1}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_start\",\"index\":2,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"text_delta\",\"text\":\"原生结果\"}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"content_block_stop\",\"index\":2}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":41,\"output_tokens\":17,\"cache_read_input_tokens\":0,\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business data\"}}}}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"message_stop\"}\n\nid: upstream-native\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"native_extra\":{\"exact\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[],\"error\":{\"message\":\"business data\"}}}\n\n",
+  "root": "https://configured.invalid/native/api/",
+  "profiles": [
+    {
+      "authentication": "ApiKey",
+      "key": "fixture-native",
+      "name": null,
+      "prefix": "",
+      "suffix": "",
+      "header": "x-api-key",
+      "value": "fixture-native",
+      "query_suffix": ""
+    },
+    {
+      "authentication": "Bearer",
+      "key": "fixture-bearer",
+      "name": null,
+      "prefix": "",
+      "suffix": "",
+      "header": "Authorization",
+      "value": "Bearer fixture-bearer",
+      "query_suffix": ""
+    },
+    {
+      "authentication": "None",
+      "key": null,
+      "name": null,
+      "prefix": "",
+      "suffix": "",
+      "header": null,
+      "value": null,
+      "query_suffix": ""
+    },
+    {
+      "authentication": "Header",
+      "key": "fixture-header",
+      "name": "x-native-key",
+      "prefix": "Token  ",
+      "suffix": "/tail",
+      "header": "x-native-key",
+      "value": "Token  fixture-header/tail",
+      "query_suffix": ""
+    },
+    {
+      "authentication": "Query",
+      "key": "k/+?&=%雪",
+      "name": "api_key",
+      "prefix": "key=",
+      "suffix": "/ok",
+      "header": null,
+      "value": null,
+      "query_suffix": "&api_key=key%3Dk%2F%2B%3F%26%3D%25%E9%9B%AA%2Fok"
+    }
+  ]
+,
+  "source": "Independent literal native Messages windows, retained verbatim from prior independent upstream-native baseline before implementation. New configured operation/auth expectations authored independently; no SDK output, decimal reformatting or real upstream/model acceptance claim."
+}

@@ -1,0 +1,18 @@
+: independently authored native Hunyuan stream; no OpenAI DONE sentinel
+id: native-0
+event: native.delta
+retry: 600
+data: {"Id":"hunyuan-stream","Created":0,"Note":"原生声明：保持完整。","Choices":[{"Delta":{"Role":"assistant","Content":"","ReasoningContent":"思","ToolCalls":null},"FinishReason":""}],"Usage":{"PromptTokens":0,"CompletionTokens":0,"TotalTokens":0}}
+
+data: {"Id":"hunyuan-stream","Created":1,"Note":"原生声明：保持完整。","Choices":[{"Delta":{"Role":"assistant","Content":"","ToolCalls":[{"Id":"call-stream","Type":"function","Function":{"Name":"lookup","Arguments":""}}]},"FinishReason":""}],"Future":false}
+
+data: {"Id":"hunyuan-stream","Created":2,"Choices":[{"Delta":{"ToolCalls":[{"Id":"call-stream","Type":"function","Function":{"Name":"","Arguments":"{\"city\":\"北京\"}"}}]},"FinishReason":""}],"Future":{"Exact":9007199254740993}}
+
+data: {"Id":"hunyuan-stream","Created":3,"Note":"原生声明：保持完整。","Choices":[{"Delta":{"Role":"assistant","Content":"","ToolCalls":null},"FinishReason":"tool_calls","ModerationLevel":"0"}]}
+
+event: native.recommendations
+id: native-tail
+data: {"Id":"hunyuan-stream","RecommendedQuestions":[" 原生建议 "],"Future":{"Model":"business-model","Flag":false,"Empty":null}}
+
+data: {"Id":"hunyuan-stream","Choices":[],"Usage":{"PromptTokens":2,"CompletionTokens":3,"TotalTokens":5,"Future":9007199254740993},"SearchInfo":{"SearchResults":[]},"ErrorMsg":null}
+

@@ -1,0 +1,10 @@
+{
+  "output":{"message":{"role":"assistant","content":[{"reasoningContent":{"reasoningText":{"text":"native reasoning","signature":"original-returned-signature"}}},{"reasoningContent":{"redactedContent":"BAUG"}},{"toolUse":{"toolUseId":"tool-native-next","name":"lookup","input":{"id":9007199254740993}}}]}},
+  "stopReason":"tool_use",
+  "usage":{"inputTokens":11,"outputTokens":7,"totalTokens":18,"cacheReadInputTokens":0,"cacheWriteInputTokens":2,"future":false},
+  "metrics":{"latencyMs":123},
+  "additionalModelResponseFields":{"stop_sequence":null,"native_model":"original-returned-model","integer":9223372036854775807},
+  "performanceConfig":{"latency":"optimized"},"serviceTier":{"type":"default"},
+  "trace":{"guardrail":{"actionReason":"native fixture","future":null}},
+  "future":{"integer":9007199254740993,"nil":null,"false":false,"empty":[]}
+}

@@ -1,0 +1,32 @@
+: original heartbeat
+
+id: notice-0
+retry: 0
+event: azure.image.native_notice
+data: {"type":"azure.image.native_notice","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}}
+
+id: partial-0
+retry: 0
+event: image_generation.partial_image
+data: {"type":"image_generation.partial_image","b64_json":"AAEC/w==","partial_image_index":0,"created_at":0,"background":"transparent","output_format":"png","quality":"high","size":"1024x1024","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}}
+
+id: original-final-0
+retry: 0
+event: image_generation.completed
+data: {"type":"image_generation.completed","b64_json":"BAUG/w==","created_at":9007199254740993,"background":"transparent","output_format":"png","quality":"high","size":"1024x1024","usage":{"input_tokens":9007199254740993,"output_tokens":0,"total_tokens":9007199254740993,"input_tokens_details":{"text_tokens":0,"image_tokens":9007199254740993,"Future":null},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}}
+
+id: notice-between
+retry: 0
+event: azure.image.native_notice
+data: {"type":"azure.image.native_notice","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}}
+
+id: partial-1
+retry: 0
+event: image_generation.partial_image
+data: {"type":"image_generation.partial_image","b64_json":"AAEC/w==","partial_image_index":0,"created_at":0,"background":"transparent","output_format":"png","quality":"high","size":"1024x1024","Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}}
+
+id: original-final-1
+retry: 0
+event: image_generation.completed
+data: {"type":"image_generation.completed","b64_json":"BwgJ/w==","created_at":9007199254740993,"background":"transparent","output_format":"png","quality":"high","size":"1024x1024","usage":{"input_tokens":9007199254740993,"output_tokens":0,"total_tokens":9007199254740993,"input_tokens_details":{"text_tokens":0,"image_tokens":9007199254740993,"Future":null},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}},"Future":{"Big":9007199254740993,"Zero":0,"False":false,"Null":null,"Text":"原始 😀\r\n下一行"}}
+

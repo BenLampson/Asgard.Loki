@@ -1,0 +1,13 @@
+{
+  "systemInstruction":{"parts":[{"text":"规则 é 😀"}]},
+  "contents":[
+    {"role":"user","parts":[{"text":"inspect"},{"inlineData":{"mimeType":"image/png","data":"AAEC"}}]},
+    {"role":"model","parts":[{"functionCall":{"id":"call_history","name":"lookup","args":{"value":9007199254740993}}}]},
+    {"role":"user","parts":[{"functionResponse":{"id":"call_history","name":"lookup","response":{"value":9007199254740993,"error":false}}}]}
+  ],
+  "tools":[{"functionDeclarations":[{"name":"lookup","parameters":{"type":"OBJECT","properties":{"value":{"type":"INTEGER"}},"required":["value"]}}]}],
+  "toolConfig":{"functionCallingConfig":{"mode":"AUTO"}},
+  "generationConfig":{"temperature":0,"maxOutputTokens":2048,"thinkingConfig":{"thinkingBudget":1024,"includeThoughts":true},"responseMimeType":"application/json","responseSchema":{"type":"OBJECT","properties":{"value":{"type":"INTEGER"}},"required":["value"]}},
+  "safetySettings":[{"category":"HARM_CATEGORY_HATE_SPEECH","threshold":"BLOCK_ONLY_HIGH"}],
+  "future":{"integer":9007199254740993,"null":null,"false":false,"empty":[]}
+}

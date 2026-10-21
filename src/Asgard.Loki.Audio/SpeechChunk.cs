@@ -16,9 +16,9 @@ public sealed class SpeechChunk
 
     /// <summary>有序音频字节，元数据帧允许为空。</summary>
     public ReadOnlyMemory<byte> Audio { get; }
-    /// <summary>供应商是否已经确认本次合成完成。</summary>
+    /// <summary>供应商适配器是否已依据自身协议/传输规则确认本次合成完成。</summary>
     public bool IsCompleted { get; }
-    /// <summary>完整的供应商帧，包括用量、字幕和扩展信息。</summary>
+    /// <summary>完整供应商帧或明确标识的 SDK 传输记录；不保证二进制上游提供用量/字幕。</summary>
     public JsonElement Data { get; }
     /// <summary>执行合成的供应商实例身份。</summary>
     public string ProviderId { get; }

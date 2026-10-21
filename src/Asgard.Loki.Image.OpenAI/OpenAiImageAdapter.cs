@@ -1,9 +1,7 @@
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using Asgard.Loki.Internal;
+using Asgard.Loki.Image.OpenAI.Internal;
 
 namespace Asgard.Loki.Image.OpenAI;
 
@@ -22,6 +20,7 @@ public sealed class OpenAiImageAdapter : IImageGenerationAdapter
         ArgumentException.ThrowIfNullOrWhiteSpace(options.Model);
         ArgumentException.ThrowIfNullOrWhiteSpace(options.ApiKey);
         ArgumentException.ThrowIfNullOrWhiteSpace(options.HttpClientName);
+        _ = new UTF8Encoding(false, true).GetByteCount(options.Model);
         ArgumentNullException.ThrowIfNull(options.BaseAddress);
         if (!options.BaseAddress.IsAbsoluteUri || options.BaseAddress.Scheme is not ("https" or "http")
             || options.BaseAddress.UserInfo.Length != 0 || options.BaseAddress.Query.Length != 0 || options.BaseAddress.Fragment.Length != 0)
@@ -33,69 +32,79 @@ public sealed class OpenAiImageAdapter : IImageGenerationAdapter
     public string Id => _options.Id;
 
     /// <inheritdoc />
-    public async Task<ImageGenerationResult> GenerateAsync(ImageGenerationRequest request, CancellationToken cancellationToken = default)
+    public Task<ImageGenerationResult> GenerateAsync(ImageGenerationRequest request, CancellationToken cancellationToken = default)
+        => SendAsync(OpenAiImageGenerationPayload.Snapshot(request, false, cancellationToken), cancellationToken);
+
+    /// <summary>结果须等待正常正文结束和传输资源释放，不将 JSON 错误对象当作图片。</summary>
+    private async Task<ImageGenerationResult> SendAsync(ImageGenerationRequest request, CancellationToken token)
     {
-        using var client = _factory.CreateClient(_options.HttpClientName);
-        using var message = CreateRequest(request, false);
-        using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-        await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
-        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        using var document = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
-        return new ImageGenerationResult(document.RootElement, Metadata(request));
+        ImageGenerationResult result;
+        using (var content = OpenAiImageGenerationPayload.Create(request, _options.Model))
+        using (var message = CreateMessage(content))
+        using (var client = _factory.CreateClient(_options.HttpClientName))
+        {
+            using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+            ImageResponseBody.RequireJson(response); var body = await ImageResponseBody.ReadAsync(response, token).ConfigureAwait(false);
+            result = Result(response, body, Metadata(request));
+        }
+        token.ThrowIfCancellationRequested(); return result;
     }
 
     /// <inheritdoc />
-    public async IAsyncEnumerable<ImageGenerationEvent> StreamAsync(ImageGenerationRequest request,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<ImageGenerationEvent> StreamAsync(ImageGenerationRequest request, CancellationToken cancellationToken = default)
     {
-        using var client = _factory.CreateClient(_options.HttpClientName);
-        using var message = CreateRequest(request, true);
-        message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
-        using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-        await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
-        if (!string.Equals(response.Content.Headers.ContentType?.MediaType, "text/event-stream", StringComparison.OrdinalIgnoreCase))
-            throw new ImageUpstreamException("图像流没有返回 SSE。", (int)response.StatusCode,
-                await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false));
-        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var terminal = false;
-        await foreach (var frame in SseReader.ReadAsync(stream, cancellationToken).ConfigureAwait(false))
+        var snapshot = OpenAiImageGenerationPayload.Snapshot(request, true, cancellationToken); var started = 0;
+        return StreamPayloadAsync(snapshot, () =>
         {
-            if (frame.Data == "[DONE]") break;
-            using var document = JsonDocument.Parse(frame.Data);
-            var item = new ImageGenerationEvent(document.RootElement, Metadata(request), frame.EventName, frame.EventId, frame.RetryMilliseconds);
-            terminal |= item.Type is "image_generation.completed" or "image_generation.failed" or "error";
-            yield return item;
-        }
-        if (!terminal) throw new InvalidDataException("图像流在生成终态之前断开；不会自动重试。");
+            if (Interlocked.Exchange(ref started, 1) != 0) throw new InvalidOperationException("原生图像生成流不能重复枚举或重放。");
+        }, cancellationToken);
     }
-
-    /// <summary>映射真实模型，保留背景、尺寸、质量、数量和未知参数。</summary>
-    private HttpRequestMessage CreateRequest(ImageGenerationRequest request, bool stream)
+    /// <summary>原始完成项保留到 EOF/长度及源、响应和客户端释放全部成功，不拼接部分图片。</summary>
+    private async IAsyncEnumerable<ImageGenerationEvent> StreamPayloadAsync(ImageGenerationRequest request, Action start,
+        [EnumeratorCancellation] CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(request);
-        ArgumentException.ThrowIfNullOrWhiteSpace(request.Model);
-        ArgumentException.ThrowIfNullOrWhiteSpace(request.Prompt);
-        ArgumentNullException.ThrowIfNull(request.Parameters);
-        if (request.Parameters.ContainsKey("model") || request.Parameters.ContainsKey("prompt"))
-            throw new ArgumentException("图像扩展参数不能覆盖公共字段。", nameof(request));
-        var payload = JsonSerializer.SerializeToNode(request)!.AsObject();
-        payload["model"] = _options.Model;
-        payload["stream"] = stream;
+        token.ThrowIfCancellationRequested(); start(); ImageGenerationEvent? terminal = null;
+        using (var content = OpenAiImageGenerationPayload.Create(request, _options.Model))
+        using (var message = CreateMessage(content))
+        using (var client = _factory.CreateClient(_options.HttpClientName))
+        {
+            message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
+            using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+            var type = response.Content.Headers.ContentType;
+            if (!response.IsSuccessStatusCode || !string.Equals(type?.MediaType, "text/event-stream", StringComparison.OrdinalIgnoreCase))
+            {
+                ImageResponseBody.RequireJson(response); var body = await ImageResponseBody.ReadAsync(response, token).ConfigureAwait(false);
+                _ = Result(response, body, Metadata(request)); throw new InvalidDataException("生成流未返回原生 SSE，不伪造事件流。");
+            }
+            if (type?.CharSet is { } charset && !charset.Trim('"').Equals("utf-8", StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("生成 SSE 必须为 UTF-8。");
+            var expected = response.Content.Headers.ContentLength;
+            if (response.Content.Headers.Contains("Content-Length") && expected is null) throw new InvalidDataException("生成 SSE Content-Length 无效。");
+            await using (var source = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false))
+            {
+                await foreach (var item in OpenAiImageGenerationSse.ReadAsync(source, expected, Metadata(request), (int)response.StatusCode, type?.ToString(), token).ConfigureAwait(false))
+                { if (item.Type == "image_generation.completed") terminal = item; else yield return item; }
+            }
+        }
+        token.ThrowIfCancellationRequested(); yield return terminal ?? throw new InvalidDataException("生成流没有原生完成项。");
+    }
+    /// <summary>只有实际目标配置能决定端点/身份；创建消息失败时释放自身资源。</summary>
+    private HttpRequestMessage CreateMessage(HttpContent content)
+    {
         var uri = new Uri(new Uri(_options.BaseAddress.AbsoluteUri.TrimEnd('/') + "/"), "images/generations");
         var message = new HttpRequestMessage(HttpMethod.Post, uri);
-        message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.ApiKey);
-        if (_options.Organization is not null) message.Headers.Add("OpenAI-Organization", _options.Organization);
-        if (_options.Project is not null) message.Headers.Add("OpenAI-Project", _options.Project);
-        message.Content = new StringContent(payload.ToJsonString(), Encoding.UTF8, "application/json");
-        return message;
+        try
+        {
+            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.ApiKey);
+            if (_options.Organization is not null) message.Headers.Add("OpenAI-Organization", _options.Organization);
+            if (_options.Project is not null) message.Headers.Add("OpenAI-Project", _options.Project);
+            message.Content = content; return message;
+        }
+        catch { message.Dispose(); throw; }
     }
     /// <summary>将公共路由身份与上游模型分开返回。</summary>
     private ImageResultMetadata Metadata(ImageGenerationRequest request) => new(request.Model, _options.Model, Id);
-    /// <summary>传播上游状态与错误正文。</summary>
-    private static async Task EnsureSuccessAsync(HttpResponseMessage response, CancellationToken cancellationToken)
-    {
-        if (response.IsSuccessStatusCode) return;
-        throw new ImageUpstreamException("OpenAI 图像生成失败。", (int)response.StatusCode,
-            await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false));
-    }
+    /// <summary>保留旧异常类型及真实状态，同时保留任意编码的原始失败字节。</summary>
+    private static ImageGenerationResult Result(HttpResponseMessage response, byte[] body, ImageResultMetadata metadata)
+        => ImageNativeJson.Result(response, body, metadata, () => new ImageUpstreamException(
+            "OpenAI 图像生成返回原生失败。", (int)response.StatusCode, body, response.Content.Headers.ContentType?.ToString()));
 }

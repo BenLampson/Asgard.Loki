@@ -1,0 +1,420 @@
+[
+  {
+    "offset": 0,
+    "length": 575,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      },
+      {
+        "name": "true",
+        "type": 0,
+        "value": true
+      },
+      {
+        "name": "false",
+        "type": 1,
+        "value": false
+      },
+      {
+        "name": "byte",
+        "type": 2,
+        "value": -1
+      },
+      {
+        "name": "short",
+        "type": 3,
+        "value": -123
+      },
+      {
+        "name": "int",
+        "type": 4,
+        "value": -1234
+      },
+      {
+        "name": "long",
+        "type": 5,
+        "value": 9223372036854775807
+      },
+      {
+        "name": "blob",
+        "type": 6,
+        "value": "AP8="
+      },
+      {
+        "name": "native-é",
+        "type": 7,
+        "value": "原生"
+      },
+      {
+        "name": "timestamp",
+        "type": 8,
+        "value": 1720000000123
+      },
+      {
+        "name": "uuid",
+        "type": 9,
+        "value": "00112233-4455-6677-8899-aabbccddeeff"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaWJXVnpjMkZuWlY5emRHRnlkQ0lzSW0xbGMzTmhaMlVpT25zaWFXUWlPaUp1WVhScGRtVXRZbVZrY205amF5MXpkSEpsWVcwaUxDSjBlWEJsSWpvaWJXVnpjMkZuWlNJc0luSnZiR1VpT2lKaGMzTnBjM1JoYm5RaUxDSnRiMlJsYkNJNkltNWhkR2wyWlMxdGIyUmxiQ0lzSW1OdmJuUmxiblFpT2x0ZExDSnpkRzl3WDNKbFlYTnZiaUk2Ym5Wc2JDd2lkWE5oWjJVaU9uc2lhVzV3ZFhSZmRHOXJaVzV6SWpveUxDSnZkWFJ3ZFhSZmRHOXJaVzV6SWpvd2ZTd2lablYwZFhKbElqcG1ZV3h6WlgxOSIsImZ1dHVyZV9lbnZlbG9wZSI6eyJpbnRlZ2VyIjo5MjIzMzcyMDM2ODU0Nzc1ODA3LCJuaWwiOm51bGx9fQ==",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 575,
+    "length": 284,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTl6ZEdGeWRDSXNJbWx1WkdWNElqb3lMQ0pqYjI1MFpXNTBYMkpzYjJOcklqcDdJblI1Y0dVaU9pSjBhR2x1YTJsdVp5SXNJblJvYVc1cmFXNW5Jam9pSW4xOSIsImZ1dHVyZV9lbnZlbG9wZSI6eyJpbnRlZ2VyIjo5MjIzMzcyMDM2ODU0Nzc1ODA3LCJuaWwiOm51bGx9fQ==",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 859,
+    "length": 304,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTlrWld4MFlTSXNJbWx1WkdWNElqb3lMQ0prWld4MFlTSTZleUowZVhCbElqb2lkR2hwYm10cGJtZGZaR1ZzZEdFaUxDSjBhR2x1YTJsdVp5STZJbTVoZEdsMlpTQmx6SUVnOEorYWdDSjlmUT09IiwiZnV0dXJlX2VudmVsb3BlIjp7ImludGVnZXIiOjkyMjMzNzIwMzY4NTQ3NzU4MDcsIm5pbCI6bnVsbH19",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 1163,
+    "length": 308,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTlrWld4MFlTSXNJbWx1WkdWNElqb3lMQ0prWld4MFlTSTZleUowZVhCbElqb2ljMmxuYm1GMGRYSmxYMlJsYkhSaElpd2ljMmxuYm1GMGRYSmxJam9pYjNKcFoybHVZV3d0YzJsbmJtRjBkWEpsSW4xOSIsImZ1dHVyZV9lbnZlbG9wZSI6eyJpbnRlZ2VyIjo5MjIzMzcyMDM2ODU0Nzc1ODA3LCJuaWwiOm51bGx9fQ==",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 1471,
+    "length": 216,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTl6ZEc5d0lpd2lhVzVrWlhnaU9qSjkiLCJmdXR1cmVfZW52ZWxvcGUiOnsiaW50ZWdlciI6OTIyMzM3MjAzNjg1NDc3NTgwNywibmlsIjpudWxsfX0=",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 1687,
+    "length": 348,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTl6ZEdGeWRDSXNJbWx1WkdWNElqbzNMQ0pqYjI1MFpXNTBYMkpzYjJOcklqcDdJblI1Y0dVaU9pSjBiMjlzWDNWelpTSXNJbWxrSWpvaWRHOXZiQzF6ZEhKbFlXMHRZU0lzSW01aGJXVWlPaUpzYjI5cmRYQWlMQ0pwYm5CMWRDSTZlMzBzSW1aMWRIVnlaU0k2Ym5Wc2JIMTkiLCJmdXR1cmVfZW52ZWxvcGUiOnsiaW50ZWdlciI6OTIyMzM3MjAzNjg1NDc3NTgwNywibmlsIjpudWxsfX0=",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 2035,
+    "length": 300,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTlrWld4MFlTSXNJbWx1WkdWNElqbzNMQ0prWld4MFlTSTZleUowZVhCbElqb2lhVzV3ZFhSZmFuTnZibDlrWld4MFlTSXNJbkJoY25ScFlXeGZhbk52YmlJNkludGNJbWxrWENJNkluMTkiLCJmdXR1cmVfZW52ZWxvcGUiOnsiaW50ZWdlciI6OTIyMzM3MjAzNjg1NDc3NTgwNywibmlsIjpudWxsfX0=",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 2335,
+    "length": 312,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTlrWld4MFlTSXNJbWx1WkdWNElqbzNMQ0prWld4MFlTSTZleUowZVhCbElqb2lhVzV3ZFhSZmFuTnZibDlrWld4MFlTSXNJbkJoY25ScFlXeGZhbk52YmlJNklqa3dNRGN4T1RreU5UUTNOREE1T1ROOUluMTkiLCJmdXR1cmVfZW52ZWxvcGUiOnsiaW50ZWdlciI6OTIyMzM3MjAzNjg1NDc3NTgwNywibmlsIjpudWxsfX0=",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 2647,
+    "length": 216,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTl6ZEc5d0lpd2lhVzVrWlhnaU9qZDkiLCJmdXR1cmVfZW52ZWxvcGUiOnsiaW50ZWdlciI6OTIyMzM3MjAzNjg1NDc3NTgwNywibmlsIjpudWxsfX0=",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 2863,
+    "length": 312,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTl6ZEdGeWRDSXNJbWx1WkdWNElqb3hNU3dpWTI5dWRHVnVkRjlpYkc5amF5STZleUowZVhCbElqb2ljbVZrWVdOMFpXUmZkR2hwYm10cGJtY2lMQ0prWVhSaElqb2liM0pwWjJsdVlXd3RiM0JoY1hWbEluMTkiLCJmdXR1cmVfZW52ZWxvcGUiOnsiaW50ZWdlciI6OTIyMzM3MjAzNjg1NDc3NTgwNywibmlsIjpudWxsfX0=",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 3175,
+    "length": 220,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVkyOXVkR1Z1ZEY5aWJHOWphMTl6ZEc5d0lpd2lhVzVrWlhnaU9qRXhmUT09IiwiZnV0dXJlX2VudmVsb3BlIjp7ImludGVnZXIiOjkyMjMzNzIwMzY4NTQ3NzU4MDcsIm5pbCI6bnVsbH19",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 3395,
+    "length": 328,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaWJXVnpjMkZuWlY5a1pXeDBZU0lzSW1SbGJIUmhJanA3SW5OMGIzQmZjbVZoYzI5dUlqb2lkRzl2YkY5MWMyVWlMQ0p6ZEc5d1gzTmxjWFZsYm1ObElqcHVkV3hzZlN3aWRYTmhaMlVpT25zaWIzVjBjSFYwWDNSdmEyVnVjeUk2Tnl3aVpuVjBkWEpsSWpwdWRXeHNmWDA9IiwiZnV0dXJlX2VudmVsb3BlIjp7ImludGVnZXIiOjkyMjMzNzIwMzY4NTQ3NzU4MDcsIm5pbCI6bnVsbH19",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 3723,
+    "length": 284,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaVpuVjBkWEpsWDI1aGRHbDJaU0lzSW1sdWRHVm5aWElpT2preU1qTXpOekl3TXpZNE5UUTNOelU0TURjc0ltWmhiSE5sSWpwbVlXeHpaU3dpYm1sc0lqcHVkV3hzTENKbGJYQjBlU0k2VzExOSIsImZ1dHVyZV9lbnZlbG9wZSI6eyJpbnRlZ2VyIjo5MjIzMzcyMDM2ODU0Nzc1ODA3LCJuaWwiOm51bGx9fQ==",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 4007,
+    "length": 380,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaWJXVnpjMkZuWlY5emRHOXdJaXdpWVcxaGVtOXVMV0psWkhKdlkyc3RhVzUyYjJOaGRHbHZiazFsZEhKcFkzTWlPbnNpYVc1d2RYUlViMnRsYmtOdmRXNTBJam95TENKdmRYUndkWFJVYjJ0bGJrTnZkVzUwSWpvM0xDSnBiblp2WTJGMGFXOXVUR0YwWlc1amVTSTZNVEl6TENKbWFYSnpkRUo1ZEdWTVlYUmxibU41SWpvMExDSm1kWFIxY21VaU9tWmhiSE5sZlgwPSIsImZ1dHVyZV9lbnZlbG9wZSI6eyJpbnRlZ2VyIjo5MjIzMzcyMDM2ODU0Nzc1ODA3LCJuaWwiOm51bGx9fQ==",
+    "eventName": "chunk"
+  },
+  {
+    "offset": 4387,
+    "length": 162,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "future_transport"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJmdXR1cmVfdHJhbnNwb3J0Ijp7ImludGVnZXIiOjkwMDcxOTkyNTQ3NDA5OTMsIm5pbCI6bnVsbH19",
+    "eventName": "future_transport"
+  },
+  {
+    "offset": 4549,
+    "length": 200,
+    "headers": [
+      {
+        "name": ":message-type",
+        "type": 7,
+        "value": "event"
+      },
+      {
+        "name": ":event-type",
+        "type": 7,
+        "value": "chunk"
+      },
+      {
+        "name": ":content-type",
+        "type": 7,
+        "value": "application/json"
+      }
+    ],
+    "payloadBase64": "eyJieXRlcyI6ImV5SjBlWEJsSWpvaWNHbHVaeUlzSW1aMWRIVnlaU0k2VzExOSIsImZ1dHVyZV9lbnZlbG9wZSI6eyJpbnRlZ2VyIjo5MjIzMzcyMDM2ODU0Nzc1ODA3LCJuaWwiOm51bGx9fQ==",
+    "eventName": "chunk"
+  }
+]

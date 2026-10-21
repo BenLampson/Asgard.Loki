@@ -1,0 +1,10 @@
+{
+  "model":"pictures",
+  "prompt":"保留图层\nedit",
+  "images":[{"image_url":"https://media.invalid/one.png","future":false},{"file_id":"file_fixture"},{"image_url":"data:image/png;base64,AAE="}],
+  "mask":{"file_id":"file_mask_fixture","future":null},
+  "background":"transparent",
+  "output_format":"webp",
+  "future":{"nested":[null,false,{"原始":"kept"}]},
+  "future_null":null
+}

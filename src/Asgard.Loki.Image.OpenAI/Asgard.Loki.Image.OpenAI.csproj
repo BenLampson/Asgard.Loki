@@ -1,11 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>OpenAI image generation provider for Asgard.Loki.</Description>
+    <Description>OpenAI image generation and editing provider for Asgard.Loki.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
     <ProjectReference Include="../Asgard.Loki.Image/Asgard.Loki.Image.csproj" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
-    <Compile Include="../Shared/SseFrame.cs" Link="Internal/SseFrame.cs" />
-    <Compile Include="../Shared/SseReader.cs" Link="Internal/SseReader.cs" />
   </ItemGroup>
 </Project>

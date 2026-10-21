@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Native Vertex Gemini, Claude and MaaS Chat calls with explicit target identity and borrowed authentication.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
+    <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>

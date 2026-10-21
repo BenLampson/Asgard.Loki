@@ -1,0 +1,27 @@
+{
+  "profiles":[
+    {"style":"V1","version":null,"root":"https://azure-text.example.invalid/proxy/openai/v1/","endpoint":"https://azure-text.example.invalid/proxy/openai/v1/completions","body_model":true},
+    {"style":"V1","version":"v1","root":"https://azure-text.example.invalid/proxy/openai/v1/","endpoint":"https://azure-text.example.invalid/proxy/openai/v1/completions?api-version=v1","body_model":true},
+    {"style":"Dated","version":"2024-10-21","root":"https://azure-text.example.invalid/proxy/openai/","endpoint":"https://azure-text.example.invalid/proxy/openai/deployments/deploy.text.1/completions?api-version=2024-10-21","body_model":false}
+  ],
+  "caller":{"model":"public","prompt":[" 保留原文 😀 ","second"],"suffix":" end ","max_tokens":16,"temperature":0,"top_p":1,"n":2,"best_of":3,"echo":true,"logprobs":2,"stop":["STOP","\n"],"presence_penalty":0,"frequency_penalty":0,"logit_bias":{"42":-100},"seed":0,"user":"caller-user","future":{"model":"business-model","exact":9007199254740993,"flag":false,"empty":null}},
+  "v1_complete":{"model":"deploy.text.1","prompt":[" 保留原文 😀 ","second"],"suffix":" end ","max_tokens":16,"temperature":0,"top_p":1,"n":2,"best_of":3,"echo":true,"logprobs":2,"stop":["STOP","\n"],"presence_penalty":0,"frequency_penalty":0,"logit_bias":{"42":-100},"seed":0,"user":"caller-user","future":{"model":"business-model","exact":9007199254740993,"flag":false,"empty":null},"stream":false},
+  "dated_complete":{"prompt":[" 保留原文 😀 ","second"],"suffix":" end ","max_tokens":16,"temperature":0,"top_p":1,"n":2,"best_of":3,"echo":true,"logprobs":2,"stop":["STOP","\n"],"presence_penalty":0,"frequency_penalty":0,"logit_bias":{"42":-100},"seed":0,"user":"caller-user","future":{"model":"business-model","exact":9007199254740993,"flag":false,"empty":null},"stream":false},
+  "v1_stream":{"model":"deploy.text.1","prompt":[" 保留原文 😀 ","second"],"max_tokens":16,"temperature":0,"n":2,"echo":false,"logprobs":2,"stream_options":{"include_usage":true,"future":false},"future":{"exact":9007199254740993,"empty":null},"stream":true},
+  "dated_stream":{"prompt":[" 保留原文 😀 ","second"],"max_tokens":16,"temperature":0,"n":2,"echo":false,"logprobs":2,"stream_options":{"include_usage":true,"future":false},"future":{"exact":9007199254740993,"empty":null},"stream":true},
+  "caller_stream":{"model":"public","prompt":[" 保留原文 😀 ","second"],"max_tokens":16,"temperature":0,"n":2,"echo":false,"logprobs":2,"stream_options":{"include_usage":true,"future":false},"future":{"exact":9007199254740993,"empty":null}},
+  "prompt_shapes":["",["a"," b "],[42,0],[[42,0],[7]],null],
+  "response":{"id":"cmpl-native","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":1,"text":" 保留第二项 ","finish_reason":"length","logprobs":{"tokens":[" 保留","第二项"],"token_logprobs":[-0.2,null],"top_logprobs":[{" 保留":-0.2,"另":-2.3},null],"text_offset":[0,3]},"content_filter_results":{"hate":{"filtered":false,"severity":"safe"}},"future":false},{"index":0,"text":" first ","finish_reason":"stop","logprobs":null,"future":{"exact":9007199254740993}}],"prompt_filter_results":[{"prompt_index":1,"content_filter_results":{"sexual":{"filtered":false,"severity":"safe"}},"future":null}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0,"future":9007199254740993},"system_fingerprint":"native-fingerprint","future":{"empty":null,"flag":false,"exact":9007199254740993}},
+  "events":[
+    {"id":"","model":"","choices":[],"prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"}}}],"future":false},
+    {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":1,"text":"二","finish_reason":null,"logprobs":{"tokens":["二"],"token_logprobs":[-0.1],"top_logprobs":[{"二":-0.1}],"text_offset":[0]}}]},
+    {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":0,"text":"first","finish_reason":null,"logprobs":null}]},
+    {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":0,"text":"","finish_reason":"stop","logprobs":null}]},
+    {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":1,"text":"项","finish_reason":null,"logprobs":{"tokens":["项"],"token_logprobs":[-0.2],"top_logprobs":[{"项":-0.2}],"text_offset":[1]}}]},
+    {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":0,"finish_reason":"content_filter","content_filter_results":{"sexual":{"filtered":true,"severity":"medium"}},"content_filter_offsets":{"check_offset":5,"start_offset":0,"end_offset":5}}]},
+    {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[{"index":1,"text":"","finish_reason":"length","logprobs":null}]},
+    {"id":"cmpl-stream","object":"text_completion","created":0,"model":"native-returned-model","choices":[],"usage":{"prompt_tokens":2,"completion_tokens":3,"total_tokens":5,"future":9007199254740993}},
+    {"future":{"model":"business-model","empty":null,"flag":false,"exact":9007199254740993}}
+  ],
+  "native_error":{"error":{"code":"native-code","message":"保留原生错误","param":null,"future":9007199254740993},"future":false}
+}

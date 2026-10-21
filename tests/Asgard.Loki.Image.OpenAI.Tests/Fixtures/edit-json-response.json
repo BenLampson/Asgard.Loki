@@ -1,0 +1,11 @@
+{
+  "created": 123,
+  "data": [
+    {"b64_json": "AP+A", "revised_prompt": "原生 revised 😀", "future": {"value": null}},
+    {"url": "https://cdn.invalid/output.webp", "future": false}
+  ],
+  "background": "transparent",
+  "output_format": "webp",
+  "usage": {"input_tokens": 20, "output_tokens": 30, "total_tokens": 50, "input_tokens_details": {"text_tokens": 5, "image_tokens": 15, "future": null}},
+  "future": {"exact": 900719925474099312345, "decimal": 0.123456789012345678901}
+}

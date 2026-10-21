@@ -4,5 +4,7 @@ namespace Asgard.Loki.Image;
 public sealed record ImageOptions
 {
     /// <summary>公共模型到生成目标的映射。</summary>
-    public required IReadOnlyList<ImageRoute> Routes { get; init; }
+    public IReadOnlyList<ImageRoute> Routes { get; init; } = [];
+    /// <summary>独立的图像编辑路由，可不配置文本生成；目标不从 Routes 中筛选或借用。</summary>
+    public IReadOnlyList<ImageEditRoute> EditRoutes { get; init; } = [];
 }

@@ -1,0 +1,12 @@
+{
+  "responseId":"vertex-response",
+  "modelVersion":"native-model-version",
+  "candidates":[{
+    "index":0,"finishReason":"STOP",
+    "content":{"role":"model","parts":[{"thought":true,"text":"reasoning","thoughtSignature":"opaque-output-signature"},{"text":"x"},{"functionCall":{"id":"call_output","name":"lookup","args":{"value":9007199254740993}}}]},
+    "safetyRatings":[{"category":"HARM_CATEGORY_HATE_SPEECH","probability":"NEGLIGIBLE","blocked":false}],
+    "groundingMetadata":{"groundingChunks":[{"web":{"uri":"https://source.invalid/","title":"source"}}],"groundingSupports":[{"segment":{"partIndex":1,"startIndex":0,"endIndex":1,"text":"x"},"groundingChunkIndices":[0]}]}
+  }],
+  "usageMetadata":{"promptTokenCount":11,"candidatesTokenCount":7,"thoughtsTokenCount":3,"totalTokenCount":21,"cachedContentTokenCount":2},
+  "future":{"integer":9007199254740993,"null":null,"false":false}
+}

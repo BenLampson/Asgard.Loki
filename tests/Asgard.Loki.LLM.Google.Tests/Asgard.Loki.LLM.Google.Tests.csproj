@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.Google/Asgard.Loki.LLM.Google.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
+    <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
+    <Compile Include="../Shared/StubHttpClientFactory.cs" Link="StubHttpClientFactory.cs" />
+    <Compile Include="../Shared/FragmentedReadStream.cs" Link="FragmentedReadStream.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLock.cs" Link="TestSessionLock.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLease.cs" Link="TestSessionLease.cs" />
+    <Compile Include="../Shared/NativeLlmTests.cs" Link="NativeLlmTests.cs" />
+    <EmbeddedResource Include="upstream-native.json" />
+    <EmbeddedResource Include="configured-http.json" />
+    <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaBodyStream.cs" Link="OllamaBodyStream.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaHttpClient.cs" Link="OllamaHttpClient.cs" />
+  </ItemGroup>
+</Project>

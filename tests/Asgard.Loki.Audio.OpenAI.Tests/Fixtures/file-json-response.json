@@ -1,0 +1,12 @@
+{
+  "text":"你好😀",
+  "languages":[{"code":"zh","future":false}],
+  "task":"transcribe",
+  "language":"chinese",
+  "duration":1.75,
+  "words":[{"word":"你好","start":0.125,"end":1.25,"future":null}],
+  "segments":[{"id":0,"seek":0,"start":0.125,"end":1.75,"text":"你好😀","tokens":[1,2],"temperature":0,"avg_logprob":-0.2,"compression_ratio":1.2,"no_speech_prob":0.01,"future":[null,false]}],
+  "logprobs":[{"token":"你好","bytes":[228,189,160,229,165,189],"logprob":-0.1}],
+  "usage":{"type":"tokens","input_tokens":3,"input_token_details":{"audio_tokens":2,"text_tokens":1},"output_tokens":2,"total_tokens":5,"future":null},
+  "future":{"opaque":[false,null,"kept"]}
+}

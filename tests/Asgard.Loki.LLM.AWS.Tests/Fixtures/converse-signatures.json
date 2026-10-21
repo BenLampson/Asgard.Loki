@@ -1,0 +1,30 @@
+[
+  {
+    "arn": false,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/amazon.configured-converse-v1%3A0/converse",
+    "payloadHash": "bc0bf573ef47616626e0c8937b0145e750ea1532801ad0f242a52b3c99807366",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=2b30e56a23ae4e6aaa7f13a3065a12631af2d0d01885ad460bf2daff77a2fc87"
+  },
+  {
+    "arn": false,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/amazon.configured-converse-v1%3A0/converse",
+    "payloadHash": "bc0bf573ef47616626e0c8937b0145e750ea1532801ad0f242a52b3c99807366",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=7324ba53d9a7089753c2a76679365a2c597ff09e68a78f6ef43964d32ad1aa66"
+  },
+  {
+    "arn": true,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/converse",
+    "payloadHash": "bc0bf573ef47616626e0c8937b0145e750ea1532801ad0f242a52b3c99807366",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=d11f142d1a42e1f48d58aee6a2a4cd2bb3faf19f0f4ceff1fd6ca376394baea5"
+  },
+  {
+    "arn": true,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/converse",
+    "payloadHash": "bc0bf573ef47616626e0c8937b0145e750ea1532801ad0f242a52b3c99807366",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=683c35245f8f1de440bd0740dba7e919d27adb0cdf6a23d5fe85b1d730b03188"
+  }
+]

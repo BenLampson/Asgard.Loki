@@ -1,0 +1,17 @@
+{
+  "model": "public",
+  "messages": [
+    {"role":"system","content":"保留协议","future":{"null":null,"off":false}},
+    {"role":"user","content":"inspect","images":["aW1hZ2U="]},
+    {"role":"assistant","content":"","thinking":"opaque reasoning","tool_calls":[{"id":"call-native","function":{"index":0,"name":"inspect","arguments":{"z":9007199254740993,"a":false,"nested":{"x":null}}}}]},
+    {"role":"tool","content":"result","tool_name":"inspect","tool_call_id":"call-native"}
+  ],
+  "stream": true,
+  "think":"high",
+  "format":{"type":"object","properties":{"answer":{"type":"string","minLength":1}},"required":["answer"],"additionalProperties":false},
+  "tools":[{"type":"function","function":{"name":"inspect","description":"fixture","parameters":{"type":"object","properties":{"z":{"type":"integer"}},"required":["z"],"additionalProperties":false}}}],
+  "options":{"temperature":0,"seed":0,"num_predict":8,"future":false},
+  "keep_alive":0,
+  "truncate":false,
+  "future":{"absent":null,"false":false,"empty":[]}
+}

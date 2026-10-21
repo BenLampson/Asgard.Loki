@@ -1,0 +1,10 @@
+{
+  "model":"public","stream":true,"max_output_tokens":128,
+  "input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"你好🌏"}]},
+    {"type":"reasoning","id":"rs_history","encrypted_content":"opaque-reasoning","summary":[]},
+    {"type":"function_call","id":"fc_history","call_id":"call_history","name":"inspect","arguments":"{\"n\":9007199254740993}"},
+    {"type":"function_call_output","call_id":"call_history","output":"{\"ok\":false}"}],
+  "tools":[{"type":"function","name":"inspect","parameters":{"type":"object","properties":{"n":{"type":"integer"}},"additionalProperties":false},"strict":true}],
+  "reasoning":{"effort":"low"},"text":{"format":{"type":"json_schema","name":"result","schema":{"type":"object","properties":{"x":{"type":"integer"}},"additionalProperties":false},"strict":true}},
+  "include":["reasoning.encrypted_content"],"future":{"null":null,"off":false,"empty":[]}
+}

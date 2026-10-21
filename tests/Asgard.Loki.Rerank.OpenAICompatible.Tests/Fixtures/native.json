@@ -1,0 +1,16 @@
+{
+  "source":"Independently authored explicit compatible rerank model/query/documents requests and results[index,relevance_score,document] objects from pinned request/result DTO and direct OpenAI/Moonshot/custom converters. No production converter builds expected wire. Native optional identity/usage and unrestricted finite scores are preserved; this is not proof of any hosted model/service availability.",
+  "requests":[
+    {"model":"caller-rerank-model","query":"  Original query 😀  ","documents":["First original","Second\noriginal"," Third  "],"top_n":2,"return_documents":true,"max_chunk_per_doc":2,"overlap_tokens":0,"future":{"exact":9007199254740993,"nullable":null,"flag":false}},
+    {"model":"caller-rerank-model","query":"Native opaque candidates","documents":[{"title":"Original title","text":"Original object text","future":false},[{"type":"text","text":"Original parts"}],null],"top_n":null,"return_documents":false,"future":[]},
+    {"model":"caller-rerank-model","query":"Original text query","documents":["First","Second"],"future":{"nullable":null,"flag":false}}
+  ],
+  "responses":[
+    {"results":[{"index":2,"relevance_score":4.123456789012345678901,"document":{"text":" Third  ","future":false},"future":null},{"index":0,"relevance_score":-2.5,"document":"First original","future":{"exact":9007199254740993}}],"model":"native-reported-version","usage":{"prompt_tokens":0,"total_tokens":0,"future":9007199254740993},"future":false},
+    {"results":[{"index":2,"relevance_score":0,"document":null},{"index":1,"relevance_score":-0.5,"document":{"text":[{"type":"text","text":"Original parts"}],"future":false}},{"index":0,"relevance_score":-1.25,"document":{"title":"Original title","text":"Original object text","future":false,"native_extra":9007199254740993}}],"future":{"nullable":null,"flag":false}},
+    {"results":[{"index":1,"relevance_score":0.125,"future":null},{"index":0,"relevance_score":0,"future":false}],"usage":null,"future":[]}
+  ],
+  "native_error":{"error":{"message":"Fictional native compatible rejection","code":"fixture_error","future":9007199254740993},"future":false},
+  "detail_error":{"detail":"Fictional nonranking detail","future":{"exact":9007199254740993}},
+  "foreign_score_array":[{"index":0,"score":0.9}]
+}

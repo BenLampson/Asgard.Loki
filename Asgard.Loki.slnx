@@ -1,24 +1,269 @@
 <Solution>
-  <Folder Name="/src/">
+  <Folder Name="/src/Foundation/">
     <Project Path="src/Asgard.Loki.Abstractions/Asgard.Loki.Abstractions.csproj" />
     <Project Path="src/Asgard.Loki/Asgard.Loki.csproj" />
-    <Project Path="src/Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
-    <Project Path="src/Asgard.Loki.Audio/Asgard.Loki.Audio.csproj" />
-    <Project Path="src/Asgard.Loki.Video/Asgard.Loki.Video.csproj" />
-    <Project Path="src/Asgard.Loki.LLM.Volcengine/Asgard.Loki.LLM.Volcengine.csproj" />
-    <Project Path="src/Asgard.Loki.Audio.Volcengine/Asgard.Loki.Audio.Volcengine.csproj" />
-    <Project Path="src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
-    <Project Path="src/Asgard.Loki.Image/Asgard.Loki.Image.csproj" />
-    <Project Path="src/Asgard.Loki.Image.OpenAI/Asgard.Loki.Image.OpenAI.csproj" />
   </Folder>
-  <Folder Name="/tests/">
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Capabilities/">
+    <Project Path="src/Asgard.Loki.Audio/Asgard.Loki.Audio.csproj" />
+    <Project Path="src/Asgard.Loki.Embedding/Asgard.Loki.Embedding.csproj" />
+    <Project Path="src/Asgard.Loki.Image/Asgard.Loki.Image.csproj" />
+    <Project Path="src/Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
+    <Project Path="src/Asgard.Loki.Rerank/Asgard.Loki.Rerank.csproj" />
+    <Project Path="src/Asgard.Loki.Video/Asgard.Loki.Video.csproj" />
+  </Folder>
+  <Folder Name="/src/Conversion/">
+    <Project Path="src/Asgard.Loki.LLM.Conversion/Asgard.Loki.LLM.Conversion.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/AWS/">
+    <Project Path="src/Asgard.Loki.LLM.AWS/Asgard.Loki.LLM.AWS.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Ali/">
+    <Project Path="src/Asgard.Loki.Image.Ali/Asgard.Loki.Image.Ali.csproj" />
+    <Project Path="src/Asgard.Loki.Rerank.Ali/Asgard.Loki.Rerank.Ali.csproj" />
+    <Project Path="src/Asgard.Loki.Video.Ali/Asgard.Loki.Video.Ali.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Anthropic/">
+    <Project Path="src/Asgard.Loki.LLM.Anthropic/Asgard.Loki.LLM.Anthropic.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Azure/">
+    <Project Path="src/Asgard.Loki.Embedding.Azure/Asgard.Loki.Embedding.Azure.csproj" />
+    <Project Path="src/Asgard.Loki.Image.Azure/Asgard.Loki.Image.Azure.csproj" />
+    <Project Path="src/Asgard.Loki.Audio.Azure/Asgard.Loki.Audio.Azure.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.Azure/Asgard.Loki.LLM.Azure.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Coze/">
+    <Project Path="src/Asgard.Loki.LLM.Coze/Asgard.Loki.LLM.Coze.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Cohere/">
+    <Project Path="src/Asgard.Loki.LLM.Cohere/Asgard.Loki.LLM.Cohere.csproj" />
+    <Project Path="src/Asgard.Loki.Rerank.Cohere/Asgard.Loki.Rerank.Cohere.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Dify/">
+    <Project Path="src/Asgard.Loki.LLM.Dify/Asgard.Loki.LLM.Dify.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Google/">
+    <Project Path="src/Asgard.Loki.Image.Google/Asgard.Loki.Image.Google.csproj" />
+    <Project Path="src/Asgard.Loki.Embedding.Google/Asgard.Loki.Embedding.Google.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.Google/Asgard.Loki.LLM.Google.csproj" />
+    <Project Path="src/Asgard.Loki.Video.Google/Asgard.Loki.Video.Google.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Google/Vertex/">
+    <Project Path="src/Asgard.Loki.Image.GoogleVertex/Asgard.Loki.Image.GoogleVertex.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.GoogleVertex/Asgard.Loki.LLM.GoogleVertex.csproj" />
+    <Project Path="src/Asgard.Loki.Video.GoogleVertex/Asgard.Loki.Video.GoogleVertex.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Jina/">
+    <Project Path="src/Asgard.Loki.Embedding.Jina/Asgard.Loki.Embedding.Jina.csproj" />
+    <Project Path="src/Asgard.Loki.Rerank.Jina/Asgard.Loki.Rerank.Jina.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Kling/">
+    <Project Path="src/Asgard.Loki.Video.Kling/Asgard.Loki.Video.Kling.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Midjourney/">
+    <Project Path="src/Asgard.Loki.Image.Midjourney/Asgard.Loki.Image.Midjourney.csproj" />
+    <Project Path="src/Asgard.Loki.Video.Midjourney/Asgard.Loki.Video.Midjourney.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Cloudflare/">
+    <Project Path="src/Asgard.Loki.LLM.Cloudflare/Asgard.Loki.LLM.Cloudflare.csproj" />
+    <Project Path="src/Asgard.Loki.Audio.Cloudflare/Asgard.Loki.Audio.Cloudflare.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/MiniMax/">
+    <Project Path="src/Asgard.Loki.LLM.MiniMax/Asgard.Loki.LLM.MiniMax.csproj" />
+    <Project Path="src/Asgard.Loki.Image.MiniMax/Asgard.Loki.Image.MiniMax.csproj" />
+    <Project Path="src/Asgard.Loki.Audio.MiniMax/Asgard.Loki.Audio.MiniMax.csproj" />
+    <Project Path="src/Asgard.Loki.Video.MiniMax/Asgard.Loki.Video.MiniMax.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Ollama/">
+    <Project Path="src/Asgard.Loki.Embedding.Ollama/Asgard.Loki.Embedding.Ollama.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.Ollama/Asgard.Loki.LLM.Ollama.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/OpenAI/">
+    <Project Path="src/Asgard.Loki.Audio.OpenAI/Asgard.Loki.Audio.OpenAI.csproj" />
+    <Project Path="src/Asgard.Loki.Embedding.OpenAI/Asgard.Loki.Embedding.OpenAI.csproj" />
+    <Project Path="src/Asgard.Loki.Image.OpenAI/Asgard.Loki.Image.OpenAI.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/SunoAPI/">
+    <Project Path="src/Asgard.Loki.Audio.SunoAPI/Asgard.Loki.Audio.SunoAPI.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Replicate/">
+    <Project Path="src/Asgard.Loki.Image.Replicate/Asgard.Loki.Image.Replicate.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/SiliconFlow/">
+    <Project Path="src/Asgard.Loki.Image.SiliconFlow/Asgard.Loki.Image.SiliconFlow.csproj" />
+    <Project Path="src/Asgard.Loki.Rerank.SiliconFlow/Asgard.Loki.Rerank.SiliconFlow.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Vidu/">
+    <Project Path="src/Asgard.Loki.Video.Vidu/Asgard.Loki.Video.Vidu.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Tencent/">
+    <Project Path="src/Asgard.Loki.LLM.Tencent/Asgard.Loki.LLM.Tencent.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Xunfei/">
+    <Project Path="src/Asgard.Loki.LLM.Xunfei/Asgard.Loki.LLM.Xunfei.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Volcengine/">
+    <Project Path="src/Asgard.Loki.Image.Volcengine/Asgard.Loki.Image.Volcengine.csproj" />
+    <Project Path="src/Asgard.Loki.Audio.Volcengine/Asgard.Loki.Audio.Volcengine.csproj" />
+    <Project Path="src/Asgard.Loki.LLM.Volcengine/Asgard.Loki.LLM.Volcengine.csproj" />
+    <Project Path="src/Asgard.Loki.Video.Volcengine/Asgard.Loki.Video.Volcengine.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/XAI/">
+    <Project Path="src/Asgard.Loki.Image.XAI/Asgard.Loki.Image.XAI.csproj" />
+    <Project Path="src/Asgard.Loki.Video.XAI/Asgard.Loki.Video.XAI.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Zhipu/">
+    <Project Path="src/Asgard.Loki.Image.Zhipu/Asgard.Loki.Image.Zhipu.csproj" />
+  </Folder>
+  <Folder Name="/tests/Foundation/">
     <Project Path="tests/Asgard.Loki.Tests/Asgard.Loki.Tests.csproj" />
-    <Project Path="tests/Asgard.Loki.LLM.Tests/Asgard.Loki.LLM.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Infrastructure/">
+    <Project Path="tests/Asgard.Loki.Infrastructure.Tests/Asgard.Loki.Infrastructure.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Capabilities/">
     <Project Path="tests/Asgard.Loki.Audio.Tests/Asgard.Loki.Audio.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Embedding.Tests/Asgard.Loki.Embedding.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Image.Tests/Asgard.Loki.Image.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Tests/Asgard.Loki.LLM.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Rerank.Tests/Asgard.Loki.Rerank.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Video.Tests/Asgard.Loki.Video.Tests.csproj" />
-    <Project Path="tests/Asgard.Loki.LLM.Volcengine.Tests/Asgard.Loki.LLM.Volcengine.Tests.csproj" />
-    <Project Path="tests/Asgard.Loki.Audio.Volcengine.Tests/Asgard.Loki.Audio.Volcengine.Tests.csproj" />
-    <Project Path="tests/Asgard.Loki.LLM.OpenAI.Tests/Asgard.Loki.LLM.OpenAI.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Conversion/">
+    <Project Path="tests/Asgard.Loki.LLM.Conversion.Tests/Asgard.Loki.LLM.Conversion.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/AWS/">
+    <Project Path="tests/Asgard.Loki.LLM.AWS.Tests/Asgard.Loki.LLM.AWS.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Ali/">
+    <Project Path="tests/Asgard.Loki.Rerank.Ali.Tests/Asgard.Loki.Rerank.Ali.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.Ali.Tests/Asgard.Loki.Video.Ali.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Anthropic/">
+    <Project Path="tests/Asgard.Loki.LLM.Anthropic.Tests/Asgard.Loki.LLM.Anthropic.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Azure/">
+    <Project Path="tests/Asgard.Loki.Embedding.Azure.Tests/Asgard.Loki.Embedding.Azure.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Image.Azure.Tests/Asgard.Loki.Image.Azure.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Audio.Azure.Tests/Asgard.Loki.Audio.Azure.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Azure.Tests/Asgard.Loki.LLM.Azure.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Coze/">
+    <Project Path="tests/Asgard.Loki.LLM.Coze.Tests/Asgard.Loki.LLM.Coze.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Cohere/">
+    <Project Path="tests/Asgard.Loki.LLM.Cohere.Tests/Asgard.Loki.LLM.Cohere.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Rerank.Cohere.Tests/Asgard.Loki.Rerank.Cohere.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Dify/">
+    <Project Path="tests/Asgard.Loki.LLM.Dify.Tests/Asgard.Loki.LLM.Dify.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Google/">
+    <Project Path="tests/Asgard.Loki.Embedding.Google.Tests/Asgard.Loki.Embedding.Google.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Google.Tests/Asgard.Loki.LLM.Google.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.Google.Tests/Asgard.Loki.Video.Google.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Google/Vertex/">
+    <Project Path="tests/Asgard.Loki.LLM.GoogleVertex.Tests/Asgard.Loki.LLM.GoogleVertex.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.GoogleVertex.Tests/Asgard.Loki.Video.GoogleVertex.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Jina/">
+    <Project Path="tests/Asgard.Loki.Embedding.Jina.Tests/Asgard.Loki.Embedding.Jina.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Rerank.Jina.Tests/Asgard.Loki.Rerank.Jina.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Kling/">
+    <Project Path="tests/Asgard.Loki.Video.Kling.Tests/Asgard.Loki.Video.Kling.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Midjourney/">
+    <Project Path="tests/Asgard.Loki.Image.Midjourney.Tests/Asgard.Loki.Image.Midjourney.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.Midjourney.Tests/Asgard.Loki.Video.Midjourney.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Cloudflare/">
+    <Project Path="tests/Asgard.Loki.LLM.Cloudflare.Tests/Asgard.Loki.LLM.Cloudflare.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Audio.Cloudflare.Tests/Asgard.Loki.Audio.Cloudflare.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/MiniMax/">
+    <Project Path="tests/Asgard.Loki.LLM.MiniMax.Tests/Asgard.Loki.LLM.MiniMax.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Audio.MiniMax.Tests/Asgard.Loki.Audio.MiniMax.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.MiniMax.Tests/Asgard.Loki.Video.MiniMax.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Ollama/">
+    <Project Path="tests/Asgard.Loki.Embedding.Ollama.Tests/Asgard.Loki.Embedding.Ollama.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Ollama.Tests/Asgard.Loki.LLM.Ollama.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/OpenAI/">
+    <Project Path="tests/Asgard.Loki.Audio.OpenAI.Tests/Asgard.Loki.Audio.OpenAI.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Embedding.OpenAI.Tests/Asgard.Loki.Embedding.OpenAI.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.OpenAI.Tests/Asgard.Loki.Image.OpenAI.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.OpenAI.Tests/Asgard.Loki.LLM.OpenAI.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/SunoAPI/">
+    <Project Path="tests/Asgard.Loki.Audio.SunoAPI.Tests/Asgard.Loki.Audio.SunoAPI.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Replicate/">
+    <Project Path="tests/Asgard.Loki.Image.Replicate.Tests/Asgard.Loki.Image.Replicate.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/SiliconFlow/">
+    <Project Path="tests/Asgard.Loki.Rerank.SiliconFlow.Tests/Asgard.Loki.Rerank.SiliconFlow.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Vidu/">
+    <Project Path="tests/Asgard.Loki.Video.Vidu.Tests/Asgard.Loki.Video.Vidu.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Tencent/">
+    <Project Path="tests/Asgard.Loki.LLM.Tencent.Tests/Asgard.Loki.LLM.Tencent.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Xunfei/">
+    <Project Path="tests/Asgard.Loki.LLM.Xunfei.Tests/Asgard.Loki.LLM.Xunfei.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Volcengine/">
+    <Project Path="tests/Asgard.Loki.Image.SiliconFlow.Tests/Asgard.Loki.Image.SiliconFlow.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Image.MiniMax.Tests/Asgard.Loki.Image.MiniMax.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Image.GoogleVertex.Tests/Asgard.Loki.Image.GoogleVertex.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Image.Google.Tests/Asgard.Loki.Image.Google.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Image.Ali.Tests/Asgard.Loki.Image.Ali.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Image.Volcengine.Tests/Asgard.Loki.Image.Volcengine.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Audio.Volcengine.Tests/Asgard.Loki.Audio.Volcengine.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.LLM.Volcengine.Tests/Asgard.Loki.LLM.Volcengine.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.Volcengine.Tests/Asgard.Loki.Video.Volcengine.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/XAI/">
+    <Project Path="tests/Asgard.Loki.Image.XAI.Tests/Asgard.Loki.Image.XAI.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Video.XAI.Tests/Asgard.Loki.Video.XAI.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Zhipu/">
+    <Project Path="tests/Asgard.Loki.Image.Zhipu.Tests/Asgard.Loki.Image.Zhipu.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/SGLang/">
+    <Project Path="src/Asgard.Loki.Rerank.SGLang/Asgard.Loki.Rerank.SGLang.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/SGLang/">
+    <Project Path="tests/Asgard.Loki.Rerank.SGLang.Tests/Asgard.Loki.Rerank.SGLang.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/OpenAICompatible/">
+    <Project Path="src/Asgard.Loki.Rerank.OpenAICompatible/Asgard.Loki.Rerank.OpenAICompatible.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/OpenAICompatible/">
+    <Project Path="tests/Asgard.Loki.Rerank.OpenAICompatible.Tests/Asgard.Loki.Rerank.OpenAICompatible.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/DeepSeek/">
+    <Project Path="src/Asgard.Loki.LLM.DeepSeek/Asgard.Loki.LLM.DeepSeek.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/DeepSeek/">
+    <Project Path="tests/Asgard.Loki.LLM.DeepSeek.Tests/Asgard.Loki.LLM.DeepSeek.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/Perplexity/">
+    <Project Path="src/Asgard.Loki.LLM.Perplexity/Asgard.Loki.LLM.Perplexity.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/Perplexity/">
+    <Project Path="tests/Asgard.Loki.LLM.Perplexity.Tests/Asgard.Loki.LLM.Perplexity.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/NewAPI/">
+    <Project Path="src/Asgard.Loki.LLM.NewAPI/Asgard.Loki.LLM.NewAPI.csproj" />
+  </Folder>
+  <Folder Name="/tests/Providers/NewAPI/">
+    <Project Path="tests/Asgard.Loki.LLM.NewAPI.Tests/Asgard.Loki.LLM.NewAPI.Tests.csproj" />
   </Folder>
 </Solution>

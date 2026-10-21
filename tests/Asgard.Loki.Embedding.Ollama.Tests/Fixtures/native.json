@@ -1,0 +1,32 @@
+{
+  "single": {
+    "parameters": {"input":"前😀é!","future":false,"futureNull":null},
+    "wire": {"model":"team/embed-test:tag","input":"前😀é!","future":false,"futureNull":null},
+    "response": {"model":"team/embed-test:tag","embeddings":[[0.1,-0.2,0.3]],"total_duration":9007199254740993,"load_duration":0,"prompt_eval_count":3,"future":{"trace":"exact"}}
+  },
+  "batch": {
+    "parameters": {"input":["first","second"],"dimensions":2,"truncate":false,"keep_alive":-1,"options":{"num_ctx":4096,"seed":0,"future":false}},
+    "wire": {"model":"team/embed-test:tag","input":["first","second"],"dimensions":2,"truncate":false,"keep_alive":-1,"options":{"num_ctx":4096,"seed":0,"future":false}},
+    "response": {"model":"team/embed-test:tag","embeddings":[[0.1,0.2],[0.3,-0.4]],"total_duration":100,"load_duration":10,"prompt_eval_count":5}
+  },
+  "image": {
+    "parameters": {"input":{"text":"photo 😀","image":"AQID"},"runner":"ggml","keep_alive":"10m"},
+    "wire": {"model":"team/embed-test:tag","input":{"text":"photo 😀","image":"AQID"},"runner":"ggml","keep_alive":"10m"},
+    "response": {"model":"team/embed-test:tag","embeddings":[[0.1,-0.2,0.3]],"prompt_eval_count":8}
+  },
+  "audio": {
+    "parameters": {"input":{"audio":"BAUG"},"truncate":true},
+    "wire": {"model":"team/embed-test:tag","input":{"audio":"BAUG"},"truncate":true},
+    "response": {"model":"team/embed-test:tag","embeddings":[[0.1,-0.2,0.3]],"prompt_eval_count":4}
+  },
+  "mixed": {
+    "parameters": {"input":["",{"text":"second","image":"AQID"},{"audio":"BAUG"}],"dimensions":null,"truncate":null,"options":null,"keep_alive":null},
+    "wire": {"model":"team/embed-test:tag","input":["",{"text":"second","image":"AQID"},{"audio":"BAUG"}],"dimensions":null,"truncate":null,"options":null,"keep_alive":null},
+    "response": {"model":"team/embed-test:tag","embeddings":[[0.1,-0.2,0.3],[0.4,0.5,0.6],[-0.7,0.8,0.9]],"future":null}
+  },
+  "empty": {
+    "parameters": {"input":"","keep_alive":0},
+    "wire": {"model":"team/embed-test:tag","input":"","keep_alive":0},
+    "response": {"model":"team/embed-test:tag","embeddings":[]}
+  }
+}

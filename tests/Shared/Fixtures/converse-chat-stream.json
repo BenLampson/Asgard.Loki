@@ -1,0 +1,1266 @@
+{
+  "provenance": {
+    "authorship": "Independent full caller/native request and source/target event goldens, authored before production converter implementation. No SDK output capture or live model was used. Binary event frames use independent Python struct/CRC32.",
+    "sources": [
+      "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html",
+      "https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events"
+    ],
+    "identity": "Only synthetic non-resumable root IDs are normalized to __ID__; created=0 denotes unknown native timestamp. Sparse native content indices map to target tool-call ordinals; original IDs and every argument fragment remain exact.",
+    "terminal": "Finish and optional usage-only chunks are withheld until normal source completion/disposal. Their original-data snapshot is the final native metadata event, retaining original usage and metrics even when target usage is omitted.",
+    "binary": {
+      "file": "converse-chat-stream.eventstream",
+      "frames": 13,
+      "bytes": 2087,
+      "sha256": "b8f30ca96b9ce832fd11e83fd20ca3e4dae8ce14e3172ce14a37bdf0501033d3"
+    }
+  },
+  "cases": [
+    {
+      "name": "tools-usage",
+      "sourceRequest": {
+        "model": "public",
+        "max_completion_tokens": 256,
+        "temperature": 0,
+        "top_p": 1,
+        "messages": [
+          {
+            "role": "system",
+            "content": "rules"
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "你好 é 🚀"
+              },
+              {
+                "type": "image_url",
+                "image_url": {
+                  "url": "data:image/png;base64,AQID"
+                }
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "id": "history-a",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"n\":9007199254740993,\"error\":{\"type\":\"error\"}}"
+                }
+              },
+              {
+                "id": "history-b",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"n\":null}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "history-b",
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"ok\":false,\"nil\":null}"
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "history-a",
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"ok\":false,\"n\":9007199254740993}"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "done"
+          }
+        ],
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "description": "原始工具",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "n": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 9007199254740993
+                  },
+                  "ok": {
+                    "type": "boolean",
+                    "const": false
+                  }
+                },
+                "required": [
+                  "n"
+                ],
+                "additionalProperties": false
+              },
+              "strict": true
+            }
+          }
+        ],
+        "tool_choice": {
+          "type": "function",
+          "function": {
+            "name": "lookup"
+          }
+        },
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "answer",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                },
+                "ok": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "n",
+                "ok"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "stream": true,
+        "stream_options": {
+          "include_usage": true,
+          "include_obfuscation": false
+        }
+      },
+      "nativeRequest": {
+        "model": "public",
+        "system": [
+          {
+            "text": "rules"
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "你好 é 🚀"
+              },
+              {
+                "image": {
+                  "format": "png",
+                  "source": {
+                    "bytes": "AQID"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "toolUse": {
+                  "toolUseId": "history-a",
+                  "name": "lookup",
+                  "input": {
+                    "n": 9007199254740993,
+                    "error": {
+                      "type": "error"
+                    }
+                  }
+                }
+              },
+              {
+                "toolUse": {
+                  "toolUseId": "history-b",
+                  "name": "lookup",
+                  "input": {
+                    "n": null
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "toolResult": {
+                  "toolUseId": "history-b",
+                  "content": [
+                    {
+                      "text": "{\"ok\":false,\"nil\":null}"
+                    }
+                  ]
+                }
+              },
+              {
+                "toolResult": {
+                  "toolUseId": "history-a",
+                  "content": [
+                    {
+                      "text": "{\"ok\":false,\"n\":9007199254740993}"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "done"
+              }
+            ]
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 256,
+          "temperature": 0,
+          "topP": 1
+        },
+        "toolConfig": {
+          "tools": [
+            {
+              "toolSpec": {
+                "name": "lookup",
+                "description": "原始工具",
+                "inputSchema": {
+                  "json": {
+                    "type": "object",
+                    "properties": {
+                      "n": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "minimum": 9007199254740993
+                      },
+                      "ok": {
+                        "type": "boolean",
+                        "const": false
+                      }
+                    },
+                    "required": [
+                      "n"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "strict": true
+              }
+            }
+          ],
+          "toolChoice": {
+            "tool": {
+              "name": "lookup"
+            }
+          }
+        },
+        "outputConfig": {
+          "textFormat": {
+            "type": "json_schema",
+            "structure": {
+              "jsonSchema": {
+                "schema": "{\"type\":\"object\",\"properties\":{\"n\":{\"type\":[\"integer\",\"null\"],\"minimum\":9007199254740993},\"ok\":{\"type\":\"boolean\"}},\"required\":[\"n\",\"ok\"],\"additionalProperties\":false}",
+                "name": "answer"
+              }
+            }
+          }
+        }
+      },
+      "sourceEvents": [
+        {
+          "eventName": "messageStart",
+          "data": {
+            "role": "assistant"
+          }
+        },
+        {
+          "eventName": "contentBlockDelta",
+          "data": {
+            "contentBlockIndex": 0,
+            "delta": {
+              "text": ""
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockDelta",
+          "data": {
+            "contentBlockIndex": 0,
+            "delta": {
+              "text": "native é 🚀"
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockStop",
+          "data": {
+            "contentBlockIndex": 0
+          }
+        },
+        {
+          "eventName": "contentBlockStart",
+          "data": {
+            "contentBlockIndex": 2147483647,
+            "start": {
+              "toolUse": {
+                "toolUseId": "stream-a",
+                "name": "lookup"
+              }
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockDelta",
+          "data": {
+            "contentBlockIndex": 2147483647,
+            "delta": {
+              "toolUse": {
+                "input": "{\"n\":"
+              }
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockStart",
+          "data": {
+            "contentBlockIndex": 19,
+            "start": {
+              "toolUse": {
+                "toolUseId": "stream-b",
+                "name": "lookup"
+              }
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockDelta",
+          "data": {
+            "contentBlockIndex": 19,
+            "delta": {
+              "toolUse": {
+                "input": "{\"n\":null,\"ok\":false}"
+              }
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockStop",
+          "data": {
+            "contentBlockIndex": 19
+          }
+        },
+        {
+          "eventName": "contentBlockDelta",
+          "data": {
+            "contentBlockIndex": 2147483647,
+            "delta": {
+              "toolUse": {
+                "input": "9007199254740993,\"error\":{\"type\":\"error\"},\"nil\":null}"
+              }
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockStop",
+          "data": {
+            "contentBlockIndex": 2147483647
+          }
+        },
+        {
+          "eventName": "messageStop",
+          "data": {
+            "stopReason": "tool_use"
+          }
+        },
+        {
+          "eventName": "metadata",
+          "data": {
+            "usage": {
+              "inputTokens": 17,
+              "outputTokens": 8,
+              "totalTokens": 25
+            },
+            "metrics": {
+              "latencyMs": 9
+            }
+          }
+        }
+      ],
+      "expected": [
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": ""
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "native é 🚀"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "tool_calls": [
+                  {
+                    "index": 0,
+                    "id": "stream-a",
+                    "type": "function",
+                    "function": {
+                      "name": "lookup"
+                    }
+                  }
+                ]
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "tool_calls": [
+                  {
+                    "index": 0,
+                    "function": {
+                      "arguments": "{\"n\":"
+                    }
+                  }
+                ]
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "tool_calls": [
+                  {
+                    "index": 1,
+                    "id": "stream-b",
+                    "type": "function",
+                    "function": {
+                      "name": "lookup"
+                    }
+                  }
+                ]
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "tool_calls": [
+                  {
+                    "index": 1,
+                    "function": {
+                      "arguments": "{\"n\":null,\"ok\":false}"
+                    }
+                  }
+                ]
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "tool_calls": [
+                  {
+                    "index": 0,
+                    "function": {
+                      "arguments": "9007199254740993,\"error\":{\"type\":\"error\"},\"nil\":null}"
+                    }
+                  }
+                ]
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "tool_calls"
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 8,
+            "total_tokens": 25
+          }
+        }
+      ],
+      "sourceIndices": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        9,
+        12,
+        12
+      ]
+    },
+    {
+      "name": "text-default",
+      "sourceRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello"
+          }
+        ],
+        "max_completion_tokens": 32,
+        "stream": true
+      },
+      "nativeRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "hello"
+              }
+            ]
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 32
+        }
+      },
+      "sourceEvents": [
+        {
+          "eventName": "messageStart",
+          "data": {
+            "role": "assistant"
+          }
+        },
+        {
+          "eventName": "contentBlockDelta",
+          "data": {
+            "contentBlockIndex": 5,
+            "delta": {
+              "text": "plain é 🚀"
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockStop",
+          "data": {
+            "contentBlockIndex": 5
+          }
+        },
+        {
+          "eventName": "messageStop",
+          "data": {
+            "stopReason": "end_turn"
+          }
+        },
+        {
+          "eventName": "metadata",
+          "data": {
+            "usage": {
+              "inputTokens": 3,
+              "outputTokens": 2,
+              "totalTokens": 5
+            },
+            "metrics": {
+              "latencyMs": 0
+            }
+          }
+        }
+      ],
+      "expected": [
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "plain é 🚀"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop"
+            }
+          ]
+        }
+      ],
+      "sourceIndices": [
+        0,
+        1,
+        4
+      ]
+    },
+    {
+      "name": "text-usage-false",
+      "sourceRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello"
+          }
+        ],
+        "max_completion_tokens": 32,
+        "stream": true,
+        "stream_options": {
+          "include_usage": false
+        }
+      },
+      "nativeRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "hello"
+              }
+            ]
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 32
+        }
+      },
+      "sourceEvents": [
+        {
+          "eventName": "messageStart",
+          "data": {
+            "role": "assistant"
+          }
+        },
+        {
+          "eventName": "contentBlockDelta",
+          "data": {
+            "contentBlockIndex": 5,
+            "delta": {
+              "text": "plain é 🚀"
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockStop",
+          "data": {
+            "contentBlockIndex": 5
+          }
+        },
+        {
+          "eventName": "messageStop",
+          "data": {
+            "stopReason": "end_turn"
+          }
+        },
+        {
+          "eventName": "metadata",
+          "data": {
+            "usage": {
+              "inputTokens": 3,
+              "outputTokens": 2,
+              "totalTokens": 5
+            },
+            "metrics": {
+              "latencyMs": 0
+            }
+          }
+        }
+      ],
+      "expected": [
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "plain é 🚀"
+              },
+              "finish_reason": null
+            }
+          ]
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop"
+            }
+          ]
+        }
+      ],
+      "sourceIndices": [
+        0,
+        1,
+        4
+      ]
+    },
+    {
+      "name": "length",
+      "sourceRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello"
+          }
+        ],
+        "max_completion_tokens": 32,
+        "stream": true,
+        "stream_options": {
+          "include_usage": true
+        }
+      },
+      "nativeRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "hello"
+              }
+            ]
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 32
+        }
+      },
+      "sourceEvents": [
+        {
+          "eventName": "messageStart",
+          "data": {
+            "role": "assistant"
+          }
+        },
+        {
+          "eventName": "contentBlockDelta",
+          "data": {
+            "contentBlockIndex": 5,
+            "delta": {
+              "text": "partial"
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockStop",
+          "data": {
+            "contentBlockIndex": 5
+          }
+        },
+        {
+          "eventName": "messageStop",
+          "data": {
+            "stopReason": "max_tokens"
+          }
+        },
+        {
+          "eventName": "metadata",
+          "data": {
+            "usage": {
+              "inputTokens": 10,
+              "outputTokens": 32,
+              "totalTokens": 42
+            },
+            "metrics": {
+              "latencyMs": 0
+            }
+          }
+        }
+      ],
+      "expected": [
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": "partial"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "length"
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 10,
+            "completion_tokens": 32,
+            "total_tokens": 42
+          }
+        }
+      ],
+      "sourceIndices": [
+        0,
+        1,
+        4,
+        4
+      ]
+    },
+    {
+      "name": "content-filter",
+      "sourceRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello"
+          }
+        ],
+        "max_completion_tokens": 32,
+        "stream": true,
+        "stream_options": {
+          "include_usage": true
+        }
+      },
+      "nativeRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "hello"
+              }
+            ]
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 32
+        }
+      },
+      "sourceEvents": [
+        {
+          "eventName": "messageStart",
+          "data": {
+            "role": "assistant"
+          }
+        },
+        {
+          "eventName": "contentBlockDelta",
+          "data": {
+            "contentBlockIndex": 5,
+            "delta": {
+              "text": ""
+            }
+          }
+        },
+        {
+          "eventName": "contentBlockStop",
+          "data": {
+            "contentBlockIndex": 5
+          }
+        },
+        {
+          "eventName": "messageStop",
+          "data": {
+            "stopReason": "content_filtered"
+          }
+        },
+        {
+          "eventName": "metadata",
+          "data": {
+            "usage": {
+              "inputTokens": 7,
+              "outputTokens": 0,
+              "totalTokens": 7
+            },
+            "metrics": {
+              "latencyMs": 0
+            }
+          }
+        }
+      ],
+      "expected": [
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "content": ""
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "content_filter"
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 7,
+            "completion_tokens": 0,
+            "total_tokens": 7
+          }
+        }
+      ],
+      "sourceIndices": [
+        0,
+        1,
+        4,
+        4
+      ]
+    },
+    {
+      "name": "empty",
+      "sourceRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello"
+          }
+        ],
+        "max_completion_tokens": 32,
+        "stream": true,
+        "stream_options": {
+          "include_usage": true
+        }
+      },
+      "nativeRequest": {
+        "model": "public",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "text": "hello"
+              }
+            ]
+          }
+        ],
+        "inferenceConfig": {
+          "maxTokens": 32
+        }
+      },
+      "sourceEvents": [
+        {
+          "eventName": "messageStart",
+          "data": {
+            "role": "assistant"
+          }
+        },
+        {
+          "eventName": "messageStop",
+          "data": {
+            "stopReason": "end_turn"
+          }
+        },
+        {
+          "eventName": "metadata",
+          "data": {
+            "usage": {
+              "inputTokens": 0,
+              "outputTokens": 0,
+              "totalTokens": 0
+            },
+            "metrics": {
+              "latencyMs": 0
+            }
+          }
+        }
+      ],
+      "expected": [
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {
+                "role": "assistant"
+              },
+              "finish_reason": null
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [
+            {
+              "index": 0,
+              "delta": {},
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": null
+        },
+        {
+          "id": "__ID__",
+          "object": "chat.completion.chunk",
+          "created": 0,
+          "model": "public",
+          "choices": [],
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          }
+        }
+      ],
+      "sourceIndices": [
+        0,
+        2,
+        2
+      ]
+    }
+  ]
+}

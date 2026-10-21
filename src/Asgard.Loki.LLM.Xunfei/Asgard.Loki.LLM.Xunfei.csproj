@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Native Xunfei Spark WebSocket model calls with explicit signed targets and immutable message windows.</Description></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" /></ItemGroup>
+</Project>

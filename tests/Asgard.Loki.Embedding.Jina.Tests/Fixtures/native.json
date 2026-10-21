@@ -1,0 +1,42 @@
+{
+  "text": {
+    "parameters":{"input":"前😀é!","embedding_type":"float","dimensions":2,"task":"retrieval.query","normalized":false,"truncate":false,"late_chunking":null},
+    "wire":{"model":"embedding-native","input":"前😀é!","embedding_type":"float","dimensions":2,"task":"retrieval.query","normalized":false,"truncate":false,"late_chunking":null},
+    "response":{"model":"embedding-native","object":"list","data":[{"object":"embedding","index":0,"embedding":[0.1,-0.2],"future":false}],"usage":{"total_tokens":9007199254740993,"prompt_tokens":9007199254740993},"future":null}
+  },
+  "media": {
+    "parameters":{"input":[{"text":"a","future":false},{"image":"https://media.invalid/i.png"},{"audio":"BAUG"},{"video":"https://media.invalid/v.mp4"}],"dimensions":2,"task":"retrieval.passage","future":null},
+    "wire":{"model":"embedding-native","input":[{"text":"a","future":false},{"image":"https://media.invalid/i.png"},{"audio":"BAUG"},{"video":"https://media.invalid/v.mp4"}],"dimensions":2,"task":"retrieval.passage","future":null},
+    "response":{"model":"embedding-native","data":[{"index":3,"embedding":[0.7,0.8]},{"index":0,"embedding":[0.1,0.2]},{"index":2,"embedding":[0.5,0.6]},{"index":1,"embedding":[0.3,0.4]}],"usage":{"total_tokens":14,"prompt_tokens":2,"image_tokens":3,"audio_tokens":4,"video_tokens":5}}
+  },
+  "group": {
+    "parameters":{"input":[{"content":[{"text":"before"},{"image":"AQID"},{"text":"after"}],"future":null},"other"],"embedding_type":"base64","dimensions":2,"return_multivector":false,"encoding_format":"float"},
+    "wire":{"model":"embedding-native","input":[{"content":[{"text":"before"},{"image":"AQID"},{"text":"after"}],"future":null},"other"],"embedding_type":"base64","dimensions":2,"return_multivector":false,"encoding_format":"float"},
+    "response":{"model":"embedding-native","object":"list","data":[{"index":1,"embedding":"AACAPwAAAMA="},{"index":0,"embedding":"AAAAPwAAgD4="}],"usage":{"total_tokens":9,"prompt_tokens":6,"image_tokens":3,"audio_tokens":null}}
+  },
+  "multi": {
+    "parameters":{"input":["前😀","é"],"embedding_type":"float","dimensions":null,"return_multivector":true,"return_tokenized_input":true,"truncate":false},
+    "wire":{"model":"embedding-native","input":["前😀","é"],"embedding_type":"float","dimensions":null,"return_multivector":true,"return_tokenized_input":true,"truncate":false},
+    "response":{"model":"embedding-native","data":[{"object":"embeddings","index":1,"embeddings":[[0.3,0.4],[0.5,0.6]],"tokenized_input":["e","́"],"future":false},{"object":"embeddings","index":0,"embeddings":[[0.1,0.2]],"tokenized_input":["前😀"]}],"usage":{"total_tokens":3,"prompt_tokens":3}}
+  },
+  "multi-base64": {
+    "parameters":{"input":{"text":"sample"},"embedding_type":"base64","return_multivector":true,"return_tokenized_input":true},
+    "wire":{"model":"embedding-native","input":{"text":"sample"},"embedding_type":"base64","return_multivector":true,"return_tokenized_input":true},
+    "response":{"model":"embedding-native","data":[{"object":"embeddings","index":0,"embeddings":["AACAPwAAAMA=","AAAAPwAAgD4="],"tokenized_input":["sam","ple"]}],"usage":{"total_tokens":2,"prompt_tokens":2}}
+  },
+  "implicit-multi": {
+    "parameters":{"input":["a","b"],"dimensions":2,"input_type":"document"},
+    "wire":{"model":"embedding-native","input":["a","b"],"dimensions":2,"input_type":"document"},
+    "response":{"model":"embedding-native","data":[{"index":0,"embeddings":[[0.1,0.2],[0.3,0.4]],"tokenized_input":null},{"index":1,"embeddings":[[0.5,0.6]]}],"usage":{"total_tokens":3,"future":false}}
+  },
+  "empty-list": {
+    "parameters":{"input":[],"embedding_type":"float"},
+    "wire":{"model":"embedding-native","input":[],"embedding_type":"float"},
+    "response":{"model":"embedding-native","data":[],"usage":{"total_tokens":0,"prompt_tokens":0}}
+  },
+  "nullable": {
+    "parameters":{"input":{"text":"x"},"embedding_type":null,"dimensions":null,"task":null,"input_type":null,"normalized":null,"truncate":false,"late_chunking":false,"return_multivector":null,"return_tokenized_input":null,"future":0},
+    "wire":{"model":"embedding-native","input":{"text":"x"},"embedding_type":null,"dimensions":null,"task":null,"input_type":null,"normalized":null,"truncate":false,"late_chunking":false,"return_multivector":null,"return_tokenized_input":null,"future":0},
+    "response":{"model":"embedding-native","data":[{"index":0,"embedding":"AACAPwAAAMA="}],"usage":{"total_tokens":1,"prompt_tokens":1}}
+  }
+}

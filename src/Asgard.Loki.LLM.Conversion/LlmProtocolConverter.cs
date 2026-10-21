@@ -1,0 +1,116 @@
+using System.Text.Json.Nodes;
+using Asgard.Loki.LLM.Conversion.Internal;
+
+namespace Asgard.Loki.LLM.Conversion;
+
+/// <summary>显式、无网络的协议数据转换入口；同协议转换完整复制原文。</summary>
+public static class LlmProtocolConverter
+{
+    /// <summary>转换请求；默认拒绝任何无法表达的字段。</summary>
+    public static LlmConversionResult ConvertRequest(JsonObject request, LlmProtocol from, LlmProtocol to, LlmConversionOptions? options = null)
+    {
+        var captured = ConversionOptionsSnapshot.Capture(options);
+        Validate(request, from, to, captured);
+        if (from == to) return new(request, request, [], new(from, to, captured));
+        if (from == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(to))
+            throw new NotSupportedException("此阶段只实现文本请求到 Converse，不声明反向 SDK 调用已具备原生指标。");
+        if (BedrockConversion.IsBedrock(from)) return BedrockConversion.Request(request, from, to, captured);
+        if (request["previous_response_id"] is not null || request.ContainsKey("store") || request.ContainsKey("background"))
+            throw new LlmConversionException([new("unsupported_continuation", "$", "跨协议转换不能继承响应链或持久化执行语义。")]);
+        if (to == LlmProtocol.BedrockConverse) return ConverseTextConversion.Request(request, from, captured);
+        var candidateCount = GeminiCandidateCount.Read(request, from, to, options: captured);
+        var candidateRequest = GeminiCandidateCount.Prepare(request, candidateCount);
+        var searchOutputDiagnostics = HostedSearchOutput.Inspect(request, from);
+        var search = HostedSearchCodec.Prepare(candidateRequest, from, to, captured, out var searchPrepared);
+        var context = ToolRequestCodec.Prepare(searchPrepared, from, to, captured, out var prepared, out var toolDiagnostics);
+        var doc = RequestReader.Read(prepared, from, to, captured);
+        doc.Diagnostics.AddRange(toolDiagnostics);
+        doc.Diagnostics.AddRange(searchOutputDiagnostics);
+        var target = RequestWriter.Write(doc, to, captured);
+        HostedSearchCodec.Write(target, search, to, captured, doc);
+        ConversionJson.Copy(request, "stream", target, "stream");
+        if (candidateCount is { } count) target["n"] = count;
+        TargetSettingsValidator.Validate(target, to, captured.TargetSettings);
+        Enforce(doc, captured);
+        return new(target, request, doc.Diagnostics, context);
+    }
+
+    /// <summary>转换完整响应并保留源 JSON；Gemini 与 Chat 之间支持候选数组，其他跨协议目标仍为单候选。</summary>
+    public static LlmConversionResult ConvertResponse(JsonObject response, LlmProtocol from, LlmProtocol to, LlmConversionOptions? options = null)
+    {
+        var captured = ConversionOptionsSnapshot.Capture(options);
+        Validate(response, from, to, captured);
+        if (from == to) return new(response, response, []);
+        if (from == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(to)) return ConverseTextConversion.Response(response, to, captured);
+        if (to == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(from))
+            throw new NotSupportedException("文本协议响应尚不能构造包含原生指标的 Converse 响应；不会补造 latencyMs。");
+        if (BedrockConversion.IsBedrock(from)) return BedrockConversion.Response(response, captured);
+        if (from == LlmProtocol.Gemini && to == LlmProtocol.ChatCompletions || from == LlmProtocol.ChatCompletions && to == LlmProtocol.Gemini)
+            return CandidateResponseConversion.Convert(response, from, to, captured);
+        var mapGrounding = from == LlmProtocol.Gemini && to is LlmProtocol.ChatCompletions or LlmProtocol.Responses
+            && captured.OpenAiCitationIndexUnit != LlmCitationIndexUnit.Unspecified;
+        var searchOutputDiagnostics = HostedSearchOutput.Inspect(response, from, mapUrlCitations: true, mapGeminiGrounding: mapGrounding);
+        var doc = ResponseMapping.Read(response, from, citationIndexUnit: captured.OpenAiCitationIndexUnit, mapGeminiGrounding: mapGrounding);
+        doc.Diagnostics.AddRange(searchOutputDiagnostics);
+        var mapGeminiCitations = from is LlmProtocol.ChatCompletions or LlmProtocol.Responses && to == LlmProtocol.Gemini
+            && captured.OpenAiCitationIndexUnit != LlmCitationIndexUnit.Unspecified;
+        var target = ResponseMapping.Write(doc, to, mapGeminiCitations);
+        Enforce(doc, captured);
+        return new(target, response, doc.Diagnostics);
+    }
+
+    /// <summary>使用原请求上下文还原完整工具身份，不从名称前缀猜测 namespace 或 custom 种类。</summary>
+    public static LlmConversionResult ConvertResponse(JsonObject response, LlmConversionContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        if (context.TargetProtocol == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(context.SourceProtocol))
+            return ConverseTextConversion.Response(response, context.SourceProtocol, context.Options, context);
+        var result = ConvertResponse(response, context.TargetProtocol, context.SourceProtocol, context.Options);
+        var data = JsonNode.Parse(result.Data.GetRawText())!.AsObject();
+        if (BedrockConversion.IsBedrock(context.SourceProtocol) && context.SourceProtocol != context.TargetProtocol)
+            BedrockConversion.ValidateContext(data, context);
+        data = context.Restore(data);
+        return new(data, response, result.Diagnostics, context);
+    }
+
+    /// <summary>在发起调用之前校验协议和转换选项。</summary>
+    internal static void Validate(JsonObject value, LlmProtocol from, LlmProtocol to, LlmConversionOptions? options)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        ConversionJson.ValidateProtocol(from); ConversionJson.ValidateProtocol(to);
+        if (BedrockConversion.IsBedrock(from) != BedrockConversion.IsBedrock(to)
+            && !(from == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(to) || to == LlmProtocol.BedrockConverse && ConverseTextConversion.IsText(from)))
+            throw new NotSupportedException("Bedrock 原生转换当前只支持 Nova 与 Converse 之间的完整 JSON。");
+        if (options is not null && (!Enum.IsDefined(options.BedrockNovaRequestFormat) || !Enum.IsDefined(options.BedrockConverseInferenceFormat)))
+            throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.BedrockConverseModelDialect)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is { MaxBedrockStreamBlocks: <= 0 } or { MaxBedrockStreamToolArgumentBytes: <= 0 }
+            or { MaxBedrockStreamTailBytes: <= 0 } or { MaxBedrockStreamDiagnostics: <= 0 }) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is { MaxStreamCandidates: <= 0 } or { MaxCandidateStreamInputBytes: <= 0 }
+            or { MaxCandidateStreamOutputBytes: <= 0 } or { MaxCandidateStreamDiagnostics: <= 0 }) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options?.DefaultMaxTokens is <= 0) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options?.TargetThinkingBudgetTokens is < 1024) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.GeminiOutputFormat)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.GeminiFunctionSchemaFormat)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.HostedSearchTarget)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.OpenAiCitationIndexUnit)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.GeminiGroundingStreamMode)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.TextFileEncoding)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is not null && !Enum.IsDefined(options.ToolErrorFormat)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options is { MaxToolConversionMappings: <= 0 } or { MaxToolConversionHistoryCalls: <= 0 }
+            or { MaxToolConversionOutputCalls: <= 0 } or { MaxCustomToolInputBytes: <= 0 }
+            or { MaxStreamAnnotations: <= 0 } or { MaxStreamAnnotationBytes: <= 0 } or { MaxTextFileBytes: <= 0 } or { MaxToolErrorBytes: <= 0 })
+            throw new ArgumentOutOfRangeException(nameof(options));
+        TargetSettingsValidator.ValidateConfiguration(options?.TargetSettings);
+        if (options?.DefaultSchemaName is { } schemaName
+            && (schemaName.Length is < 1 or > 64 || schemaName.Any(c => !char.IsAsciiLetterOrDigit(c) && c is not ('_' or '-'))))
+            throw new ArgumentException("Schema 名称必须为 1 至 64 个 ASCII 字母、数字、下划线或连字符。", nameof(options));
+        if (options?.TargetReasoningEffort is { } effort && effort is not ("none" or "minimal" or "low" or "medium" or "high" or "xhigh" or "max"))
+            throw new ArgumentException("无效的目标推理强度。", nameof(options));
+    }
+    /// <summary>严格策略在发现损耗后拒绝输出，显式允许时完整返回诊断。</summary>
+    internal static void Enforce(ConversionDocument doc, LlmConversionOptions? options)
+    {
+        if (doc.Diagnostics.Count != 0 && options?.AllowLoss != true) throw new LlmConversionException(doc.Diagnostics);
+    }
+}

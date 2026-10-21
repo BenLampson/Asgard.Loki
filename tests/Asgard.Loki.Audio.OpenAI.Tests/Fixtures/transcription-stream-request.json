@@ -1,0 +1,11 @@
+[
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=model"],"text":"file-upstream-fixture"},
+  {"headers":["Content-Type: audio/wav","Content-Disposition: form-data; name=file; filename=fixture.wav; filename*=utf-8''fixture.wav"],"base64":"AP+ADQoq"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=response_format"],"text":"diarized_json"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=chunking_strategy"],"text":"auto"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"known_speaker_names[]\""],"text":"A"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"known_speaker_names[]\""],"text":"B"},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"known_speaker_references[]\""],"text":"data:audio/wav;base64,AAE="},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=\"known_speaker_references[]\""],"text":"data:audio/wav;base64,AgM="},
+  {"headers":["Content-Type: text/plain; charset=utf-8","Content-Disposition: form-data; name=stream"],"text":"true"}
+]

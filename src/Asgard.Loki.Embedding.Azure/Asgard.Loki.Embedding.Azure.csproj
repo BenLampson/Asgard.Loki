@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Native deployment-scoped Azure embeddings with explicit API version and original vectors for Asgard.Loki.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Embedding/Asgard.Loki.Embedding.csproj" />
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>

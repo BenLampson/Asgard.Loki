@@ -1,0 +1,172 @@
+[
+  {
+    "type": "response.created",
+    "sequence_number": 0,
+    "response": {
+      "id": "r1",
+      "object": "response",
+      "created_at": 0,
+      "model": "model-a",
+      "status": "in_progress",
+      "output": [],
+      "usage": {
+        "input_tokens": 3,
+        "output_tokens": 0,
+        "total_tokens": 3
+      }
+    }
+  },
+  {
+    "type": "response.in_progress",
+    "sequence_number": 1,
+    "response": {
+      "id": "r1",
+      "object": "response",
+      "created_at": 0,
+      "model": "model-a",
+      "status": "in_progress",
+      "output": []
+    }
+  },
+  {
+    "type": "response.output_item.added",
+    "sequence_number": 2,
+    "output_index": 0,
+    "item": {
+      "id": "item_r1_0",
+      "type": "message",
+      "role": "assistant",
+      "status": "in_progress",
+      "content": []
+    }
+  },
+  {
+    "type": "response.content_part.added",
+    "sequence_number": 3,
+    "output_index": 0,
+    "item_id": "item_r1_0",
+    "content_index": 0,
+    "part": {
+      "type": "output_text",
+      "text": "你好",
+      "annotations": []
+    }
+  },
+  {
+    "type": "response.output_item.added",
+    "sequence_number": 4,
+    "output_index": 1,
+    "item": {
+      "id": "item_r1_1",
+      "type": "function_call",
+      "call_id": "call_1",
+      "name": "lookup",
+      "arguments": "",
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "response.function_call_arguments.delta",
+    "sequence_number": 5,
+    "output_index": 1,
+    "item_id": "item_r1_1",
+    "delta": "{\"x\":0}"
+  },
+  {
+    "type": "response.output_text.done",
+    "sequence_number": 6,
+    "output_index": 0,
+    "item_id": "item_r1_0",
+    "content_index": 0,
+    "text": "你好"
+  },
+  {
+    "type": "response.content_part.done",
+    "sequence_number": 7,
+    "output_index": 0,
+    "item_id": "item_r1_0",
+    "content_index": 0,
+    "part": {
+      "type": "output_text",
+      "text": "你好",
+      "annotations": []
+    }
+  },
+  {
+    "type": "response.output_item.done",
+    "sequence_number": 8,
+    "output_index": 0,
+    "item": {
+      "id": "item_r1_0",
+      "type": "message",
+      "role": "assistant",
+      "status": "completed",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "你好",
+          "annotations": []
+        }
+      ]
+    }
+  },
+  {
+    "type": "response.function_call_arguments.done",
+    "sequence_number": 9,
+    "output_index": 1,
+    "item_id": "item_r1_1",
+    "arguments": "{\"x\":0}"
+  },
+  {
+    "type": "response.output_item.done",
+    "sequence_number": 10,
+    "output_index": 1,
+    "item": {
+      "id": "item_r1_1",
+      "type": "function_call",
+      "call_id": "call_1",
+      "name": "lookup",
+      "arguments": "{\"x\":0}",
+      "status": "completed"
+    }
+  },
+  {
+    "type": "response.completed",
+    "sequence_number": 11,
+    "response": {
+      "id": "r1",
+      "object": "response",
+      "created_at": 0,
+      "model": "model-a",
+      "status": "completed",
+      "output": [
+        {
+          "id": "item_r1_0",
+          "type": "message",
+          "role": "assistant",
+          "status": "completed",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "你好",
+              "annotations": []
+            }
+          ]
+        },
+        {
+          "id": "item_r1_1",
+          "type": "function_call",
+          "call_id": "call_1",
+          "name": "lookup",
+          "arguments": "{\"x\":0}",
+          "status": "completed"
+        }
+      ],
+      "usage": {
+        "input_tokens": 3,
+        "output_tokens": 2,
+        "total_tokens": 5
+      }
+    }
+  }
+]

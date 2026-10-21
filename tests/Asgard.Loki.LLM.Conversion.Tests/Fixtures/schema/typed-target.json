@@ -1,0 +1,86 @@
+{
+  "ChatCompletions": {
+    "model": "schema-model",
+    "max_completion_tokens": 128,
+    "messages": [{ "role": "user", "content": [{ "type": "text", "text": "return typed" }] }],
+    "response_format": { "type": "json_schema", "json_schema": {
+      "name": "result", "strict": true,
+      "schema": {
+        "type": "object", "title": "result", "description": "", "minProperties": 0, "maxProperties": 2,
+        "properties": {
+          "label": { "type": ["string", "null"], "enum": ["", "ok"], "format": "enum", "minLength": 0, "maxLength": 2, "pattern": "^(|ok)$" },
+          "values": { "type": "array", "minItems": 0, "maxItems": 20, "items": { "type": ["integer", "null"], "minimum": 0, "maximum": 1000 } }
+        },
+        "required": ["label", "values"], "anyOf": [{ "type": "object", "required": ["label"] }, { "type": "object", "required": ["values"] }],
+        "examples": [null], "default": null
+      }
+    } }
+  },
+  "Responses": {
+    "model": "schema-model",
+    "max_output_tokens": 128,
+    "input": [{ "type": "message", "role": "user", "content": [{ "type": "input_text", "text": "return typed" }] }],
+    "text": { "format": {
+      "type": "json_schema", "name": "result", "strict": true,
+      "schema": {
+        "type": "object", "title": "result", "description": "", "minProperties": 0, "maxProperties": 2,
+        "properties": {
+          "label": { "type": ["string", "null"], "enum": ["", "ok"], "format": "enum", "minLength": 0, "maxLength": 2, "pattern": "^(|ok)$" },
+          "values": { "type": "array", "minItems": 0, "maxItems": 20, "items": { "type": ["integer", "null"], "minimum": 0, "maximum": 1000 } }
+        },
+        "required": ["label", "values"], "anyOf": [{ "type": "object", "required": ["label"] }, { "type": "object", "required": ["values"] }],
+        "examples": [null], "default": null
+      }
+    } }
+  },
+  "ClaudeMessages": {
+    "model": "schema-model",
+    "max_tokens": 128,
+    "messages": [{ "role": "user", "content": [{ "type": "text", "text": "return typed" }] }],
+    "output_config": { "format": {
+      "type": "json_schema",
+      "schema": {
+        "type": "object", "title": "result", "description": "", "minProperties": 0, "maxProperties": 2,
+        "properties": {
+          "label": { "type": ["string", "null"], "enum": ["", "ok"], "format": "enum", "minLength": 0, "maxLength": 2, "pattern": "^(|ok)$" },
+          "values": { "type": "array", "minItems": 0, "maxItems": 20, "items": { "type": ["integer", "null"], "minimum": 0, "maximum": 1000 } }
+        },
+        "required": ["label", "values"], "anyOf": [{ "type": "object", "required": ["label"] }, { "type": "object", "required": ["values"] }],
+        "examples": [null], "default": null
+      }
+    } }
+  },
+  "Gemini": {
+    "model": "schema-model",
+    "contents": [{ "role": "user", "parts": [{ "text": "return typed" }] }],
+    "generationConfig": {
+      "maxOutputTokens": 128, "responseMimeType": "application/json",
+      "responseSchema": {
+        "type": "OBJECT", "title": "result", "description": "", "minProperties": "0", "maxProperties": "2",
+        "properties": {
+          "label": { "type": "STRING", "nullable": true, "enum": ["", "ok"], "format": "enum", "minLength": "0", "maxLength": "2", "pattern": "^(|ok)$" },
+          "values": { "type": "ARRAY", "minItems": "0", "maxItems": "20", "items": { "type": "INTEGER", "nullable": true, "minimum": 0, "maximum": 1000 } }
+        },
+        "required": ["label", "values"], "anyOf": [{ "type": "OBJECT", "required": ["label"] }, { "type": "OBJECT", "required": ["values"] }],
+        "example": null, "default": null
+      }
+    }
+  },
+  "GeminiOrdered": {
+    "model": "schema-model",
+    "contents": [{ "role": "user", "parts": [{ "text": "return typed" }] }],
+    "generationConfig": {
+      "maxOutputTokens": 128, "responseMimeType": "application/json",
+      "responseSchema": {
+        "type": "OBJECT", "title": "result", "description": "", "minProperties": "0", "maxProperties": "2",
+        "properties": {
+          "label": { "type": "STRING", "nullable": true, "enum": ["", "ok"], "format": "enum", "minLength": "0", "maxLength": "2", "pattern": "^(|ok)$" },
+          "values": { "type": "ARRAY", "minItems": "0", "maxItems": "20", "items": { "type": "INTEGER", "nullable": true, "minimum": 0, "maximum": 1000 } }
+        },
+        "propertyOrdering": ["label", "values"],
+        "required": ["label", "values"], "anyOf": [{ "type": "OBJECT", "required": ["label"] }, { "type": "OBJECT", "required": ["values"] }],
+        "example": null, "default": null
+      }
+    }
+  }
+}

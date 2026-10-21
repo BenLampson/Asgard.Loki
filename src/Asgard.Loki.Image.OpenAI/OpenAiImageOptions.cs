@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Asgard.Loki.Image.OpenAI;
 
-/// <summary>配置独立的 OpenAI 图像生成目标。</summary>
+/// <summary>配置独立的 OpenAI 图像生成或编辑完整目标，操作适配器由调用者显式选择。</summary>
 public sealed class OpenAiImageOptions
 {
     /// <summary>供应商实例标识。</summary>

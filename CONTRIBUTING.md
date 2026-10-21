@@ -14,13 +14,17 @@ dotnet pack Asgard.Loki.slnx -c Release --no-build -o artifacts/packages
 pwsh -File eng/Verify-PackageBoundaries.ps1
 ```
 
-The test script requires tests in every test project except the reserved Video scaffold. Tests use xUnit v3, substitute HTTP handlers and `MemoryDistributedCache`. Unit tests must not require network, Redis or credentials. Report live-provider and Redis integration results separately.
+The test script requires discovered tests in every ordinary test project. Tests use xUnit v3, substitute HTTP handlers and `MemoryDistributedCache`. Unit tests must not require network, Redis or credentials. Report live-provider and Redis integration results separately.
+
+Run development checkpoints locally. GitHub CI runs only for pull requests targeting `main` and when reused by the explicitly invoked NuGet release workflow. Ordinary branch pushes, including merging into `main`, do not launch another CI run; the CI workflow has no standalone manual trigger. Do not dispatch remote CI for individual development commits. Both platforms remain required at the PR and release gates.
+
+Live test environment names and fixture requirements are defined in [docs/testing.md](docs/testing.md), with a credential-free [.env.example](.env.example) template. The Volcengine LLM smoke fixture uses exactly four variables and is invoked separately with `pwsh -File eng/Test-Live.ps1`. On Windows the script fills missing process settings from current-user environment variables; it does not load `.env` files. Other live providers and Redis integration are not implemented. Ordinary tests and automatic CI stay offline, even when live variables are set. Addresses, request parameters, the five-request budget and 90-second deadlines are defined in the live test code.
 
 Capability packages must remain independent. Put a provider in `Asgard.Loki.{Capability}.{Provider}` and reference only its own capability. Update architecture UML, package documentation and the support matrix with behavior changes. Preserve complete upstream data and LLM Session target binding. Do not add automatic generation retries or failover.
 
 ## Pull requests
 
-Create a feature branch before editing code or documentation; maintainer branches use the `ben/` prefix. Submit a pull request into `main`. Direct pushes, force pushes and deletion of `main` are blocked, including for administrators. Both Windows and Linux CI checks must pass, the branch must be up to date, and review conversations must be resolved. No additional reviewer approval is currently required. Merge with squash.
+Use `dev` for day-to-day development; additional short-lived maintainer branches use the `ben/` prefix. Submit a pull request into `main`. Direct pushes, force pushes and deletion of `main` are blocked, including for administrators. Both Windows and Linux CI checks must pass, the branch must be up to date, and review conversations must be resolved. No additional reviewer approval is currently required. Merge with squash.
 
 Keep changes focused and explain the public behavior and validation. Never include secrets, private prompts or generated user media in examples, issues, tests or logs. Follow [SECURITY.md](SECURITY.md) when reporting a vulnerability.
 

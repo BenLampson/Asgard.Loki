@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <EmbeddedResource Include="Fixtures/**/*.json" />
+    <EmbeddedResource Include="../Shared/Fixtures/nova-converse-conversion.json" LogicalName="BedrockConversion.Fixture" />
+    <EmbeddedResource Include="../Shared/Fixtures/nova-converse-stream-conversion.json" LogicalName="BedrockStreamConversion.Fixture" />
+    <EmbeddedResource Include="../Shared/Fixtures/converse-text-complete.json" LogicalName="ConverseTextConversion.Fixture" />
+    <EmbeddedResource Include="../Shared/Fixtures/converse-reasoning-requests.json" LogicalName="ConverseReasoningRequests.Fixture" />
+    <EmbeddedResource Include="../Shared/Fixtures/converse-anthropic-reasoning.json" LogicalName="ConverseAnthropicReasoning.Fixture" />
+    <EmbeddedResource Include="../Shared/Fixtures/converse-chat-stream.json" LogicalName="ConverseChatStream.Fixture" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.Conversion/Asgard.Loki.LLM.Conversion.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.Anthropic/Asgard.Loki.LLM.Anthropic.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.Google/Asgard.Loki.LLM.Google.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
+    <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
+    <Compile Include="../Shared/StubHttpClientFactory.cs" Link="StubHttpClientFactory.cs" />
+    <Compile Include="../Shared/FragmentedReadStream.cs" Link="FragmentedReadStream.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLock.cs" Link="TestSessionLock.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLease.cs" Link="TestSessionLease.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/CredentialChatProvider.cs" Link="CredentialChatProvider.cs" />
+  </ItemGroup>
+</Project>

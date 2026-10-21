@@ -1,0 +1,12 @@
+data: {"event":"agent_thought","id":"thought-a","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","position":0,"thought":"思考","tool":"lookup","tool_input":"{\"id\":\"call-b\"}","observation":"opaque call-b","message_files":["file-b"]}
+
+data: {"event":"agent_thought","id":"thought-b","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","position":1,"tool":"lookup","tool_input":"{\"id\":\"call-a\"}","observation":"opaque call-a"}
+
+data: {"event":"message_file","id":"file-b","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","type":"image","belongs_to":"assistant","url":"https://media.invalid/file-b"}
+
+data: {"event":"agent_message","id":"chunk-a","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","answer":"完整回答"}
+
+data: {"event":"message","id":"closing-a","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","answer":"完整回答"}
+
+data: {"event":"message_end","id":"ending-a","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","metadata":{"usage":{"total_tokens":0}}}
+

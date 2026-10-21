@@ -1,0 +1,16 @@
+{
+  "model": "deepseek-ai/configured-model",
+  "stream": true,
+  "messages": [
+    { "role": "user", "content": "查工具 é 🚀" },
+    { "role": "assistant", "content": null, "reasoning_content": "opaque reasoning", "tool_calls": [ { "id": "call-native-7", "type": "function", "function": { "name": "lookup", "arguments": "{\"id\":9007199254740993}" }, "future_call": false } ] },
+    { "role": "tool", "tool_call_id": "call-native-7", "content": "{\"value\":0}", "future_result": [] }
+  ],
+  "tools": [ { "type": "function", "function": { "name": "lookup", "parameters": { "type": "object", "properties": { "id": { "type": "integer" } }, "required": ["id"] } } } ],
+  "tool_choice": "auto",
+  "reasoning_effort": "high",
+  "response_format": { "type": "json_schema", "json_schema": { "name": "answer", "strict": true, "schema": { "type": "object", "properties": { "value": { "type": "integer" } }, "required": ["value"], "additionalProperties": false } } },
+  "max_tokens": 128,
+  "temperature": 0,
+  "future_native": { "integer": 9007199254740993, "nil": null, "false": false, "empty": {} }
+}

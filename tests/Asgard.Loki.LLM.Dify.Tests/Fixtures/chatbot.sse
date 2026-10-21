@@ -1,0 +1,18 @@
+event: ping
+
+: heartbeat only
+id: transport-a
+retry: 0
+event: transport-name
+data: {"event":"message","id":"response-a","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","answer":"<think>原文</think>","future":{"event":"message_end","exact":9007199254740993}}
+
+data: {"event":"message_replace","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","answer":"替换全文","reason":"output_moderation"}
+
+data: {"event":"message_end","id":"end-event","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","metadata":{"usage":{"total_tokens":0},"future":null},"files":[]}
+
+data: {"event":"tts_message","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","audio":"AAE=","audio_type":"audio/mpeg"}
+
+data: {"event":"tts_message_end","task_id":"task-a","message_id":"msg-a","conversation_id":"conv/+&","audio":""}
+
+data: {"event":"future_metadata","id":"not-message","task_id":"opaque-business-task","payload":{"event":"error","keep":false}}
+

@@ -1,0 +1,601 @@
+{
+  "source": "Independent fictional native Midjourney proxy request/response vectors. Primary contracts: novicezk API docs and trueai-org proxy frozen b68b2baa6667fa14306e521205ff687f9e10d83f. No production-generated expected results or live proxy/media output.",
+  "submissions": [
+    {
+      "operation": "Imagine",
+      "path": "submit/imagine",
+      "body": {
+        "prompt": "A paper boat --ar 3:2 --seed 0",
+        "botType": "MID_JOURNEY",
+        "base64Array": [
+          "data:image/png;base64,AQID"
+        ],
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    },
+    {
+      "operation": "Describe",
+      "path": "submit/describe",
+      "body": {
+        "base64": "data:image/png;base64,AQID",
+        "botType": "NIJI_JOURNEY",
+        "language": "zh",
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    },
+    {
+      "operation": "Blend",
+      "path": "submit/blend",
+      "body": {
+        "base64Array": [
+          "data:image/png;base64,AQID",
+          "data:image/png;base64,BAUG"
+        ],
+        "dimensions": "LANDSCAPE",
+        "botType": "MID_JOURNEY",
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    },
+    {
+      "operation": "Change",
+      "path": "submit/change",
+      "body": {
+        "taskId": "parent-fixture",
+        "action": "UPSCALE",
+        "index": 4,
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    },
+    {
+      "operation": "SimpleChange",
+      "path": "submit/simple-change",
+      "body": {
+        "content": "parent-fixture U4",
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    },
+    {
+      "operation": "Action",
+      "path": "submit/action",
+      "body": {
+        "taskId": "parent-fixture",
+        "customId": "MJ::JOB::upsample::4::opaque-button-value",
+        "enableRemix": false,
+        "strong": false,
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    },
+    {
+      "operation": "Modal",
+      "path": "submit/modal",
+      "body": {
+        "taskId": "parent-fixture",
+        "prompt": "Native replacement prompt --ar 3:2",
+        "maskBase64": "data:image/png;base64,AQID",
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    },
+    {
+      "operation": "Shorten",
+      "path": "submit/shorten",
+      "body": {
+        "prompt": "Original words and flags --style raw",
+        "botType": "MID_JOURNEY",
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    },
+    {
+      "operation": "Edits",
+      "path": "submit/edits",
+      "body": {
+        "prompt": "Keep the original composition",
+        "image": "https://input.example.invalid/a%2Fb.png?sig=A%2BB",
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    },
+    {
+      "operation": "SwapFace",
+      "path": "insight-face/swap",
+      "body": {
+        "sourceBase64": "data:image/png;base64,AQID",
+        "targetBase64": "data:image/png;base64,BAUG",
+        "notifyHook": "https://callback.example.invalid/original",
+        "state": "caller-original-state",
+        "future": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "flag": false
+        }
+      }
+    }
+  ],
+  "upload_request": {
+    "path": "submit/upload-discord-images",
+    "body": {
+      "base64Array": [
+        "data:image/png;base64,AQID",
+        "data:image/png;base64,BAUG"
+      ],
+      "future": false
+    }
+  },
+  "upload_result": {
+    "code": 1,
+    "description": "Native inputs uploaded",
+    "result": [
+      "https://input.example.invalid/first%2Fimage.png?sig=A%2BB",
+      "https://input.example.invalid/second.png"
+    ],
+    "properties": {
+      "future": 9007199254740993
+    }
+  },
+  "submitted": {
+    "code": 1,
+    "description": "Native submission accepted",
+    "result": "task-fixture",
+    "properties": {
+      "discordInstanceId": "instance-fixture",
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "existing": {
+    "code": 21,
+    "description": "Native submission accepted",
+    "result": "task-fixture",
+    "properties": {
+      "status": "SUCCESS",
+      "imageUrl": "https://result.example.invalid/existing.png",
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "queued": {
+    "code": 22,
+    "description": "Native submission accepted",
+    "result": "task-fixture",
+    "properties": {
+      "numberOfQueues": 0,
+      "future": null
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "queue_full": {
+    "code": 23,
+    "description": "Queue full despite result id",
+    "result": "task-fixture",
+    "properties": {
+      "discordInstanceId": "instance-fixture",
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "sensitive": {
+    "code": 24,
+    "description": "Native prompt rejected",
+    "properties": {
+      "bannedWord": "fictional",
+      "promptEn": "Original retained text"
+    }
+  },
+  "not_found": {
+    "code": 3,
+    "description": "Native task missing",
+    "result": null,
+    "future": false
+  },
+  "task_success": {
+    "id": "task-fixture",
+    "action": "IMAGINE",
+    "status": "SUCCESS",
+    "progress": "100%",
+    "prompt": "Original words --ar 3:2",
+    "promptEn": "Original upstream prompt",
+    "description": "native task",
+    "submitTime": 9007199254740993,
+    "startTime": 0,
+    "finishTime": null,
+    "imageUrl": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+    "failReason": null,
+    "state": "caller-original-state",
+    "buttons": [
+      {
+        "customId": "MJ::JOB::upsample::4::opaque-button-value",
+        "label": "U4",
+        "style": 0,
+        "future": null
+      }
+    ],
+    "maskBase64": null,
+    "properties": {
+      "finalPrompt": "Original final prompt",
+      "seed": "9007199254740993",
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "task_running": {
+    "id": "task-fixture",
+    "action": "IMAGINE",
+    "status": "IN_PROGRESS",
+    "progress": "100%",
+    "prompt": "Original words --ar 3:2",
+    "promptEn": "Original upstream prompt",
+    "description": "native task",
+    "submitTime": 9007199254740993,
+    "startTime": 0,
+    "finishTime": 0,
+    "imageUrl": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+    "failReason": null,
+    "state": "caller-original-state",
+    "buttons": [
+      {
+        "customId": "MJ::JOB::upsample::4::opaque-button-value",
+        "label": "U4",
+        "style": 0,
+        "future": null
+      }
+    ],
+    "maskBase64": null,
+    "properties": {
+      "finalPrompt": "Original final prompt",
+      "seed": "9007199254740993",
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "task_modal": {
+    "id": "task-fixture",
+    "action": "IMAGINE",
+    "status": "MODAL",
+    "progress": "100%",
+    "prompt": "Original words --ar 3:2",
+    "promptEn": "Original upstream prompt",
+    "description": "native task",
+    "submitTime": 9007199254740993,
+    "startTime": 0,
+    "finishTime": null,
+    "imageUrl": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+    "failReason": null,
+    "state": "caller-original-state",
+    "buttons": [
+      {
+        "customId": "MJ::JOB::upsample::4::opaque-button-value",
+        "label": "U4",
+        "style": 0,
+        "future": null
+      }
+    ],
+    "maskBase64": null,
+    "properties": {
+      "finalPrompt": "Original final prompt",
+      "seed": "9007199254740993",
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "task_future": {
+    "id": "task-fixture",
+    "action": "IMAGINE",
+    "status": "FUTURE_STATE",
+    "progress": "100%",
+    "prompt": "Original words --ar 3:2",
+    "promptEn": "Original upstream prompt",
+    "description": "native task",
+    "submitTime": 9007199254740993,
+    "startTime": 0,
+    "finishTime": null,
+    "imageUrl": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+    "failReason": null,
+    "state": "caller-original-state",
+    "buttons": [
+      {
+        "customId": "MJ::JOB::upsample::4::opaque-button-value",
+        "label": "U4",
+        "style": 0,
+        "future": null
+      }
+    ],
+    "maskBase64": null,
+    "properties": {
+      "finalPrompt": "Original final prompt",
+      "seed": "9007199254740993",
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "task_failed": {
+    "id": "task-fixture",
+    "action": "IMAGINE",
+    "status": "FAILURE",
+    "progress": "12%",
+    "prompt": "Original words --ar 3:2",
+    "promptEn": "Original upstream prompt",
+    "description": "native task",
+    "submitTime": 9007199254740993,
+    "startTime": 0,
+    "finishTime": null,
+    "imageUrl": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+    "failReason": "Native failure",
+    "state": "caller-original-state",
+    "buttons": [
+      {
+        "customId": "MJ::JOB::upsample::4::opaque-button-value",
+        "label": "U4",
+        "style": 0,
+        "future": null
+      }
+    ],
+    "maskBase64": null,
+    "properties": {
+      "finalPrompt": "Original final prompt",
+      "seed": "9007199254740993",
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "task_canceled": {
+    "id": "task-fixture",
+    "action": "IMAGINE",
+    "status": "CANCEL",
+    "progress": "100%",
+    "prompt": "Original words --ar 3:2",
+    "promptEn": "Original upstream prompt",
+    "description": "native task",
+    "submitTime": 9007199254740993,
+    "startTime": 0,
+    "finishTime": null,
+    "imageUrl": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+    "failReason": null,
+    "state": "caller-original-state",
+    "buttons": [
+      {
+        "customId": "MJ::JOB::upsample::4::opaque-button-value",
+        "label": "U4",
+        "style": 0,
+        "future": null
+      }
+    ],
+    "maskBase64": null,
+    "properties": {
+      "finalPrompt": "Original final prompt",
+      "seed": "9007199254740993",
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "describe_success": {
+    "id": "task-fixture",
+    "action": "DESCRIBE",
+    "status": "SUCCESS",
+    "progress": "100%",
+    "prompt": "Original words --ar 3:2",
+    "promptEn": "Original upstream prompt",
+    "description": "native task",
+    "submitTime": 9007199254740993,
+    "startTime": 0,
+    "finishTime": null,
+    "imageUrl": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+    "failReason": null,
+    "state": "caller-original-state",
+    "buttons": [
+      {
+        "customId": "MJ::JOB::upsample::4::opaque-button-value",
+        "label": "U4",
+        "style": 0,
+        "future": null
+      }
+    ],
+    "maskBase64": null,
+    "properties": {
+      "finalPrompt": "1. Native first description\n2. Native second description",
+      "future": null
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "shorten_success": {
+    "id": "task-fixture",
+    "action": "SHORTEN",
+    "status": "SUCCESS",
+    "progress": "100%",
+    "prompt": "Original words --ar 3:2",
+    "promptEn": "Original upstream prompt",
+    "description": "native task",
+    "submitTime": 9007199254740993,
+    "startTime": 0,
+    "finishTime": null,
+    "failReason": null,
+    "state": "caller-original-state",
+    "buttons": [
+      {
+        "customId": "MJ::JOB::upsample::4::opaque-button-value",
+        "label": "U4",
+        "style": 0,
+        "future": null
+      }
+    ],
+    "maskBase64": null,
+    "properties": {
+      "prompts": [
+        "First original variant",
+        "Second original variant"
+      ],
+      "future": false
+    },
+    "future_root": {
+      "exact": 9007199254740993
+    }
+  },
+  "seed_request": {
+    "path": "task/task-fixture/image-seed"
+  },
+  "seed_result": {
+    "code": 1,
+    "description": "Native seed available",
+    "result": "9007199254740993",
+    "properties": {
+      "future": false
+    }
+  },
+  "seed_queued": {
+    "code": 22,
+    "description": "Native seed request queued",
+    "result": "seed-request-fixture",
+    "properties": {
+      "status": "SUBMITTED"
+    }
+  },
+  "list_request": {
+    "path": "task/list-by-condition",
+    "body": {
+      "ids": [
+        "task-fixture",
+        "second-fixture"
+      ],
+      "future": false
+    }
+  },
+  "list_result": [
+    {
+      "id": "second-fixture",
+      "action": "IMAGINE",
+      "status": "IN_PROGRESS",
+      "progress": "7%",
+      "prompt": "Original words --ar 3:2",
+      "promptEn": "Original upstream prompt",
+      "description": "native task",
+      "submitTime": 9007199254740993,
+      "startTime": 0,
+      "finishTime": null,
+      "imageUrl": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+      "failReason": null,
+      "state": "caller-original-state",
+      "buttons": [
+        {
+          "customId": "MJ::JOB::upsample::4::opaque-button-value",
+          "label": "U4",
+          "style": 0,
+          "future": null
+        }
+      ],
+      "maskBase64": null,
+      "properties": {
+        "finalPrompt": "Original final prompt",
+        "seed": "9007199254740993",
+        "future": false
+      },
+      "future_root": {
+        "exact": 9007199254740993
+      }
+    },
+    {
+      "id": "task-fixture",
+      "action": "IMAGINE",
+      "status": "SUCCESS",
+      "progress": "100%",
+      "prompt": "Original words --ar 3:2",
+      "promptEn": "Original upstream prompt",
+      "description": "native task",
+      "submitTime": 9007199254740993,
+      "startTime": 0,
+      "finishTime": null,
+      "imageUrl": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+      "failReason": null,
+      "state": "caller-original-state",
+      "buttons": [
+        {
+          "customId": "MJ::JOB::upsample::4::opaque-button-value",
+          "label": "U4",
+          "style": 0,
+          "future": null
+        }
+      ],
+      "maskBase64": null,
+      "properties": {
+        "finalPrompt": "Original final prompt",
+        "seed": "9007199254740993",
+        "future": false
+      },
+      "future_root": {
+        "exact": 9007199254740993
+      }
+    }
+  ]
+}

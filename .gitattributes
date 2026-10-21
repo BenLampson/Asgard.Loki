@@ -4,3 +4,5 @@
 *.props text eol=crlf
 *.targets text eol=crlf
 *.ps1 text eol=crlf
+*.eventstream binary
+*.multipart binary

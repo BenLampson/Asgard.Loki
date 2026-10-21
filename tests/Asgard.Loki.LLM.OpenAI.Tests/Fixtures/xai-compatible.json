@@ -1,0 +1,1474 @@
+{
+  "source": [
+    "https://docs.x.ai/developers/rest-api-reference/inference/chat-completions.md",
+    "https://docs.x.ai/developers/rest-api-reference/inference/responses.md",
+    "https://github.com/xai-org/xai-sdk-ts/blob/857ea432df656aa2a315a8d42d13d69e160c65d7/src/types.ts"
+  ],
+  "profiles": [
+    {
+      "root": "https://api.x.ai/v1/",
+      "key": "native-xai-fixture"
+    },
+    {
+      "root": "https://proxy.invalid/xai/v1/",
+      "key": "proxy-xai-fixture"
+    }
+  ],
+  "chat": {
+    "model": "grok-4.7",
+    "path": "chat/completions",
+    "caller": {
+      "model": "public",
+      "stream": false,
+      "messages": [
+        {
+          "role": "system",
+          "content": "Use the provided native history."
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "比较两地并给出来源。"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "https://example.invalid/city.png",
+                "detail": "high"
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call-A",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"北京\"}"
+              }
+            },
+            {
+              "id": "call-B",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"上海\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call-B",
+          "content": "{\"value\":22}"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call-A",
+          "content": "{\"value\":20}"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "description": "Lookup city",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "parallel_tool_calls": true,
+      "reasoning_effort": "high",
+      "max_tokens": 96,
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "search_parameters": {
+        "mode": "on",
+        "return_citations": true,
+        "max_search_results": 2,
+        "from_date": "2026-10-01",
+        "to_date": "2026-10-20",
+        "sources": [
+          {
+            "type": "web",
+            "allowed_websites": [
+              "example.invalid"
+            ]
+          }
+        ]
+      },
+      "stream_options": {
+        "include_usage": true
+      },
+      "prompt_cache_key": "native-conversation",
+      "temperature": 0,
+      "seed": 0,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "enabled": false,
+        "zero": 0,
+        "error": {
+          "business": true
+        }
+      }
+    },
+    "wire": {
+      "model": "grok-4.7",
+      "stream": false,
+      "messages": [
+        {
+          "role": "system",
+          "content": "Use the provided native history."
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "比较两地并给出来源。"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "https://example.invalid/city.png",
+                "detail": "high"
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call-A",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"北京\"}"
+              }
+            },
+            {
+              "id": "call-B",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"上海\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call-B",
+          "content": "{\"value\":22}"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call-A",
+          "content": "{\"value\":20}"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "description": "Lookup city",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "parallel_tool_calls": true,
+      "reasoning_effort": "high",
+      "max_tokens": 96,
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "search_parameters": {
+        "mode": "on",
+        "return_citations": true,
+        "max_search_results": 2,
+        "from_date": "2026-10-01",
+        "to_date": "2026-10-20",
+        "sources": [
+          {
+            "type": "web",
+            "allowed_websites": [
+              "example.invalid"
+            ]
+          }
+        ]
+      },
+      "stream_options": {
+        "include_usage": true
+      },
+      "prompt_cache_key": "native-conversation",
+      "temperature": 0,
+      "seed": 0,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "enabled": false,
+        "zero": 0,
+        "error": {
+          "business": true
+        }
+      }
+    },
+    "wire_stream": {
+      "model": "grok-4.7",
+      "stream": true,
+      "messages": [
+        {
+          "role": "system",
+          "content": "Use the provided native history."
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "比较两地并给出来源。"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "https://example.invalid/city.png",
+                "detail": "high"
+              }
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call-A",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"北京\"}"
+              }
+            },
+            {
+              "id": "call-B",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"city\":\"上海\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call-B",
+          "content": "{\"value\":22}"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call-A",
+          "content": "{\"value\":20}"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "description": "Lookup city",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto",
+      "parallel_tool_calls": true,
+      "reasoning_effort": "high",
+      "max_tokens": 96,
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "search_parameters": {
+        "mode": "on",
+        "return_citations": true,
+        "max_search_results": 2,
+        "from_date": "2026-10-01",
+        "to_date": "2026-10-20",
+        "sources": [
+          {
+            "type": "web",
+            "allowed_websites": [
+              "example.invalid"
+            ]
+          }
+        ]
+      },
+      "stream_options": {
+        "include_usage": true
+      },
+      "prompt_cache_key": "native-conversation",
+      "temperature": 0,
+      "seed": 0,
+      "native_extra": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "enabled": false,
+        "zero": 0,
+        "error": {
+          "business": true
+        }
+      }
+    },
+    "result": {
+      "id": "xai-chat-A",
+      "object": "chat.completion",
+      "created": 1792512000,
+      "model": "reported-native-grok",
+      "system_fingerprint": "fp_native",
+      "choices": [
+        {
+          "index": 0,
+          "finish_reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":\"北京20，上海22 [1]\"}",
+            "reasoning_content": "Compare original results.",
+            "annotations": [
+              {
+                "type": "url_citation",
+                "url_citation": {
+                  "start_index": 23,
+                  "end_index": 26,
+                  "url": "https://example.invalid/source",
+                  "title": "Source"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "citations": [
+        "https://example.invalid/source"
+      ],
+      "usage": {
+        "prompt_tokens": 41,
+        "completion_tokens": 17,
+        "total_tokens": 999,
+        "completion_tokens_details": {
+          "reasoning_tokens": 9,
+          "text_tokens": 3
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "text_tokens": 41,
+          "image_tokens": 1
+        },
+        "native_count": 9007199254740993
+      },
+      "native_extra": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "enabled": false,
+        "zero": 0
+      }
+    },
+    "events": [
+      {
+        "id": "xai-chat-A",
+        "object": "chat.completion.chunk",
+        "created": 1792512000,
+        "model": "reported-native-grok",
+        "system_fingerprint": "fp_native",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "reasoning_content": "Compare "
+            },
+            "finish_reason": null
+          }
+        ],
+        "usage": null
+      },
+      {
+        "id": "xai-chat-A",
+        "object": "chat.completion.chunk",
+        "created": 1792512000,
+        "model": "reported-native-grok",
+        "system_fingerprint": "fp_native",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "reasoning_content": "original results."
+            },
+            "finish_reason": "end_turn"
+          }
+        ],
+        "usage": null
+      },
+      {
+        "id": "xai-chat-A",
+        "object": "chat.completion.chunk",
+        "created": 1792512000,
+        "model": "reported-native-grok",
+        "system_fingerprint": "fp_native",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "{\"answer\":\"北京20，上海22 [1]\"}"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": null
+      },
+      {
+        "id": "xai-chat-A",
+        "object": "chat.completion.chunk",
+        "created": 1792512000,
+        "model": "reported-native-grok",
+        "system_fingerprint": "fp_native",
+        "choices": [],
+        "usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 17,
+          "total_tokens": 999,
+          "completion_tokens_details": {
+            "reasoning_tokens": 9,
+            "text_tokens": 3
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "text_tokens": 41,
+            "image_tokens": 1
+          },
+          "native_count": 9007199254740993
+        },
+        "citations": [
+          "https://example.invalid/source"
+        ],
+        "native_extra": {
+          "exact": 9007199254740993,
+          "nullable": null,
+          "enabled": false,
+          "zero": 0
+        }
+      },
+      {
+        "type": "vendor.trace",
+        "id": "business-id",
+        "error": {
+          "business": true
+        },
+        "exact": 9007199254740993
+      }
+    ],
+    "sse": ": native xAI comment\n\nid: xai-transport\nretry: 0\ndata: {\"id\":\"xai-chat-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-grok\",\"system_fingerprint\":\"fp_native\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning_content\":\"Compare \"},\"finish_reason\":null}],\"usage\":null}\n\nid: xai-transport\nretry: 0\ndata: {\"id\":\"xai-chat-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-grok\",\"system_fingerprint\":\"fp_native\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning_content\":\"original results.\"},\"finish_reason\":\"end_turn\"}],\"usage\":null}\n\nid: xai-transport\nretry: 0\ndata: {\"id\":\"xai-chat-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-grok\",\"system_fingerprint\":\"fp_native\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"answer\\\":\\\"北京20，上海22 [1]\\\"}\"},\"finish_reason\":\"stop\"}],\"usage\":null}\n\nid: xai-transport\nretry: 0\ndata: {\"id\":\"xai-chat-A\",\"object\":\"chat.completion.chunk\",\"created\":1792512000,\"model\":\"reported-native-grok\",\"system_fingerprint\":\"fp_native\",\"choices\":[],\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":17,\"total_tokens\":999,\"completion_tokens_details\":{\"reasoning_tokens\":9,\"text_tokens\":3},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":41,\"image_tokens\":1},\"native_count\":9007199254740993},\"citations\":[\"https://example.invalid/source\"],\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-id\",\"error\":{\"business\":true},\"exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+  },
+  "responses": {
+    "model": "grok-4.7",
+    "path": "responses",
+    "caller": {
+      "model": "public",
+      "stream": false,
+      "input": [
+        {
+          "type": "message",
+          "role": "system",
+          "content": "Use explicit native history and sources."
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "比较两地并保留推理历史。"
+            },
+            {
+              "type": "input_image",
+              "image_url": "https://example.invalid/input.png"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "reasoning-prior",
+          "status": "completed",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "Prior reasoning summary"
+            }
+          ],
+          "encrypted_content": "opaque-reasoning+/=不解密"
+        },
+        {
+          "type": "web_search_call",
+          "id": "search-prior",
+          "status": "completed",
+          "action": {
+            "type": "search",
+            "query": "prior query"
+          },
+          "encrypted_content": "opaque-tool-output+/="
+        },
+        {
+          "type": "function_call",
+          "id": "item-A",
+          "call_id": "call-A",
+          "name": "lookup",
+          "arguments": "{\"city\":\"北京\"}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call",
+          "id": "item-B",
+          "call_id": "call-B",
+          "name": "lookup",
+          "arguments": "{\"city\":\"上海\"}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call-B",
+          "output": "{\"value\":22}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call-A",
+          "output": [
+            {
+              "type": "input_text",
+              "text": "20"
+            }
+          ]
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup",
+          "description": "Lookup city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "tool_choice": "auto",
+      "parallel_tool_calls": true,
+      "include": [
+        "reasoning.encrypted_content"
+      ],
+      "store": false,
+      "reasoning": {
+        "effort": "high",
+        "summary": "detailed"
+      },
+      "max_output_tokens": 128,
+      "prompt_cache_key": "native-conversation",
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "native_extra": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "enabled": false,
+        "zero": 0,
+        "error": {
+          "business": true
+        }
+      }
+    },
+    "wire": {
+      "model": "grok-4.7",
+      "stream": false,
+      "input": [
+        {
+          "type": "message",
+          "role": "system",
+          "content": "Use explicit native history and sources."
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "比较两地并保留推理历史。"
+            },
+            {
+              "type": "input_image",
+              "image_url": "https://example.invalid/input.png"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "reasoning-prior",
+          "status": "completed",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "Prior reasoning summary"
+            }
+          ],
+          "encrypted_content": "opaque-reasoning+/=不解密"
+        },
+        {
+          "type": "web_search_call",
+          "id": "search-prior",
+          "status": "completed",
+          "action": {
+            "type": "search",
+            "query": "prior query"
+          },
+          "encrypted_content": "opaque-tool-output+/="
+        },
+        {
+          "type": "function_call",
+          "id": "item-A",
+          "call_id": "call-A",
+          "name": "lookup",
+          "arguments": "{\"city\":\"北京\"}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call",
+          "id": "item-B",
+          "call_id": "call-B",
+          "name": "lookup",
+          "arguments": "{\"city\":\"上海\"}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call-B",
+          "output": "{\"value\":22}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call-A",
+          "output": [
+            {
+              "type": "input_text",
+              "text": "20"
+            }
+          ]
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup",
+          "description": "Lookup city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "tool_choice": "auto",
+      "parallel_tool_calls": true,
+      "include": [
+        "reasoning.encrypted_content"
+      ],
+      "store": false,
+      "reasoning": {
+        "effort": "high",
+        "summary": "detailed"
+      },
+      "max_output_tokens": 128,
+      "prompt_cache_key": "native-conversation",
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "native_extra": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "enabled": false,
+        "zero": 0,
+        "error": {
+          "business": true
+        }
+      }
+    },
+    "wire_stream": {
+      "model": "grok-4.7",
+      "stream": true,
+      "input": [
+        {
+          "type": "message",
+          "role": "system",
+          "content": "Use explicit native history and sources."
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "比较两地并保留推理历史。"
+            },
+            {
+              "type": "input_image",
+              "image_url": "https://example.invalid/input.png"
+            }
+          ]
+        },
+        {
+          "type": "reasoning",
+          "id": "reasoning-prior",
+          "status": "completed",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "Prior reasoning summary"
+            }
+          ],
+          "encrypted_content": "opaque-reasoning+/=不解密"
+        },
+        {
+          "type": "web_search_call",
+          "id": "search-prior",
+          "status": "completed",
+          "action": {
+            "type": "search",
+            "query": "prior query"
+          },
+          "encrypted_content": "opaque-tool-output+/="
+        },
+        {
+          "type": "function_call",
+          "id": "item-A",
+          "call_id": "call-A",
+          "name": "lookup",
+          "arguments": "{\"city\":\"北京\"}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call",
+          "id": "item-B",
+          "call_id": "call-B",
+          "name": "lookup",
+          "arguments": "{\"city\":\"上海\"}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call-B",
+          "output": "{\"value\":22}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call-A",
+          "output": [
+            {
+              "type": "input_text",
+              "text": "20"
+            }
+          ]
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup",
+          "description": "Lookup city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "web_search"
+        }
+      ],
+      "tool_choice": "auto",
+      "parallel_tool_calls": true,
+      "include": [
+        "reasoning.encrypted_content"
+      ],
+      "store": false,
+      "reasoning": {
+        "effort": "high",
+        "summary": "detailed"
+      },
+      "max_output_tokens": 128,
+      "prompt_cache_key": "native-conversation",
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "native_extra": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "enabled": false,
+        "zero": 0,
+        "error": {
+          "business": true
+        }
+      }
+    },
+    "result": {
+      "id": "xai-response-A",
+      "object": "response",
+      "created_at": 1792512000,
+      "model": "reported-native-grok",
+      "status": "completed",
+      "output": [
+        {
+          "type": "reasoning",
+          "id": "reasoning-next",
+          "status": "completed",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "Compared prior results."
+            }
+          ],
+          "encrypted_content": "opaque-next-reasoning+/="
+        },
+        {
+          "type": "web_search_call",
+          "id": "search-next",
+          "status": "completed",
+          "action": {
+            "type": "search",
+            "query": "source query",
+            "sources": [
+              {
+                "type": "url",
+                "url": "https://example.invalid/source"
+              }
+            ]
+          },
+          "encrypted_content": "opaque-next-tool-output+/="
+        },
+        {
+          "type": "message",
+          "id": "message-next",
+          "role": "assistant",
+          "status": "completed",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "{\"answer\":\"北京20，上海22\"}",
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "start_index": 0,
+                  "end_index": 5,
+                  "url": "https://example.invalid/source",
+                  "title": "Source"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "store": false,
+      "reasoning": {
+        "effort": "high",
+        "summary": "detailed"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 130,
+        "output_tokens": 23,
+        "total_tokens": 999,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "text_tokens": 126,
+          "image_tokens": 4
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 9,
+          "text_tokens": 3
+        },
+        "num_sources_used": 2,
+        "num_server_side_tools_used": 1,
+        "cost_in_usd_ticks": 9007199254740993,
+        "context_details": {
+          "input_tokens": 75,
+          "output_tokens": 12
+        },
+        "server_side_tool_usage_details": {
+          "web_search_calls": 1,
+          "x_posts_fetched": 0,
+          "x_users_fetched": 0
+        },
+        "native_extra": {
+          "nullable": null,
+          "enabled": false,
+          "exact": 9007199254740993
+        }
+      },
+      "native_extra": {
+        "exact": 9007199254740993,
+        "nullable": null,
+        "enabled": false,
+        "zero": 0
+      }
+    },
+    "events": [
+      {
+        "type": "response.created",
+        "sequence_number": 0,
+        "response": {
+          "id": "xai-response-A",
+          "status": "in_progress",
+          "output": []
+        }
+      },
+      {
+        "type": "response.output_item.added",
+        "sequence_number": 1,
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "reasoning-next",
+          "status": "in_progress",
+          "summary": [],
+          "encrypted_content": "opaque-next-reasoning+/="
+        }
+      },
+      {
+        "type": "response.reasoning_text.delta",
+        "sequence_number": 2,
+        "output_index": 0,
+        "item_id": "reasoning-next",
+        "delta": "Original reasoning."
+      },
+      {
+        "type": "response.reasoning_text.done",
+        "sequence_number": 3,
+        "output_index": 0,
+        "item_id": "reasoning-next",
+        "text": "Original reasoning."
+      },
+      {
+        "type": "response.reasoning_summary_text.delta",
+        "sequence_number": 4,
+        "output_index": 0,
+        "item_id": "reasoning-next",
+        "delta": "Compared prior results."
+      },
+      {
+        "type": "response.reasoning_summary_text.done",
+        "sequence_number": 5,
+        "output_index": 0,
+        "item_id": "reasoning-next",
+        "text": "Compared prior results."
+      },
+      {
+        "type": "response.output_item.done",
+        "sequence_number": 6,
+        "output_index": 0,
+        "item": {
+          "type": "reasoning",
+          "id": "reasoning-next",
+          "status": "completed",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "Compared prior results."
+            }
+          ],
+          "encrypted_content": "opaque-next-reasoning+/="
+        }
+      },
+      {
+        "type": "response.output_item.added",
+        "sequence_number": 7,
+        "output_index": 1,
+        "item": {
+          "type": "web_search_call",
+          "id": "search-next",
+          "status": "in_progress",
+          "action": {
+            "type": "search",
+            "query": "source query",
+            "sources": [
+              {
+                "type": "url",
+                "url": "https://example.invalid/source"
+              }
+            ]
+          },
+          "encrypted_content": "opaque-next-tool-output+/="
+        }
+      },
+      {
+        "type": "response.output_item.done",
+        "sequence_number": 8,
+        "output_index": 1,
+        "item": {
+          "type": "web_search_call",
+          "id": "search-next",
+          "status": "completed",
+          "action": {
+            "type": "search",
+            "query": "source query",
+            "sources": [
+              {
+                "type": "url",
+                "url": "https://example.invalid/source"
+              }
+            ]
+          },
+          "encrypted_content": "opaque-next-tool-output+/="
+        }
+      },
+      {
+        "type": "response.output_item.added",
+        "sequence_number": 9,
+        "output_index": 2,
+        "item": {
+          "type": "message",
+          "id": "message-next",
+          "role": "assistant",
+          "status": "in_progress",
+          "content": []
+        }
+      },
+      {
+        "type": "response.content_part.added",
+        "sequence_number": 10,
+        "output_index": 2,
+        "content_index": 0,
+        "item_id": "message-next",
+        "part": {
+          "type": "output_text",
+          "text": "",
+          "annotations": []
+        }
+      },
+      {
+        "type": "response.output_text.delta",
+        "sequence_number": 11,
+        "output_index": 2,
+        "content_index": 0,
+        "item_id": "message-next",
+        "delta": "{\"answer\":\"北京20，上海22\"}"
+      },
+      {
+        "type": "response.output_text.done",
+        "sequence_number": 12,
+        "output_index": 2,
+        "content_index": 0,
+        "item_id": "message-next",
+        "text": "{\"answer\":\"北京20，上海22\"}"
+      },
+      {
+        "type": "response.output_item.done",
+        "sequence_number": 13,
+        "output_index": 2,
+        "item": {
+          "type": "message",
+          "id": "message-next",
+          "role": "assistant",
+          "status": "completed",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "{\"answer\":\"北京20，上海22\"}",
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "start_index": 0,
+                  "end_index": 5,
+                  "url": "https://example.invalid/source",
+                  "title": "Source"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "response.completed",
+        "sequence_number": 14,
+        "response": {
+          "id": "xai-response-A",
+          "object": "response",
+          "created_at": 1792512000,
+          "model": "reported-native-grok",
+          "status": "completed",
+          "output": [
+            {
+              "type": "reasoning",
+              "id": "reasoning-next",
+              "status": "completed",
+              "summary": [
+                {
+                  "type": "summary_text",
+                  "text": "Compared prior results."
+                }
+              ],
+              "encrypted_content": "opaque-next-reasoning+/="
+            },
+            {
+              "type": "web_search_call",
+              "id": "search-next",
+              "status": "completed",
+              "action": {
+                "type": "search",
+                "query": "source query",
+                "sources": [
+                  {
+                    "type": "url",
+                    "url": "https://example.invalid/source"
+                  }
+                ]
+              },
+              "encrypted_content": "opaque-next-tool-output+/="
+            },
+            {
+              "type": "message",
+              "id": "message-next",
+              "role": "assistant",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "{\"answer\":\"北京20，上海22\"}",
+                  "annotations": [
+                    {
+                      "type": "url_citation",
+                      "start_index": 0,
+                      "end_index": 5,
+                      "url": "https://example.invalid/source",
+                      "title": "Source"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "store": false,
+          "reasoning": {
+            "effort": "high",
+            "summary": "detailed"
+          },
+          "text": {
+            "format": {
+              "type": "json_schema",
+              "name": "answer",
+              "strict": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "answer": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "answer"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 130,
+            "output_tokens": 23,
+            "total_tokens": 999,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "text_tokens": 126,
+              "image_tokens": 4
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 9,
+              "text_tokens": 3
+            },
+            "num_sources_used": 2,
+            "num_server_side_tools_used": 1,
+            "cost_in_usd_ticks": 9007199254740993,
+            "context_details": {
+              "input_tokens": 75,
+              "output_tokens": 12
+            },
+            "server_side_tool_usage_details": {
+              "web_search_calls": 1,
+              "x_posts_fetched": 0,
+              "x_users_fetched": 0
+            },
+            "native_extra": {
+              "nullable": null,
+              "enabled": false,
+              "exact": 9007199254740993
+            }
+          },
+          "native_extra": {
+            "exact": 9007199254740993,
+            "nullable": null,
+            "enabled": false,
+            "zero": 0
+          }
+        }
+      },
+      {
+        "type": "vendor.trace",
+        "id": "business-id",
+        "response": {
+          "id": "ordinary-business-id",
+          "error": {
+            "business": true
+          }
+        },
+        "exact": 9007199254740993
+      }
+    ],
+    "sse": ": native xAI comment\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"xai-response-A\",\"status\":\"in_progress\",\"output\":[]}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.output_item.added\",\"sequence_number\":1,\"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"reasoning-next\",\"status\":\"in_progress\",\"summary\":[],\"encrypted_content\":\"opaque-next-reasoning+/=\"}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_text.delta\",\"sequence_number\":2,\"output_index\":0,\"item_id\":\"reasoning-next\",\"delta\":\"Original reasoning.\"}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_text.done\",\"sequence_number\":3,\"output_index\":0,\"item_id\":\"reasoning-next\",\"text\":\"Original reasoning.\"}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_summary_text.delta\",\"sequence_number\":4,\"output_index\":0,\"item_id\":\"reasoning-next\",\"delta\":\"Compared prior results.\"}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.reasoning_summary_text.done\",\"sequence_number\":5,\"output_index\":0,\"item_id\":\"reasoning-next\",\"text\":\"Compared prior results.\"}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.output_item.done\",\"sequence_number\":6,\"output_index\":0,\"item\":{\"type\":\"reasoning\",\"id\":\"reasoning-next\",\"status\":\"completed\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"Compared prior results.\"}],\"encrypted_content\":\"opaque-next-reasoning+/=\"}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.output_item.added\",\"sequence_number\":7,\"output_index\":1,\"item\":{\"type\":\"web_search_call\",\"id\":\"search-next\",\"status\":\"in_progress\",\"action\":{\"type\":\"search\",\"query\":\"source query\",\"sources\":[{\"type\":\"url\",\"url\":\"https://example.invalid/source\"}]},\"encrypted_content\":\"opaque-next-tool-output+/=\"}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.output_item.done\",\"sequence_number\":8,\"output_index\":1,\"item\":{\"type\":\"web_search_call\",\"id\":\"search-next\",\"status\":\"completed\",\"action\":{\"type\":\"search\",\"query\":\"source query\",\"sources\":[{\"type\":\"url\",\"url\":\"https://example.invalid/source\"}]},\"encrypted_content\":\"opaque-next-tool-output+/=\"}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.output_item.added\",\"sequence_number\":9,\"output_index\":2,\"item\":{\"type\":\"message\",\"id\":\"message-next\",\"role\":\"assistant\",\"status\":\"in_progress\",\"content\":[]}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.content_part.added\",\"sequence_number\":10,\"output_index\":2,\"content_index\":0,\"item_id\":\"message-next\",\"part\":{\"type\":\"output_text\",\"text\":\"\",\"annotations\":[]}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":11,\"output_index\":2,\"content_index\":0,\"item_id\":\"message-next\",\"delta\":\"{\\\"answer\\\":\\\"北京20，上海22\\\"}\"}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.output_text.done\",\"sequence_number\":12,\"output_index\":2,\"content_index\":0,\"item_id\":\"message-next\",\"text\":\"{\\\"answer\\\":\\\"北京20，上海22\\\"}\"}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.output_item.done\",\"sequence_number\":13,\"output_index\":2,\"item\":{\"type\":\"message\",\"id\":\"message-next\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"answer\\\":\\\"北京20，上海22\\\"}\",\"annotations\":[{\"type\":\"url_citation\",\"start_index\":0,\"end_index\":5,\"url\":\"https://example.invalid/source\",\"title\":\"Source\"}]}]}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"response.completed\",\"sequence_number\":14,\"response\":{\"id\":\"xai-response-A\",\"object\":\"response\",\"created_at\":1792512000,\"model\":\"reported-native-grok\",\"status\":\"completed\",\"output\":[{\"type\":\"reasoning\",\"id\":\"reasoning-next\",\"status\":\"completed\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"Compared prior results.\"}],\"encrypted_content\":\"opaque-next-reasoning+/=\"},{\"type\":\"web_search_call\",\"id\":\"search-next\",\"status\":\"completed\",\"action\":{\"type\":\"search\",\"query\":\"source query\",\"sources\":[{\"type\":\"url\",\"url\":\"https://example.invalid/source\"}]},\"encrypted_content\":\"opaque-next-tool-output+/=\"},{\"type\":\"message\",\"id\":\"message-next\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"answer\\\":\\\"北京20，上海22\\\"}\",\"annotations\":[{\"type\":\"url_citation\",\"start_index\":0,\"end_index\":5,\"url\":\"https://example.invalid/source\",\"title\":\"Source\"}]}]}],\"store\":false,\"reasoning\":{\"effort\":\"high\",\"summary\":\"detailed\"},\"text\":{\"format\":{\"type\":\"json_schema\",\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"answer\":{\"type\":\"string\"}},\"required\":[\"answer\"],\"additionalProperties\":false}}},\"usage\":{\"input_tokens\":130,\"output_tokens\":23,\"total_tokens\":999,\"input_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":126,\"image_tokens\":4},\"output_tokens_details\":{\"reasoning_tokens\":9,\"text_tokens\":3},\"num_sources_used\":2,\"num_server_side_tools_used\":1,\"cost_in_usd_ticks\":9007199254740993,\"context_details\":{\"input_tokens\":75,\"output_tokens\":12},\"server_side_tool_usage_details\":{\"web_search_calls\":1,\"x_posts_fetched\":0,\"x_users_fetched\":0},\"native_extra\":{\"nullable\":null,\"enabled\":false,\"exact\":9007199254740993}},\"native_extra\":{\"exact\":9007199254740993,\"nullable\":null,\"enabled\":false,\"zero\":0}}}\n\nid: xai-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-id\",\"response\":{\"id\":\"ordinary-business-id\",\"error\":{\"business\":true}},\"exact\":9007199254740993}\n\ndata: [DONE]\n\n"
+  },
+  "post_terminal_generation": [
+    {
+      "type": "response.image_generation_call.in_progress",
+      "sequence_number": 15,
+      "item_id": "native-image-item",
+      "output_index": 3
+    },
+    {
+      "type": "response.image_generation_call.generating",
+      "sequence_number": 15,
+      "item_id": "native-image-item",
+      "output_index": 3
+    },
+    {
+      "type": "response.image_generation_call.completed",
+      "sequence_number": 15,
+      "item_id": "native-image-item",
+      "output_index": 3
+    }
+  ],
+  "failed": {
+    "type": "response.failed",
+    "sequence_number": 0,
+    "response": {
+      "id": "xai-response-failed",
+      "status": "failed",
+      "output": [],
+      "error": {
+        "code": "server_error",
+        "message": "Native generation failed"
+      },
+      "native_extra": {
+        "exact": 9007199254740993
+      }
+    }
+  },
+  "error": {
+    "type": "error",
+    "code": 529,
+    "message": "Service temporarily unavailable",
+    "param": null,
+    "native_extra": {
+      "exact": 9007199254740993
+    }
+  },
+  "http_error": {
+    "error": {
+      "code": "invalid_request",
+      "message": "Original request rejected",
+      "param": "model"
+    }
+  }
+}

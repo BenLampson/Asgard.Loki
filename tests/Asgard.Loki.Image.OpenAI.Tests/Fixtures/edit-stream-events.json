@@ -1,0 +1,15 @@
+[
+  {
+    "data":{"type":"image_edit.partial_image","partial_image_index":0,"b64_json":"AP+A","background":"transparent","created_at":123,"output_format":"webp","quality":"high","size":"1024x1024","future":{"value":null,"flag":false}},
+    "event_name":"image_edit.partial_image","event_id":"partial-one","retry":40,"completed":false
+  },
+  {
+    "data":{"type":"vendor.future.completed","partial_image_index":0.125,"b64_json":false,"future":{"value":null,"text":"😀","exact":900719925474099312345}},
+    "raw_json":"{\n\"type\":\"vendor.future.completed\",\"partial_image_index\":0.125,\"b64_json\":false,\"future\":{\"value\":null,\"text\":\"😀\",\"exact\":900719925474099312345}}",
+    "event_name":"vendor.future.completed","event_id":"partial-one","retry":40,"completed":false
+  },
+  {
+    "data":{"type":"image_edit.completed","b64_json":"AQIDBA==","background":"transparent","created_at":124,"output_format":"webp","quality":"high","size":"1024x1024","usage":{"input_tokens":20,"output_tokens":30,"total_tokens":50,"input_tokens_details":{"text_tokens":5,"image_tokens":15,"future":null}},"future":{"decimal":0.123456789012345678901}},
+    "event_name":"image_edit.completed","event_id":"","retry":40,"completed":true
+  }
+]

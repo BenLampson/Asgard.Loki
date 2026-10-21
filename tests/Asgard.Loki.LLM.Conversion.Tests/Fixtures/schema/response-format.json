@@ -1,0 +1,56 @@
+{
+  "Gemini": {
+    "model": "schema-model",
+    "contents": [{ "role": "user", "parts": [{ "text": "return structured" }] }],
+    "generationConfig": {
+      "maxOutputTokens": 128,
+      "responseFormat": { "text": {
+        "mimeType": "APPLICATION_JSON",
+        "schema": {
+          "type": "object",
+          "properties": { "ok": { "type": "boolean" }, "n": { "type": ["integer", "null"], "minimum": 0 } },
+          "required": ["ok", "n"], "additionalProperties": false
+        }
+      } }
+    }
+  },
+  "ChatCompletions": {
+    "model": "schema-model",
+    "messages": [{ "role": "user", "content": [{ "type": "text", "text": "return structured" }] }],
+    "max_completion_tokens": 128,
+    "response_format": { "type": "json_schema", "json_schema": {
+      "name": "result", "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": { "ok": { "type": "boolean" }, "n": { "type": ["integer", "null"], "minimum": 0 } },
+        "required": ["ok", "n"], "additionalProperties": false
+      }
+    } }
+  },
+  "Responses": {
+    "model": "schema-model",
+    "input": [{ "type": "message", "role": "user", "content": [{ "type": "input_text", "text": "return structured" }] }],
+    "max_output_tokens": 128,
+    "text": { "format": {
+      "type": "json_schema", "name": "result", "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": { "ok": { "type": "boolean" }, "n": { "type": ["integer", "null"], "minimum": 0 } },
+        "required": ["ok", "n"], "additionalProperties": false
+      }
+    } }
+  },
+  "ClaudeMessages": {
+    "model": "schema-model",
+    "messages": [{ "role": "user", "content": [{ "type": "text", "text": "return structured" }] }],
+    "max_tokens": 128,
+    "output_config": { "format": {
+      "type": "json_schema",
+      "schema": {
+        "type": "object",
+        "properties": { "ok": { "type": "boolean" }, "n": { "type": ["integer", "null"], "minimum": 0 } },
+        "required": ["ok", "n"], "additionalProperties": false
+      }
+    } }
+  }
+}

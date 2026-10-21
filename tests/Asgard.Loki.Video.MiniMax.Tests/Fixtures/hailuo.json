@@ -1,0 +1,59 @@
+{
+  "sources": [
+    "https://platform.minimax.io/docs/api-reference/video-generation-t2v",
+    "https://platform.minimax.io/docs/api-reference/video-generation-s2v",
+    "https://platform.minimax.io/docs/api-reference/video-generation-query",
+    "https://platform.minimax.io/docs/api-reference/video-generation-v2-create",
+    "https://platform.minimax.io/docs/api-reference/video-generation-v2-query",
+    "https://platform.minimax.io/docs/api-reference/file-management-retrieve"
+  ],
+  "submissions": [
+    {
+      "version": "V1",
+      "wire_request": { "model": "MiniMax-Hailuo-2.3", "prompt": "A fictional paper boat on a lake. 紙船🌊", "duration": 6, "resolution": "768P", "prompt_optimizer": false, "aigc_watermark": false, "callback_url": "https://callback.invalid/video", "Future": { "large": 9007199254740993, "null": null, "Zero": 0 } },
+      "response": { "task_id": "hailuo-v1-01", "base_resp": { "status_code": 0, "status_msg": "success" }, "Future": false }
+    },
+    {
+      "version": "V1",
+      "wire_request": { "model": "MiniMax-Hailuo-02", "prompt": "Animate the fictional boat.", "first_frame_image": "data:image/png;base64,ZmFrZS1zdGFydA==", "last_frame_image": "https://media.invalid/end.png", "duration": 6, "resolution": "1080P", "fast_pretreatment": true, "Future": [false, null, 9007199254740993] },
+      "response": { "task_id": "hailuo-v1-01", "base_resp": { "status_code": 0, "status_msg": "success" } }
+    },
+    {
+      "version": "V2",
+      "wire_request": { "model": "MiniMax-H3", "content": [{ "type": "text", "text": "A fictional paper boat on a lake. 紙船🌊" }], "resolution": "2K", "duration": 5, "ratio": "16:9", "aigc_watermark": false, "callback_url": "https://callback.invalid/video", "Future": { "large": 9007199254740993, "null": null } },
+      "response": { "task_id": "hailuo-v2-01", "Future": false }
+    },
+    {
+      "version": "V2",
+      "wire_request": { "model": "MiniMax-H3", "content": [{ "type": "text", "text": "Keep the fictional boat and motion." }, { "type": "image_url", "image_url": { "url": "https://media.invalid/reference.png" }, "role": "reference_image" }, { "type": "video_url", "video_url": { "url": "https://media.invalid/reference.mp4" }, "role": "reference_video" }, { "type": "audio_url", "audio_url": { "url": "https://media.invalid/reference.wav" }, "role": "reference_audio" }], "resolution": "768P", "duration": 5, "ratio": "adaptive", "Future": [null, false, 0, 9007199254740993] },
+      "response": { "task_id": "hailuo-v2-01" }
+    },
+    {
+      "version": "V1",
+      "wire_request": { "model": "S2V-01", "prompt": "Keep the fictional subject on the lake.", "subject_reference": [{ "type": "character", "image": ["https://media.invalid/subject.png"] }], "Future": { "large": 9007199254740993, "Case": false } },
+      "response": { "task_id": "hailuo-v1-01", "base_resp": { "status_code": 0, "status_msg": "success" } }
+    }
+  ],
+  "v1_queries": [
+    { "task_id": "hailuo-v1-01", "status": "Preparing", "base_resp": { "status_code": 0, "status_msg": "success" } },
+    { "task_id": "hailuo-v1-01", "status": "Queueing", "base_resp": { "status_code": 0, "status_msg": "success" } },
+    { "task_id": "hailuo-v1-01", "status": "Processing", "base_resp": { "status_code": 0, "status_msg": "success" }, "Future": 9007199254740993 },
+    { "task_id": "hailuo-v1-01", "status": "Fail", "fail_reason": "Fictional generation failure", "base_resp": { "status_code": 0, "status_msg": "success" } },
+    { "task_id": "hailuo-v1-01", "status": "FutureState", "base_resp": { "status_code": 0, "status_msg": "success" }, "Future": false },
+    { "task_id": "hailuo-v1-01", "status": "Success", "file_id": "9007199254740993", "video_width": 1920, "video_height": 1080, "base_resp": { "status_code": 0, "status_msg": "success" }, "Future": { "Case": "原文", "large": 9007199254740993 } }
+  ],
+  "v2_queries": [
+    { "task": { "id": "hailuo-v2-01", "model": "MiniMax-H3", "status": "queued", "created_at": 1785125529 } },
+    { "task": { "id": "hailuo-v2-01", "model": "MiniMax-H3", "status": "running", "Future": 9007199254740993 } },
+    { "task": { "id": "hailuo-v2-01", "model": "MiniMax-H3", "status": "failed", "error": { "message": "Fictional generation failure", "Future": null } }, "Future": false },
+    { "task": { "id": "hailuo-v2-01", "model": "MiniMax-H3", "status": "cancelled", "error": { "message": "Fictional cancellation" } } },
+    { "task": { "id": "hailuo-v2-01", "model": "MiniMax-H3", "status": "future_state", "Future": { "unknown": true } } },
+    { "task": { "id": "hailuo-v2-01", "model": "MiniMax-H3", "status": "succeeded", "content": { "url": "https://cdn.invalid/result.mp4?signature=fictional%2Fvalue", "Future": null }, "duration": 5, "resolution": "2K", "ratio": "16:9", "created_at": 1785125529, "updated_at": 1785125946, "usage": { "total_seconds": 5, "input_seconds": 0, "output_seconds": 5, "input_image_count": 1, "input_audio_seconds": 6, "total_tokens": 273890, "prompt_tokens": 13500, "completion_tokens": 260390, "Future": 9007199254740993 }, "task_type": "generation", "modality": "video", "Future": false }, "Future": { "Case": "保留" } }
+  ],
+  "file_results": [
+    { "file": { "file_id": "9007199254740993", "bytes": 5896337, "created_at": 1785125946, "filename": "fictional.mp4", "purpose": "video_generation", "download_url": "https://cdn.invalid/video.mp4?signature=fictional%2Fvalue", "Future": { "large": 9007199254740993 } }, "base_resp": { "status_code": 0, "status_msg": "success" }, "Future": null },
+    { "file": { "file_id": 9007199254740993, "bytes": 5896337, "created_at": 1785125946, "filename": "fictional.mp4", "purpose": "video_generation", "download_url": "https://cdn.invalid/video.mp4?signature=fictional%2Fvalue" }, "base_resp": { "status_code": 0, "status_msg": "success" } }
+  ],
+  "v1_api_error": { "base_resp": { "status_code": 1002, "status_msg": "Fictional rate limit", "Future": 9007199254740993 }, "trace_id": "fictional-trace" },
+  "v2_api_error": { "type": "error", "error": { "type": "rate_limit_error", "message": "Fictional rate limit", "http_code": "429", "Future": 9007199254740993 }, "request_id": "fictional-request" }
+}

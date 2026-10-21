@@ -1,0 +1,7 @@
+{
+  "transport":"sse", "public_model":"voice", "target_model":"tts-upstream-fixture", "status_code":200,
+  "headers":{"X-Request-ID":["req_fixture"],"x-future":["one","two"],"Content-Type":["text/event-stream"]},
+  "event_name":"speech.audio.done", "event_id":"frame_done", "retry_ms":123,
+  "raw_data":"{\"type\":\"speech.audio.done\",\"usage\":{\"input_tokens\":3,\"output_tokens\":5,\"total_tokens\":8,\"future\":{\"audio\":false}},\"future\":[null,\"完成\"]}",
+  "data":{"type":"speech.audio.done","usage":{"input_tokens":3,"output_tokens":5,"total_tokens":8,"future":{"audio":false}},"future":[null,"完成"]}
+}

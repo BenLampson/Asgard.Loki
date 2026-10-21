@@ -1,0 +1,18 @@
+{
+  "model":"actual",
+  "prompt":"原生前缀\r\n🌏",
+  "suffix":"suffix",
+  "system":"system instruction",
+  "template":"{{ .Prompt }}",
+  "context":[1,0,1,42],
+  "images":["aW1hZ2U="],
+  "raw":false,
+  "stream":false,
+  "think":"high",
+  "format":{"type":"object","properties":{"x":{"type":"integer","minimum":0}},"required":["x"],"additionalProperties":false},
+  "options":{"temperature":0,"stop":["END"],"seed":0,"future":null},
+  "keep_alive":0,
+  "logprobs":true,
+  "top_logprobs":0,
+  "future":{"null":null,"off":false,"exact":9007199254740993}
+}

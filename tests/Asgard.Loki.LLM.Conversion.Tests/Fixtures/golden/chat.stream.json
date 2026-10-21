@@ -1,0 +1,76 @@
+[
+  {
+    "id": "r1",
+    "object": "chat.completion.chunk",
+    "created": 0,
+    "model": "model-a",
+    "choices": [
+      {
+        "index": 0,
+        "delta": {
+          "role": "assistant",
+          "content": ""
+        },
+        "finish_reason": null
+      }
+    ]
+  },
+  {
+    "id": "r1",
+    "object": "chat.completion.chunk",
+    "created": 0,
+    "model": "model-a",
+    "choices": [
+      {
+        "index": 0,
+        "delta": {
+          "content": "你好"
+        },
+        "finish_reason": null
+      }
+    ]
+  },
+  {
+    "id": "r1",
+    "object": "chat.completion.chunk",
+    "created": 0,
+    "model": "model-a",
+    "choices": [
+      {
+        "index": 0,
+        "delta": {
+          "tool_calls": [
+            {
+              "index": 0,
+              "id": "call_1",
+              "type": "function",
+              "function": {
+                "name": "lookup",
+                "arguments": "{\"x\":0}"
+              }
+            }
+          ]
+        },
+        "finish_reason": null
+      }
+    ]
+  },
+  {
+    "id": "r1",
+    "object": "chat.completion.chunk",
+    "created": 0,
+    "model": "model-a",
+    "choices": [
+      {
+        "index": 0,
+        "delta": {},
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3,
+      "completion_tokens": 2,
+      "total_tokens": 5
+    }
+  }
+]

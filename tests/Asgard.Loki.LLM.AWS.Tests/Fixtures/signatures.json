@@ -1,0 +1,74 @@
+[
+  {
+    "publicSdk": false,
+    "arn": false,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke",
+    "canonicalPath": "/proxy/model/anthropic.configured-model-v1%253A0/invoke",
+    "payloadHash": "c60784ccaf39b08dec245923ea2382e3cb90cd8aadfef1f59a09b58035c31252",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=1f45174671a89e2194456ad0af1cee3a9b5ed4bc80d71358153115dae4877b9f"
+  },
+  {
+    "publicSdk": false,
+    "arn": false,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke",
+    "canonicalPath": "/proxy/model/anthropic.configured-model-v1%253A0/invoke",
+    "payloadHash": "c60784ccaf39b08dec245923ea2382e3cb90cd8aadfef1f59a09b58035c31252",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=09bba90391a5d5819d948241c738330dd25a30f157eb5d4d918d7ea4868232a4"
+  },
+  {
+    "publicSdk": false,
+    "arn": true,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke",
+    "canonicalPath": "/proxy/model/arn%253Aaws%253Abedrock%253Aus-east-1%253A123456789012%253Ainference-profile%252Fprofile%253A0/invoke",
+    "payloadHash": "c60784ccaf39b08dec245923ea2382e3cb90cd8aadfef1f59a09b58035c31252",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=867c0e4dfecf251667e2904d16bf5b86595bfaf7a0adf480004bfe70a127c913"
+  },
+  {
+    "publicSdk": false,
+    "arn": true,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke",
+    "canonicalPath": "/proxy/model/arn%253Aaws%253Abedrock%253Aus-east-1%253A123456789012%253Ainference-profile%252Fprofile%253A0/invoke",
+    "payloadHash": "c60784ccaf39b08dec245923ea2382e3cb90cd8aadfef1f59a09b58035c31252",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=aecc7198a9aeb775ce1eb556d450eaffbea6557e6e724f50c37faf1bcf8046a0"
+  },
+  {
+    "publicSdk": true,
+    "arn": false,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke",
+    "canonicalPath": "/proxy/model/anthropic.configured-model-v1%253A0/invoke",
+    "payloadHash": "6a965e9ad2069fbc1c5336fdaed68f77ace5855050030c9ee5f197d4f9aeefcc",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=dd553c810289b5d7c7003904d2db26a9048357a8dee7c981e9c5409babc7a2a5"
+  },
+  {
+    "publicSdk": true,
+    "arn": false,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/anthropic.configured-model-v1%3A0/invoke",
+    "canonicalPath": "/proxy/model/anthropic.configured-model-v1%253A0/invoke",
+    "payloadHash": "6a965e9ad2069fbc1c5336fdaed68f77ace5855050030c9ee5f197d4f9aeefcc",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=587e66fda123eee9a395c15f846899f497a19ce11e998c50071789259db965e7"
+  },
+  {
+    "publicSdk": true,
+    "arn": true,
+    "temporary": false,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke",
+    "canonicalPath": "/proxy/model/arn%253Aaws%253Abedrock%253Aus-east-1%253A123456789012%253Ainference-profile%252Fprofile%253A0/invoke",
+    "payloadHash": "6a965e9ad2069fbc1c5336fdaed68f77ace5855050030c9ee5f197d4f9aeefcc",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date, Signature=64d4339d2b1ea465b9dd215432e20f2d15aaae13a6efdbdbeb126281b3322b65"
+  },
+  {
+    "publicSdk": true,
+    "arn": true,
+    "temporary": true,
+    "uri": "https://first.invalid/proxy/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123456789012%3Ainference-profile%2Fprofile%3A0/invoke",
+    "canonicalPath": "/proxy/model/arn%253Aaws%253Abedrock%253Aus-east-1%253A123456789012%253Ainference-profile%252Fprofile%253A0/invoke",
+    "payloadHash": "6a965e9ad2069fbc1c5336fdaed68f77ace5855050030c9ee5f197d4f9aeefcc",
+    "authorization": "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/bedrock/aws4_request, SignedHeaders=accept;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amzn-bedrock-future-option;x-amzn-bedrock-trace, Signature=2dcfab6db0e8a8b7f9f5e13259b811eaf6bbca7784f09e3efad9b363285bfbec"
+  }
+]

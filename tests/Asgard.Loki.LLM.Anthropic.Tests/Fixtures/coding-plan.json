@@ -1,0 +1,415 @@
+{
+  "provenance": "Independent complete native Coding Plan Messages windows, authored before profile tests. No SDK output or live/model entitlement claim; optional fields demonstrate transport fidelity only.",
+  "source": "https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-claude-code?lang=zh",
+  "root": "https://ark.cn-beijing.volces.com/api/coding/v1/",
+  "endpoint": "https://ark.cn-beijing.volces.com/api/coding/v1/messages",
+  "authorization": "Bearer fixture-coding-plan-key",
+  "apiVersion": "2023-06-01",
+  "model": "configured-code",
+  "caller": {
+    "model": "public",
+    "max_tokens": 2048,
+    "system": [
+      {
+        "type": "text",
+        "text": "保留原生代码上下文",
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "earlier reasoning",
+            "signature": "old+/=="
+          },
+          {
+            "type": "redacted_thinking",
+            "data": "opaque+/=="
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-a",
+            "name": "read_a",
+            "input": {
+              "n": 9007199254740993
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-b",
+            "name": "read_b",
+            "input": {
+              "enabled": false
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-b",
+            "content": "B",
+            "is_error": false
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-a",
+            "content": [
+              {
+                "type": "text",
+                "text": "A"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "继续"
+          }
+        ]
+      }
+    ],
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "tools": [
+      {
+        "name": "read_a",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      {
+        "name": "read_b",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "auto",
+      "disable_parallel_tool_use": false
+    },
+    "output_config": {
+      "format": {
+        "type": "json_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "zero": 0,
+      "null": null,
+      "false": false,
+      "empty": []
+    }
+  },
+  "wire": {
+    "model": "configured-code",
+    "max_tokens": 2048,
+    "system": [
+      {
+        "type": "text",
+        "text": "保留原生代码上下文",
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "earlier reasoning",
+            "signature": "old+/=="
+          },
+          {
+            "type": "redacted_thinking",
+            "data": "opaque+/=="
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-a",
+            "name": "read_a",
+            "input": {
+              "n": 9007199254740993
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "prior-b",
+            "name": "read_b",
+            "input": {
+              "enabled": false
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-b",
+            "content": "B",
+            "is_error": false
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "prior-a",
+            "content": [
+              {
+                "type": "text",
+                "text": "A"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "继续"
+          }
+        ]
+      }
+    ],
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "tools": [
+      {
+        "name": "read_a",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      {
+        "name": "read_b",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "auto",
+      "disable_parallel_tool_use": false
+    },
+    "output_config": {
+      "format": {
+        "type": "json_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "zero": 0,
+      "null": null,
+      "false": false,
+      "empty": []
+    },
+    "stream": false
+  },
+  "complete": {
+    "id": "msg-code-a",
+    "type": "message",
+    "role": "assistant",
+    "model": "reported-code-model",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "native reason",
+        "signature": "signature+/=="
+      },
+      {
+        "type": "tool_use",
+        "id": "next-a",
+        "name": "read_a",
+        "input": {
+          "n": 9007199254740993
+        }
+      },
+      {
+        "type": "tool_use",
+        "id": "next-b",
+        "name": "read_b",
+        "input": {
+          "enabled": false
+        }
+      }
+    ],
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 11,
+      "cache_read_input_tokens": 0,
+      "future": {
+        "n": 9007199254740993
+      }
+    },
+    "future": {
+      "null": null,
+      "false": false,
+      "empty": []
+    }
+  },
+  "events": [
+    {
+      "type": "message_start",
+      "message": {
+        "id": "msg-code-a",
+        "type": "message",
+        "role": "assistant",
+        "model": "reported-code-model",
+        "content": [],
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    },
+    {
+      "type": "content_block_start",
+      "index": 0,
+      "content_block": {
+        "type": "thinking",
+        "thinking": ""
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 0,
+      "delta": {
+        "type": "thinking_delta",
+        "thinking": "native reason"
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 0,
+      "delta": {
+        "type": "signature_delta",
+        "signature": "signature+/=="
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 0
+    },
+    {
+      "type": "content_block_start",
+      "index": 1,
+      "content_block": {
+        "type": "tool_use",
+        "id": "next-a",
+        "name": "read_a",
+        "input": {}
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 1,
+      "delta": {
+        "type": "input_json_delta",
+        "partial_json": "{\"n\":9007199254740993}"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 1
+    },
+    {
+      "type": "content_block_start",
+      "index": 2,
+      "content_block": {
+        "type": "tool_use",
+        "id": "next-b",
+        "name": "read_b",
+        "input": {}
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 2,
+      "delta": {
+        "type": "input_json_delta",
+        "partial_json": "{\"enabled\":false}"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 2
+    },
+    {
+      "type": "message_delta",
+      "delta": {
+        "stop_reason": "tool_use",
+        "stop_sequence": null
+      },
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 11,
+        "future": {
+          "n": 9007199254740993
+        }
+      }
+    },
+    {
+      "type": "message_stop",
+      "future": false
+    },
+    {
+      "type": "future.metadata",
+      "id": "business-id",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    }
+  ],
+  "sse": "id: transport-coding\nretry: 0\nevent: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg-code-a\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"reported-code-model\",\"content\":[],\"usage\":{\"input_tokens\":0,\"output_tokens\":0}}}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"native reason\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"signature+/==\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"tool_use\",\"id\":\"next-a\",\"name\":\"read_a\",\"input\":{}}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"n\\\":9007199254740993}\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":2,\"content_block\":{\"type\":\"tool_use\",\"id\":\"next-b\",\"name\":\"read_b\",\"input\":{}}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"enabled\\\":false}\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":2}\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":0,\"output_tokens\":11,\"future\":{\"n\":9007199254740993}}}\n\nevent: message_stop\ndata: {\"type\":\"message_stop\",\"future\":false}\n\nevent: future.metadata\ndata: {\"type\":\"future.metadata\",\"id\":\"business-id\",\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"empty\":[]}}\n\n"
+}

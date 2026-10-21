@@ -1,0 +1,6 @@
+{"event_type":"stream-start","generation_id":"tools-generation","is_finished":false}
+{"event_type":"tool-calls-chunk","is_finished":false,"tool_call_delta":{"index":0,"name":"weather","parameters":"{\"city\":","text":"并行查询"}}
+{"event_type":"tool-calls-chunk","is_finished":false,"tool_call_delta":{"index":1,"name":"weather","parameters":"{\"city\":\"北京\"}","future":null}}
+{"event_type":"tool-calls-chunk","is_finished":false,"tool_call_delta":{"index":0,"parameters":"\"上海\"}","text":"保留分片"}}
+{"event_type":"tool-calls-generation","is_finished":false,"text":"","tool_calls":[{"name":"weather","parameters":{"city":"上海"}},{"name":"weather","parameters":{"city":"北京"}}]}
+{"event_type":"stream-end","is_finished":true,"finish_reason":"COMPLETE","response":{"text":"","generation_id":"tools-generation","response_id":"separate-tools-response","tool_calls":[{"name":"weather","parameters":{"city":"上海"}},{"name":"weather","parameters":{"city":"北京"}}],"future":false}}

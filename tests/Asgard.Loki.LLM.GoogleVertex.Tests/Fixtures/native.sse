@@ -1,0 +1,18 @@
+: heartbeat
+event: vertex.native
+id: wire-vertex
+retry: 1200
+data: {"responseId":"vertex-stream","modelVersion":"native-model-version","candidates":[{"index":0,"content":{"role":"model","parts":[{"thought":true,"text":"reasoning","thoughtSignature":"opaque-thought-signature"}]}}]}
+
+event: vertex.native
+data: {"responseId":"vertex-stream","candidates":[{"index":0,"content":{"role":"model","parts":[{"text":"hello é 😀"},{"functionCall":{"id":"call_native_0","name":"lookup","args":{"value":9007199254740993,"error":false}},"thoughtSignature":"opaque-tool-signature"}]}}],"future":false}
+
+event: vertex.native
+data: {"responseId":"vertex-stream","candidates":[{"index":0,"finishReason":"STOP","finishMessage":"native finish","safetyRatings":[{"category":"HARM_CATEGORY_HATE_SPEECH","probability":"NEGLIGIBLE","blocked":false}],"groundingMetadata":{"groundingChunks":[{"web":{"uri":"https://source.invalid/","title":"source"}}],"groundingSupports":[{"segment":{"partIndex":0,"startIndex":0,"endIndex":5,"text":"hello"},"groundingChunkIndices":[0]}]}}]}
+
+event: vertex.native
+data: {"type":"vertex.future.metadata","id":"metadata-record","future":{"integer":9007199254740993,"null":null,"empty":[]}}
+
+event: vertex.native
+data: {"responseId":"vertex-stream","candidates":[],"usageMetadata":{"promptTokenCount":11,"candidatesTokenCount":7,"thoughtsTokenCount":3,"totalTokenCount":21,"cachedContentTokenCount":2},"future":null}
+

@@ -1,16 +1,26 @@
 # Asgard.Loki 开发约定
 
-- 只能在功能分支上修改代码与文档，分支以 `ben/` 开头，通过 PR 合并到 `main`。不得直接推送或强推 `main`，不得关闭保护或跳过双平台 CI。
+- 日常开发在 `dev` 分支进行，通过 PR 合并到 `main`。另开短期功能分支时以 `ben/` 开头。不得直接推送或强推 `main`，不得关闭保护或跳过双平台 CI。
+- 日常小检查点只运行本地构建、测试和打包验证。GitHub CI 只由面向 `main` 的 PR 或显式发布流程复用触发，不配置普通 push 触发，也不得为开发检查点手动触发远端 CI。PR 合并与发布仍必须通过 Windows/Linux 检查；远端推送、PR 和发布遵循用户当次授权。
 - NuGet 使用 `publish.yml` 与 `nuget` 环境进行 OIDC 可信发布。默认模式 `verify` 仅验证登录；正式发布必须明确选择 `publish` 并确认版本，不得把配置验证当作发布授权。
 - 架构权威文档是 [docs/architecture.md](docs/architecture.md)。调整公共接口、依赖方向或供应商分包时同步更新该文档，并使用 UML 说明。
+- 原生供应商接入以具体调用契约为准，不把路由占位或模型目录当实现；协议兼容时复用已有封装。转换只做可靠且语义明确的部分，其余明确 unsupported/原生调用，不穷举协议组合。临时执行清单和源码核查证据仅留本地忽略区域。
 - 这是纯 .NET 类库。不得引入 Web 项目、Controller、监听端口或应用业务功能。
+- 产品能力范围固定为 `LLM`、`Audio`、`Video`、`Image`、`Embedding`、`Rerank` 六类，后两类保持独立能力及供应商分包。不得引入中转站全站功能；不做模型微调、独立文件管理、后台或计费。音频/图片素材上传仅属于对应模型调用。
+- 用户明确指定火山资产库接入，作为独立文件管理排除的有限例外。先核实具体官方产品及原生操作，保留资产标识、元数据和模型调用引用；火山专属能力不得成为所有供应商的必选统一抽象，不推广为通用存储、后台或同步服务，不引入能力包相互依赖。
 - 统一抽象只包含模块机制。入口包只引用统一抽象；能力包之间不互相引用。
-- 供应商按能力分包：`Asgard.Loki.{能力}.{供应商}`。当前实现 `LLM.Volcengine`、`LLM.OpenAI`、`Audio.Volcengine` 与 `Image.OpenAI`。
+- 供应商按能力分包：`Asgard.Loki.{能力}.{供应商}`。当前能力、供应商及原生接口以 [README 支持矩阵](README.md#supported-capabilities) 和各供应商包 README 为准；完整包及依赖清单见 [Packages and dependencies](README.md#packages-and-dependencies)，不在此重复维护实现列表。
 - 供应商包引用自己的能力包。LLM 和音频分别维护协议、结果、流程和状态，不能共用一个业务协调层。
+- 真正通用的传输代码放在 `Asgard.Loki.Infrastructure`，该包不依赖能力、供应商或 Abstractions；需要的供应商显式引用，不使用 Compile Link 重复编译生产共享源码。供应商专属协议/异常/状态留在自身包，入口仍只引用统一抽象。
+- 解决方案按基础、基础设施、能力、转换及供应商分组，测试对应分组；不为显示分组搬动物理目录或改包名。公开 README 和源码注释只说明自身能力/契约/限制，不写对标或执行过程。内部计划、对照、历史执行记录只保留在本地忽略目录，不加入后续提交或发布包。
 - LLM 的调度单位是完整上游目标，不是某个模型的一组 Key。Session 必须保持服务器、实际模型、凭据身份和适配实现的完整绑定。
 - Session 缓存依赖 `IDistributedCache`。首次绑定的并发协调必须使用显式协调契约，不得声称普通 Get/Set 是跨实例原子操作。
 - 单元测试使用 xUnit v3。缓存测试使用 `MemoryDistributedCache`，HTTP 测试使用替代处理器；不得依赖真实 Key、网络和 Redis。
 - 真实供应商联调单独执行，不可把本地协议测试描述成真实模型验证。不得读取或修改其他项目来获取凭据。
+- 真实联调遵守 [docs/testing.md](docs/testing.md)，模板见 `.env.example`。当前只使用四个变量：`ASGARD_LOKI_TEST_LIVE`、`ASGARD_LOKI_TEST_VOLCENGINE_LLM_API_KEY`、`ASGARD_LOKI_TEST_VOLCENGINE_LLM_CHAT_MODEL`、`ASGARD_LOKI_TEST_VOLCENGINE_LLM_RESPONSES_MODEL`。地址、请求参数、次数与超时放在测试代码，不增加环境变量；其他能力取得测试凭据后再扩展。
+- `eng/Test-Live.ps1` 是独立的真实联调入口，只有 `ASGARD_LOKI_TEST_LIVE=true` 才调用上游；普通单元测试和自动 CI 始终离线。联调项目命名为 `.IntegrationTests.csproj`，不加入普通解决方案，不匹配普通测试项目发现规则。
+- 联调入口必须先验证选中场景的全部配置，缺项仅报告变量名；不隐式借用其他能力的 Key，不自动重试。Smoke 最多五次请求，Parameters 计划 26 次，All 计划 31 次；整个测试进程硬上限 32 次，每个场景上下文仍限五次，每次完整调用限时 90 秒。真实结果保存到忽略的 `artifacts/live/`，不得记录凭据；必须区分成功、跳过与失败，不能把参数已发送当成效果已证实。
+- LLM 参数与协议验证结论见 [docs/llm-parameter-verification.md](docs/llm-parameter-verification.md)。Chat 与 Responses 按各自原生结构传递；未知字段、工具调用关联 ID、推理和加密项不得丢弃。上游忽略 `tool_choice=none` 时保留严格失败用例，不得擅改请求或删除工具来掩盖问题；回答准确率与协议保真分开记录。
 - 使用 .NET 10 / C# 14、UTF-8、CRLF、文件级命名空间、中文 XML 注释；每个文件一个类型，不超过 400 行。
 - 不提交密钥。供应商生成请求不自动重试或切换目标。借用的缓存、协调器和 HTTP 工厂不由能力模块释放。
 - README 以英文为主，中文使用 `README.zh-CN.md` 辅助。每个供应商包必须记录支持矩阵、初始化方式、限制和真实联调状态。

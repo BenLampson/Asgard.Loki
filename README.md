@@ -7,40 +7,220 @@
 
 A modular .NET 10 / C# 14 client library for model APIs. Use one `LokiClient` and install only the capabilities and providers you need.
 
-The architecture contract, UML, dependency rules and provider extension requirements live in [docs/architecture.md](docs/architecture.md). All namespaces start with `Asgard`.
+Use Loki for **LLM, Audio, Video, Image, Embedding and Rerank** calls. Provider packages preserve native request parameters, responses and streaming events. Optional protocol conversion supports only the mappings documented by the conversion package; unsupported mappings fail explicitly.
+
+| Start here | Guide |
+| --- | --- |
+| Choose a capability and provider | [Support matrix](#supported-capabilities) |
+| Install the required packages | [Installation](#installation) and [package dependencies](#packages-and-dependencies) |
+| Make a text-model call | [LLM initialization](#initialize-llm) |
+| Generate speech or images | [Speech example](#volcengine-speech) · [Image example](#openai-images) |
+| Work with asynchronous media | [Video](src/Asgard.Loki.Video/README.md) · [Music and lyrics](src/Asgard.Loki.Audio.SunoAPI/README.md) |
+| Build or extend Loki | [Build and test](#build-and-test) · [Architecture](docs/architecture.md) |
+
+## Installation
+
+Target **.NET 10**. Install the entry package and the provider packages you use; their capability and infrastructure dependencies are resolved transitively. Replace `<version>` below with a matching Loki version available from your configured NuGet feed:
+
+```sh
+dotnet add package Asgard.Loki --version <version>
+dotnet add package Asgard.Loki.LLM.Volcengine --version <version>
+```
+
+Use matching Loki package versions. To build packages from this checkout instead, follow [Build and test](#build-and-test) and use `artifacts/packages` as a local NuGet source. Each provider README contains its initialization, native operations, limits and live-verification status.
+
+Loki is a client library: it does not host a gateway, execute tools, manage billing or run background polling. Generation calls do not automatically retry or switch targets. Applications own credentials and explicitly query asynchronous tasks. General file management and fine-tuning are outside the API; the [Ark media asset library](src/Asgard.Loki.Video.Volcengine/README.md) is a provider-specific feature for model inputs.
 
 ## Supported capabilities
 
+Audio, image and video uploads are model inputs. The provider-specific Ark asset client is documented separately from ordinary upload operations.
+
 | Capability | Provider package | Implemented APIs | Streaming |
 | --- | --- | --- | --- |
-| LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat Completions; Responses creation and continuation | SSE |
-| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat Completions; Responses creation and continuation | SSE |
-| Speech | `Asgard.Loki.Audio.Volcengine` | Volcengine V3 text-to-speech; API Key or legacy app/token authentication | HTTP chunked JSON to audio chunks |
-| Images | `Asgard.Loki.Image.OpenAI` | OpenAI Images Generations; Base64 and URL results | SSE partial/final image events |
-| Video | — | Project scaffold only | — |
+| LLM | `Asgard.Loki.LLM.Volcengine` | Ark Chat/Responses; fixed published Bot calls; explicit Coding Plan Chat/Responses | SSE |
+| LLM | `Asgard.Loki.LLM.OpenAI` | OpenAI Chat/Responses/Moderations; configured native text/FIM; explicit compaction, Responses WebSocket and independent Realtime | SSE; JSON compaction; native JSON WebSocket events |
+| LLM | `Asgard.Loki.LLM.Anthropic` | Native Claude Messages | SSE |
+| LLM | `Asgard.Loki.LLM.Google` | Native Gemini generateContent | SSE |
+| LLM | `Asgard.Loki.LLM.Ollama` | Native Chat/generate JSON/NDJSON, native thinking/schema/tool history and prompt/context; explicit anonymous or Bearer identity | — |
+| LLM | `Asgard.Loki.LLM.Azure` | Native v1/dated Chat, Responses and text Completions JSON; explicit native Responses compaction and independent Realtime; api-key or borrowed external tokens | Native SSE with delayed filter/usage tails; native Realtime JSON WebSocket |
+| LLM | `Asgard.Loki.LLM.DeepSeek` | Native Search / Fetch JSON; explicit fixed service credentials; complete ranked results and page content | — |
+| LLM | `Asgard.Loki.LLM.Tencent` | Native Hunyuan complete JSON; TC3 and caller-owned External principal credentials | Native SSE, unchanged tools and all-choice terminal/metadata tails |
+| LLM | `Asgard.Loki.LLM.Xunfei` | Native Spark signed WebSocket; complete ordered native message window | Original JSON messages; text/global terminal and normal-close validation |
+| LLM | `Asgard.Loki.LLM.MiniMax` | Native v2 Chat JSON, original reasoning/tool/sensitivity data and HTTP200 business errors | SSE with native choice finishes and complete snapshots |
+| LLM | `Asgard.Loki.LLM.Perplexity` | Native Responses and Sonar Chat JSON with original tool/search/citation data | SSE with native sparse failures, partial snapshots and Sonar global endings |
+| LLM | `Asgard.Loki.LLM.NewAPI` | Explicit fixed-target API-Key alpha/search against an existing upstream; original HTTP bytes/status/type | Complete HTTP body; SSE remains raw data |
+| LLM | `Asgard.Loki.LLM.Cohere` | Native v1 Chat JSON; full history, references and call-plus-parameters tool results | Native NDJSON; unchanged tool fragments and delayed stream-end |
+| LLM | `Asgard.Loki.LLM.Cloudflare` | Explicit native ai/run text JSON; full native envelope and tools | Original SSE JSON and actual DONE control frame; delayed terminal |
+| LLM | `Asgard.Loki.LLM.Coze` | Native v3 bot chat acknowledgement, explicit status/messages queries; complete-target references | Native two-level Chat/Message SSE, raw future events and actual done |
+| LLM | `Asgard.Loki.LLM.Dify` | Native app-key chat JSON; explicit Chatbot/Agent/Chatflow profiles | Original SSE with complete workflow/TTS tails and delayed terminal |
+| LLM | `Asgard.Loki.LLM.GoogleVertex` | Vertex Gemini/Claude JSON/SSE with borrowed tokens; separate Express Gemini JSON/SSE with explicit API Key; MaaS Chat JSON/SSE with borrowed tokens | Native events with delayed terminal checks |
+| LLM | `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and explicit Converse JSON/EventStream with borrowed SigV4 or explicit Bedrock API Key credentials | Native binary EventStream with independent protocol lifecycles |
+| LLM conversion | `Asgard.Loki.LLM.Conversion` | Explicit common-subset request/response conversion between Chat, Responses, Claude and Gemini | Text deltas and complete function calls |
+| Speech | `Asgard.Loki.Audio.Volcengine` | V3 TTS plus explicit V1 HTTP query / binary WebSocket submit; native JSON and metadata | HTTP JSON or binary WebSocket to ordered audio chunks |
+| Speech | `Asgard.Loki.Audio.OpenAI` | Native Speech binary/SSE responses; custom voice objects and complete native JSON settings | Incremental binary bytes or native delta/done events |
+| Compatible audio profiles | `Asgard.Loki.Audio.OpenAI` | Explicit SiliconFlow voice-based binary speech and multipart transcription; original parameters/results | Existing adapters with verified roots/auth/wire; no brand-only package |
+| Speech | `Asgard.Loki.Audio.MiniMax` | Native synchronous `t2a_v2`; original parameters, hex audio or unchanged URL results | One complete JSON result; no implicit URL download |
+| Audio recognition / translation | `Asgard.Loki.Audio.Cloudflare` | Explicit native raw-binary recognition or JSON/Base64 task transcribe/translate; complete original envelopes | Borrowed single-use uploads; no multipart inference or implicit profile switch |
+| Azure audio | `Asgard.Loki.Audio.Azure` | Explicit deployment/API-version/api-key speech JSON and native multipart transcription/translation | Ordered opaque audio or complete original file results; optional fixed body model |
+| Music / lyrics tasks | `Asgard.Loki.Audio.SunoAPI` | Explicit native MUSIC/LYRICS submit, status/batch POST and separate raw result GET on an application-configured proxy | One-shot native JSON; no background polling or media download |
+| File transcription / translation | `Asgard.Loki.Audio.OpenAI` | Native multipart, complete JSON/verbose/diarized or text/subtitle results | Native transcription delta/segment/done SSE |
+| Images | `Asgard.Loki.Image.OpenAI` | OpenAI image generations and native JSON/multipart edits; Base64 and URL results | Native generation/edit SSE partial/final events |
+| Compatible image generation | `Asgard.Loki.Image.OpenAI` | Explicit xAI native complete JSON profile with independent root/model/key and original data[] results | Verified offline; xAI editing uses a distinct native JSON contract |
+| Image editing | `Asgard.Loki.Image.XAI` | Native xAI JSON image.url or ordered images[].url/file_id references; complete original results | Separate edit routes; no multipart conversion or file management |
+| Image | `Asgard.Loki.Image.Midjourney` | Explicit unofficial proxy image operations, original task/text outcomes, input upload and seed requests | Bound native task references and single/batch queries; no synchronous-result fabrication |
+| Image | `Asgard.Loki.Image.Replicate` | Native model predictions/JSON editing and explicit model-input upload; original prediction states/results | Caller-owned snapshots, no implicit polling/downloads; complete-result guard |
+| Image | `Asgard.Loki.Image.Zhipu` | Native v4 images/generations; original URL/Base64 aliases, content filtering, timestamps and metadata | Complete native JSON; no URL download or invented metadata |
+| Image | `Asgard.Loki.Image.Azure` | Native dated deployment-scoped JSON generation and multipart editing; complete original images/filtering/usage | Native generation/editing SSE; original image events, no synthetic streams |
+| Image | `Asgard.Loki.Image.Volcengine` | Native Ark generation/image inputs and omitted-prompt layers; independently signed Jimeng Visual CVProcess JSON | Native partial successes/failures and original summary SSE; single-image EOF |
+| Image | `Asgard.Loki.Image.Ali` | Native multimodal JSON / interleaved SSE; explicit modern and legacy image task submission | Caller-driven task GET; original text/image/usage/failures |
+| Image | `Asgard.Loki.Image.Google` | Native Gemini image generation/editing inputs; preserved inline images, signed parts and safety outcomes | Original native SSE and candidate terminal/usage metadata |
+| Image | `Asgard.Loki.Image.GoogleVertex` | Explicit Vertex project/Express resources and Bearer/API-Key authentication; original image parts and safety outcomes | Native Gemini JSON/SSE; terminal and usage preservation |
+| Image | `Asgard.Loki.Image.MiniMax` | Native image_generation JSON and subject-reference inputs; original URL/Base64 arrays and metadata | Complete result; native business errors retained |
+| Image | `Asgard.Loki.Image.SiliconFlow` | Native image_size/batch_size/reference fields and images/timings/seed result envelope | Complete original JSON; no implicit OpenAI field conversion |
+| Embedding | `Asgard.Loki.Embedding.Azure` | Native deployment-scoped embeddings with explicit API version/api-key, original text/token inputs and float/Base64 vectors | Original batch order and index coverage; complete errors and bounded HTTP ownership |
+| Embedding | `Asgard.Loki.Embedding.OpenAI` | Native Embeddings, text/token batch inputs, Float/Base64 and indexed results | Explicit compatible text profiles, including M3E/Workers AI; bounded raw errors and final cancellation |
+| Embedding | `Asgard.Loki.Embedding.Google` | Native embedContent / synchronous batchEmbedContents, native settings/media JSON and ordered vectors | — |
+| Embedding | `Asgard.Loki.Embedding.Ollama` | Native embed text/media batches, original settings, ordered vectors and optional native counters | — |
+| Embedding | `Asgard.Loki.Embedding.Jina` | Native text/media/fused groups, indexed dense and per-token Float/Base64 embeddings | — |
+| Rerank | `Asgard.Loki.Rerank.Cohere` | Explicit native v1/v2; original document indices/scores and full JSON | — |
+| Rerank | `Asgard.Loki.Rerank.Jina` | Native text/multimodal/listwise; original indices, optional document vectors and full JSON | — |
+| Rerank | `Asgard.Loki.Rerank.Ali` | Native DashScope nested text/media requests, original indices/documents, scores and usage | — |
+| Rerank | `Asgard.Loki.Rerank.SiliconFlow` | Native scalar/text/image requests, original indices/documents, optional native token metadata | — |
+| Rerank | `Asgard.Loki.Rerank.SGLang` | Native text/content-part inputs, score/index root arrays, original document echoes/meta_info | — |
+| Rerank | `Asgard.Loki.Rerank.OpenAICompatible` | Explicit native results/index/relevance_score wire, original JSON candidates and optional usage | — |
+| Video | `Asgard.Loki.Video.Volcengine` | Ark native task submission/query, original media/asset references and result URLs | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.Volcengine` | Jimeng Visual signed native submit/query, fixed req_key, original fields and optional query settings | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.Ali` | DashScope native video-generation/image2video submission and task-query results | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.Google` | Native Gemini Veo predictLongRunning, operation query and explicit output copy; previews retire 2026-10-22 | Caller-driven task snapshots/content |
+| Video | `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo resource-scoped prediction/query, borrowed tokens, GCS and inline results | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.MiniMax` | Explicit native v1/v2 generation/query and v1 video-result metadata, original media/usage/errors | Caller-driven task snapshots/results |
+| Video | `Asgard.Loki.Video.Kling` | Native text2video/image2video submit/query, explicit API Key or AK/SK JWT, original task/video metadata | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.Vidu` | Four explicit native generation operations and creations query, Token authentication, all original media/metadata | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.XAI` | Native generation/edit/extension and one-shot query, original media/usage/moderation, explicit empty-202 HTTP snapshots | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.Midjourney` | Explicit unofficial proxy video generation/extension and one-shot query, original codes, parent indices and all outputs | Caller-driven task snapshots |
+| Video media assets | `Asgard.Loki.Video.Volcengine` | Ark native Asset/AssetGroup create/get/list/update/delete with independent AK/SK signing | One explicit native operation or page |
 
-Requests preserve unknown JSON parameters. Results retain complete upstream JSON, including tools, reasoning, usage, errors and future events. Public model aliases and actual upstream models are exposed separately.
+Audio exposes an optional [native JSON speech contract](src/Asgard.Loki.Audio/README.md), with independent snapshots and delayed success until source enumeration/disposal finishes. [OpenAI speech](src/Asgard.Loki.Audio.OpenAI/README.md) implements native binary HTTP and explicit SSE aggregation/streaming, including custom voice objects and preserved audio/event data. Binary frames are SDK HTTP records; SSE envelopes retain native JSON/raw text, event identity and original usage.
 
-Native Responses WebSocket transport, image edits/variations, speech recognition, music generation, video generation, billing and automatic request replay are **not implemented**. Supported model names and account entitlements are configured by the caller and validated by the actual provider; there is no hard-coded model catalog.
+Native requests preserve unknown JSON parameters. Native results retain complete upstream JSON, including tools, reasoning, usage, errors and future events. Public model aliases and actual upstream models are exposed separately. Optional conversion requires explicit registration, rejects unsupported fields by default, and retains upstream JSON and diagnostics separately from the converted result. User inline PDF inputs map across four protocols, and explicitly declared UTF-8 text files map between Responses, Claude and Gemini; native filenames, private references and metadata have explicit preservation/loss boundaries, with no SDK file download. Complete Chat/Responses URL citations map with unchanged-text ranges or safe ASCII-prefix rebasing; declared endpoint units enable exact Unicode offsets and complete Gemini Web grounding ↔ Chat/Responses citations. Responses ↔ Gemini citation streams additionally support an explicit single cumulative text-part convention and declared OpenAI endpoint index unit; a separate opt-in [text-part concatenation](src/Asgard.Loki.LLM.Conversion/README.md#explicit-concatenation-of-responses-text-parts) maps sequential Responses text blocks into that cumulative target with exact citation rebasing; other stream/history pairs retain documented boundaries. See the [conversion support matrix](src/Asgard.Loki.LLM.Conversion/README.md).
+
+Image exposes separate native JSON and caller-owned multipart editing contracts, including OpenAI native event streaming; see the [Image README](src/Asgard.Loki.Image/README.md#native-image-editing-contracts). The bundled OpenAI provider implements native JSON/multipart nonstream and SSE edits; generation and editing hold native completion through EOF and transport disposal. Image variations, music generation and automatic request replay are **not implemented**. Audio exposes native audio-file transcription/translation contracts and an OpenAI multipart provider; see the [Audio README](src/Asgard.Loki.Audio/README.md#native-file-transcription-and-translation-contracts). Gateway administration and billing are outside this SDK. Supported model names and account entitlements are configured by the caller and validated by the actual provider; there is no hard-coded model catalog.
+
+Explicit Claude/Gemini tool-error history supports two caller-declared formats: a complete Gemini response JSON object, or original error text. Native failure flags, original call IDs and reverse-order parallel associations stay intact; ordinary success objects cannot be implicitly upgraded by an error key. Default conversion and Chat/Responses error destinations remain strict boundaries. See the [error format matrix](src/Asgard.Loki.LLM.Conversion/README.md#explicit-claudegemini-tool-errors).
+
+Public LLM snapshots reject malformed original Unicode before JSON serialization and Session/cache work, including tool IDs, error text, unknown DOM/extension fields and optional compaction/WebSocket input. Valid Unicode and existing valid Session fingerprints stay unchanged. See the [encoding contract](src/Asgard.Loki.LLM/README.md#native-json-snapshot-encoding).
+
+LLM additionally exposes an explicit [external authentication identity](src/Asgard.Loki.LLM/README.md#external-authentication-identity) for provider-owned token/signing sources. Core Sessions bind the stable principal and configuration, never a rotating access token. Existing API Key/anonymous contracts and fingerprint bytes stay compatible; a dedicated cloud provider must opt in and implement its own transport/authentication.
+
+The independent [Azure LLM provider](src/Asgard.Loki.LLM.Azure/README.md) implements complete native Chat/Responses/text Completions JSON and SSE with explicit v1/dated routing and API Key or borrowed external token authentication. Stable principal Sessions survive token rotation; configuration/principal changes fail. Native SSE preserves delayed filter/usage tails and holds terminal events through EOF/disposal; explicit native compaction preserves complete windows under a target feature declaration. Independent native Realtime uses explicit v1/preview deployment handshakes and preserves raw events under per-I/O authentication/byte guards. Responses WebSocket is unsupported; no live Azure authentication or model validation is claimed.
+
+The independent [DeepSeek native tools client](src/Asgard.Loki.LLM.DeepSeek/README.md) exposes explicit Search/Fetch JSON calls with an application-supplied Key and fixed service root. Native query/page content and ranked results stay complete; these model-free auxiliary APIs require no model route or Session. Applications choose each call and own any retrieval/model workflow.
+
+The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md) implements native Gemini/Claude JSON/SSE with explicit full project/location/model resources and borrowed external authentication. It preserves native fields and fixed-target Sessions through token rotation. Express Gemini API Key JSON/SSE is available through a separate provider in the same package; MaaS Chat JSON/SSE is also delivered; wire fixtures do not establish live acceptance of Developer API-only fields.
 
 ## Packages and dependencies
 
 | Package | Responsibility |
 | --- | --- |
+| `Asgard.Loki.Infrastructure` | Shared capability-independent SSE/NDJSON framing and bounded HTTP byte transport |
 | `Asgard.Loki.Abstractions` | Generic client and module builder contracts |
 | `Asgard.Loki` | Client implementation and module lifecycle |
-| `Asgard.Loki.LLM` | Chat/Responses contracts, routing, Session storage and registration |
-| `Asgard.Loki.Audio` | Independent speech contracts, routing and audio aggregation |
+| `Asgard.Loki.LLM` | Native LLM protocols, routing, Session storage and registration |
+| `Asgard.Loki.Audio` | Independent speech, audio-file transcription/translation contracts, routing and results |
 | `Asgard.Loki.Image` | Independent image contracts, routing and results |
-| `Asgard.Loki.Video` | Reserved video capability scaffold |
-| `Asgard.Loki.LLM.Volcengine` | Ark LLM provider |
-| `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider |
+| `Asgard.Loki.Embedding` | Independent native embedding contracts, routing and results; custom adapters |
+| `Asgard.Loki.Rerank` | Independent native reranking contracts, routing and results; custom adapters |
+| `Asgard.Loki.Rerank.Cohere` | Native Cohere v1/v2 reranking and provider-owned ranking views |
+| `Asgard.Loki.Rerank.Jina` | Native Jina text/multimodal/listwise reranking and provider-owned views |
+| `Asgard.Loki.Rerank.Ali` | Native DashScope nested reranking and provider-owned ranking views |
+| `Asgard.Loki.Rerank.SiliconFlow` | Native SiliconFlow scalar/text/image reranking and provider-owned views |
+| `Asgard.Loki.Rerank.SGLang` | Native SGLang score arrays and provider-owned ranking views |
+| `Asgard.Loki.Rerank.OpenAICompatible` | Explicit compatible rerank results with original indices, scores and candidate echoes |
+| `Asgard.Loki.Embedding.Azure` | Native deployment-scoped Azure embeddings and original batch vectors |
+| `Asgard.Loki.Embedding.OpenAI` | Native OpenAI embeddings provider; provider-owned vector views |
+| `Asgard.Loki.Embedding.Google` | Native Google single/synchronous-batch embeddings and provider-owned views |
+| `Asgard.Loki.Embedding.Ollama` | Native Ollama embedding inputs/settings, ordered vectors and provider-owned views |
+| `Asgard.Loki.Embedding.Jina` | Native Jina text/media/fused inputs, dense/per-token embeddings and provider-owned views |
+| `Asgard.Loki.Video` | Native video tasks and complete-target reference binding |
+| `Asgard.Loki.Video.Volcengine` | Ark and signed native Jimeng Visual video generation providers |
+| `Asgard.Loki.Video.Ali` | Native DashScope video task provider with explicit service selection |
+| `Asgard.Loki.Video.Google` | Native Gemini Veo operations and explicit content transfer |
+| `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo operations with complete resource/principal binding |
+| `Asgard.Loki.Video.MiniMax` | Native MiniMax video v1/v2 provider with explicit protocol selection |
+| `Asgard.Loki.Video.Kling` | Native Kling video provider with explicit operation and authentication |
+| `Asgard.Loki.Video.Vidu` | Native Vidu text/image/start-end/reference generation and creations query |
+| `Asgard.Loki.Video.XAI` | Native xAI generation/edit/extension, original status/results and HTTP metadata |
+| `Asgard.Loki.Video.Midjourney` | Explicit unofficial proxy video calls and original task results |
+| `Asgard.Loki.LLM.Volcengine` | Ark LLM provider and fixed published Bot native client |
+| `Asgard.Loki.LLM.OpenAI` | OpenAI LLM provider and explicit external-auth Codex Responses/compact/search |
+| `Asgard.Loki.LLM.Anthropic` | Native Claude Messages provider |
+| `Asgard.Loki.LLM.Google` | Native Gemini Developer API provider |
+| `Asgard.Loki.LLM.Ollama` | Native Ollama Chat/generate JSON/NDJSON; explicit anonymous or Bearer authentication |
+| `Asgard.Loki.LLM.Azure` | Native Azure endpoints and provider-owned external token source |
+| `Asgard.Loki.LLM.DeepSeek` | Native model-free Search / Fetch auxiliary calls with fixed service credentials |
+| `Asgard.Loki.LLM.Tencent` | Native Hunyuan JSON/SSE with supplier-local TC3 authentication |
+| `Asgard.Loki.LLM.Xunfei` | Native Spark WebSocket authentication and complete message windows |
+| `Asgard.Loki.LLM.MiniMax` | Native MiniMax v2 Chat JSON/SSE; supplier-owned base_resp and ending state |
+| `Asgard.Loki.LLM.Perplexity` | Native Perplexity Responses and Sonar Chat JSON/SSE; explicit endpoints and supplier-owned endings |
+| `Asgard.Loki.LLM.NewAPI` | Native API-Key alpha/search client; depends only on LLM, Infrastructure and standard HTTP factory support |
+| `Asgard.Loki.LLM.Cohere` | Native Cohere v1 Chat JSON/NDJSON; independent from Rerank |
+| `Asgard.Loki.LLM.Cloudflare` | Native Workers AI text ai/run JSON/SSE; independent from compatible OpenAI profile |
+| `Asgard.Loki.LLM.Coze` | Explicit Coze v3 JSON/SSE and status/messages; no polling or fake model route |
+| `Asgard.Loki.LLM.Dify` | Explicit fixed-app chat JSON/SSE; no fake model route, polling, workflow hosting or file management |
+| `Asgard.Loki.LLM.GoogleVertex` | Native Vertex Gemini, Claude, Express and MaaS target identity/authentication |
+| `Asgard.Loki.LLM.AWS` | Native Bedrock Claude and Converse JSON/EventStream with borrowed External SigV4 or explicit Bedrock API Key credentials |
+| `Asgard.Loki.LLM.Conversion` | Optional explicit conversion; references only LLM |
 | `Asgard.Loki.Audio.Volcengine` | Volcengine speech provider |
+| `Asgard.Loki.Audio.OpenAI` | Native OpenAI speech and multipart transcription/translation; independent Audio state |
+| `Asgard.Loki.Audio.MiniMax` | Native MiniMax synchronous speech; hex audio and caller-consumed URL results |
+| `Asgard.Loki.Audio.Cloudflare` | Native Workers AI audio with explicit raw-binary or JSON/Base64 input and original results |
+| `Asgard.Loki.Audio.Azure` | Native Azure deployment-scoped speech, transcription and translation; independent API Key target |
 | `Asgard.Loki.Image.OpenAI` | OpenAI image provider |
+| `Asgard.Loki.Audio.SunoAPI` | Explicit native Suno-API music and lyrics task calls for Asgard.Loki. |
+| `Asgard.Loki.Image.Ali` | Native Ali image JSON, interleaved SSE and caller-driven image tasks for Asgard.Loki. |
+| `Asgard.Loki.Image.Azure` | Native deployment-scoped Azure image generation and multipart editing for Asgard.Loki. |
+| `Asgard.Loki.Image.Google` | Native Gemini image generation, editing inputs and original safety-aware SSE for Asgard.Loki. |
+| `Asgard.Loki.Image.GoogleVertex` | Native resource-scoped Vertex Gemini images with explicit Bearer or API-Key authentication for Asgard.Loki. |
+| `Asgard.Loki.Image.MiniMax` | Native MiniMax image generation and subject references with original URL/Base64 results for Asgard.Loki. |
+| `Asgard.Loki.Image.Midjourney` | Explicit native proxy image operations and original bound task outcomes |
+| `Asgard.Loki.Image.Replicate` | Native Replicate model image predictions and explicit model-input upload for Asgard.Loki. |
+| `Asgard.Loki.Image.SiliconFlow` | Native SiliconFlow image generation with original images, timings and seed for Asgard.Loki. |
+| `Asgard.Loki.Image.Volcengine` | Native Ark JSON/SSE and independently signed Jimeng Visual image generation for Asgard.Loki. |
+| `Asgard.Loki.Image.XAI` | Native xAI JSON image editing with original ordered image references and complete results for Asgard.Loki. |
+| `Asgard.Loki.Image.Zhipu` | Native Zhipu v4 image generation with original image carriers, content filtering and metadata for Asgard.Loki. |
 
-The entry package depends only on abstractions. Capability packages do not reference each other. Each provider depends only on its capability and standard Microsoft components. Installing OpenAI images does not install LLM or audio providers.
+The entry package depends only on abstractions. Capability packages do not reference each other. Providers reference their own capability, optional shared Infrastructure and necessary standard components. Installing OpenAI images does not install LLM or audio providers.
 
-These are the package identities produced by this checkout. CI builds and verifies all ten packages and attaches them to the workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
+These are the package identities produced by this checkout. The PR/release CI configuration builds and verifies the full package set when invoked and attaches them to that workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
+
+## Native Claude, Gemini and explicit conversion
+
+Loki is an embeddable SDK. Applications supply credentials, HTTP factories and Session dependencies; this library exposes no forwarding server or administration/billing services.
+
+Use `loki.LLM.ClaudeMessages.CreateAsync/StreamAsync` with `ClaudeMessageRequest`, or `loki.LLM.Gemini.GenerateAsync/StreamAsync` with `GeminiContentRequest`. Configure the corresponding target's protocol explicitly:
+
+| Provider | API root | Target protocol | Native request |
+| --- | --- | --- | --- |
+| `AnthropicLlmProvider` | `https://api.anthropic.com/v1/` | `LlmProtocol.ClaudeMessages` | `Messages`, explicit `MaxTokens`, extension `system`/tools/thinking |
+| `GoogleLlmProvider` | `https://generativelanguage.googleapis.com/v1beta/` | `LlmProtocol.Gemini` | `Contents`, extension `systemInstruction`/tools/generationConfig |
+
+The original target default still enables Chat/Responses; set `Protocols` explicitly for Claude/Gemini. Gemini's upstream model is a bare ID, mapped into the URL; its native body has neither `model` nor `stream`. See the provider [Claude](src/Asgard.Loki.LLM.Anthropic/README.md) and [Gemini](src/Asgard.Loki.LLM.Google/README.md) READMEs for initialization and limits.
+
+To opt into conversion, register a `ConvertingLlmProvider(nativeProvider, upstreamProtocol, id, options)` from `Asgard.Loki.LLM.Conversion` and point the target at that ID. `LlmTarget.Protocols` then describes the caller-facing protocol; the decorator fixes the actual upstream protocol. The full target and conversion configuration are bound to the Session. Existing native calls never opt into conversion automatically.
+
+```csharp
+var converting = new ConvertingLlmProvider(
+    new AnthropicLlmProvider(httpFactory), LlmProtocol.ClaudeMessages,
+    "chat-via-claude", new LlmConversionOptions { DefaultMaxTokens = 512 });
+// Register converting, configure a Claude target with Protocols = ChatCompletions,
+// then use the ordinary loki.LLM.ChatCompletions interface with compatible history.
+```
+
+Add `using Asgard.Loki.LLM;`, `using Asgard.Loki.LLM.Anthropic;` and `using Asgard.Loki.LLM.Conversion;` for this example. The [conversion README](src/Asgard.Loki.LLM.Conversion/README.md) documents the twelve-direction common subset, diagnostics, pure data API and restrictions. Unsupported fields fail by default; signed/encrypted reasoning and cross-protocol response chains always require native APIs. Converted results expose original upstream JSON and diagnostics in `Metadata.Conversion`. Text streams incrementally; function arguments are emitted when complete. All new provider/conversion verification is offline, not live model validation.
+
+Session fingerprints include `ILlmProvider.BindingIdentity`. Bindings with a different provider identity fail validation and require new Session IDs or caller-controlled expiration/removal. The SDK does not silently rebind them.
+
+Explicit conversion maps qualitative reasoning effort, representable Claude/Gemini numeric or dynamic/off budgets, summary/display intent and JSON Schema output wrappers across the four protocols. Schema constraints remain unchanged. Gemini modern `responseFormat.text` is recognized; choose `GeminiOutputFormat.ResponseFormat` explicitly for that target envelope, while the default remains the legacy JSON Schema envelope. OpenAI targets require `DefaultSchemaName` for unnamed schemas; unsupported wrapper metadata/enforcement or budget-to-effort replacement is diagnosed and requires explicit loss consent. Claude manual thinking requires caller-selected `TargetThinkingBudgetTokens` and a sufficient output limit. Model support is caller-selected; the SDK never rewrites model suffixes, infers budgets or increases limits. See [generation settings and limits](src/Asgard.Loki.LLM.Conversion/README.md#explicit-generation-settings).
 
 ## Initialize LLM
 
@@ -106,9 +286,55 @@ await foreach (var item in loki.LLM.Responses.StreamAsync(
 }
 ```
 
-`loki.LLM.ChatCompletions.CompleteAsync(...)` and `.StreamAsync(...)` use `ChatCompletionRequest`, whose `Messages` is an unmodified JSON array. Both text protocols expose an extension parameter dictionary for fields such as tools, reasoning and caching. `stream` is controlled by the selected method.
+`loki.LLM.ChatCompletions.CompleteAsync(...)` and `.StreamAsync(...)` use `ChatCompletionRequest`, whose `Messages` is an unmodified JSON array. Chat and Responses expose an extension parameter dictionary for fields such as tools, reasoning and caching. `stream` is controlled by the selected method.
 
 A route may contain any valid combination of server, actual model, credential and provider. New Sessions use the configured selector; existing Sessions always reuse the stored complete binding. Switching protocol or public model within a Session is rejected.
+
+Custom LLM providers can explicitly support `LlmCredential.Anonymous("local-instance")` through `ILlmCredentialSupport`. It retains a stable credential identity in the complete Session binding; a missing Key never selects this mode automatically. Existing providers without that optional contract remain API-Key-only. The separate [Ollama LLM provider](src/Asgard.Loki.LLM.Ollama/README.md) implements native Chat/generate JSON/NDJSON and explicit header isolation; external token sources and signing are configured through their provider-specific contracts; see the [LLM credential contract](src/Asgard.Loki.LLM/README.md#explicit-credential-kinds).
+
+### Native Spark contract
+
+`loki.LLM.Spark.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.Spark` target and `ISparkAdapter`. `SparkRequest.Model` selects the public route; only native Parameters reach the adapter, with the selected actual model mapped to `parameter.chat.domain`. The SDK adds no root model/stream, AppID or message history. `SparkEvent.Data` retains complete native messages; `SparkCompletion.Events` retains their entire ordered window, including plugins, all text items, native statuses and usage. It does not synthesize a single text completion or sum incremental usage. The [Xunfei provider](src/Asgard.Loki.LLM.Xunfei/README.md) implements native signed WebSocket transport and explicit normal-close validation. See the [native contract and ownership rules](src/Asgard.Loki.LLM/README.md#native-spark-contract).
+
+## Native Hunyuan contract
+
+`loki.LLM.Hunyuan.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.Hunyuan` target and `IHunyuanAdapter`. `HunyuanRequest.Parameters` retains native PascalCase messages, tool schema/argument strings, tool associations, reasoning, multimodal and unknown fields. The methods own native `Model`/`Stream` and use the existing complete Session binding. Complete results retain the entire `Response` envelope; stream records retain their original flat JSON and SSE metadata. Native IDs, finish reasons, optional indices and trailing metadata are not converted into another protocol. The [Tencent supplier](src/Asgard.Loki.LLM.Tencent/README.md) implements native TC3 JSON/SSE and documents explicit TokenHub-compatible reuse. See the [native contract and adapter responsibilities](src/Asgard.Loki.LLM/README.md#native-hunyuan-contract).
+
+## Native text Completions contract
+
+Providers implementing `ITextCompletionsAdapter` can register explicit `LlmProtocol.TextCompletions` targets and expose `loki.LLM.TextCompletions.CompleteAsync` / `.StreamAsync`. `TextCompletionRequest.Parameters` retains native prompt text/token batches, suffix, echo, logprobs and unknown fields; it is not converted into Chat messages. Complete JSON and `TextCompletionEvent` retain original choices, indices, native fields and SSE metadata. Method-owned `stream` and actual-model mapping use the same complete Session binding, with no history management, automatic conversion or retry. The [Azure provider](src/Asgard.Loki.LLM.Azure/README.md#native-text-completions) supplies native JSON/SSE transport. See the [native contract](src/Asgard.Loki.LLM/README.md#native-text-completions).
+
+### Native Responses compaction
+
+For a native OpenAI or Azure target, explicitly configure `Protocols = LlmProtocol.Responses` and `Features = LlmTargetFeatures.ResponsesCompaction`. Both the target flag and an `IResponsesCompactionAdapter` are required. Ordinary Responses support does not imply compact support; Ark and converting providers do not currently advertise this operation.
+
+Given an OpenAI route named `openai-assistant` with that feature enabled:
+
+```csharp
+var compactCall = new LlmCallOptions { SessionId = "openai-context-001" };
+var compacted = await loki.LLM.Responses.CompactAsync(
+    new ResponseCompactionRequest
+    {
+        Model = "openai-assistant",
+        Input = new JsonArray(new JsonObject
+        {
+            ["role"] = "user", ["content"] = "The complete context to compact"
+        })
+    }, compactCall, cancellationToken);
+
+// Reuse the complete returned window, including retained and encrypted items.
+var continued = await loki.LLM.Responses.CreateAsync(new ResponseRequest
+{
+    Model = "openai-assistant",
+    Input = JsonNode.Parse(compacted.Output.GetRawText())
+}, compactCall, cancellationToken);
+```
+
+Compaction is one explicit non-streaming request to `/responses/compact`; the SDK does not trigger it automatically or prune/decrypt the returned window. The optional `PreviousResponseId` uses the same Session ownership checks as creation. A compaction result ID is not registered as a generated response ID for continuation. Calls remain bound to the complete original target, and unsupported features never cause rerouting or retries. Enabling/changing a target feature changes its binding fingerprint; default `Features.None` preserves existing basic-target serialization. See the [OpenAI provider guide](src/Asgard.Loki.LLM.OpenAI/README.md) and [Azure provider guide](src/Asgard.Loki.LLM.Azure/README.md#explicit-native-compaction).
+
+### Native Responses WebSocket
+
+Enable `LlmTargetFeatures.ResponsesWebSocket` on a native OpenAI Responses target, then call `loki.LLM.Responses.OpenWebSocketAsync(publicModel, callOptions, cancellationToken)`. The caller owns the connection, sends native JSON and reads all relevant lane/terminal events. Native `stream_id`, tools, opaque state, unknown fields and errors are retained. Session and response ownership stay bound to the original complete target. No reconnect, retry, tool execution or history replay is performed. Initialization, custom factory/resource limits and a complete usage example are in the [OpenAI provider guide](src/Asgard.Loki.LLM.OpenAI/README.md#native-responses-websocket). This support is verified offline with in-memory sockets; no live OpenAI verification has been performed.
 
 ## Session storage
 
@@ -121,6 +347,8 @@ Bindings store a target/configuration fingerprint, never the API Key. Original r
 Redis preserves routing identity, not TCP connections or provider prompt caches. Unknown execution outcomes are not automatically retried. The caller owns Session authorization and isolation, and should choose an application-specific cache prefix.
 
 ## Volcengine speech
+
+The following example uses V3 HTTP. For explicit V1 HTTP query or binary WebSocket submit, original native JSON and completion rules, see the [Volcengine speech provider](src/Asgard.Loki.Audio.Volcengine/README.md). Volcengine documents V1 as not recommended; no real-provider speech verification is claimed.
 
 ```csharp
 using Asgard.Loki;
@@ -190,6 +418,82 @@ ReadOnlyMemory<byte> imageBytes = result.Images[0].Decode();
 
 Use `loki.Image.StreamAsync(...)` for partial/final image events when supported by the configured upstream model. Image count, size, quality, compression, transparency and other parameters are passed through unchanged. Provider URLs are returned without downloading them. The library does not rewrite prompts or infer model availability.
 
+## Additional provider guides
+
+### Native Cohere v1 Chat contract
+
+`loki.LLM.CohereChat.CompleteAsync` / `.StreamAsync` require an explicit `LlmProtocol.CohereChat` target and `ICohereChatAdapter`. Only actual target model and method stream mode change; full message/history, native tools/results, references and unknown JSON stay intact. Results keep response_id and generation_id distinct, while NDJSON events use event_type without synthetic SSE metadata. The [Cohere supplier](src/Asgard.Loki.LLM.Cohere/README.md) owns native HTTP/NDJSON and terminal integrity; offline support makes no live-service or automatic conversion claim. See the [native contract](src/Asgard.Loki.LLM/README.md#native-cohere-v1-chat-contract).
+
+### Explicit Cloudflare compatible calls
+
+[OpenAI supplier configuration](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-cloudflare-workers-ai-profile) supports explicit account-scoped Workers AI Chat JSON/SSE and currently supported non-streaming GPT-OSS Responses Create. Account root, actual model and API token remain one Session target; tool associations, reasoning/encrypted data, settings and unknown fields stay native. This profile does not infer model availability or convert the separate native ai/run text wire. Offline protocol tests do not establish live account/model acceptance.
+
+### Native Workers AI text contract
+
+`.LLM.WorkersAiText` requires an explicit `LlmProtocol.WorkersAiText` target and `IWorkersAiTextAdapter`. The public model stays route metadata; the selected actual model belongs in the native URL, while prompt/messages and all native parameters stay in their original body structure. Complete results retain the native envelope. Streaming events preserve actual SSE JSON or `[DONE]` data with separate transport identity; no JSON terminal is fabricated. The [Cloudflare supplier](src/Asgard.Loki.LLM.Cloudflare/README.md) implements native HTTP/SSE; see the [contract and adapter responsibilities](src/Asgard.Loki.LLM/README.md#native-workers-ai-text-contract).
+
+### Explicit Coze v3 bot chat
+
+[CozeChatClient](src/Asgard.Loki.LLM.Coze/README.md) sends one native create/SSE/status/chat-messages request per method and retains complete acknowledgements, message arrays and original two-level stream events with actual done. Bot ID is service configuration, not an underlying model selection. Native references keep server/Bot/credential/implementation/ID affinity without a fabricated model Session, automatic polling, tool execution or bot/workflow administration. Offline protocol support does not establish live Bot access or answer quality.
+
+### Explicit Codex backend calls
+
+The existing [OpenAI package](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-codex-backend-responses) also provides a separate CodexLlmProvider for explicit backend Responses JSON/SSE and compact. Complete root/model/principal/account/source configuration stays bound to the existing SDK Session, while short-lived tokens can rotate. Original tools/reasoning/encrypted/schema/unknown fields are preserved; no login, token refresh, account management, parameter sanitization or automatic retry is added. These backend-specific calls are offline-tested, not a stable public API or live entitlement claim.
+
+`CodexSearchClient` separately performs one fixed-account native alpha/search request and returns the complete original HTTP body/status/media. It shares explicit external authentication but creates no fake model Session, search-result schema, usage or model terminal. Optional native parameters stay original; result URLs remain data.
+
+### Native Ark HTTP boundaries
+
+The [Volcengine provider](src/Asgard.Loki.LLM.Volcengine/README.md#native-http-fidelity) retains complete Chat/Responses JSON and SSE under explicit byte/tail/choice limits. It freezes native requests before factory awaits, reads beyond actual Chat DONE to verify EOF/late errors, and holds ending frames through complete resource closure and final binding/cancellation checks. Original tool/reasoning/schema/encrypted/unknown data stays intact. The explicit HTTP policy and named client participate in the existing complete-target Session binding; no model-name routing, automatic retry or extra capability dependency is introduced.
+
+The same [Volcengine package](src/Asgard.Loki.LLM.Volcengine/README.md#published-bot-native-calls) provides VolcengineBotClient for explicit published-app JSON/SSE calls. Bot identity stays separate from returned underlying model/endpoint data; complete plugins/references/group-chat/usage fields and actual DONE are preserved. The client adds no model Session, app administrator, agent runtime, execution loop or URL downloader.
+
+Explicit Ark Coding Plan targets reuse [LLM.Volcengine](src/Asgard.Loki.LLM.Volcengine/README.md#explicit-coding-plan-configuration) for Chat/Responses at `coding/v3/` and [LLM.Anthropic](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-ark-coding-plan-messages) for native Messages at `coding/v1/` with selected Bearer. Roots, actual model and independent credential are caller-owned complete target configuration. Full native windows and Session identity are offline-tested; live Coding Plan entitlement and optional-setting effectiveness remain unverified.
+
+Explicit Ollama compatible endpoints reuse [LLM.OpenAI](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-ollama-compatible-endpoints) for Chat/stateless Responses/local compact and [LLM.Anthropic](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-ollama-messages) for native Messages with selected Bearer. Complete roots, actual model and independent local placeholder or hosted Key are explicit configuration. Native `/api/chat` and `/api/generate` stay in the Ollama package. Offline full-window verification does not certify model/optional-setting effectiveness or hosted compact availability.
+
+[Native text/FIM completions](src/Asgard.Loki.LLM.OpenAI/README.md#native-compatible-text-completions) use the existing TextCompletions SDK client and OpenAI supplier package with explicit current endpoint/model/API Key configuration. Prompt templates, suffix, text/logprobs/choice indices and unknown fields remain native. Text has its own bounded choice/DONE lifecycle; no prompt-to-Chat conversion, parameter repair or generated Responses ID ownership is added. These calls are verified offline, with no live model/parameter acceptance claim.
+
+Explicit [DashScope Chat/Responses/Text](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-dashscope-native-endpoints) and [native Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-dashscope-messages) reuse existing packages with caller-selected complete compatible roots, actual models and independent credentials. Full native tool/schema/reasoning/FIM/unknown fields remain intact; model support is declared per target. Known reasoning/tool/search events cannot reopen Responses after terminal, while Chat business metadata stays data. Verification is offline; model/optional-setting effectiveness remains unverified.
+
+Explicit [DeepSeek Chat/Responses/beta FIM](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-deepseek-native-endpoints) and [native Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-deepseek-messages) reuse existing packages with separate complete roots, selected actual models and independent credentials. Native reasoning, tool links, structured settings and unknown fields remain intact. Responses requires full stateless input and native semantic endings; FIM retains actual DONE. Verification is offline; real model/setting acceptance remains unverified.
+
+Explicit [Moonshot/Kimi Chat, Partial and Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-moonshot-and-kimi-coding-native-endpoints) and [native Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-moonshot-and-kimi-coding-messages) reuse existing providers with separate complete platform/Coding roots and credentials. Native reasoning summaries, schema/cache settings, tool links and unknown fields remain original; known summary events cannot reopen Responses after terminal. Verification is offline; hosted legacy text and model/setting/Coding entitlement acceptance are not claimed.
+
+[MiniMax native v2 Chat](src/Asgard.Loki.LLM.MiniMax/README.md) uses the existing ChatCompletions client with an explicit complete target and independent Key. Full native JSON, reasoning/tool associations, sensitivity and usage are preserved; HTTP200 base_resp errors retain original payload/status/media. Native finish chunks and complete message snapshots remain separate frames, with endings held through EOF and owned-resource closure. [Native Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-minimax-messages) reuses the separate Anthropic package. Verification is offline; live model/setting acceptance is unverified.
+
+Explicit [Mistral native Chat](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-mistral-native-chat) reuses the existing OpenAI package with a selected complete root/model/credential and Chat-only target. Native typed thinking/text transitions, tool associations, image containers, schema/prefix settings and unknown fields remain original; no ID remapping or local media/tool execution occurs. Full JSON/SSE windows and actual DONE/resource/Session boundaries are verified offline, without a real model/setting acceptance claim.
+
+[Perplexity native Responses](src/Asgard.Loki.LLM.Perplexity/README.md) uses the existing Responses client with a complete explicit target/model/Key. Sparse native failures, partial terminal snapshots, search/reasoning events, tool associations and native response_format remain original, without fabricated IDs or endings. Terminal delivery waits for EOF, owned-resource closure and final cancellation. Root models/preset/profile selectors that override the bound model are explicitly rejected. Verification is offline; live model/setting acceptance is unverified.
+
+[Perplexity native Sonar Chat](src/Asgard.Loki.LLM.Perplexity/README.md#sonar-chat-initialization) uses PerplexitySonarProvider in the same supplier package. Explicit chat/completions or v1/sonar selection joins complete Session binding. Original messages/reasoning/tools, native schema/search settings, citations, media references and unknown values remain intact. Native end_of_stream, choice endings and actual DONE retain their own semantics; plain-text SSE errors preserve original bytes and suppress buffered endings. The SDK does not migrate calls, execute tools, fetch results, poll or compute billing. Verification remains offline.
+
+Explicit [xAI native Chat and Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-xai-native-chat-and-responses) uses the existing OpenAI package with selected complete root/model/Key and protocol. Full native history, opaque encrypted reasoning/tool items, reverse tool results, schema/reasoning/search settings, citations and exact usage remain original. No model suffix repair, parameter injection, hidden history, tool execution or billing normalization occurs. Native endings, known post-terminal generation and unknown metadata are checked offline; live model/setting and encrypted-content acceptance remain unverified.
+
+Explicit [SiliconFlow native Chat, Prefix and FIM](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-siliconflow-native-chat-prefix-and-fim) reuses the existing OpenAI package with a selected complete root/model/Key and Chat-only target. Native reasoning/tools/schema/multimodal content, root prefix/suffix, original usage and unknown values remain intact. FIM uses ChatCompletions with caller-supplied messages; no empty message, completed code or terminal is manufactured. Whole native/proxy JSON/SSE, actual DONE, resource closure, late failures and Session boundaries are verified offline; live model/parameter/FIM quality remains unverified.
+
+[Baidu Qianfan v2 native Chat](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-baidu-qianfan-v2-native-chat) reuses the existing OpenAI package with explicit complete root/model/Key and optional application-owned appid header. Original reasoning, tools, schema, search status/results, filtering flags and exact usage remain intact. JSON/SSE, actual DONE, HTTP errors, resource closure and complete Session identity are verified offline; real model/settings/search/filter effects are unverified.
+
+[Zhipu v4 native Chat and Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-zhipu-v4-native-chat-and-responses) and [Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-zhipu-v4-native-messages) reuse existing packages with separate explicit roots, protocols, models and Keys. Native reasoning objects, tool history, search/filter metadata and raw usage remain original. Chat DONE, Responses terminals and Messages message_stop are verified separately offline; real model/settings and Coding Plan access are unverified.
+
+[Explicit OpenRouter, Xinference and Submodel profiles](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-openrouter-xinference-and-submodel-profiles) reuse the existing OpenAI package for declared native Chat/Responses/text operations. Complete roots/models/Keys and optional caller headers are explicit. Native reasoning, tools, text inputs, repeated OpenRouter usage finishes and original errors remain intact; wire/terminal/Session boundaries are verified offline. Legacy hosted endpoint and actual model acceptance remain unverified.
+
+The independent [API-Key native search client](src/Asgard.Loki.LLM.NewAPI/README.md) calls an explicitly configured existing New API/Sub2API upstream's alpha/search endpoint. A complete root, actual model and independent Key are fixed per client; caller id/stream/query/unknown values remain original. It returns raw complete HTTP status/content type/bytes, including binary, empty and SSE bodies, without interpreting model completion or fetching references. This is separate from Codex external-account authentication. Offline tests cover original wire/error data, strict input, byte/length boundaries, resource closure and final cancellation; real service/model/parameter effects are unverified.
+
+[Gemini native transport policies](src/Asgard.Loki.LLM.Google/README.md#native-http-and-ending-policies) provide explicit byte/tail/candidate limits, strict original JSON/SSE and raw error bytes. Native response identity, every observed candidate and final EOF/resource/cancellation gates are verified offline; native late errors propagate unchanged through conversion. Complete Session identity includes these policies and a versioned implementation binding.
+
+Configured New API/Sub2API upstreams reuse [native OpenAI-family targets](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-native-upstream-chat-responses-text-and-compact), [Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-native-upstream-messages) and [Gemini](src/Asgard.Loki.LLM.Google/README.md#native-http-and-ending-policies); API-Key alpha/search has its own fixed-target client. Complete roots/models/Keys/protocols, opaque history/tool associations and native end/Session boundaries are checked offline. No hosted deployment/model/parameter support or gateway workflow is inferred.
+
+Configured vLLM/SGLang deployments reuse the existing [OpenAI native Chat/text/Responses](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-vllm-and-sglang-native-presets) and [native Messages](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-vllm-and-sglang-messages) packages with complete roots, actual served models and explicit Bearer credentials. Independent whole-window offline tests verify native fidelity and Session/ending boundaries; deployed capabilities and model acceptance require separate real verification. No supplier wrapper or deployment/gateway management is introduced.
+
+Existing native OpenAI-shaped HTTP deployments can use [explicit operation paths and Bearer/header/query/anonymous authentication](src/Asgard.Loki.LLM.OpenAI/README.md#explicit-native-http-endpoints-and-authentication). Configuration belongs to the selected provider and complete target, participates in Session binding, and preserves native bodies and lifecycle rules. This adds no gateway routes or model/server discovery.
+
+Native Claude-compatible deployments also support [explicit Messages paths and ApiKey/Bearer/header/query/Anonymous authentication](src/Asgard.Loki.LLM.Anthropic/README.md#explicit-native-messages-endpoint-and-authentication). The provider retains native tool/history/stream semantics and complete target binding; optional protocol conversion remains a separate explicitly configured decorator.
+
+Native Gemini deployments support [explicit model paths or declared fixed-model endpoints, with ApiKey/Bearer/header/query/Anonymous authentication](src/Asgard.Loki.LLM.Google/README.md#explicit-native-gemini-endpoints-and-authentication). Actual models and credentials remain explicit and fully bound; native bodies, tool associations and candidate endings retain their own protocol semantics.
+
+The [native alpha/search client](src/Asgard.Loki.LLM.NewAPI/README.md#explicit-search-endpoint-and-authentication) also accepts an explicitly configured operation path and Bearer/header/query/Anonymous authentication. It preserves one opaque native HTTP result; returned operation metadata excludes injected query credentials and no search workflow or Session is created.
+
 ## Build and test
 
 ```powershell
@@ -200,13 +504,13 @@ dotnet pack Asgard.Loki.slnx -c Release --no-build -o artifacts/packages
 pwsh -File eng/Verify-PackageBoundaries.ps1
 ```
 
-Tests use xUnit v3 / Microsoft.Testing.Platform, `MemoryDistributedCache`, an in-process test coordinator and stub HTTP handlers. They require no provider keys, network or Redis. The test script allows the no-tests exit code only for the reserved Video test project; all other test projects must discover tests. Remove that allowance when Video tests are implemented.
+Tests use xUnit v3 / Microsoft.Testing.Platform, `MemoryDistributedCache`, an in-process test coordinator and substitute transports. They require no provider keys, network or Redis. Every ordinary test project must discover and execute tests, including Video.
 
 Local protocol tests are not live-provider verification. Real account permissions, model availability and Redis cross-process coordination require separate integration checks. No real provider calls or package publication are performed by the unit tests.
 
-## Contributing and releases
+The [test configuration contract](docs/testing.md) and [.env.example](.env.example) define exactly four variables for the separate Volcengine LLM live suite: opt-in, API Key, Chat model and Responses model. Run it explicitly with `pwsh -File eng/Test-Live.ps1`. The script supports Windows current-user variables and does not load `.env` files. Ordinary tests and automatic CI stay offline even when live credentials exist.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SECURITY.md](SECURITY.md) for reporting vulnerabilities, and [docs/releasing.md](docs/releasing.md) for the package release checklist. CI runs on Windows and Linux, and Dependabot checks NuGet dependencies and GitHub Actions weekly.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development and validation rules, [SECURITY.md](SECURITY.md) for reporting vulnerabilities, and [docs/releasing.md](docs/releasing.md) for the package release checklist. Development uses local validation. GitHub CI runs on Windows/Linux only for PRs into `main` or reuse by the explicit NuGet release workflow; ordinary pushes and standalone manual CI runs are disabled. Dependabot checks NuGet dependencies and GitHub Actions weekly.
 
 ## License
 

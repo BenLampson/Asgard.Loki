@@ -1,0 +1,507 @@
+{
+  "sources": [
+    "https://docs.x.ai/developers/rest-api-reference/inference/videos",
+    "https://docs.x.ai/developers/model-capabilities/video/generation",
+    "https://docs.x.ai/developers/model-capabilities/video/reference-to-video",
+    "https://docs.x.ai/developers/model-capabilities/video/extension"
+  ],
+  "submissions": [
+    {
+      "operation": "Generate",
+      "path": "v1/videos/generations",
+      "wire_request": {
+        "model": "grok-imagine-video-1.5",
+        "prompt": "一只纸船在湖面航行 🛶",
+        "duration": 5,
+        "aspect_ratio": "16:9",
+        "resolution": "720p",
+        "generate_audio": false,
+        "seed": 0,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "wire_response": {
+        "request_id": "xai-fixture-01",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operation": "Generate",
+      "path": "v1/videos/generations",
+      "wire_request": {
+        "model": "grok-imagine-video-1.5",
+        "prompt": "让纸船轻轻摇晃",
+        "image": {
+          "url": "data:image/png;base64,ZmFrZS1pbWFnZQ=="
+        },
+        "duration": 5,
+        "aspect_ratio": "16:9",
+        "resolution": "720p",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "wire_response": {
+        "request_id": "xai-fixture-01",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operation": "Generate",
+      "path": "v1/videos/generations",
+      "wire_request": {
+        "model": "grok-imagine-video-1.5",
+        "prompt": "让 <IMAGE_0> 和 <IMAGE_1> 保持各自外观",
+        "reference_images": [
+          {
+            "url": "https://media.example/reference-a.png"
+          },
+          {
+            "url": "https://media.example/reference-b.png"
+          }
+        ],
+        "reference_audios": [
+          {
+            "voice_id": "fictional-voice-reference"
+          }
+        ],
+        "duration": 6,
+        "resolution": "720p",
+        "generate_audio": true,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "wire_response": {
+        "request_id": "xai-fixture-01",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operation": "Generate",
+      "path": "v1/videos/generations",
+      "wire_request": {
+        "model": "grok-imagine-video-1.5",
+        "prompt": "按时间顺序移动",
+        "image": {
+          "url": "https://media.example/first.png"
+        },
+        "keyframes": [
+          {
+            "image": {
+              "url": "https://media.example/keyframe-a.png"
+            },
+            "timestamp_s": 3.0
+          },
+          {
+            "image": {
+              "url": "https://media.example/keyframe-b.png"
+            },
+            "timestamp_s": 6.0
+          }
+        ],
+        "last_frame": {
+          "url": "https://media.example/last.png"
+        },
+        "duration": 9,
+        "resolution": "720p",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "wire_response": {
+        "request_id": "xai-fixture-01",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operation": "Edit",
+      "path": "v1/videos/edits",
+      "wire_request": {
+        "model": "grok-imagine-video",
+        "prompt": "把湖面改为黄昏",
+        "video": {
+          "url": "https://media.example/original.mp4?signature=original%2Bvalue"
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "wire_response": {
+        "request_id": "xai-fixture-01",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operation": "Extend",
+      "path": "v1/videos/extensions",
+      "wire_request": {
+        "model": "grok-imagine-video",
+        "prompt": "继续缓慢向远处航行",
+        "video": {
+          "url": "https://media.example/original.mp4"
+        },
+        "duration": 6,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "wire_response": {
+        "request_id": "xai-fixture-01",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operation": "Generate",
+      "path": "v1/videos/generations",
+      "wire_request": {
+        "model": "grok-imagine-video-1.5",
+        "last_frame": {
+          "url": "https://media.example/last-only.png"
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "wire_response": {
+        "request_id": "xai-fixture-01",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "queries": [
+    {
+      "http_status": 202,
+      "body_text": "",
+      "expected_state": "Running"
+    },
+    {
+      "http_status": 202,
+      "body": {
+        "status": "pending",
+        "progress": 0,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "expected_state": "Running"
+    },
+    {
+      "http_status": 200,
+      "body": {
+        "status": "pending",
+        "progress": 37.5,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "expected_state": "Running"
+    },
+    {
+      "http_status": 200,
+      "body": {
+        "status": "done",
+        "video": {
+          "url": "https://output.example/xai.mp4?signature=original%2Bvalue",
+          "duration": 6.5,
+          "respect_moderation": true,
+          "Future": {
+            "Keep": null
+          }
+        },
+        "model": "grok-imagine-video",
+        "usage": {
+          "cost_in_usd_ticks": 9007199254740993,
+          "Future": {
+            "Keep": false
+          }
+        },
+        "progress": 100,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "expected_state": "Succeeded"
+    },
+    {
+      "http_status": 200,
+      "body": {
+        "status": "done",
+        "video": {
+          "respect_moderation": false,
+          "duration": 6
+        },
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        },
+        "progress": 100,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "expected_state": "Failed"
+    },
+    {
+      "http_status": 200,
+      "body": {
+        "status": "failed",
+        "error": {
+          "code": "invalid_argument",
+          "message": "fictional rejected request",
+          "Future": null
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "expected_state": "Failed"
+    },
+    {
+      "http_status": 200,
+      "body": {
+        "status": "failed",
+        "error": {
+          "code": "invalid_argument",
+          "message": "fictional failed generation"
+        },
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "expected_state": "Failed"
+    },
+    {
+      "http_status": 200,
+      "body": {
+        "status": "expired",
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "expected_state": "Expired"
+    },
+    {
+      "http_status": 200,
+      "body": {
+        "status": "future_state",
+        "progress": 100,
+        "Future": {
+          "Big": 9007199254740993,
+          "Null": null,
+          "False": false,
+          "Zero": 0,
+          "Nested": [
+            {
+              "Keep": "大小写"
+            }
+          ]
+        }
+      },
+      "expected_state": "Unknown"
+    }
+  ],
+  "api_error": {
+    "error": {
+      "code": "permission_denied",
+      "message": "fictional account restriction",
+      "Future": null
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Null": null,
+      "False": false,
+      "Zero": 0,
+      "Nested": [
+        {
+          "Keep": "大小写"
+        }
+      ]
+    }
+  }
+}

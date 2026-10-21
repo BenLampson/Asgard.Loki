@@ -19,6 +19,6 @@ public abstract class LlmJsonEvent : LlmJsonResult
     /// <summary>原始 SSE 重连提示，不触发自动重试生成。</summary>
     public long? RetryMilliseconds { get; }
     /// <summary>供应商协议事件类型。</summary>
-    public string? Type => Data.TryGetProperty("type", out var value) && value.ValueKind == JsonValueKind.String
+    public virtual string? Type => Data.TryGetProperty("type", out var value) && value.ValueKind == JsonValueKind.String
         ? value.GetString() : EventName;
 }

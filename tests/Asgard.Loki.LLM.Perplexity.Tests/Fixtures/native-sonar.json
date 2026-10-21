@@ -1,0 +1,708 @@
+{
+  "source": [
+    "https://github.com/perplexityai/perplexity-py/blob/1d4ba52e875a858a12fc26f854ae9470b8496835/src/perplexity/generated/api.py",
+    "https://docs.perplexity.ai/docs/agent-api/migrate-from-sonar/how-to"
+  ],
+  "profiles": [
+    {
+      "root": "https://api.perplexity.ai/",
+      "path": "chat/completions",
+      "key": "sonar-legacy-fixture",
+      "contract": "ChatCompletions"
+    },
+    {
+      "root": "https://api.perplexity.ai/",
+      "path": "v1/sonar",
+      "key": "sonar-v1-fixture",
+      "contract": "SonarV1"
+    },
+    {
+      "root": "https://proxy.invalid/perplexity/",
+      "path": "v1/sonar",
+      "key": "sonar-proxy-fixture",
+      "contract": "SonarV1"
+    }
+  ],
+  "model": "sonar",
+  "caller": {
+    "model": "public",
+    "stream": false,
+    "messages": [
+      {
+        "role": "system",
+        "content": "Use the supplied history and native references."
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "比较两地并保留来源。"
+          },
+          {
+            "type": "image_url",
+            "image_url": "https://example.invalid/input.png"
+          },
+          {
+            "type": "video_url",
+            "video_url": {
+              "url": "https://example.invalid/input.mp4"
+            }
+          },
+          {
+            "type": "pdf_url",
+            "pdf_url": "https://example.invalid/input.pdf"
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "reasoning_steps": [
+          {
+            "type": "web_search",
+            "thought": "Use prior sources.",
+            "web_search": {
+              "search_keywords": [
+                "prior search"
+              ],
+              "search_results": [
+                {
+                  "title": "Prior source",
+                  "url": "https://example.invalid/prior",
+                  "snippet": "Original"
+                }
+              ]
+            }
+          }
+        ],
+        "tool_calls": [
+          {
+            "id": "call-A",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"city\":\"北京\"}"
+            }
+          },
+          {
+            "id": "call-B",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"city\":\"上海\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-B",
+        "content": "{\"temperature\":22}"
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-A",
+        "content": "{\"temperature\":20}"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "description": "Lookup city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "parallel_tool_calls": true,
+    "reasoning_effort": "high",
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "answer"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "search_domain_filter": [
+      "example.invalid",
+      "-excluded.invalid"
+    ],
+    "search_recency_filter": "month",
+    "search_mode": "web",
+    "return_images": true,
+    "return_related_questions": true,
+    "web_search_options": {
+      "search_context_size": "low"
+    },
+    "max_tokens": 128,
+    "temperature": 0,
+    "top_p": 1,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "stream_mode": "full",
+    "vendor_extension": {
+      "exact": 9007199254740993,
+      "nullable": null,
+      "enabled": false,
+      "zero": 0,
+      "error": {
+        "business": true
+      }
+    }
+  },
+  "wire": {
+    "model": "sonar",
+    "stream": false,
+    "messages": [
+      {
+        "role": "system",
+        "content": "Use the supplied history and native references."
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "比较两地并保留来源。"
+          },
+          {
+            "type": "image_url",
+            "image_url": "https://example.invalid/input.png"
+          },
+          {
+            "type": "video_url",
+            "video_url": {
+              "url": "https://example.invalid/input.mp4"
+            }
+          },
+          {
+            "type": "pdf_url",
+            "pdf_url": "https://example.invalid/input.pdf"
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "reasoning_steps": [
+          {
+            "type": "web_search",
+            "thought": "Use prior sources.",
+            "web_search": {
+              "search_keywords": [
+                "prior search"
+              ],
+              "search_results": [
+                {
+                  "title": "Prior source",
+                  "url": "https://example.invalid/prior",
+                  "snippet": "Original"
+                }
+              ]
+            }
+          }
+        ],
+        "tool_calls": [
+          {
+            "id": "call-A",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"city\":\"北京\"}"
+            }
+          },
+          {
+            "id": "call-B",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"city\":\"上海\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-B",
+        "content": "{\"temperature\":22}"
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-A",
+        "content": "{\"temperature\":20}"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "description": "Lookup city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "parallel_tool_calls": true,
+    "reasoning_effort": "high",
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "answer"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "search_domain_filter": [
+      "example.invalid",
+      "-excluded.invalid"
+    ],
+    "search_recency_filter": "month",
+    "search_mode": "web",
+    "return_images": true,
+    "return_related_questions": true,
+    "web_search_options": {
+      "search_context_size": "low"
+    },
+    "max_tokens": 128,
+    "temperature": 0,
+    "top_p": 1,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "stream_mode": "full",
+    "vendor_extension": {
+      "exact": 9007199254740993,
+      "nullable": null,
+      "enabled": false,
+      "zero": 0,
+      "error": {
+        "business": true
+      }
+    }
+  },
+  "wire_stream": {
+    "model": "sonar",
+    "stream": true,
+    "messages": [
+      {
+        "role": "system",
+        "content": "Use the supplied history and native references."
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "比较两地并保留来源。"
+          },
+          {
+            "type": "image_url",
+            "image_url": "https://example.invalid/input.png"
+          },
+          {
+            "type": "video_url",
+            "video_url": {
+              "url": "https://example.invalid/input.mp4"
+            }
+          },
+          {
+            "type": "pdf_url",
+            "pdf_url": "https://example.invalid/input.pdf"
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "reasoning_steps": [
+          {
+            "type": "web_search",
+            "thought": "Use prior sources.",
+            "web_search": {
+              "search_keywords": [
+                "prior search"
+              ],
+              "search_results": [
+                {
+                  "title": "Prior source",
+                  "url": "https://example.invalid/prior",
+                  "snippet": "Original"
+                }
+              ]
+            }
+          }
+        ],
+        "tool_calls": [
+          {
+            "id": "call-A",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"city\":\"北京\"}"
+            }
+          },
+          {
+            "id": "call-B",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"city\":\"上海\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-B",
+        "content": "{\"temperature\":22}"
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-A",
+        "content": "{\"temperature\":20}"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "description": "Lookup city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "parallel_tool_calls": true,
+    "reasoning_effort": "high",
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "answer"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "search_domain_filter": [
+      "example.invalid",
+      "-excluded.invalid"
+    ],
+    "search_recency_filter": "month",
+    "search_mode": "web",
+    "return_images": true,
+    "return_related_questions": true,
+    "web_search_options": {
+      "search_context_size": "low"
+    },
+    "max_tokens": 128,
+    "temperature": 0,
+    "top_p": 1,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "stream_mode": "full",
+    "vendor_extension": {
+      "exact": 9007199254740993,
+      "nullable": null,
+      "enabled": false,
+      "zero": 0,
+      "error": {
+        "business": true
+      }
+    }
+  },
+  "result": {
+    "id": "sonar-response-A",
+    "created": 1792512000,
+    "model": "sonar",
+    "object": "chat.completion",
+    "type": "message",
+    "status": "COMPLETED",
+    "choices": [
+      {
+        "index": 0,
+        "delta": {
+          "role": "assistant",
+          "content": ""
+        },
+        "message": {
+          "role": "assistant",
+          "content": "{\"answer\":\"北京20，上海22 [1]\"}",
+          "reasoning_steps": [
+            {
+              "type": "web_search",
+              "thought": "Use the supplied sources.",
+              "web_search": {
+                "search_keywords": [
+                  "city sources"
+                ],
+                "search_results": [
+                  {
+                    "title": "City source",
+                    "url": "https://example.invalid/source",
+                    "snippet": "Source text",
+                    "source": "web"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "citations": [
+      "https://example.invalid/source"
+    ],
+    "search_results": [
+      {
+        "title": "City source",
+        "url": "https://example.invalid/source",
+        "date": "2026-10-20",
+        "last_updated": "2026-10-21",
+        "snippet": "Source text",
+        "source": "web"
+      }
+    ],
+    "images": [
+      {
+        "image_url": "https://example.invalid/result.png",
+        "origin_url": "https://example.invalid/source",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "related_questions": [
+      "What changes tomorrow?"
+    ],
+    "usage": {
+      "prompt_tokens": 130,
+      "completion_tokens": 28,
+      "total_tokens": 158,
+      "num_search_queries": 1,
+      "search_context_size": "low",
+      "cost": {
+        "input_tokens_cost": 0.00013,
+        "output_tokens_cost": 2.8e-05,
+        "total_cost": 0.000158
+      }
+    },
+    "vendor_extension": {
+      "exact": 9007199254740993,
+      "nullable": null,
+      "enabled": false,
+      "zero": 0
+    }
+  },
+  "events": [
+    {
+      "id": "sonar-response-A",
+      "created": 1792512000,
+      "model": "sonar",
+      "object": "chat.completion.chunk",
+      "type": "message",
+      "status": "PENDING",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "role": "assistant",
+            "content": "{\"answer\":\"北京"
+          },
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":\"北京"
+          },
+          "finish_reason": null
+        }
+      ]
+    },
+    {
+      "id": "sonar-response-A",
+      "created": 1792512000,
+      "model": "sonar",
+      "object": "chat.completion.chunk",
+      "type": "info",
+      "status": "PENDING",
+      "choices": [],
+      "citations": [
+        "https://example.invalid/source"
+      ],
+      "search_results": [
+        {
+          "title": "City source",
+          "url": "https://example.invalid/source",
+          "date": "2026-10-20",
+          "last_updated": "2026-10-21",
+          "snippet": "Source text",
+          "source": "web"
+        }
+      ]
+    },
+    {
+      "id": "sonar-response-A",
+      "created": 1792512000,
+      "model": "sonar",
+      "object": "chat.completion.chunk",
+      "type": "message",
+      "status": "COMPLETED",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "content": "20，上海22 [1]\"}"
+          },
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":\"北京20，上海22 [1]\"}",
+            "reasoning_steps": [
+              {
+                "type": "web_search",
+                "thought": "Use the supplied sources.",
+                "web_search": {
+                  "search_keywords": [
+                    "city sources"
+                  ],
+                  "search_results": [
+                    {
+                      "title": "City source",
+                      "url": "https://example.invalid/source",
+                      "snippet": "Source text",
+                      "source": "web"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "finish_reason": "stop"
+        }
+      ]
+    },
+    {
+      "id": "sonar-response-A",
+      "created": 1792512000,
+      "model": "sonar",
+      "object": "chat.completion.chunk",
+      "type": "end_of_stream",
+      "status": "COMPLETED",
+      "choices": [],
+      "usage": {
+        "prompt_tokens": 130,
+        "completion_tokens": 28,
+        "total_tokens": 158,
+        "num_search_queries": 1,
+        "search_context_size": "low",
+        "cost": {
+          "input_tokens_cost": 0.00013,
+          "output_tokens_cost": 2.8e-05,
+          "total_cost": 0.000158
+        }
+      },
+      "citations": [
+        "https://example.invalid/source"
+      ],
+      "search_results": [
+        {
+          "title": "City source",
+          "url": "https://example.invalid/source",
+          "date": "2026-10-20",
+          "last_updated": "2026-10-21",
+          "snippet": "Source text",
+          "source": "web"
+        }
+      ],
+      "images": [
+        {
+          "image_url": "https://example.invalid/result.png",
+          "origin_url": "https://example.invalid/source",
+          "width": 800,
+          "height": 600
+        }
+      ],
+      "related_questions": [
+        "What changes tomorrow?"
+      ]
+    },
+    {
+      "type": "vendor.trace",
+      "id": "business-other",
+      "error": {
+        "business": true
+      },
+      "exact": 9007199254740993
+    }
+  ],
+  "literal_sse": ": native Sonar stream\n\nid: sonar-transport\nretry: 0\ndata: {\"id\":\"sonar-response-A\",\"created\":1792512000,\"model\":\"sonar\",\"object\":\"chat.completion.chunk\",\"type\":\"message\",\"status\":\"PENDING\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"{\\\"answer\\\":\\\"北京\"},\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"answer\\\":\\\"北京\"},\"finish_reason\":null}]}\n\nid: sonar-transport\nretry: 0\ndata: {\"id\":\"sonar-response-A\",\"created\":1792512000,\"model\":\"sonar\",\"object\":\"chat.completion.chunk\",\"type\":\"info\",\"status\":\"PENDING\",\"choices\":[],\"citations\":[\"https://example.invalid/source\"],\"search_results\":[{\"title\":\"City source\",\"url\":\"https://example.invalid/source\",\"date\":\"2026-10-20\",\"last_updated\":\"2026-10-21\",\"snippet\":\"Source text\",\"source\":\"web\"}]}\n\nid: sonar-transport\nretry: 0\ndata: {\"id\":\"sonar-response-A\",\"created\":1792512000,\"model\":\"sonar\",\"object\":\"chat.completion.chunk\",\"type\":\"message\",\"status\":\"COMPLETED\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"20，上海22 [1]\\\"}\"},\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"answer\\\":\\\"北京20，上海22 [1]\\\"}\",\"reasoning_steps\":[{\"type\":\"web_search\",\"thought\":\"Use the supplied sources.\",\"web_search\":{\"search_keywords\":[\"city sources\"],\"search_results\":[{\"title\":\"City source\",\"url\":\"https://example.invalid/source\",\"snippet\":\"Source text\",\"source\":\"web\"}]}}]},\"finish_reason\":\"stop\"}]}\n\nid: sonar-transport\nretry: 0\ndata: {\"id\":\"sonar-response-A\",\"created\":1792512000,\"model\":\"sonar\",\"object\":\"chat.completion.chunk\",\"type\":\"end_of_stream\",\"status\":\"COMPLETED\",\"choices\":[],\"usage\":{\"prompt_tokens\":130,\"completion_tokens\":28,\"total_tokens\":158,\"num_search_queries\":1,\"search_context_size\":\"low\",\"cost\":{\"input_tokens_cost\":0.00013,\"output_tokens_cost\":2.8e-05,\"total_cost\":0.000158}},\"citations\":[\"https://example.invalid/source\"],\"search_results\":[{\"title\":\"City source\",\"url\":\"https://example.invalid/source\",\"date\":\"2026-10-20\",\"last_updated\":\"2026-10-21\",\"snippet\":\"Source text\",\"source\":\"web\"}],\"images\":[{\"image_url\":\"https://example.invalid/result.png\",\"origin_url\":\"https://example.invalid/source\",\"width\":800,\"height\":600}],\"related_questions\":[\"What changes tomorrow?\"]}\n\nid: sonar-transport\nretry: 0\ndata: {\"type\":\"vendor.trace\",\"id\":\"business-other\",\"error\":{\"business\":true},\"exact\":9007199254740993}\n\n",
+  "error": {
+    "error": {
+      "type": "invalid_request_error",
+      "message": "Native request rejected",
+      "code": "invalid_parameter"
+    }
+  },
+  "plain_error_sse": "event: error\ndata: Upstream temporarily unavailable: 原始错误\n\n"
+}

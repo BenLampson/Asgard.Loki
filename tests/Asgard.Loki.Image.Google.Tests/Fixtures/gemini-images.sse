@@ -1,0 +1,20 @@
+event: message
+id: g-0
+retry: 1000
+data: {"candidates":[{"index":2,"content":{"role":"model","parts":[{"text":"thinking","thought":true,"thoughtSignature":"thinking-signature=="}]}},{"index":7,"content":{"parts":[{"text":"second"}]}}],"responseId":"stream-fixture","usageMetadata":{"promptTokenCount":8}}
+
+event: message
+id: g-1
+retry: 1000
+data: {"candidates":[{"index":7,"content":{"parts":[{"inlineData":{"mimeType":"image/png","data":"AQID"},"thoughtSignature":"image-signature=="}]},"finishReason":"STOP"}],"responseId":"stream-fixture","usageMetadata":{"promptTokenCount":8,"candidatesTokenCount":4}}
+
+event: message
+id: g-2
+retry: 1000
+data: {"candidates":[{"index":2,"finishReason":"IMAGE_SAFETY","safetyRatings":[{"blocked":true}]}],"responseId":"stream-fixture","usageMetadata":{"promptTokenCount":8,"candidatesTokenCount":6},"future":null}
+
+event: message
+id: g-3
+retry: 1000
+data: {"usageMetadata":{"promptTokenCount":8,"candidatesTokenCount":6,"totalTokenCount":14},"responseId":"stream-fixture","future":false}
+

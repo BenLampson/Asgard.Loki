@@ -1,0 +1,21 @@
+{
+  "sources": [
+    "https://kling.ai/document-api/api/get-started/authentication",
+    "https://kling.ai/document-api/api/video/2-5-turbo/text-to-video/legacy",
+    "https://kling.ai/document-api/api/video/2-5-turbo/image-to-video/legacy"
+  ],
+  "submissions": [
+    { "operation": "TextToVideo", "wire_request": { "model_name": "kling-v2-6", "prompt": "A fictional paper boat on a lake. 紙船🌊", "negative_prompt": "blur", "duration": "5", "mode": "pro", "aspect_ratio": "16:9", "cfg_scale": 0, "sound": "off", "camera_control": { "type": "simple", "config": { "horizontal": 5, "vertical": 0 } }, "callback_url": "https://callback.invalid/video", "external_task_id": "fictional-external-id", "Future": { "large": 9007199254740993, "null": null, "false": false } } },
+    { "operation": "ImageToVideo", "wire_request": { "model_name": "kling-v2-6", "image": "ZmFrZS1maXJzdC1mcmFtZQ==", "image_tail": "https://media.invalid/last.png", "prompt": "Animate the fictional paper boat.", "negative_prompt": "", "duration": "5", "mode": "pro", "sound": "off", "external_task_id": "fictional-external-id", "Future": [null, false, 0, 9007199254740993] } }
+  ],
+  "submit_response": { "code": 0, "message": "SUCCEED", "request_id": "fictional-submit-trace", "data": { "task_id": "kling-fixture-01", "task_status": "submitted", "task_info": { "external_task_id": "fictional-external-id", "Future": 9007199254740993 }, "created_at": 1722769557708, "updated_at": 1722769557708, "Future": false }, "Future": null },
+  "queries": [
+    { "code": 0, "message": "SUCCEED", "request_id": "fictional-query-trace", "data": { "task_id": "kling-fixture-01", "task_status": "submitted", "task_status_msg": "", "Future": 9007199254740993 } },
+    { "code": 0, "message": "SUCCEED", "request_id": "fictional-query-trace", "data": { "task_id": "kling-fixture-01", "task_status": "processing", "task_status_msg": null, "Future": false } },
+    { "code": 0, "message": "SUCCEED", "request_id": "fictional-query-trace", "data": { "task_id": "kling-fixture-01", "task_status": "failed", "task_status_msg": "Fictional generation failure", "Future": { "original": true } } },
+    { "code": 0, "message": "SUCCEED", "request_id": "fictional-query-trace", "data": { "task_id": "kling-fixture-01", "task_status": "future_state", "task_status_msg": "", "Future": null } },
+    { "code": 0, "message": "SUCCEED", "request_id": "fictional-query-trace", "data": { "task_id": "kling-fixture-01", "task_status": "succeed", "task_status_msg": "", "task_info": { "external_task_id": "fictional-external-id" }, "task_result": { "videos": [{ "id": "9007199254740993", "url": "https://cdn.invalid/video-0.mp4?signature=fictional%2Fvalue", "duration": "5.1", "Future": { "Case": false } }, { "id": "9007199254740994", "url": "https://cdn.invalid/video-1.mp4", "duration": "5.2", "Future": null }], "Future": { "large": 9007199254740993 } }, "created_at": 1722769557708, "updated_at": 1722769589708, "final_unit_deduction": "3.50", "Future": "原文" }, "Future": [null, false] }
+  ],
+  "api_error": { "code": 1001, "message": "Fictional authorization failure", "request_id": "fictional-error-trace", "data": null, "Future": { "large": 9007199254740993 } },
+  "jwt_vector": {"utc":"2026-10-20T01:02:03+00:00","unix_time":1792458123,"header":{"alg":"HS256","typ":"JWT"},"payload":{"iss":"fixture-access","exp":1792459923,"nbf":1792458118},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmaXh0dXJlLWFjY2VzcyIsImV4cCI6MTc5MjQ1OTkyMywibmJmIjoxNzkyNDU4MTE4fQ.cfXJITXalpKPM5qVfw_C1WdaAenZNqDimzFA1x157P4"}
+}

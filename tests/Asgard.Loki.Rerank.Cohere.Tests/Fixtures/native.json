@@ -1,0 +1,22 @@
+{
+  "v1-text": {
+    "request": {"model":"public","query":"query 原文😀","documents":["A😀","B"],"top_n":1,"return_documents":true,"future":{"enabled":false,"empty":null,"model":"unchanged"}},
+    "wire": {"model":"native-rerank","query":"query 原文😀","documents":["A😀","B"],"top_n":1,"return_documents":true,"future":{"enabled":false,"empty":null,"model":"unchanged"}},
+    "response": {"id":"native-v1","results":[{"index":1,"relevance_score":0,"document":{"text":"B","future":null},"future":false}],"meta":{"api_version":{"version":"1"},"billed_units":{"search_units":1},"warnings":[]},"future":{"model":"upstream-only"}}
+  },
+  "v1-object": {
+    "request": {"model":"public","query":"对象排序","documents":[{"text":"A😀","title":"first","future":{"model":"keep","null":null}},{"text":"B","title":"second"},{"text":"C","title":"third"}],"top_n":2,"return_documents":true,"rank_fields":["title","text"],"max_chunks_per_doc":2,"future":false},
+    "wire": {"model":"native-rerank","query":"对象排序","documents":[{"text":"A😀","title":"first","future":{"model":"keep","null":null}},{"text":"B","title":"second"},{"text":"C","title":"third"}],"top_n":2,"return_documents":true,"rank_fields":["title","text"],"max_chunks_per_doc":2,"future":false},
+    "response": {"results":[{"index":2,"relevance_score":1,"document":{"text":"C","title":"third"}},{"index":0,"relevance_score":0,"document":{"text":"A😀","title":"first","future":{"model":"keep","null":null}}}],"meta":{"tokens":{"input_tokens":0},"cached_tokens":null},"future":false}
+  },
+  "v2-basic": {
+    "request": {"model":"public","query":"","documents":["A😀","B"],"future":{"zero":0,"flag":false,"unset":null}},
+    "wire": {"model":"native-rerank","query":"","documents":["A😀","B"],"future":{"zero":0,"flag":false,"unset":null}},
+    "response": {"results":[{"index":1,"relevance_score":0.75,"future":{"nullable":null}},{"index":0,"relevance_score":0}],"meta":{"api_version":{"version":"2","is_experimental":false},"warnings":["native warning"]},"future":null}
+  },
+  "v2-options": {
+    "request": {"model":"public","query":"YAML is caller-owned","documents":["title: first\ntext: A😀\n","title: second\ntext: B\n"],"top_n":1,"max_tokens_per_doc":8192,"priority":0,"future":{"enabled":false}},
+    "wire": {"model":"native-rerank","query":"YAML is caller-owned","documents":["title: first\ntext: A😀\n","title: second\ntext: B\n"],"top_n":1,"max_tokens_per_doc":8192,"priority":0,"future":{"enabled":false}},
+    "response": {"id":"native-v2","results":[{"index":1,"relevance_score":0.125,"future":false}],"meta":{"billed_units":{"search_units":0},"tokens":{"input_tokens":null},"future":false},"model":"returned-model-version"}
+  }
+}

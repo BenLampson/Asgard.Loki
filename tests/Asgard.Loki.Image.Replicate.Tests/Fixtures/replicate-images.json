@@ -1,0 +1,221 @@
+{
+  "source": "Independently authored native model predictions JSON and model-input content upload; no production serialization or live output.",
+  "request": {
+    "input": {
+      "prompt": "A paper boat",
+      "seed": 0,
+      "aspect_ratio": "3:2",
+      "prompt_upsampling": false,
+      "output_format": "png",
+      "image_prompt": "https://input.example.invalid/a%2Fb.png?sig=A%2BB",
+      "future": {
+        "exact": 9007199254740993,
+        "nullable": null
+      }
+    },
+    "webhook": "https://callback.example.invalid/original",
+    "webhook_events_filter": [
+      "completed"
+    ],
+    "future_root": false
+  },
+  "success": {
+    "id": "prediction-fixture",
+    "model": "fixture-owner/image-model",
+    "version": "fixture-version",
+    "status": "succeeded",
+    "input": {
+      "prompt": "A paper boat",
+      "seed": 0
+    },
+    "output": "https://result.example.invalid/a%2Fb.png?sig=A%2BB",
+    "error": null,
+    "logs": "native log",
+    "created_at": "2026-10-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": "2026-10-20T00:00:01Z",
+    "metrics": {
+      "predict_time": 0,
+      "future": 9007199254740993
+    },
+    "urls": {
+      "get": "https://api.replicate.com/v1/predictions/prediction-fixture",
+      "stream": "https://stream.example.invalid/prediction-fixture"
+    },
+    "future": false
+  },
+  "array": {
+    "id": "prediction-fixture",
+    "model": "fixture-owner/image-model",
+    "version": "fixture-version",
+    "status": "succeeded",
+    "input": {
+      "prompt": "A paper boat",
+      "seed": 0
+    },
+    "output": [
+      "https://result.example.invalid/first.png",
+      "https://result.example.invalid/second.png"
+    ],
+    "error": null,
+    "logs": "native log",
+    "created_at": "2026-10-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": "2026-10-20T00:00:01Z",
+    "metrics": {
+      "predict_time": 0,
+      "future": 9007199254740993
+    },
+    "urls": {
+      "get": "https://api.replicate.com/v1/predictions/prediction-fixture",
+      "stream": "https://stream.example.invalid/prediction-fixture"
+    },
+    "future": false
+  },
+  "pending": {
+    "id": "prediction-fixture",
+    "model": "fixture-owner/image-model",
+    "version": "fixture-version",
+    "status": "processing",
+    "input": {
+      "prompt": "A paper boat",
+      "seed": 0
+    },
+    "output": [
+      "https://result.example.invalid/partial.png"
+    ],
+    "error": null,
+    "logs": "native log",
+    "created_at": "2026-10-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "metrics": null,
+    "urls": {
+      "get": "https://api.replicate.com/v1/predictions/prediction-fixture",
+      "stream": "https://stream.example.invalid/prediction-fixture"
+    },
+    "future": false
+  },
+  "failed": {
+    "id": "prediction-fixture",
+    "model": "fixture-owner/image-model",
+    "version": "fixture-version",
+    "status": "failed",
+    "input": {
+      "prompt": "A paper boat",
+      "seed": 0
+    },
+    "output": [
+      "https://result.example.invalid/partial.png"
+    ],
+    "error": "Native failure string",
+    "logs": "native log",
+    "created_at": "2026-10-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": "2026-10-20T00:00:01Z",
+    "metrics": {
+      "predict_time": 0,
+      "future": 9007199254740993
+    },
+    "urls": {
+      "get": "https://api.replicate.com/v1/predictions/prediction-fixture",
+      "stream": "https://stream.example.invalid/prediction-fixture"
+    },
+    "future": false
+  },
+  "canceled": {
+    "id": "prediction-fixture",
+    "model": "fixture-owner/image-model",
+    "version": "fixture-version",
+    "status": "canceled",
+    "input": {
+      "prompt": "A paper boat",
+      "seed": 0
+    },
+    "output": null,
+    "error": null,
+    "logs": "native log",
+    "created_at": "2026-10-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": "2026-10-20T00:00:01Z",
+    "metrics": {
+      "predict_time": 0,
+      "future": 9007199254740993
+    },
+    "urls": {
+      "get": "https://api.replicate.com/v1/predictions/prediction-fixture",
+      "stream": "https://stream.example.invalid/prediction-fixture"
+    },
+    "future": false
+  },
+  "unknown": {
+    "id": "prediction-fixture",
+    "model": "fixture-owner/image-model",
+    "version": "fixture-version",
+    "status": "future-native-state",
+    "input": {
+      "prompt": "A paper boat",
+      "seed": 0
+    },
+    "output": {
+      "future": "opaque"
+    },
+    "error": null,
+    "logs": "native log",
+    "created_at": "2026-10-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": "2026-10-20T00:00:01Z",
+    "metrics": {
+      "predict_time": 0,
+      "future": 9007199254740993
+    },
+    "urls": {
+      "get": "https://api.replicate.com/v1/predictions/prediction-fixture",
+      "stream": "https://stream.example.invalid/prediction-fixture"
+    },
+    "future": false
+  },
+  "removed": {
+    "id": "prediction-fixture",
+    "model": "fixture-owner/image-model",
+    "version": "fixture-version",
+    "status": "succeeded",
+    "input": {
+      "prompt": "A paper boat",
+      "seed": 0
+    },
+    "output": null,
+    "error": null,
+    "logs": "native log",
+    "created_at": "2026-10-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": "2026-10-20T00:00:01Z",
+    "metrics": {
+      "predict_time": 0,
+      "future": 9007199254740993
+    },
+    "urls": {
+      "get": "https://api.replicate.com/v1/predictions/prediction-fixture",
+      "stream": "https://stream.example.invalid/prediction-fixture"
+    },
+    "future": false,
+    "data_removed": true
+  },
+  "upload": {
+    "id": "input-file-fixture",
+    "name": "original.png",
+    "content_type": "image/png",
+    "size": 3,
+    "etag": "fixture-etag",
+    "urls": {
+      "get": "https://input.example.invalid/uploaded%2Fimage.png?sig=A%2BB"
+    },
+    "future": {
+      "exact": 9007199254740993
+    }
+  },
+  "http_error": {
+    "detail": "Fictional invalid input",
+    "future": false
+  }
+}

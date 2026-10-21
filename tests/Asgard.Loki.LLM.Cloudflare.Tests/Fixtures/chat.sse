@@ -1,0 +1,14 @@
+id: workers-chat-0
+retry: 800
+event: original.native
+data: {"id":"workers-chat-native","model":"native-reported-model","choices":[{"index":3,"delta":{"role":"assistant","content":null,"reasoning_content":"原始推理","tool_calls":[{"index":1,"id":"next-b","type":"function","function":{"name":"weather","arguments":"{\"city\":"}},{"index":0,"id":"next-a","type":"function","function":{"name":"weather","arguments":"{\"city\":"}}]},"finish_reason":null}],"future":null}
+
+data: {"id":"workers-chat-native","choices":[{"index":3,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"上海\"}"}},{"index":1,"function":{"arguments":"\"北京\"}"}}]},"finish_reason":null}]}
+
+data: {"id":"workers-chat-native","choices":[{"index":3,"delta":{},"finish_reason":"tool_calls"}]}
+
+id: workers-chat-tail
+data: {"id":"workers-chat-native","choices":[],"usage":{"prompt_tokens":9007199254740993,"completion_tokens":0,"total_tokens":9007199254740993},"future":{"flag":false}}
+
+data: [DONE]
+

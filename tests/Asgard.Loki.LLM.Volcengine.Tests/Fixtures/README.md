@@ -1,0 +1,7 @@
+# Native Ark protocol resources
+
+Independently authored full native Chat/Responses caller, expected wire, complete response/error and separately written JSON/SSE windows. Synthetic targets/credentials only; no live account/model result. Whole native tools and reverse-linked results, reasoning/encrypted items, exact values/zero/false/null, schema/settings, native length truncation, usage and unknown metadata are intentional. No SDK output generates expectations.
+
+Chat includes actual DONE after finish/usage/future metadata. Responses requires its own incomplete/length snapshot and retains future data with unrelated business response IDs. Transport IDs/retry remain separate from native response/item/tool IDs. These windows validate original data and lifecycle, not model parameter effectiveness.
+
+The separate Bot windows describe published application calls: the input model field is a Bot ID while returned model and bot_usage endpoints identify remote selections. Native group-chat/character metadata, opaque user_info, multiple endpoint/model counters, action details, references, original tool links and actual DONE are all independent data. There is no SDK agent runtime or model Session. Current primary contracts: [Bot API](https://docs.volcengine.com/docs/ark/bot-api?lang=zh&redirect=1) and [migration scope](https://docs.volcengine.com/docs/ark/migrate-from-bot-api?lang=en), which explicitly retains already-published Bot calls. New application creation/administration and managed-agent migration are outside these SDK examples.

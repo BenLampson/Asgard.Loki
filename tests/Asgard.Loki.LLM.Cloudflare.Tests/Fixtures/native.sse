@@ -1,0 +1,16 @@
+: native heartbeat
+id: native-1
+retry: 0
+event: native.token
+data: {"response":"你好🌏","type":"response.completed","future":null}
+
+data: {"tool_calls":[{"name":"weather","arguments":{"city":"上海"},"future_id":"native-a"},{"name":"weather","arguments":"{\"city\":\"北京\"}","future_id":"native-b"}]}
+
+id: native-tail
+retry: 450
+event: native.metadata
+data: {"usage":{"prompt_tokens":9007199254740993,"completion_tokens":0,"total_tokens":9007199254740993},"future":{"error":false,"done":true}}
+
+event: native.done
+data: [DONE]
+

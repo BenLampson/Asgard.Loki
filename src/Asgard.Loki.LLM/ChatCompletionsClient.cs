@@ -37,5 +37,6 @@ internal sealed class ChatCompletionsClient(LlmInvocation invocation) : IChatCom
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(request.Messages);
         LlmInvocation.ValidateParameters(request.Parameters, "model", "messages");
+        LlmJsonInput.Request(request.Model, request.Messages, request.Parameters);
     }
 }

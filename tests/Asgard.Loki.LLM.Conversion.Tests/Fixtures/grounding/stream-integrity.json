@@ -1,0 +1,16 @@
+{
+  "Source":[
+    {"responseId":"ground-r","modelVersion":"model-a","candidates":[{"index":0,"content":{"role":"model","parts":[{"text":"前😀"}]},"groundingMetadata":{"groundingChunks":[{"web":{"uri":"https://same.invalid/source","title":"第一来源"},"future":{"value":null}}]}}]},
+    {"responseId":"ground-r","modelVersion":"model-a","candidates":[{"index":0,"content":{"role":"model","parts":[{"text":"答案"}]},"groundingMetadata":{"groundingChunks":[{"web":{"uri":"https://same.invalid/source","title":"第二来源"},"future":false}],"groundingSupports":[{"segment":{"partIndex":0,"startIndex":0,"endIndex":3,"text":"前"},"groundingChunkIndices":[0],"confidenceScores":[0.9],"future":null},{"segment":{"partIndex":0,"startIndex":3,"endIndex":7,"text":"😀"},"groundingChunkIndices":[1]}]}}]},
+    {"responseId":"ground-r","modelVersion":"model-a","candidates":[{"index":0,"groundingMetadata":{"groundingSupports":[{"segment":{"partIndex":0,"startIndex":7,"endIndex":13,"text":"答案"},"groundingChunkIndices":[2],"renderedParts":[0]}]}}]},
+    {"responseId":"ground-r","modelVersion":"model-a","candidates":[{"index":0,"groundingMetadata":{"groundingChunks":[{"web":{"uri":"https://third.invalid/source","title":"第三来源"},"future":[null,false]}]},"finishReason":"STOP"}]},
+    {"responseId":"ground-r","modelVersion":"model-a","usageMetadata":{"promptTokenCount":3,"candidatesTokenCount":4,"totalTokenCount":7}}
+  ],
+  "Chat":[
+    {"id":"ground-r","object":"chat.completion.chunk","created":0,"model":"model-a","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]},
+    {"id":"ground-r","object":"chat.completion.chunk","created":0,"model":"model-a","choices":[{"index":0,"delta":{"content":"前😀"},"finish_reason":null}]},
+    {"id":"ground-r","object":"chat.completion.chunk","created":0,"model":"model-a","choices":[{"index":0,"delta":{"content":"答案"},"finish_reason":null}]},
+    {"id":"ground-r","object":"chat.completion.chunk","created":0,"model":"model-a","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":3,"completion_tokens":4,"total_tokens":7}}
+  ],
+  "GeminiRequest":{"contents":[{"role":"user","parts":[{"text":"start"}]}]}
+}

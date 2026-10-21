@@ -1,0 +1,12 @@
+{
+  "model": "native-generation-model",
+  "prompt": "原生图片 😀\nkeep the requested style",
+  "n": 2,
+  "background": "transparent",
+  "output_format": "webp",
+  "output_compression": 70,
+  "quality": "high",
+  "size": "1024x1024",
+  "future": {"exact":900719925474099312345,"decimal":0.123456789012345678901,"nested":[null,false,"😀"]},
+  "future_null": null
+}

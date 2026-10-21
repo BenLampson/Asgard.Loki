@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <EmbeddedResource Include="Fixtures/**/*" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.Midjourney/Asgard.Loki.Image.Midjourney.csproj" />
+  </ItemGroup>
+</Project>

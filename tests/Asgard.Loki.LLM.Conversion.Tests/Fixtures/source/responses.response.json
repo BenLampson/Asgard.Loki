@@ -1,0 +1,62 @@
+{
+  "id": "r1",
+  "object": "response",
+  "created_at": 0,
+  "model": "model-a",
+  "status": "completed",
+  "output": [
+    {
+      "type": "message",
+      "id": "msg_r1_0",
+      "status": "completed",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "你好",
+          "annotations": []
+        }
+      ]
+    },
+    {
+      "type": "function_call",
+      "id": "fc_call_1",
+      "call_id": "call_1",
+      "name": "lookup",
+      "arguments": "{\"x\":0}",
+      "status": "completed"
+    }
+  ],
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 2,
+    "total_tokens": 5
+  },
+  "service_tier": "default",
+  "metadata": {
+    "trace": "offline"
+  },
+  "completed_at": 1,
+  "instructions": null,
+  "temperature": 0,
+  "top_p": 1,
+  "max_output_tokens": 128,
+  "parallel_tool_calls": false,
+  "previous_response_id": null,
+  "store": true,
+  "background": false,
+  "tools": [],
+  "tool_choice": "auto",
+  "reasoning": {
+    "effort": null,
+    "summary": null
+  },
+  "text": {
+    "format": {
+      "type": "text"
+    }
+  },
+  "truncation": "disabled",
+  "error": null,
+  "incomplete_details": null
+}

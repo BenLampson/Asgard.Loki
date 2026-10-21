@@ -1,0 +1,1393 @@
+{
+  "provenance": "Independently authored complete native Chat request/result/frame/literal SSE contracts before profile tests; no provider output used. Unknown/optional preservation does not prove endpoint/model/setting acceptance. SSE data is native CompletionChunk, not a new JSON wrapper derived from SDK CompletionEvent.data.",
+  "sources": [
+    "https://docs.mistral.ai/openapi.yaml",
+    "https://docs.mistral.ai/api/endpoint/chat",
+    "https://docs.mistral.ai/studio/conversations/reasoning"
+  ],
+  "profiles": [
+    {
+      "root": "https://api.mistral.ai/v1/",
+      "key": "fixture-mistral-native"
+    },
+    {
+      "root": "https://proxy.invalid/tenant/mistral/v1/",
+      "key": "fixture-mistral-proxy"
+    }
+  ],
+  "reasoning": {
+    "model": "selected-mistral-reasoning",
+    "caller": {
+      "model": "public",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "thinking",
+              "thinking": [
+                {
+                  "type": "text",
+                  "text": "old reasoning"
+                }
+              ],
+              "signature": "opaque-history",
+              "closed": true
+            },
+            {
+              "type": "text",
+              "text": "old answer"
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_url",
+              "image_url": "https://media.invalid/raw-image.png"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "https://media.invalid/detailed-image.png",
+                "detail": "high"
+              }
+            },
+            {
+              "type": "text",
+              "text": "Return JSON with integer value."
+            }
+          ]
+        }
+      ],
+      "reasoning_effort": "high",
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "native",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "temperature": 0.25,
+      "prediction": {
+        "type": "content",
+        "content": "{\"value\":"
+      }
+    },
+    "wire": {
+      "model": "selected-mistral-reasoning",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "thinking",
+              "thinking": [
+                {
+                  "type": "text",
+                  "text": "old reasoning"
+                }
+              ],
+              "signature": "opaque-history",
+              "closed": true
+            },
+            {
+              "type": "text",
+              "text": "old answer"
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_url",
+              "image_url": "https://media.invalid/raw-image.png"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "https://media.invalid/detailed-image.png",
+                "detail": "high"
+              }
+            },
+            {
+              "type": "text",
+              "text": "Return JSON with integer value."
+            }
+          ]
+        }
+      ],
+      "reasoning_effort": "high",
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "native",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "temperature": 0.25,
+      "prediction": {
+        "type": "content",
+        "content": "{\"value\":"
+      },
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-mistral-reasoning",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "thinking",
+              "thinking": [
+                {
+                  "type": "text",
+                  "text": "old reasoning"
+                }
+              ],
+              "signature": "opaque-history",
+              "closed": true
+            },
+            {
+              "type": "text",
+              "text": "old answer"
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_url",
+              "image_url": "https://media.invalid/raw-image.png"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "https://media.invalid/detailed-image.png",
+                "detail": "high"
+              }
+            },
+            {
+              "type": "text",
+              "text": "Return JSON with integer value."
+            }
+          ]
+        }
+      ],
+      "reasoning_effort": "high",
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "native",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "temperature": 0.25,
+      "prediction": {
+        "type": "content",
+        "content": "{\"value\":"
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "mistral-reasoning",
+      "object": "chat.completion",
+      "created": 100,
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": [
+                  {
+                    "type": "text",
+                    "text": "思考AB"
+                  }
+                ],
+                "signature": "opaque-native-signature",
+                "closed": true
+              },
+              {
+                "type": "text",
+                "text": "{\"value\":9007199254740993}"
+              }
+            ]
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 20,
+        "completion_tokens": 8,
+        "total_tokens": 28,
+        "service_tier": "standard",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "mistral-reasoning",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": [
+                    {
+                      "type": "text",
+                      "text": "思考A"
+                    }
+                  ],
+                  "signature": null,
+                  "closed": false
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "mistral-reasoning",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": [
+                    {
+                      "type": "text",
+                      "text": "B"
+                    }
+                  ],
+                  "signature": "opaque-native-signature",
+                  "closed": true
+                },
+                {
+                  "type": "text",
+                  "text": "{\"value\":"
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "mistral-reasoning",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "9007199254740993}"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "mistral-reasoning",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 20,
+          "completion_tokens": 8,
+          "total_tokens": 28,
+          "service_tier": "standard",
+          "future": {
+            "integer": 9007199254740993,
+            "null": null,
+            "false": false,
+            "zero": 0,
+            "empty": []
+          }
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-reasoning\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":[{\"type\":\"text\",\"text\":\"思考A\"}],\"signature\":null,\"closed\":false}]},\"finish_reason\":null}]}\n\nid: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-reasoning\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":[{\"type\":\"thinking\",\"thinking\":[{\"type\":\"text\",\"text\":\"B\"}],\"signature\":\"opaque-native-signature\",\"closed\":true},{\"type\":\"text\",\"text\":\"{\\\"value\\\":\"}]},\"finish_reason\":null}]}\n\nid: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-reasoning\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"9007199254740993}\"},\"finish_reason\":null}]}\n\nid: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-reasoning\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":8,\"total_tokens\":28,\"service_tier\":\"standard\",\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[]}},\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "tools": {
+    "model": "selected-mistral-tools",
+    "caller": {
+      "model": "public",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "oldcallA1",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": {
+                  "n": 9007199254740993
+                }
+              }
+            },
+            {
+              "id": "oldcallB2",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "lookup_b",
+          "tool_call_id": "oldcallB2",
+          "content": [
+            {
+              "type": "text",
+              "text": "B"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "lookup_a",
+          "tool_call_id": "oldcallA1",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "Continue with tools."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "description": "A",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_b",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "tool_choice": "any",
+      "parallel_tool_calls": true,
+      "frequency_penalty": 0,
+      "presence_penalty": 0,
+      "stop": []
+    },
+    "wire": {
+      "model": "selected-mistral-tools",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "oldcallA1",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": {
+                  "n": 9007199254740993
+                }
+              }
+            },
+            {
+              "id": "oldcallB2",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "lookup_b",
+          "tool_call_id": "oldcallB2",
+          "content": [
+            {
+              "type": "text",
+              "text": "B"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "lookup_a",
+          "tool_call_id": "oldcallA1",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "Continue with tools."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "description": "A",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_b",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "tool_choice": "any",
+      "parallel_tool_calls": true,
+      "frequency_penalty": 0,
+      "presence_penalty": 0,
+      "stop": [],
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-mistral-tools",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "oldcallA1",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": {
+                  "n": 9007199254740993
+                }
+              }
+            },
+            {
+              "id": "oldcallB2",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "lookup_b",
+          "tool_call_id": "oldcallB2",
+          "content": [
+            {
+              "type": "text",
+              "text": "B"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "lookup_a",
+          "tool_call_id": "oldcallA1",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "Continue with tools."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_a",
+            "description": "A",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_b",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "tool_choice": "any",
+      "parallel_tool_calls": true,
+      "frequency_penalty": 0,
+      "presence_penalty": 0,
+      "stop": [],
+      "stream": true
+    },
+    "result": {
+      "id": "mistral-tools",
+      "object": "chat.completion",
+      "created": 100,
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "newcallA1",
+                "type": "function",
+                "function": {
+                  "name": "lookup_a",
+                  "arguments": "{\"n\":9007199254740993}"
+                }
+              },
+              {
+                "id": "newcallB2",
+                "type": "function",
+                "function": {
+                  "name": "lookup_b",
+                  "arguments": "{\"enabled\":false}"
+                }
+              }
+            ]
+          },
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 20,
+        "completion_tokens": 8,
+        "total_tokens": 28,
+        "service_tier": "standard",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "mistral-tools",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "content": null,
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "newcallA1",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_a",
+                    "arguments": "{\"n\":"
+                  }
+                },
+                {
+                  "index": 1,
+                  "id": "newcallB2",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_b",
+                    "arguments": "{\"enabled\":"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "mistral-tools",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "name": "lookup_b",
+                    "arguments": "false}"
+                  }
+                },
+                {
+                  "index": 0,
+                  "function": {
+                    "name": "lookup_a",
+                    "arguments": "9007199254740993}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "mistral-tools",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 20,
+          "completion_tokens": 8,
+          "total_tokens": 28,
+          "service_tier": "standard",
+          "future": {
+            "integer": 9007199254740993,
+            "null": null,
+            "false": false,
+            "zero": 0,
+            "empty": []
+          }
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-tools\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"index\":0,\"id\":\"newcallA1\",\"type\":\"function\",\"function\":{\"name\":\"lookup_a\",\"arguments\":\"{\\\"n\\\":\"}},{\"index\":1,\"id\":\"newcallB2\",\"type\":\"function\",\"function\":{\"name\":\"lookup_b\",\"arguments\":\"{\\\"enabled\\\":\"}}]},\"finish_reason\":null}]}\n\nid: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-tools\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"name\":\"lookup_b\",\"arguments\":\"false}\"}},{\"index\":0,\"function\":{\"name\":\"lookup_a\",\"arguments\":\"9007199254740993}\"}}]},\"finish_reason\":null}]}\n\nid: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-tools\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":8,\"total_tokens\":28,\"service_tier\":\"standard\",\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[]}},\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "prefix": {
+    "model": "selected-mistral-prefix",
+    "caller": {
+      "model": "public",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a small function."
+        },
+        {
+          "role": "assistant",
+          "content": "def 原文(x):\n    ",
+          "prefix": true
+        }
+      ],
+      "reasoning_effort": "none"
+    },
+    "wire": {
+      "model": "selected-mistral-prefix",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a small function."
+        },
+        {
+          "role": "assistant",
+          "content": "def 原文(x):\n    ",
+          "prefix": true
+        }
+      ],
+      "reasoning_effort": "none",
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-mistral-prefix",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a small function."
+        },
+        {
+          "role": "assistant",
+          "content": "def 原文(x):\n    ",
+          "prefix": true
+        }
+      ],
+      "reasoning_effort": "none",
+      "stream": true
+    },
+    "result": {
+      "id": "mistral-prefix",
+      "object": "chat.completion",
+      "created": 100,
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "return x + 1",
+            "prefix": false
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 20,
+        "completion_tokens": 8,
+        "total_tokens": 28,
+        "service_tier": "standard",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "mistral-prefix",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "content": "return x"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "mistral-prefix",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": " + 1"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "mistral-prefix",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 20,
+          "completion_tokens": 8,
+          "total_tokens": 28,
+          "service_tier": "standard",
+          "future": {
+            "integer": 9007199254740993,
+            "null": null,
+            "false": false,
+            "zero": 0,
+            "empty": []
+          }
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-prefix\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"return x\"},\"finish_reason\":null}]}\n\nid: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-prefix\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" + 1\"},\"finish_reason\":null}]}\n\nid: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-prefix\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":8,\"total_tokens\":28,\"service_tier\":\"standard\",\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[]}},\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "json": {
+    "model": "selected-mistral-json",
+    "caller": {
+      "model": "public",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Return JSON with integer value."
+        }
+      ],
+      "reasoning_effort": "none",
+      "response_format": {
+        "type": "json_object"
+      }
+    },
+    "wire": {
+      "model": "selected-mistral-json",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Return JSON with integer value."
+        }
+      ],
+      "reasoning_effort": "none",
+      "response_format": {
+        "type": "json_object"
+      },
+      "stream": false
+    },
+    "wire_stream": {
+      "model": "selected-mistral-json",
+      "random_seed": 0,
+      "safe_prompt": false,
+      "min_tokens": 0,
+      "max_tokens": 256,
+      "metadata": {
+        "chosen": "caller",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "prompt_cache_key": "selected-cache",
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Return JSON with integer value."
+        }
+      ],
+      "reasoning_effort": "none",
+      "response_format": {
+        "type": "json_object"
+      },
+      "stream": true
+    },
+    "result": {
+      "id": "mistral-json",
+      "object": "chat.completion",
+      "created": 100,
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"value\":9007199254740993}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 20,
+        "completion_tokens": 8,
+        "total_tokens": 28,
+        "service_tier": "standard",
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "mistral-json",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "content": "{\"value\":"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "mistral-json",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "9007199254740993}"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "mistral-json",
+        "object": "chat.completion.chunk",
+        "created": 100,
+        "model": "reported-native-model",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 20,
+          "completion_tokens": 8,
+          "total_tokens": 28,
+          "service_tier": "standard",
+          "future": {
+            "integer": 9007199254740993,
+            "null": null,
+            "false": false,
+            "zero": 0,
+            "empty": []
+          }
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "null": null,
+          "false": false,
+          "zero": 0,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-json\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"{\\\"value\\\":\"},\"finish_reason\":null}]}\n\nid: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-json\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"9007199254740993}\"},\"finish_reason\":null}]}\n\nid: mistral-transport\nretry: 0\ndata: {\"id\":\"mistral-json\",\"object\":\"chat.completion.chunk\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":8,\"total_tokens\":28,\"service_tier\":\"standard\",\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[]}},\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "error": {
+    "object": "error",
+    "message": "original native rejection",
+    "type": "invalid_request_error",
+    "param": null,
+    "code": "native_failure",
+    "future": {
+      "integer": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": []
+    }
+  }
+}

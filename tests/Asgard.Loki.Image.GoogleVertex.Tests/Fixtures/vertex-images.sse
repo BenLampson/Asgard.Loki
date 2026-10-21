@@ -1,0 +1,20 @@
+event: message
+id: vertex-0
+retry: 600
+data: {"candidates":[{"content":{"parts":[{"text":"first","thought":true,"thoughtSignature":"thought=="}]}},{"index":5,"content":{"parts":[{"text":"five"}]}}],"usageMetadata":{"promptTokenCount":9},"responseId":"stream-fixture"}
+
+event: message
+id: vertex-1
+retry: 600
+data: {"candidates":[{"index":5,"content":{"parts":[{"inlineData":{"mimeType":"image/png","data":"AQID"},"thoughtSignature":"image=="}]},"finishReason":"STOP"}],"usageMetadata":{"promptTokenCount":9,"candidatesTokenCount":3}}
+
+event: message
+id: vertex-2
+retry: 600
+data: {"candidates":[{"index":0,"finishReason":"IMAGE_SAFETY","safetyRatings":[{"blocked":true}]}],"usageMetadata":{"promptTokenCount":9,"candidatesTokenCount":4}}
+
+event: message
+id: vertex-3
+retry: 600
+data: {"usageMetadata":{"promptTokenCount":9,"candidatesTokenCount":4,"totalTokenCount":13},"future":false}
+

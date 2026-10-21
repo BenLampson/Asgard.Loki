@@ -1,0 +1,226 @@
+{
+  "source": {
+    "schema_commit": "59c8e482c0403f60118e2a8dc7c4a88e435db8b0",
+    "schema_blob": "30513c7e8f941f944091d857bb27e201c7fcf32e",
+    "reference": "https://learn.microsoft.com/en-us/azure/foundry/openai/reference-preview",
+    "note": "Dated deployment-scoped JSON generation and native multipart edits; no v1 endpoint or streaming result validation implied"
+  },
+  "target": {
+    "root": "https://azure-image.example.invalid/prefix/",
+    "deployment": "literal.image-deployment",
+    "api_version": "fixture-version+literal",
+    "api_key": "fixture-azure-image-key",
+    "body_model": "native-body-model"
+  },
+  "generation_requests": [
+    {
+      "prompt": "原始图像提示 😀\r\n下一行",
+      "n": 2,
+      "quality": "high",
+      "size": "1024x1024",
+      "background": "transparent",
+      "output_format": "png",
+      "output_compression": 0,
+      "user": "original-user",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原始 😀\r\n下一行"
+      }
+    },
+    {
+      "model": "native-body-model",
+      "prompt": "原始图像提示 😀\r\n下一行",
+      "n": 1,
+      "stream": false,
+      "response_format": "url",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原始 😀\r\n下一行"
+      }
+    }
+  ],
+  "multipart_edits": [
+    {
+      "body_model": null,
+      "prompt": "原始编辑 😀\r\n保留换行",
+      "images": [
+        {
+          "filename": "first.png",
+          "content_type": "image/png",
+          "hex": "000102ff0d0a"
+        }
+      ],
+      "mask": null,
+      "fields": [
+        {
+          "name": "n",
+          "value": "1"
+        },
+        {
+          "name": "output_compression",
+          "value": "0"
+        },
+        {
+          "name": "Future[]",
+          "value": "first literal"
+        },
+        {
+          "name": "Future[]",
+          "value": "{\"enabled\":false,\"big\":9007199254740993,\"missing\":null}"
+        },
+        {
+          "name": "empty",
+          "value": ""
+        }
+      ],
+      "golden": "edit-1.multipart"
+    },
+    {
+      "body_model": "native-body-model",
+      "prompt": "原始编辑 😀\r\n保留换行",
+      "images": [
+        {
+          "filename": "first.png",
+          "content_type": "image/png",
+          "hex": "000102ff0d0a"
+        },
+        {
+          "filename": "second.jpg",
+          "content_type": "image/jpeg",
+          "hex": "ffd800807f"
+        }
+      ],
+      "mask": {
+        "filename": "mask.png",
+        "content_type": "image/png",
+        "hex": "0080ff00"
+      },
+      "fields": [
+        {
+          "name": "n",
+          "value": "1"
+        },
+        {
+          "name": "stream",
+          "value": "false"
+        },
+        {
+          "name": "output_compression",
+          "value": "0"
+        },
+        {
+          "name": "Future[]",
+          "value": "first literal"
+        },
+        {
+          "name": "Future[]",
+          "value": "{\"enabled\":false,\"big\":9007199254740993,\"missing\":null}"
+        },
+        {
+          "name": "empty",
+          "value": ""
+        }
+      ],
+      "golden": "edit-2.multipart"
+    }
+  ],
+  "result": {
+    "created": 9007199254740993,
+    "data": [
+      {
+        "b64_json": "AAEC/w==",
+        "revised_prompt": "原生改写 😀\r\n原文",
+        "content_filter_results": {
+          "hate": {
+            "filtered": false,
+            "severity": "safe",
+            "Future": null
+          }
+        },
+        "prompt_filter_results": {
+          "sexual": {
+            "filtered": false,
+            "severity": "safe"
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原始 😀\r\n下一行"
+        }
+      },
+      {
+        "url": "https://media.example.invalid/image%2Ftwo.png?sig=fixture%2B2&part=0",
+        "revised_prompt": "second original",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原始 😀\r\n下一行"
+        }
+      }
+    ],
+    "usage": {
+      "input_tokens": 9007199254740993,
+      "output_tokens": 0,
+      "total_tokens": 9007199254740993,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 9007199254740993,
+        "Future": null
+      },
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原始 😀\r\n下一行"
+      }
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Text": "原始 😀\r\n下一行"
+    }
+  },
+  "error": {
+    "error": {
+      "code": "content_policy_violation",
+      "message": "原生策略消息 😀",
+      "innererror": {
+        "code": "ResponsibleAIPolicyViolation",
+        "content_filter_results": {
+          "violence": {
+            "filtered": true,
+            "severity": "high"
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原始 😀\r\n下一行"
+        }
+      }
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Text": "原始 😀\r\n下一行"
+    }
+  }
+}

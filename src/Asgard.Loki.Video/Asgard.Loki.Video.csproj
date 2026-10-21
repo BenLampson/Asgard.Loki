@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Reserved video capability scaffold for Asgard.Loki.</Description>
+    <Description>Independent native video task calls and complete-target task binding for Asgard.Loki.</Description>
   </PropertyGroup>
 
   <ItemGroup>

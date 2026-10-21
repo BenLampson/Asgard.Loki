@@ -1,0 +1,678 @@
+{
+  "sources": [
+    "https://learn.microsoft.com/en-us/azure/foundry/openai/reference-preview",
+    "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/dall-e#streaming",
+    "https://developers.openai.com/api/reference/resources/images/generation-streaming-events",
+    "https://developers.openai.com/api/reference/resources/images/edit-streaming-events"
+  ],
+  "note": "Authored original native-shaped fictional vectors, not Azure traffic or proof of model acceptance. n=2 and optional DONE exercise explicit SDK completion policy; no model/catalog/version migration.",
+  "generation_requests": [
+    {
+      "prompt": "原始图像提示 😀\r\n下一行",
+      "n": 1,
+      "quality": "high",
+      "size": "1024x1024",
+      "background": "transparent",
+      "output_format": "png",
+      "output_compression": 0,
+      "user": "original-user",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原始 😀\r\n下一行"
+      },
+      "stream": true,
+      "partial_images": 3
+    },
+    {
+      "prompt": "原始图像提示 😀\r\n下一行",
+      "n": 2,
+      "quality": "high",
+      "size": "1024x1024",
+      "background": "transparent",
+      "output_format": "png",
+      "output_compression": 0,
+      "user": "original-user",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原始 😀\r\n下一行"
+      },
+      "stream": true,
+      "partial_images": 3
+    }
+  ],
+  "edit_requests": [
+    {
+      "body_model": null,
+      "prompt": "原始编辑 😀\r\n保留换行",
+      "images": [
+        {
+          "filename": "first.png",
+          "content_type": "image/png",
+          "hex": "000102ff0d0a"
+        }
+      ],
+      "mask": null,
+      "fields": [
+        {
+          "name": "n",
+          "value": "1"
+        },
+        {
+          "name": "stream",
+          "value": "true"
+        },
+        {
+          "name": "partial_images",
+          "value": "3"
+        },
+        {
+          "name": "output_compression",
+          "value": "0"
+        },
+        {
+          "name": "Future[]",
+          "value": "first literal"
+        },
+        {
+          "name": "Future[]",
+          "value": "{\"enabled\":false,\"big\":9007199254740993,\"missing\":null}"
+        },
+        {
+          "name": "empty",
+          "value": ""
+        }
+      ],
+      "golden": "edit-stream-1.multipart"
+    },
+    {
+      "body_model": "native-body-model",
+      "prompt": "原始编辑 😀\r\n保留换行",
+      "images": [
+        {
+          "filename": "first.png",
+          "content_type": "image/png",
+          "hex": "000102ff0d0a"
+        },
+        {
+          "filename": "second.jpg",
+          "content_type": "image/jpeg",
+          "hex": "ffd800807f"
+        }
+      ],
+      "mask": {
+        "filename": "mask.png",
+        "content_type": "image/png",
+        "hex": "0080ff00"
+      },
+      "fields": [
+        {
+          "name": "n",
+          "value": "2"
+        },
+        {
+          "name": "stream",
+          "value": "true"
+        },
+        {
+          "name": "partial_images",
+          "value": "3"
+        },
+        {
+          "name": "output_compression",
+          "value": "0"
+        },
+        {
+          "name": "Future[]",
+          "value": "first literal"
+        },
+        {
+          "name": "Future[]",
+          "value": "{\"enabled\":false,\"big\":9007199254740993,\"missing\":null}"
+        },
+        {
+          "name": "empty",
+          "value": ""
+        }
+      ],
+      "golden": "edit-stream-2.multipart"
+    }
+  ],
+  "streams": [
+    {
+      "operation": "generation",
+      "count": 1,
+      "wire": "generation-stream-1.sse",
+      "frames": [
+        {
+          "data": {
+            "type": "azure.image.native_notice",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"azure.image.native_notice\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "azure.image.native_notice",
+          "id": "notice-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_generation.partial_image",
+            "b64_json": "AAEC/w==",
+            "partial_image_index": 0,
+            "created_at": 0,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_generation.partial_image\",\"b64_json\":\"AAEC/w==\",\"partial_image_index\":0,\"created_at\":0,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_generation.partial_image",
+          "id": "partial-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_generation.completed",
+            "b64_json": "BAUG/w==",
+            "created_at": 9007199254740993,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "usage": {
+              "input_tokens": 9007199254740993,
+              "output_tokens": 0,
+              "total_tokens": 9007199254740993,
+              "input_tokens_details": {
+                "text_tokens": 0,
+                "image_tokens": 9007199254740993,
+                "Future": null
+              },
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Text": "原始 😀\r\n下一行"
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_generation.completed\",\"b64_json\":\"BAUG/w==\",\"created_at\":9007199254740993,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"usage\":{\"input_tokens\":9007199254740993,\"output_tokens\":0,\"total_tokens\":9007199254740993,\"input_tokens_details\":{\"text_tokens\":0,\"image_tokens\":9007199254740993,\"Future\":null},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_generation.completed",
+          "id": "original-final-0",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "operation": "generation",
+      "count": 2,
+      "wire": "generation-stream-2.sse",
+      "frames": [
+        {
+          "data": {
+            "type": "azure.image.native_notice",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"azure.image.native_notice\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "azure.image.native_notice",
+          "id": "notice-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_generation.partial_image",
+            "b64_json": "AAEC/w==",
+            "partial_image_index": 0,
+            "created_at": 0,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_generation.partial_image\",\"b64_json\":\"AAEC/w==\",\"partial_image_index\":0,\"created_at\":0,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_generation.partial_image",
+          "id": "partial-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_generation.completed",
+            "b64_json": "BAUG/w==",
+            "created_at": 9007199254740993,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "usage": {
+              "input_tokens": 9007199254740993,
+              "output_tokens": 0,
+              "total_tokens": 9007199254740993,
+              "input_tokens_details": {
+                "text_tokens": 0,
+                "image_tokens": 9007199254740993,
+                "Future": null
+              },
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Text": "原始 😀\r\n下一行"
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_generation.completed\",\"b64_json\":\"BAUG/w==\",\"created_at\":9007199254740993,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"usage\":{\"input_tokens\":9007199254740993,\"output_tokens\":0,\"total_tokens\":9007199254740993,\"input_tokens_details\":{\"text_tokens\":0,\"image_tokens\":9007199254740993,\"Future\":null},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_generation.completed",
+          "id": "original-final-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "azure.image.native_notice",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"azure.image.native_notice\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "azure.image.native_notice",
+          "id": "notice-between",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_generation.partial_image",
+            "b64_json": "AAEC/w==",
+            "partial_image_index": 0,
+            "created_at": 0,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_generation.partial_image\",\"b64_json\":\"AAEC/w==\",\"partial_image_index\":0,\"created_at\":0,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_generation.partial_image",
+          "id": "partial-1",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_generation.completed",
+            "b64_json": "BwgJ/w==",
+            "created_at": 9007199254740993,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "usage": {
+              "input_tokens": 9007199254740993,
+              "output_tokens": 0,
+              "total_tokens": 9007199254740993,
+              "input_tokens_details": {
+                "text_tokens": 0,
+                "image_tokens": 9007199254740993,
+                "Future": null
+              },
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Text": "原始 😀\r\n下一行"
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_generation.completed\",\"b64_json\":\"BwgJ/w==\",\"created_at\":9007199254740993,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"usage\":{\"input_tokens\":9007199254740993,\"output_tokens\":0,\"total_tokens\":9007199254740993,\"input_tokens_details\":{\"text_tokens\":0,\"image_tokens\":9007199254740993,\"Future\":null},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_generation.completed",
+          "id": "original-final-1",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "operation": "edit",
+      "count": 1,
+      "wire": "edit-stream-1.sse",
+      "frames": [
+        {
+          "data": {
+            "type": "azure.image.native_notice",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"azure.image.native_notice\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "azure.image.native_notice",
+          "id": "notice-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_edit.partial_image",
+            "b64_json": "AAEC/w==",
+            "partial_image_index": 0,
+            "created_at": 0,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_edit.partial_image\",\"b64_json\":\"AAEC/w==\",\"partial_image_index\":0,\"created_at\":0,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_edit.partial_image",
+          "id": "partial-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_edit.completed",
+            "b64_json": "BAUG/w==",
+            "created_at": 9007199254740993,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "usage": {
+              "input_tokens": 9007199254740993,
+              "output_tokens": 0,
+              "total_tokens": 9007199254740993,
+              "input_tokens_details": {
+                "text_tokens": 0,
+                "image_tokens": 9007199254740993,
+                "Future": null
+              },
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Text": "原始 😀\r\n下一行"
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_edit.completed\",\"b64_json\":\"BAUG/w==\",\"created_at\":9007199254740993,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"usage\":{\"input_tokens\":9007199254740993,\"output_tokens\":0,\"total_tokens\":9007199254740993,\"input_tokens_details\":{\"text_tokens\":0,\"image_tokens\":9007199254740993,\"Future\":null},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_edit.completed",
+          "id": "original-final-0",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "operation": "edit",
+      "count": 2,
+      "wire": "edit-stream-2.sse",
+      "frames": [
+        {
+          "data": {
+            "type": "azure.image.native_notice",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"azure.image.native_notice\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "azure.image.native_notice",
+          "id": "notice-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_edit.partial_image",
+            "b64_json": "AAEC/w==",
+            "partial_image_index": 0,
+            "created_at": 0,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_edit.partial_image\",\"b64_json\":\"AAEC/w==\",\"partial_image_index\":0,\"created_at\":0,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_edit.partial_image",
+          "id": "partial-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_edit.completed",
+            "b64_json": "BAUG/w==",
+            "created_at": 9007199254740993,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "usage": {
+              "input_tokens": 9007199254740993,
+              "output_tokens": 0,
+              "total_tokens": 9007199254740993,
+              "input_tokens_details": {
+                "text_tokens": 0,
+                "image_tokens": 9007199254740993,
+                "Future": null
+              },
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Text": "原始 😀\r\n下一行"
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_edit.completed\",\"b64_json\":\"BAUG/w==\",\"created_at\":9007199254740993,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"usage\":{\"input_tokens\":9007199254740993,\"output_tokens\":0,\"total_tokens\":9007199254740993,\"input_tokens_details\":{\"text_tokens\":0,\"image_tokens\":9007199254740993,\"Future\":null},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_edit.completed",
+          "id": "original-final-0",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "azure.image.native_notice",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"azure.image.native_notice\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "azure.image.native_notice",
+          "id": "notice-between",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_edit.partial_image",
+            "b64_json": "AAEC/w==",
+            "partial_image_index": 0,
+            "created_at": 0,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_edit.partial_image\",\"b64_json\":\"AAEC/w==\",\"partial_image_index\":0,\"created_at\":0,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_edit.partial_image",
+          "id": "partial-1",
+          "retry": 0
+        },
+        {
+          "data": {
+            "type": "image_edit.completed",
+            "b64_json": "BwgJ/w==",
+            "created_at": 9007199254740993,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "size": "1024x1024",
+            "usage": {
+              "input_tokens": 9007199254740993,
+              "output_tokens": 0,
+              "total_tokens": 9007199254740993,
+              "input_tokens_details": {
+                "text_tokens": 0,
+                "image_tokens": 9007199254740993,
+                "Future": null
+              },
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Text": "原始 😀\r\n下一行"
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Text": "原始 😀\r\n下一行"
+            }
+          },
+          "raw_data": "{\"type\":\"image_edit.completed\",\"b64_json\":\"BwgJ/w==\",\"created_at\":9007199254740993,\"background\":\"transparent\",\"output_format\":\"png\",\"quality\":\"high\",\"size\":\"1024x1024\",\"usage\":{\"input_tokens\":9007199254740993,\"output_tokens\":0,\"total_tokens\":9007199254740993,\"input_tokens_details\":{\"text_tokens\":0,\"image_tokens\":9007199254740993,\"Future\":null},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+          "event": "image_edit.completed",
+          "id": "original-final-1",
+          "retry": 0
+        }
+      ]
+    }
+  ],
+  "error_frame": {
+    "data": {
+      "type": "error",
+      "code": "content_policy_violation",
+      "message": "原生错误 😀",
+      "innererror": {
+        "code": "ResponsibleAIPolicyViolation",
+        "content_filter_results": {
+          "violence": {
+            "filtered": true,
+            "severity": "high"
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Text": "原始 😀\r\n下一行"
+        }
+      },
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Text": "原始 😀\r\n下一行"
+      }
+    },
+    "raw_data": "{\"type\":\"error\",\"code\":\"content_policy_violation\",\"message\":\"原生错误 😀\",\"innererror\":{\"code\":\"ResponsibleAIPolicyViolation\",\"content_filter_results\":{\"violence\":{\"filtered\":true,\"severity\":\"high\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}},\"Future\":{\"Big\":9007199254740993,\"Zero\":0,\"False\":false,\"Null\":null,\"Text\":\"原始 😀\\r\\n下一行\"}}",
+    "event": "error",
+    "id": "original-error-id",
+    "retry": 7
+  }
+}

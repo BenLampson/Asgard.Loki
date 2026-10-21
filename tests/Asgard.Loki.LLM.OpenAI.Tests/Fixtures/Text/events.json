@@ -1,0 +1,118 @@
+[
+  {
+    "id": "cmpl-text-a",
+    "object": "text_completion",
+    "model": "reported-text-model",
+    "choices": [
+      {
+        "index": 9007199254740993,
+        "text": "回",
+        "logprobs": {
+          "tokens": [
+            "回"
+          ],
+          "token_logprobs": [
+            -0.1
+          ],
+          "top_logprobs": [
+            {
+              "回": -0.1,
+              "来": -3.0
+            }
+          ],
+          "text_offset": [
+            0
+          ],
+          "future": {
+            "exact": 9007199254740993,
+            "zero": 0,
+            "false": false,
+            "null": null,
+            "empty": []
+          }
+        },
+        "finish_reason": null
+      }
+    ],
+    "usage": null
+  },
+  {
+    "id": "cmpl-text-a",
+    "object": "text_completion",
+    "model": "reported-text-model",
+    "choices": [
+      {
+        "index": 0,
+        "text": " B",
+        "logprobs": null,
+        "finish_reason": null
+      }
+    ]
+  },
+  {
+    "id": "cmpl-text-a",
+    "object": "text_completion",
+    "model": "reported-text-model",
+    "choices": [
+      {
+        "index": 9007199254740993,
+        "text": "",
+        "logprobs": {
+          "tokens": [],
+          "token_logprobs": [],
+          "top_logprobs": [],
+          "text_offset": []
+        },
+        "finish_reason": "length"
+      }
+    ]
+  },
+  {
+    "id": "cmpl-text-a",
+    "object": "text_completion",
+    "model": "reported-text-model",
+    "choices": [
+      {
+        "index": 0,
+        "text": "\n",
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ]
+  },
+  {
+    "id": "cmpl-text-a",
+    "object": "text_completion",
+    "model": "reported-text-model",
+    "choices": [],
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 3,
+      "total_tokens": 3,
+      "prompt_cache_hit_tokens": 0
+    },
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "null": null,
+      "empty": []
+    }
+  },
+  {
+    "type": "response.failed",
+    "response": {
+      "id": "unrelated-business-object"
+    },
+    "error": {
+      "business": false
+    },
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "null": null,
+      "empty": []
+    }
+  }
+]

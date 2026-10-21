@@ -1,0 +1,17 @@
+{
+  "system":[{"text":"原生 é 🚀"},{"cachePoint":{"type":"default"}}],
+  "messages":[
+    {"role":"user","content":[{"text":"lookup"},{"image":{"format":"png","source":{"bytes":"AQID"}}},{"document":{"format":"txt","name":"fixture","source":{"bytes":"SGVsbG8="}}},{"video":{"format":"mp4","source":{"s3Location":{"uri":"s3://fixture-bucket/object.mp4"}}}}]},
+    {"role":"assistant","content":[{"reasoningContent":{"reasoningText":{"text":"opaque reasoning","signature":"original-signature"}}},{"reasoningContent":{"redactedContent":"AQID"}},{"toolUse":{"toolUseId":"tool-native-7","name":"lookup","input":{"id":9007199254740993}}}]},
+    {"role":"user","content":[{"toolResult":{"toolUseId":"tool-native-7","status":"error","content":[{"json":{"value":9007199254740993,"future":false}},{"text":"native failed result"}]}}]}
+  ],
+  "toolConfig":{"tools":[{"toolSpec":{"name":"lookup","description":"native tool","inputSchema":{"json":{"type":"object","properties":{"id":{"type":"integer"}},"required":["id"]}}}}],"toolChoice":{"auto":{}}},
+  "inferenceConfig":{"maxTokens":4096,"temperature":0,"topP":1,"stopSequences":["END"]},
+  "additionalModelRequestFields":{"thinking":{"type":"enabled","budget_tokens":2048},"future_model":false},
+  "additionalModelResponseFieldPaths":["/stop_sequence"],
+  "outputConfig":{"textFormat":{"type":"json_schema","structure":{"jsonSchema":{"name":"answer","schema":"{\"type\":\"object\",\"properties\":{\"value\":{\"type\":\"integer\"}},\"required\":[\"value\"],\"additionalProperties\":false}"}}}},
+  "guardrailConfig":{"guardrailIdentifier":"fixture","guardrailVersion":"DRAFT","trace":"enabled"},
+  "performanceConfig":{"latency":"optimized"},"serviceTier":{"type":"default"},
+  "requestMetadata":{"fixture":"native"},
+  "future":{"integer":9223372036854775807,"nil":null,"false":false,"empty":[]}
+}

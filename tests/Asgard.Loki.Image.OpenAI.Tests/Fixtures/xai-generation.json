@@ -1,0 +1,68 @@
+{
+  "requests": [
+    {
+      "model": "native-xai-fixture",
+      "prompt": "原生 xAI 提示词",
+      "n": 1,
+      "response_format": "url",
+      "aspect_ratio": "16:9",
+      "future": {
+        "integer": 9007199254740993,
+        "none": null,
+        "flag": false
+      }
+    },
+    {
+      "model": "native-xai-fixture",
+      "prompt": "原生 Base64",
+      "response_format": "b64_json",
+      "n": 1,
+      "future": {
+        "zero": 0
+      }
+    }
+  ],
+  "url": {
+    "created": null,
+    "data": [
+      {
+        "url": "https://result.example.invalid/a%2Fb.jpg?sig=A%2BB",
+        "mime_type": "image/jpeg",
+        "revised_prompt": "",
+        "future": false
+      }
+    ],
+    "usage": {
+      "input_tokens": null,
+      "cost_in_usd_ticks": 9007199254740993,
+      "future": null
+    },
+    "future": false
+  },
+  "base64": {
+    "data": [
+      {
+        "url": null,
+        "b64_json": "AQID",
+        "mime_type": "image/png",
+        "revised_prompt": "native revision",
+        "future": {
+          "zero": 0
+        }
+      }
+    ],
+    "usage": {
+      "cost_in_usd_ticks": 22,
+      "future": false
+    },
+    "future": null
+  },
+  "error": {
+    "code": "fixture_error_code",
+    "error": "original fixture error",
+    "future": {
+      "integer": 9007199254740993,
+      "flag": false
+    }
+  }
+}

@@ -1,0 +1,1349 @@
+{
+  "sources": [
+    "https://github.com/Suno-API/Suno-API/tree/a63492c2ef24f06080c467b608b063503731dde5",
+    "https://github.com/QuantumNous/new-api/blob/058c8231b68c51ee02abee15befcd720fee9f4a2/plugins/tasks/sunoapi/plugin.js"
+  ],
+  "target": {
+    "root": "https://suno-proxy.example.invalid/prefix/",
+    "music_model": "fixture-chirp-version",
+    "authorization": "Bearer fixture-proxy-secret"
+  },
+  "requests": [
+    {
+      "operation": "MUSIC",
+      "body": {
+        "mv": "fixture-chirp-version",
+        "gpt_description_prompt": "原始描述 😀\n下一行",
+        "make_instrumental": false,
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operation": "MUSIC",
+      "body": {
+        "mv": "fixture-chirp-version",
+        "prompt": "[Verse]\r\n原始歌词 😀",
+        "title": "原始标题",
+        "tags": "literal,tags",
+        "task_id": "original-parent-task",
+        "continue_at": 0,
+        "continue_clip_id": "original-parent-clip",
+        "make_instrumental": true,
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operation": "LYRICS",
+      "body": {
+        "prompt": "原始歌词主题 😀\n保留换行",
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "submit": {
+    "music": {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": "task-music-01",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    "lyrics": {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": "task-lyrics-02",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    }
+  },
+  "batch_request": {
+    "ids": [
+      "task-music-01",
+      "task-lyrics-02"
+    ]
+  },
+  "batch_result": {
+    "code": "success",
+    "message": "original native message 😀",
+    "data": [
+      {
+        "id": 9007199254740993,
+        "created_at": 0,
+        "updated_at": 0,
+        "task_id": "task-lyrics-02",
+        "action": "LYRICS",
+        "status": "SUCCESS",
+        "fail_reason": "",
+        "submit_time": 0,
+        "start_time": 0,
+        "finish_time": 0,
+        "search_item": "original searchable metadata",
+        "data": {
+          "id": "original-lyric-id",
+          "status": "complete",
+          "title": "原始歌词标题",
+          "text": "[Verse]\r\n逐字保留 😀\r\n",
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      },
+      {
+        "id": 9007199254740993,
+        "created_at": 0,
+        "updated_at": 0,
+        "task_id": "task-music-01",
+        "action": "MUSIC",
+        "status": "SUCCESS",
+        "fail_reason": "",
+        "submit_time": 0,
+        "start_time": 0,
+        "finish_time": 0,
+        "search_item": "original searchable metadata",
+        "data": [
+          {
+            "id": "original-clip-1",
+            "audio_url": "https://media.example.invalid/audio%2Fone.mp3?signature=fixture%2B1",
+            "video_url": "https://media.example.invalid/one.mp4",
+            "image_url": "https://media.example.invalid/cover.jpg",
+            "image_large_url": "https://media.example.invalid/cover-large.jpg",
+            "status": "complete",
+            "title": "原标题",
+            "model_name": "original-native-model-name",
+            "major_model_version": "original-native-major",
+            "play_count": 9007199254740993,
+            "is_public": false,
+            "metadata": {
+              "prompt": "[Verse]\r\n原始歌词",
+              "tags": "original",
+              "duration": 37.5,
+              "stream": false,
+              "refund_credits": 0,
+              "error_type": null,
+              "error_message": null,
+              "history": [
+                {
+                  "id": "original-parent"
+                }
+              ],
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Nested": [
+                  {
+                    "Text": "原始 😀"
+                  }
+                ]
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Nested": [
+                {
+                  "Text": "原始 😀"
+                }
+              ]
+            }
+          },
+          {
+            "id": "original-clip-2",
+            "audio_url": "https://media.example.invalid/two.mp3?part=0",
+            "video_url": "",
+            "image_url": "",
+            "image_large_url": "https://media.example.invalid/cover-large.jpg",
+            "status": "complete",
+            "title": "第二首",
+            "model_name": "original-native-model-name",
+            "major_model_version": "original-native-major",
+            "play_count": 9007199254740993,
+            "is_public": false,
+            "metadata": {
+              "prompt": "[Verse]\r\n原始歌词",
+              "tags": "original",
+              "duration": 37.5,
+              "stream": false,
+              "refund_credits": 0,
+              "error_type": null,
+              "error_message": null,
+              "history": [
+                {
+                  "id": "original-parent"
+                }
+              ],
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Nested": [
+                  {
+                    "Text": "原始 😀"
+                  }
+                ]
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Nested": [
+                {
+                  "Text": "原始 😀"
+                }
+              ]
+            }
+          }
+        ],
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      }
+    ],
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Nested": [
+        {
+          "Text": "原始 😀"
+        }
+      ]
+    }
+  },
+  "batch_partial": {
+    "code": "success",
+    "message": "original native message 😀",
+    "data": [
+      {
+        "id": 9007199254740993,
+        "created_at": 0,
+        "updated_at": 0,
+        "task_id": "task-music-01",
+        "action": "MUSIC",
+        "status": "SUCCESS",
+        "fail_reason": "",
+        "submit_time": 0,
+        "start_time": 0,
+        "finish_time": 0,
+        "search_item": "original searchable metadata",
+        "data": [
+          {
+            "id": "original-clip-1",
+            "audio_url": "https://media.example.invalid/audio%2Fone.mp3?signature=fixture%2B1",
+            "video_url": "https://media.example.invalid/one.mp4",
+            "image_url": "https://media.example.invalid/cover.jpg",
+            "image_large_url": "https://media.example.invalid/cover-large.jpg",
+            "status": "complete",
+            "title": "原标题",
+            "model_name": "original-native-model-name",
+            "major_model_version": "original-native-major",
+            "play_count": 9007199254740993,
+            "is_public": false,
+            "metadata": {
+              "prompt": "[Verse]\r\n原始歌词",
+              "tags": "original",
+              "duration": 37.5,
+              "stream": false,
+              "refund_credits": 0,
+              "error_type": null,
+              "error_message": null,
+              "history": [
+                {
+                  "id": "original-parent"
+                }
+              ],
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Nested": [
+                  {
+                    "Text": "原始 😀"
+                  }
+                ]
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Nested": [
+                {
+                  "Text": "原始 😀"
+                }
+              ]
+            }
+          },
+          {
+            "id": "original-clip-2",
+            "audio_url": "https://media.example.invalid/two.mp3?part=0",
+            "video_url": "",
+            "image_url": "",
+            "image_large_url": "https://media.example.invalid/cover-large.jpg",
+            "status": "complete",
+            "title": "第二首",
+            "model_name": "original-native-model-name",
+            "major_model_version": "original-native-major",
+            "play_count": 9007199254740993,
+            "is_public": false,
+            "metadata": {
+              "prompt": "[Verse]\r\n原始歌词",
+              "tags": "original",
+              "duration": 37.5,
+              "stream": false,
+              "refund_credits": 0,
+              "error_type": null,
+              "error_message": null,
+              "history": [
+                {
+                  "id": "original-parent"
+                }
+              ],
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Nested": [
+                  {
+                    "Text": "原始 😀"
+                  }
+                ]
+              }
+            },
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Nested": [
+                {
+                  "Text": "原始 😀"
+                }
+              ]
+            }
+          }
+        ],
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      }
+    ],
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Nested": [
+        {
+          "Text": "原始 😀"
+        }
+      ]
+    }
+  },
+  "batch_empty": {
+    "code": "success",
+    "message": "original native message 😀",
+    "data": [],
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Nested": [
+        {
+          "Text": "原始 😀"
+        }
+      ]
+    }
+  },
+  "state_windows": [
+    {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": [
+        {
+          "id": 9007199254740993,
+          "created_at": 0,
+          "updated_at": 0,
+          "task_id": "task-music-01",
+          "action": "MUSIC",
+          "status": "NOT_START",
+          "fail_reason": "",
+          "submit_time": 0,
+          "start_time": 0,
+          "finish_time": 0,
+          "search_item": "original searchable metadata",
+          "data": null,
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": [
+        {
+          "id": 9007199254740993,
+          "created_at": 0,
+          "updated_at": 0,
+          "task_id": "task-music-01",
+          "action": "MUSIC",
+          "status": "SUBMITTED",
+          "fail_reason": "",
+          "submit_time": 0,
+          "start_time": 0,
+          "finish_time": 0,
+          "search_item": "original searchable metadata",
+          "data": null,
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": [
+        {
+          "id": 9007199254740993,
+          "created_at": 0,
+          "updated_at": 0,
+          "task_id": "task-music-01",
+          "action": "MUSIC",
+          "status": "QUEUED",
+          "fail_reason": "",
+          "submit_time": 0,
+          "start_time": 0,
+          "finish_time": 0,
+          "search_item": "original searchable metadata",
+          "data": null,
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": [
+        {
+          "id": 9007199254740993,
+          "created_at": 0,
+          "updated_at": 0,
+          "task_id": "task-music-01",
+          "action": "MUSIC",
+          "status": "IN_PROGRESS",
+          "fail_reason": "",
+          "submit_time": 0,
+          "start_time": 0,
+          "finish_time": 0,
+          "search_item": "original searchable metadata",
+          "data": [
+            {
+              "id": "original-clip-1",
+              "audio_url": "https://media.example.invalid/audio%2Fone.mp3?signature=fixture%2B1",
+              "video_url": "https://media.example.invalid/one.mp4",
+              "image_url": "https://media.example.invalid/cover.jpg",
+              "image_large_url": "https://media.example.invalid/cover-large.jpg",
+              "status": "complete",
+              "title": "原标题",
+              "model_name": "original-native-model-name",
+              "major_model_version": "original-native-major",
+              "play_count": 9007199254740993,
+              "is_public": false,
+              "metadata": {
+                "prompt": "[Verse]\r\n原始歌词",
+                "tags": "original",
+                "duration": 37.5,
+                "stream": false,
+                "refund_credits": 0,
+                "error_type": null,
+                "error_message": null,
+                "history": [
+                  {
+                    "id": "original-parent"
+                  }
+                ],
+                "Future": {
+                  "Big": 9007199254740993,
+                  "Zero": 0,
+                  "False": false,
+                  "Null": null,
+                  "Nested": [
+                    {
+                      "Text": "原始 😀"
+                    }
+                  ]
+                }
+              },
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Nested": [
+                  {
+                    "Text": "原始 😀"
+                  }
+                ]
+              }
+            }
+          ],
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": [
+        {
+          "id": 9007199254740993,
+          "created_at": 0,
+          "updated_at": 0,
+          "task_id": "task-music-01",
+          "action": "MUSIC",
+          "status": "UNKNOWN",
+          "fail_reason": "",
+          "submit_time": 0,
+          "start_time": 0,
+          "finish_time": 0,
+          "search_item": "original searchable metadata",
+          "data": null,
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": [
+        {
+          "id": 9007199254740993,
+          "created_at": 0,
+          "updated_at": 0,
+          "task_id": "task-music-01",
+          "action": "MUSIC",
+          "status": "new_native_state",
+          "fail_reason": "",
+          "submit_time": 0,
+          "start_time": 0,
+          "finish_time": 0,
+          "search_item": "original searchable metadata",
+          "data": null,
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": [
+        {
+          "id": 9007199254740993,
+          "created_at": 0,
+          "updated_at": 0,
+          "task_id": "task-music-01",
+          "action": "MUSIC",
+          "status": "success",
+          "fail_reason": "",
+          "submit_time": 0,
+          "start_time": 0,
+          "finish_time": 0,
+          "search_item": "original searchable metadata",
+          "data": null,
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    {
+      "code": "success",
+      "message": "original native message 😀",
+      "data": [
+        {
+          "id": 9007199254740993,
+          "created_at": 0,
+          "updated_at": 0,
+          "task_id": "task-music-01",
+          "action": "MUSIC",
+          "status": "FAILURE",
+          "fail_reason": "original failure reason 😀",
+          "submit_time": 0,
+          "start_time": 0,
+          "finish_time": 0,
+          "search_item": "original searchable metadata",
+          "data": [
+            {
+              "id": "original-clip-1",
+              "audio_url": "https://media.example.invalid/audio%2Fone.mp3?signature=fixture%2B1",
+              "video_url": "https://media.example.invalid/one.mp4",
+              "image_url": "https://media.example.invalid/cover.jpg",
+              "image_large_url": "https://media.example.invalid/cover-large.jpg",
+              "status": "complete",
+              "title": "原标题",
+              "model_name": "original-native-model-name",
+              "major_model_version": "original-native-major",
+              "play_count": 9007199254740993,
+              "is_public": false,
+              "metadata": {
+                "prompt": "[Verse]\r\n原始歌词",
+                "tags": "original",
+                "duration": 37.5,
+                "stream": false,
+                "refund_credits": 0,
+                "error_type": null,
+                "error_message": null,
+                "history": [
+                  {
+                    "id": "original-parent"
+                  }
+                ],
+                "Future": {
+                  "Big": 9007199254740993,
+                  "Zero": 0,
+                  "False": false,
+                  "Null": null,
+                  "Nested": [
+                    {
+                      "Text": "原始 😀"
+                    }
+                  ]
+                }
+              },
+              "Future": {
+                "Big": 9007199254740993,
+                "Zero": 0,
+                "False": false,
+                "Null": null,
+                "Nested": [
+                  {
+                    "Text": "原始 😀"
+                  }
+                ]
+              }
+            }
+          ],
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    }
+  ],
+  "nested_result": {
+    "code": "success",
+    "message": "original native message 😀",
+    "data": [
+      {
+        "id": 9007199254740993,
+        "created_at": 0,
+        "updated_at": 0,
+        "task_id": "task-music-01",
+        "action": "MUSIC",
+        "status": "SUCCESS",
+        "fail_reason": "",
+        "submit_time": 0,
+        "start_time": 0,
+        "finish_time": 0,
+        "search_item": "original searchable metadata",
+        "data": {
+          "data": {
+            "task_id": "task-music-01",
+            "data": [
+              {
+                "id": "original-clip-1",
+                "audio_url": "https://media.example.invalid/audio%2Fone.mp3?signature=fixture%2B1",
+                "video_url": "https://media.example.invalid/one.mp4",
+                "image_url": "https://media.example.invalid/cover.jpg",
+                "image_large_url": "https://media.example.invalid/cover-large.jpg",
+                "status": "complete",
+                "title": "原标题",
+                "model_name": "original-native-model-name",
+                "major_model_version": "original-native-major",
+                "play_count": 9007199254740993,
+                "is_public": false,
+                "metadata": {
+                  "prompt": "[Verse]\r\n原始歌词",
+                  "tags": "original",
+                  "duration": 37.5,
+                  "stream": false,
+                  "refund_credits": 0,
+                  "error_type": null,
+                  "error_message": null,
+                  "history": [
+                    {
+                      "id": "original-parent"
+                    }
+                  ],
+                  "Future": {
+                    "Big": 9007199254740993,
+                    "Zero": 0,
+                    "False": false,
+                    "Null": null,
+                    "Nested": [
+                      {
+                        "Text": "原始 😀"
+                      }
+                    ]
+                  }
+                },
+                "Future": {
+                  "Big": 9007199254740993,
+                  "Zero": 0,
+                  "False": false,
+                  "Null": null,
+                  "Nested": [
+                    {
+                      "Text": "原始 😀"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "original-clip-2",
+                "audio_url": "https://media.example.invalid/two.mp3?part=0",
+                "video_url": "",
+                "image_url": "",
+                "image_large_url": "https://media.example.invalid/cover-large.jpg",
+                "status": "complete",
+                "title": "第二首",
+                "model_name": "original-native-model-name",
+                "major_model_version": "original-native-major",
+                "play_count": 9007199254740993,
+                "is_public": false,
+                "metadata": {
+                  "prompt": "[Verse]\r\n原始歌词",
+                  "tags": "original",
+                  "duration": 37.5,
+                  "stream": false,
+                  "refund_credits": 0,
+                  "error_type": null,
+                  "error_message": null,
+                  "history": [
+                    {
+                      "id": "original-parent"
+                    }
+                  ],
+                  "Future": {
+                    "Big": 9007199254740993,
+                    "Zero": 0,
+                    "False": false,
+                    "Null": null,
+                    "Nested": [
+                      {
+                        "Text": "原始 😀"
+                      }
+                    ]
+                  }
+                },
+                "Future": {
+                  "Big": 9007199254740993,
+                  "Zero": 0,
+                  "False": false,
+                  "Null": null,
+                  "Nested": [
+                    {
+                      "Text": "原始 😀"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      }
+    ],
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Nested": [
+        {
+          "Text": "原始 😀"
+        }
+      ]
+    }
+  },
+  "get_music_result": {
+    "code": "success",
+    "message": "original native message 😀",
+    "data": [
+      {
+        "id": "original-clip-1",
+        "audio_url": "https://media.example.invalid/audio%2Fone.mp3?signature=fixture%2B1",
+        "video_url": "https://media.example.invalid/one.mp4",
+        "image_url": "https://media.example.invalid/cover.jpg",
+        "image_large_url": "https://media.example.invalid/cover-large.jpg",
+        "status": "complete",
+        "title": "原标题",
+        "model_name": "original-native-model-name",
+        "major_model_version": "original-native-major",
+        "play_count": 9007199254740993,
+        "is_public": false,
+        "metadata": {
+          "prompt": "[Verse]\r\n原始歌词",
+          "tags": "original",
+          "duration": 37.5,
+          "stream": false,
+          "refund_credits": 0,
+          "error_type": null,
+          "error_message": null,
+          "history": [
+            {
+              "id": "original-parent"
+            }
+          ],
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      },
+      {
+        "id": "original-clip-2",
+        "audio_url": "https://media.example.invalid/two.mp3?part=0",
+        "video_url": "",
+        "image_url": "",
+        "image_large_url": "https://media.example.invalid/cover-large.jpg",
+        "status": "complete",
+        "title": "第二首",
+        "model_name": "original-native-model-name",
+        "major_model_version": "original-native-major",
+        "play_count": 9007199254740993,
+        "is_public": false,
+        "metadata": {
+          "prompt": "[Verse]\r\n原始歌词",
+          "tags": "original",
+          "duration": 37.5,
+          "stream": false,
+          "refund_credits": 0,
+          "error_type": null,
+          "error_message": null,
+          "history": [
+            {
+              "id": "original-parent"
+            }
+          ],
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        },
+        "Future": {
+          "Big": 9007199254740993,
+          "Zero": 0,
+          "False": false,
+          "Null": null,
+          "Nested": [
+            {
+              "Text": "原始 😀"
+            }
+          ]
+        }
+      }
+    ],
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Nested": [
+        {
+          "Text": "原始 😀"
+        }
+      ]
+    }
+  },
+  "get_lyrics_result": {
+    "code": "success",
+    "message": "original native message 😀",
+    "data": {
+      "id": "original-lyric-id",
+      "status": "complete",
+      "title": "原始歌词标题",
+      "text": "[Verse]\r\n逐字保留 😀\r\n",
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Nested": [
+        {
+          "Text": "原始 😀"
+        }
+      ]
+    }
+  },
+  "get_gateway_task_result": {
+    "code": "success",
+    "message": "original native message 😀",
+    "data": {
+      "id": 9007199254740993,
+      "created_at": 0,
+      "updated_at": 0,
+      "task_id": "task-music-01",
+      "action": "MUSIC",
+      "status": "SUCCESS",
+      "fail_reason": "",
+      "submit_time": 0,
+      "start_time": 0,
+      "finish_time": 0,
+      "search_item": "original searchable metadata",
+      "data": [
+        {
+          "id": "original-clip-1",
+          "audio_url": "https://media.example.invalid/audio%2Fone.mp3?signature=fixture%2B1",
+          "video_url": "https://media.example.invalid/one.mp4",
+          "image_url": "https://media.example.invalid/cover.jpg",
+          "image_large_url": "https://media.example.invalid/cover-large.jpg",
+          "status": "complete",
+          "title": "原标题",
+          "model_name": "original-native-model-name",
+          "major_model_version": "original-native-major",
+          "play_count": 9007199254740993,
+          "is_public": false,
+          "metadata": {
+            "prompt": "[Verse]\r\n原始歌词",
+            "tags": "original",
+            "duration": 37.5,
+            "stream": false,
+            "refund_credits": 0,
+            "error_type": null,
+            "error_message": null,
+            "history": [
+              {
+                "id": "original-parent"
+              }
+            ],
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Nested": [
+                {
+                  "Text": "原始 😀"
+                }
+              ]
+            }
+          },
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        },
+        {
+          "id": "original-clip-2",
+          "audio_url": "https://media.example.invalid/two.mp3?part=0",
+          "video_url": "",
+          "image_url": "",
+          "image_large_url": "https://media.example.invalid/cover-large.jpg",
+          "status": "complete",
+          "title": "第二首",
+          "model_name": "original-native-model-name",
+          "major_model_version": "original-native-major",
+          "play_count": 9007199254740993,
+          "is_public": false,
+          "metadata": {
+            "prompt": "[Verse]\r\n原始歌词",
+            "tags": "original",
+            "duration": 37.5,
+            "stream": false,
+            "refund_credits": 0,
+            "error_type": null,
+            "error_message": null,
+            "history": [
+              {
+                "id": "original-parent"
+              }
+            ],
+            "Future": {
+              "Big": 9007199254740993,
+              "Zero": 0,
+              "False": false,
+              "Null": null,
+              "Nested": [
+                {
+                  "Text": "原始 😀"
+                }
+              ]
+            }
+          },
+          "Future": {
+            "Big": 9007199254740993,
+            "Zero": 0,
+            "False": false,
+            "Null": null,
+            "Nested": [
+              {
+                "Text": "原始 😀"
+              }
+            ]
+          }
+        }
+      ],
+      "Future": {
+        "Big": 9007199254740993,
+        "Zero": 0,
+        "False": false,
+        "Null": null,
+        "Nested": [
+          {
+            "Text": "原始 😀"
+          }
+        ]
+      }
+    },
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Nested": [
+        {
+          "Text": "原始 😀"
+        }
+      ]
+    }
+  },
+  "error": {
+    "code": "invalid_request_error",
+    "message": "original native error 😀",
+    "data": null,
+    "Future": {
+      "Big": 9007199254740993,
+      "Zero": 0,
+      "False": false,
+      "Null": null,
+      "Nested": [
+        {
+          "Text": "原始 😀"
+        }
+      ]
+    }
+  }
+}

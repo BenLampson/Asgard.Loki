@@ -1,0 +1,11 @@
+{
+  "created": 555,
+  "data": [
+    {"b64_json":"AwQFBg==","revised_prompt":"原生生成提示词 😀","future":{"flag":false,"value":null}},
+    {"url":"https://cdn.invalid/generated.webp","future":[null,false]}
+  ],
+  "background":"transparent",
+  "output_format":"webp",
+  "usage":{"input_tokens":12,"output_tokens":24,"total_tokens":36,"input_tokens_details":{"text_tokens":12,"image_tokens":0,"future":null}},
+  "future":{"decimal":0.123456789012345678901,"exact":900719925474099312345}
+}

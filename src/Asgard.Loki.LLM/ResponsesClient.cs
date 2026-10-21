@@ -6,6 +6,43 @@ namespace Asgard.Loki.LLM;
 internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClient
 {
     /// <inheritdoc />
+    public async Task<IResponsesWebSocketConnection> OpenWebSocketAsync(string model, LlmCallOptions options, CancellationToken cancellationToken = default)
+    {
+        var call = await invocation.ResolveAsync(model, LlmProtocol.Responses, options, null, cancellationToken,
+            LlmTargetFeatures.ResponsesWebSocket).ConfigureAwait(false);
+        var connection = await ((IResponsesWebSocketAdapter)call.Provider).OpenWebSocketAsync(call.Context, cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException("原生适配器未返回连接。");
+        try
+        {
+            await invocation.ValidateBoundAsync(call.Binding, null, cancellationToken).ConfigureAwait(false);
+            if (connection.Metadata != call.Context.Metadata) throw new InvalidOperationException("连接返回了不同目标的元数据。");
+            return new BoundResponsesWebSocketConnection(invocation, call.Binding, connection, call.Context.Metadata);
+        }
+        catch
+        {
+            await connection.DisposeAsync().ConfigureAwait(false);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<ResponseCompaction> CompactAsync(ResponseCompactionRequest request, LlmCallOptions options, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        if (request.PreviousResponseId is not null) ArgumentException.ThrowIfNullOrWhiteSpace(request.PreviousResponseId);
+        if (request.Input is not null && request.Input is not JsonArray
+            && (request.Input is not JsonValue text || !text.TryGetValue<string>(out _)))
+            throw new ArgumentException("压缩输入必须为文本或原生输入项数组。", nameof(request));
+        LlmInvocation.ValidateParameters(request.Parameters, "model", "input", "previous_response_id", "stream");
+        LlmJsonInput.Request(request.Model, request.Input, request.Parameters, request.PreviousResponseId);
+        var payload = JsonSerializer.SerializeToNode(request)!.AsObject();
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.Responses, options,
+            request.PreviousResponseId, cancellationToken, LlmTargetFeatures.ResponsesCompaction).ConfigureAwait(false);
+        payload["model"] = call.Context.Target.UpstreamModel;
+        return await ((IResponsesCompactionAdapter)call.Provider).CompactAsync(payload, call.Context, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
     public async Task<Response> CreateAsync(ResponseRequest request, LlmCallOptions options, CancellationToken cancellationToken = default)
     {
         Validate(request);
@@ -15,7 +52,9 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
         payload["model"] = call.Context.Target.UpstreamModel;
         var response = await ((IResponsesAdapter)call.Provider).CreateAsync(
             payload, call.Context, cancellationToken).ConfigureAwait(false);
-        if (response.Id is not null) await invocation.Sessions.BindResponseAsync(call.Binding, response.Id, cancellationToken).ConfigureAwait(false);
+        // 转换结果的可见 ID 不代表上游存在可续接的原生 Responses 对象。
+        if (response.Metadata.Conversion is null && response.Id is not null)
+            await invocation.Sessions.BindResponseAsync(call.Binding, response.Id, cancellationToken).ConfigureAwait(false);
         return response;
     }
 
@@ -31,7 +70,10 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
         await foreach (var item in ((IResponsesAdapter)call.Provider).StreamAsync(
             payload, call.Context, cancellationToken).ConfigureAwait(false))
         {
-            if (item.Data.TryGetProperty("response", out var response) && response.ValueKind == JsonValueKind.Object
+            // 未知扩展中的同名业务对象不代表原生响应生命周期，不能登记为可续接响应。
+            if (item.Metadata.Conversion is null
+                && item.Type is ("response.created" or "response.in_progress" or "response.queued" or "response.completed" or "response.failed" or "response.incomplete")
+                && item.Data.TryGetProperty("response", out var response) && response.ValueKind == JsonValueKind.Object
                 && response.TryGetProperty("id", out var id) && id.ValueKind == JsonValueKind.String)
                 await invocation.Sessions.BindResponseAsync(call.Binding, id.GetString()!, cancellationToken).ConfigureAwait(false);
             yield return item;
@@ -44,5 +86,6 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
         ArgumentNullException.ThrowIfNull(request);
         if (request.PreviousResponseId is not null) ArgumentException.ThrowIfNullOrWhiteSpace(request.PreviousResponseId);
         LlmInvocation.ValidateParameters(request.Parameters, "model", "input", "previous_response_id");
+        LlmJsonInput.Request(request.Model, request.Input, request.Parameters, request.PreviousResponseId);
     }
 }

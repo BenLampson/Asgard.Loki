@@ -1,0 +1,699 @@
+{
+  "provenance": "Independently authored original contract windows, not SDK output or live Ollama verification. Unknown/optional field passthrough is not model acceptance.",
+  "sources": [
+    "https://docs.ollama.com/api/openai-compatibility",
+    "https://docs.ollama.com/api/authentication",
+    "https://github.com/ollama/ollama/blob/main/openai/responses_compact.go"
+  ],
+  "profiles": [
+    {
+      "root": "http://localhost:11434/v1/",
+      "key": "explicit-ignored-placeholder",
+      "id": "local-compatible"
+    },
+    {
+      "root": "https://proxy.invalid/tenant/v1/",
+      "key": "explicit-proxy-key",
+      "id": "proxy-compatible"
+    },
+    {
+      "root": "https://ollama.com/v1/",
+      "key": "fixture-hosted-token",
+      "id": "hosted-compatible"
+    }
+  ],
+  "model": "selected-ollama",
+  "chat": {
+    "path": "chat/completions",
+    "caller": {
+      "model": "public",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning": "old thought",
+          "tool_calls": [
+            {
+              "id": "prior-a",
+              "type": "function",
+              "function": {
+                "name": "read_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "prior-b",
+              "type": "function",
+              "function": {
+                "name": "read_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "prior-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "prior-a",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "继续"
+        }
+      ],
+      "reasoning_effort": "high",
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "read_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stream_options": {
+        "include_usage": true
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    },
+    "wire": {
+      "model": "selected-ollama",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning": "old thought",
+          "tool_calls": [
+            {
+              "id": "prior-a",
+              "type": "function",
+              "function": {
+                "name": "read_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "prior-b",
+              "type": "function",
+              "function": {
+                "name": "read_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "prior-b",
+          "content": "B"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "prior-a",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "继续"
+        }
+      ],
+      "reasoning_effort": "high",
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "read_a",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "n": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stream_options": {
+        "include_usage": true
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      },
+      "stream": false
+    },
+    "result": {
+      "id": "chatcmpl-ollama-a",
+      "object": "chat.completion",
+      "created": 0,
+      "model": "reported-ollama",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning": "native reasoning",
+            "tool_calls": [
+              {
+                "id": "next-a",
+                "type": "function",
+                "function": {
+                  "name": "read_a",
+                  "arguments": "{\"n\":9007199254740993}"
+                }
+              },
+              {
+                "id": "next-b",
+                "type": "function",
+                "function": {
+                  "name": "read_b",
+                  "arguments": "{\"enabled\":false}"
+                }
+              }
+            ]
+          },
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 8,
+        "total_tokens": 8
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "id": "chatcmpl-ollama-a",
+        "object": "chat.completion.chunk",
+        "model": "reported-ollama",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "reasoning": "native reasoning",
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "next-a",
+                  "type": "function",
+                  "function": {
+                    "name": "read_a",
+                    "arguments": "{\"n\":"
+                  }
+                },
+                {
+                  "index": 1,
+                  "id": "next-b",
+                  "type": "function",
+                  "function": {
+                    "name": "read_b",
+                    "arguments": "{\"enabled\":"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-ollama-a",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "false}"
+                  }
+                },
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "9007199254740993}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-ollama-a",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-ollama-a",
+        "choices": [],
+        "usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 8,
+          "total_tokens": 8
+        },
+        "future": {
+          "exact": 9007199254740993,
+          "zero": 0,
+          "null": null,
+          "false": false,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: transport-ollama\nretry: 0\ndata: {\"id\":\"chatcmpl-ollama-a\",\"object\":\"chat.completion.chunk\",\"model\":\"reported-ollama\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"native reasoning\",\"tool_calls\":[{\"index\":0,\"id\":\"next-a\",\"type\":\"function\",\"function\":{\"name\":\"read_a\",\"arguments\":\"{\\\"n\\\":\"}},{\"index\":1,\"id\":\"next-b\",\"type\":\"function\",\"function\":{\"name\":\"read_b\",\"arguments\":\"{\\\"enabled\\\":\"}}]},\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ollama-a\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"false}\"}},{\"index\":0,\"function\":{\"arguments\":\"9007199254740993}\"}}]},\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ollama-a\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}]}\n\ndata: {\"id\":\"chatcmpl-ollama-a\",\"choices\":[],\"usage\":{\"prompt_tokens\":0,\"completion_tokens\":8,\"total_tokens\":8},\"future\":{\"exact\":9007199254740993,\"zero\":0,\"null\":null,\"false\":false,\"empty\":[]}}\n\ndata: [DONE]\n\n"
+  },
+  "responses": {
+    "path": "responses",
+    "caller": {
+      "model": "public",
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "call_id": "prior-a",
+          "name": "read_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "prior-b",
+          "name": "read_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "prior-b",
+          "output": "B"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "prior-a",
+          "output": "A"
+        }
+      ],
+      "reasoning": {
+        "effort": "high"
+      },
+      "max_output_tokens": 2048,
+      "think": true,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    },
+    "wire": {
+      "model": "selected-ollama",
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "call_id": "prior-a",
+          "name": "read_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "prior-b",
+          "name": "read_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "prior-b",
+          "output": "B"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "prior-a",
+          "output": "A"
+        }
+      ],
+      "reasoning": {
+        "effort": "high"
+      },
+      "max_output_tokens": 2048,
+      "think": true,
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      },
+      "stream": false
+    },
+    "result": {
+      "id": "resp-ollama-a",
+      "object": "response",
+      "status": "completed",
+      "model": "reported-ollama",
+      "output": [
+        {
+          "id": "reason-ollama",
+          "type": "reasoning",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "native summary"
+            }
+          ]
+        },
+        {
+          "id": "fc-ollama-a",
+          "type": "function_call",
+          "call_id": "next-a",
+          "name": "read_a",
+          "arguments": "{\"n\":9007199254740993}",
+          "status": "completed"
+        }
+      ],
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 8,
+        "total_tokens": 8
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    },
+    "events": [
+      {
+        "type": "response.created",
+        "response": {
+          "id": "resp-ollama-a",
+          "object": "response",
+          "status": "in_progress",
+          "model": "reported-ollama",
+          "output": []
+        }
+      },
+      {
+        "type": "response.output_item.added",
+        "response_id": "resp-ollama-a",
+        "output_index": 1,
+        "item": {
+          "id": "fc-ollama-a",
+          "type": "function_call",
+          "call_id": "next-a",
+          "name": "read_a",
+          "arguments": "",
+          "status": "in_progress"
+        }
+      },
+      {
+        "type": "response.function_call_arguments.delta",
+        "response_id": "resp-ollama-a",
+        "item_id": "fc-ollama-a",
+        "output_index": 1,
+        "delta": "{\"n\":9007199254740993}"
+      },
+      {
+        "type": "response.output_item.done",
+        "response_id": "resp-ollama-a",
+        "output_index": 1,
+        "item": {
+          "id": "fc-ollama-a",
+          "type": "function_call",
+          "call_id": "next-a",
+          "name": "read_a",
+          "arguments": "{\"n\":9007199254740993}",
+          "status": "completed"
+        }
+      },
+      {
+        "type": "response.completed",
+        "response": {
+          "id": "resp-ollama-a",
+          "object": "response",
+          "status": "completed",
+          "model": "reported-ollama",
+          "output": [
+            {
+              "id": "reason-ollama",
+              "type": "reasoning",
+              "summary": [
+                {
+                  "type": "summary_text",
+                  "text": "native summary"
+                }
+              ]
+            },
+            {
+              "id": "fc-ollama-a",
+              "type": "function_call",
+              "call_id": "next-a",
+              "name": "read_a",
+              "arguments": "{\"n\":9007199254740993}",
+              "status": "completed"
+            }
+          ],
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 8,
+            "total_tokens": 8
+          },
+          "future": {
+            "exact": 9007199254740993,
+            "zero": 0,
+            "null": null,
+            "false": false,
+            "empty": []
+          }
+        }
+      },
+      {
+        "type": "future.metadata",
+        "response_id": "business-object",
+        "future": {
+          "exact": 9007199254740993,
+          "zero": 0,
+          "null": null,
+          "false": false,
+          "empty": []
+        }
+      }
+    ],
+    "sse": "id: transport-ollama\nretry: 0\nevent: response.created\ndata: {\"type\":\"response.created\",\"response\":{\"id\":\"resp-ollama-a\",\"object\":\"response\",\"status\":\"in_progress\",\"model\":\"reported-ollama\",\"output\":[]}}\n\nevent: response.output_item.added\ndata: {\"type\":\"response.output_item.added\",\"response_id\":\"resp-ollama-a\",\"output_index\":1,\"item\":{\"id\":\"fc-ollama-a\",\"type\":\"function_call\",\"call_id\":\"next-a\",\"name\":\"read_a\",\"arguments\":\"\",\"status\":\"in_progress\"}}\n\nevent: response.function_call_arguments.delta\ndata: {\"type\":\"response.function_call_arguments.delta\",\"response_id\":\"resp-ollama-a\",\"item_id\":\"fc-ollama-a\",\"output_index\":1,\"delta\":\"{\\\"n\\\":9007199254740993}\"}\n\nevent: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"response_id\":\"resp-ollama-a\",\"output_index\":1,\"item\":{\"id\":\"fc-ollama-a\",\"type\":\"function_call\",\"call_id\":\"next-a\",\"name\":\"read_a\",\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"status\":\"completed\"}}\n\nevent: response.completed\ndata: {\"type\":\"response.completed\",\"response\":{\"id\":\"resp-ollama-a\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"reported-ollama\",\"output\":[{\"id\":\"reason-ollama\",\"type\":\"reasoning\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"native summary\"}]},{\"id\":\"fc-ollama-a\",\"type\":\"function_call\",\"call_id\":\"next-a\",\"name\":\"read_a\",\"arguments\":\"{\\\"n\\\":9007199254740993}\",\"status\":\"completed\"}],\"usage\":{\"input_tokens\":0,\"output_tokens\":8,\"total_tokens\":8},\"future\":{\"exact\":9007199254740993,\"zero\":0,\"null\":null,\"false\":false,\"empty\":[]}}}\n\nevent: future.metadata\ndata: {\"type\":\"future.metadata\",\"response_id\":\"business-object\",\"future\":{\"exact\":9007199254740993,\"zero\":0,\"null\":null,\"false\":false,\"empty\":[]}}\n\n"
+  },
+  "compact": {
+    "path": "responses/compact",
+    "caller": {
+      "model": "public",
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "call_id": "prior-a",
+          "name": "read_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "prior-b",
+          "name": "read_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "prior-b",
+          "output": "B"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "prior-a",
+          "output": "A"
+        }
+      ],
+      "instructions": "keep tool state",
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    },
+    "wire": {
+      "model": "selected-ollama",
+      "input": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "继续"
+            }
+          ]
+        },
+        {
+          "type": "function_call",
+          "call_id": "prior-a",
+          "name": "read_a",
+          "arguments": "{\"n\":9007199254740993}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "prior-b",
+          "name": "read_b",
+          "arguments": "{\"enabled\":false}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "prior-b",
+          "output": "B"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "prior-a",
+          "output": "A"
+        }
+      ],
+      "instructions": "keep tool state",
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    },
+    "result": {
+      "id": "resp-compact-ollama",
+      "object": "response.compaction",
+      "created_at": 0,
+      "output": [
+        {
+          "type": "compaction",
+          "encrypted_content": "{\"type\":\"ollama_compaction\",\"version\":1,\"summary\":\"opaque原文\",\"retained\":[]}"
+        }
+      ],
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 8,
+        "total_tokens": 8
+      },
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    }
+  },
+  "error": {
+    "error": {
+      "message": "native fixture error",
+      "type": "invalid_request_error",
+      "future": {
+        "exact": 9007199254740993,
+        "zero": 0,
+        "null": null,
+        "false": false,
+        "empty": []
+      }
+    }
+  }
+}

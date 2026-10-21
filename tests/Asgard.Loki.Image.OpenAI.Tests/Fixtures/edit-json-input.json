@@ -1,0 +1,16 @@
+{
+  "model": "pictures",
+  "prompt": "保留主体\nchange background",
+  "images": [
+    {"image_url": "https://cdn.invalid/source.png", "future": null},
+    {"file_id": "file-source", "future": false},
+    {"image_url": "data:image/png;base64,AP+A"}
+  ],
+  "mask": {"file_id": "file-mask", "future": {"enabled": false}},
+  "background": "transparent",
+  "output_format": "webp",
+  "output_compression": 75,
+  "n": 2,
+  "future": {"exact": 900719925474099312345, "decimal": 0.123456789012345678901, "nested": [null, false, "😀"]},
+  "future_null": null
+}

@@ -1,0 +1,589 @@
+{
+  "provenance": "Independent native v2 complete and literal SSE windows authored before provider/tests. Final full message snapshot repeats finish_reason legitimately. No fabricated DONE, normalized usage, parameter repair or live model claim.",
+  "source": "https://platform.minimax.io/docs/api-reference/text-post.md",
+  "profiles": [
+    {
+      "root": "https://api.minimax.io/v1/",
+      "key": "fixture-minimax-0"
+    },
+    {
+      "root": "https://api.minimaxi.com/v1/",
+      "key": "fixture-minimax-1"
+    },
+    {
+      "root": "https://proxy.invalid/tenant/native/v1/",
+      "key": "fixture-minimax-2"
+    }
+  ],
+  "model": "selected-minimax-model",
+  "path": "text/chatcompletion_v2",
+  "caller": {
+    "model": "public",
+    "messages": [
+      {
+        "role": "assistant",
+        "name": "MiniMax AI",
+        "content": "<think>原文 thought</think>",
+        "reasoning_content": "original separate reasoning",
+        "tool_calls": [
+          {
+            "id": "old-a",
+            "type": "function",
+            "function": {
+              "name": "lookup_a",
+              "arguments": "{\"n\":9007199254740993}"
+            }
+          },
+          {
+            "id": "old-b",
+            "type": "function",
+            "function": {
+              "name": "lookup_b",
+              "arguments": "{\"enabled\":false}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "old-b",
+        "content": "B"
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "old-a",
+        "content": "A"
+      },
+      {
+        "role": "user",
+        "name": "user",
+        "content": "继续"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup_b",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "max_completion_tokens": 2048,
+    "temperature": 0.25,
+    "top_p": 0.75,
+    "mask_sensitive_info": false,
+    "future": {
+      "integer": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": []
+    }
+  },
+  "wire": {
+    "model": "selected-minimax-model",
+    "messages": [
+      {
+        "role": "assistant",
+        "name": "MiniMax AI",
+        "content": "<think>原文 thought</think>",
+        "reasoning_content": "original separate reasoning",
+        "tool_calls": [
+          {
+            "id": "old-a",
+            "type": "function",
+            "function": {
+              "name": "lookup_a",
+              "arguments": "{\"n\":9007199254740993}"
+            }
+          },
+          {
+            "id": "old-b",
+            "type": "function",
+            "function": {
+              "name": "lookup_b",
+              "arguments": "{\"enabled\":false}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "old-b",
+        "content": "B"
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "old-a",
+        "content": "A"
+      },
+      {
+        "role": "user",
+        "name": "user",
+        "content": "继续"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup_b",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "max_completion_tokens": 2048,
+    "temperature": 0.25,
+    "top_p": 0.75,
+    "mask_sensitive_info": false,
+    "future": {
+      "integer": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": []
+    },
+    "stream": false
+  },
+  "caller_stream": {
+    "model": "public",
+    "messages": [
+      {
+        "role": "assistant",
+        "name": "MiniMax AI",
+        "content": "<think>原文 thought</think>",
+        "reasoning_content": "original separate reasoning",
+        "tool_calls": [
+          {
+            "id": "old-a",
+            "type": "function",
+            "function": {
+              "name": "lookup_a",
+              "arguments": "{\"n\":9007199254740993}"
+            }
+          },
+          {
+            "id": "old-b",
+            "type": "function",
+            "function": {
+              "name": "lookup_b",
+              "arguments": "{\"enabled\":false}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "old-b",
+        "content": "B"
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "old-a",
+        "content": "A"
+      },
+      {
+        "role": "user",
+        "name": "user",
+        "content": "继续"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup_b",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "max_completion_tokens": 2048,
+    "temperature": 0.25,
+    "top_p": 0.75,
+    "mask_sensitive_info": false,
+    "future": {
+      "integer": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": []
+    },
+    "stream_options": {
+      "include_usage": true
+    }
+  },
+  "wire_stream": {
+    "model": "selected-minimax-model",
+    "messages": [
+      {
+        "role": "assistant",
+        "name": "MiniMax AI",
+        "content": "<think>原文 thought</think>",
+        "reasoning_content": "original separate reasoning",
+        "tool_calls": [
+          {
+            "id": "old-a",
+            "type": "function",
+            "function": {
+              "name": "lookup_a",
+              "arguments": "{\"n\":9007199254740993}"
+            }
+          },
+          {
+            "id": "old-b",
+            "type": "function",
+            "function": {
+              "name": "lookup_b",
+              "arguments": "{\"enabled\":false}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "old-b",
+        "content": "B"
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "old-a",
+        "content": "A"
+      },
+      {
+        "role": "user",
+        "name": "user",
+        "content": "继续"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup_a",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup_b",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "max_completion_tokens": 2048,
+    "temperature": 0.25,
+    "top_p": 0.75,
+    "mask_sensitive_info": false,
+    "future": {
+      "integer": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": []
+    },
+    "stream_options": {
+      "include_usage": true
+    },
+    "stream": true
+  },
+  "result": {
+    "id": "mini-chat",
+    "object": "chat.completion",
+    "created": 100,
+    "model": "reported-native-model",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "name": "MiniMax AI",
+          "content": "原文 answer",
+          "reasoning_content": "native thought",
+          "audio_content": "",
+          "tool_calls": [
+            {
+              "id": "call-a",
+              "type": "function",
+              "function": {
+                "name": "lookup_a",
+                "arguments": "{\"n\":9007199254740993}"
+              }
+            },
+            {
+              "id": "call-b",
+              "type": "function",
+              "function": {
+                "name": "lookup_b",
+                "arguments": "{\"enabled\":false}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 20,
+      "completion_tokens": 8,
+      "total_tokens": 28,
+      "total_characters": 0,
+      "completion_tokens_details": {
+        "reasoning_tokens": 6
+      }
+    },
+    "input_sensitive": false,
+    "output_sensitive": false,
+    "input_sensitive_type": 0,
+    "output_sensitive_type": 0,
+    "output_sensitive_int": 0,
+    "base_resp": {
+      "status_code": 0,
+      "status_msg": ""
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": []
+    }
+  },
+  "events": [
+    {
+      "id": "mini-chat",
+      "object": "chat.completion.chunk",
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "role": "assistant",
+            "content": "原文 answer",
+            "reasoning_content": "native thought",
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call-a",
+                "type": "function",
+                "function": {
+                  "name": "lookup_a",
+                  "arguments": ""
+                }
+              },
+              {
+                "index": 1,
+                "id": "call-b",
+                "type": "function",
+                "function": {
+                  "name": "lookup_b",
+                  "arguments": ""
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "mini-chat",
+      "object": "chat.completion.chunk",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "tool_calls": [
+              {
+                "index": 0,
+                "function": {
+                  "arguments": "{\"n\":9007199254740993}"
+                }
+              },
+              {
+                "index": 1,
+                "function": {
+                  "arguments": "{\"enabled\":false}"
+                }
+              }
+            ]
+          },
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "output_sensitive": false
+    },
+    {
+      "id": "mini-chat",
+      "object": "chat.completion",
+      "created": 100,
+      "model": "reported-native-model",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "name": "MiniMax AI",
+            "content": "原文 answer",
+            "reasoning_content": "native thought",
+            "audio_content": "",
+            "tool_calls": [
+              {
+                "id": "call-a",
+                "type": "function",
+                "function": {
+                  "name": "lookup_a",
+                  "arguments": "{\"n\":9007199254740993}"
+                }
+              },
+              {
+                "id": "call-b",
+                "type": "function",
+                "function": {
+                  "name": "lookup_b",
+                  "arguments": "{\"enabled\":false}"
+                }
+              }
+            ]
+          },
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 20,
+        "completion_tokens": 8,
+        "total_tokens": 28,
+        "total_characters": 0,
+        "completion_tokens_details": {
+          "reasoning_tokens": 6
+        }
+      },
+      "input_sensitive": false,
+      "output_sensitive": false,
+      "input_sensitive_type": 0,
+      "output_sensitive_type": 0,
+      "output_sensitive_int": 0,
+      "base_resp": {
+        "status_code": 0,
+        "status_msg": ""
+      },
+      "future": {
+        "integer": 9007199254740993,
+        "null": null,
+        "false": false,
+        "zero": 0,
+        "empty": []
+      }
+    }
+  ],
+  "sse": "id: mini-transport\nretry: 0\ndata: {\"id\":\"mini-chat\",\"object\":\"chat.completion.chunk\",\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"原文 answer\",\"reasoning_content\":\"native thought\",\"tool_calls\":[{\"index\":0,\"id\":\"call-a\",\"type\":\"function\",\"function\":{\"name\":\"lookup_a\",\"arguments\":\"\"}},{\"index\":1,\"id\":\"call-b\",\"type\":\"function\",\"function\":{\"name\":\"lookup_b\",\"arguments\":\"\"}}]}}]}\n\nid: mini-transport\nretry: 0\ndata: {\"id\":\"mini-chat\",\"object\":\"chat.completion.chunk\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"n\\\":9007199254740993}\"}},{\"index\":1,\"function\":{\"arguments\":\"{\\\"enabled\\\":false}\"}}]},\"finish_reason\":\"tool_calls\"}],\"output_sensitive\":false}\n\nid: mini-transport\nretry: 0\ndata: {\"id\":\"mini-chat\",\"object\":\"chat.completion\",\"created\":100,\"model\":\"reported-native-model\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"name\":\"MiniMax AI\",\"content\":\"原文 answer\",\"reasoning_content\":\"native thought\",\"audio_content\":\"\",\"tool_calls\":[{\"id\":\"call-a\",\"type\":\"function\",\"function\":{\"name\":\"lookup_a\",\"arguments\":\"{\\\"n\\\":9007199254740993}\"}},{\"id\":\"call-b\",\"type\":\"function\",\"function\":{\"name\":\"lookup_b\",\"arguments\":\"{\\\"enabled\\\":false}\"}}]},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":8,\"total_tokens\":28,\"total_characters\":0,\"completion_tokens_details\":{\"reasoning_tokens\":6}},\"input_sensitive\":false,\"output_sensitive\":false,\"input_sensitive_type\":0,\"output_sensitive_type\":0,\"output_sensitive_int\":0,\"base_resp\":{\"status_code\":0,\"status_msg\":\"\"},\"future\":{\"integer\":9007199254740993,\"null\":null,\"false\":false,\"zero\":0,\"empty\":[]}}\n\n",
+  "error": {
+    "base_resp": {
+      "status_code": 1004,
+      "status_msg": "original native failure"
+    },
+    "trace_id": "native-trace",
+    "future": {
+      "integer": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": []
+    }
+  },
+  "business_metadata": {
+    "type": "vendor.trace",
+    "id": "business-id",
+    "error": {
+      "business": false
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "null": null,
+      "false": false,
+      "zero": 0,
+      "empty": []
+    }
+  }
+}

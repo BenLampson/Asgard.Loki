@@ -1,0 +1,368 @@
+{
+  "provenance": "Independent native Messages window; thinking has no invented Anthropic signature or redacted block. Remote server-tool/result association is original data, not SDK execution. output_config.effort only; no unsupported schema claim.",
+  "sources": [
+    "https://api-docs.deepseek.com/guides/anthropic_api/",
+    "https://api-docs.deepseek.com/quick_start/agent_integrations/claude_code/"
+  ],
+  "profiles": [
+    {
+      "origin": "https://api.deepseek.com/",
+      "key": "fixture-deepseek-key"
+    },
+    {
+      "origin": "https://proxy.invalid/tenant/",
+      "key": "fixture-deepseek-proxy-key"
+    }
+  ],
+  "base_path": "anthropic/v1/",
+  "model": "selected-deepseek-model",
+  "caller": {
+    "model": "public",
+    "max_tokens": 2048,
+    "system": "原生调用上下文",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "old reasoning"
+          },
+          {
+            "type": "tool_use",
+            "id": "old-a",
+            "name": "lookup_a",
+            "input": {
+              "n": 9007199254740993
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "old-b",
+            "name": "lookup_b",
+            "input": {
+              "enabled": false
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "old-b",
+            "content": "B"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "old-a",
+            "content": "A"
+          },
+          {
+            "type": "text",
+            "text": "继续"
+          }
+        ]
+      }
+    ],
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "output_config": {
+      "effort": "max"
+    },
+    "tools": [
+      {
+        "name": "lookup_a",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "auto"
+    },
+    "metadata": {
+      "user_id": "caller-user"
+    },
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "null": null,
+      "empty": []
+    }
+  },
+  "wire": {
+    "model": "selected-deepseek-model",
+    "max_tokens": 2048,
+    "system": "原生调用上下文",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "old reasoning"
+          },
+          {
+            "type": "tool_use",
+            "id": "old-a",
+            "name": "lookup_a",
+            "input": {
+              "n": 9007199254740993
+            }
+          },
+          {
+            "type": "tool_use",
+            "id": "old-b",
+            "name": "lookup_b",
+            "input": {
+              "enabled": false
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "old-b",
+            "content": "B"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "old-a",
+            "content": "A"
+          },
+          {
+            "type": "text",
+            "text": "继续"
+          }
+        ]
+      }
+    ],
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "output_config": {
+      "effort": "max"
+    },
+    "tools": [
+      {
+        "name": "lookup_a",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "auto"
+    },
+    "metadata": {
+      "user_id": "caller-user"
+    },
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "null": null,
+      "empty": []
+    },
+    "stream": false
+  },
+  "result": {
+    "id": "msg-ds-a",
+    "type": "message",
+    "role": "assistant",
+    "model": "reported-native-model",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "native reasoning"
+      },
+      {
+        "type": "server_tool_use",
+        "id": "server-search-a",
+        "name": "web_search",
+        "input": {
+          "query": "native query"
+        }
+      },
+      {
+        "type": "web_search_tool_result",
+        "tool_use_id": "server-search-a",
+        "content": []
+      },
+      {
+        "type": "tool_use",
+        "id": "new-a",
+        "name": "lookup_a",
+        "input": {
+          "n": 9007199254740993
+        }
+      },
+      {
+        "type": "tool_use",
+        "id": "new-b",
+        "name": "lookup_b",
+        "input": {
+          "enabled": false
+        }
+      }
+    ],
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 9,
+      "cache_read_input_tokens": 0
+    },
+    "future": {
+      "exact": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "null": null,
+      "empty": []
+    }
+  },
+  "events": [
+    {
+      "type": "message_start",
+      "message": {
+        "id": "msg-ds-a",
+        "type": "message",
+        "role": "assistant",
+        "model": "reported-native-model",
+        "content": [],
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    },
+    {
+      "type": "content_block_start",
+      "index": 0,
+      "content_block": {
+        "type": "thinking",
+        "thinking": ""
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 0,
+      "delta": {
+        "type": "thinking_delta",
+        "thinking": "native reasoning"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 0
+    },
+    {
+      "type": "content_block_start",
+      "index": 1,
+      "content_block": {
+        "type": "server_tool_use",
+        "id": "server-search-a",
+        "name": "web_search",
+        "input": {
+          "query": "native query"
+        }
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 1
+    },
+    {
+      "type": "content_block_start",
+      "index": 2,
+      "content_block": {
+        "type": "web_search_tool_result",
+        "tool_use_id": "server-search-a",
+        "content": []
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 2
+    },
+    {
+      "type": "content_block_start",
+      "index": 3,
+      "content_block": {
+        "type": "tool_use",
+        "id": "new-a",
+        "name": "lookup_a",
+        "input": {}
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 3,
+      "delta": {
+        "type": "input_json_delta",
+        "partial_json": "{\"n\":9007199254740993}"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 3
+    },
+    {
+      "type": "content_block_start",
+      "index": 4,
+      "content_block": {
+        "type": "tool_use",
+        "id": "new-b",
+        "name": "lookup_b",
+        "input": {}
+      }
+    },
+    {
+      "type": "content_block_delta",
+      "index": 4,
+      "delta": {
+        "type": "input_json_delta",
+        "partial_json": "{\"enabled\":false}"
+      }
+    },
+    {
+      "type": "content_block_stop",
+      "index": 4
+    },
+    {
+      "type": "message_delta",
+      "delta": {
+        "stop_reason": "tool_use",
+        "stop_sequence": null
+      },
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 9,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "type": "message_stop"
+    }
+  ],
+  "sse": "id: deepseek-transport\nretry: 0\nevent: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg-ds-a\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"reported-native-model\",\"content\":[],\"usage\":{\"input_tokens\":0,\"output_tokens\":0}}}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"native reasoning\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"server_tool_use\",\"id\":\"server-search-a\",\"name\":\"web_search\",\"input\":{\"query\":\"native query\"}}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":2,\"content_block\":{\"type\":\"web_search_tool_result\",\"tool_use_id\":\"server-search-a\",\"content\":[]}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":2}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":3,\"content_block\":{\"type\":\"tool_use\",\"id\":\"new-a\",\"name\":\"lookup_a\",\"input\":{}}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":3,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"n\\\":9007199254740993}\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":3}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":4,\"content_block\":{\"type\":\"tool_use\",\"id\":\"new-b\",\"name\":\"lookup_b\",\"input\":{}}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":4,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"enabled\\\":false}\"}}\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":4}\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":0,\"output_tokens\":9,\"cache_read_input_tokens\":0}}\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"}\n\n"
+}

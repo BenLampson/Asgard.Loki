@@ -1,0 +1,2 @@
+# SSE requires the final blank line to close its last native event.
+*.sse text eol=crlf whitespace=-blank-at-eof

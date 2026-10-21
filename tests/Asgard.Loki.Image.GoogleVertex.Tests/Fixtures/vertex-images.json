@@ -1,0 +1,464 @@
+{
+  "transports": [
+    {
+      "profile": "bearer",
+      "stream": false,
+      "resource": "projects/project-fixture/locations/global/publishers/google/models/image-fixture",
+      "url": "https://vertex-images.example.invalid/prefix/v1/projects/project-fixture/locations/global/publishers/google/models/image-fixture:generateContent",
+      "headers": {
+        "Authorization": "Bearer fixture-token-one",
+        "x-goog-user-project": "quota-fixture"
+      },
+      "request": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "保留原生输入"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AQID"
+                },
+                "thoughtSignature": "input-signature=="
+              }
+            ]
+          },
+          {
+            "role": "model",
+            "parts": [
+              {
+                "text": "history",
+                "thoughtSignature": "history-signature=="
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "edit",
+                "fileData": {
+                  "mimeType": "image/png",
+                  "fileUri": "gs://fixture-bucket/a%2Fb.png"
+                }
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "TEXT",
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9"
+          },
+          "seed": 9007199254740993,
+          "temperature": 0
+        },
+        "future": {
+          "flag": false,
+          "none": null
+        }
+      }
+    },
+    {
+      "profile": "bearer",
+      "stream": true,
+      "resource": "projects/project-fixture/locations/global/publishers/google/models/image-fixture",
+      "url": "https://vertex-images.example.invalid/prefix/v1/projects/project-fixture/locations/global/publishers/google/models/image-fixture:streamGenerateContent?alt=sse",
+      "headers": {
+        "Authorization": "Bearer fixture-token-one",
+        "x-goog-user-project": "quota-fixture"
+      },
+      "request": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "保留原生输入"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AQID"
+                },
+                "thoughtSignature": "input-signature=="
+              }
+            ]
+          },
+          {
+            "role": "model",
+            "parts": [
+              {
+                "text": "history",
+                "thoughtSignature": "history-signature=="
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "edit",
+                "fileData": {
+                  "mimeType": "image/png",
+                  "fileUri": "gs://fixture-bucket/a%2Fb.png"
+                }
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "TEXT",
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9"
+          },
+          "seed": 9007199254740993,
+          "temperature": 0
+        },
+        "future": {
+          "flag": false,
+          "none": null
+        }
+      }
+    },
+    {
+      "profile": "key-project",
+      "stream": false,
+      "resource": "projects/project-fixture/locations/global/publishers/google/models/image-fixture",
+      "url": "https://vertex-images.example.invalid/prefix/v1/projects/project-fixture/locations/global/publishers/google/models/image-fixture:generateContent",
+      "headers": {
+        "x-goog-api-key": "fixture-image-key"
+      },
+      "request": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "保留原生输入"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AQID"
+                },
+                "thoughtSignature": "input-signature=="
+              }
+            ]
+          },
+          {
+            "role": "model",
+            "parts": [
+              {
+                "text": "history",
+                "thoughtSignature": "history-signature=="
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "edit",
+                "fileData": {
+                  "mimeType": "image/png",
+                  "fileUri": "gs://fixture-bucket/a%2Fb.png"
+                }
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "TEXT",
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9"
+          },
+          "seed": 9007199254740993,
+          "temperature": 0
+        },
+        "future": {
+          "flag": false,
+          "none": null
+        }
+      }
+    },
+    {
+      "profile": "key-project",
+      "stream": true,
+      "resource": "projects/project-fixture/locations/global/publishers/google/models/image-fixture",
+      "url": "https://vertex-images.example.invalid/prefix/v1/projects/project-fixture/locations/global/publishers/google/models/image-fixture:streamGenerateContent?alt=sse",
+      "headers": {
+        "x-goog-api-key": "fixture-image-key"
+      },
+      "request": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "保留原生输入"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AQID"
+                },
+                "thoughtSignature": "input-signature=="
+              }
+            ]
+          },
+          {
+            "role": "model",
+            "parts": [
+              {
+                "text": "history",
+                "thoughtSignature": "history-signature=="
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "edit",
+                "fileData": {
+                  "mimeType": "image/png",
+                  "fileUri": "gs://fixture-bucket/a%2Fb.png"
+                }
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "TEXT",
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9"
+          },
+          "seed": 9007199254740993,
+          "temperature": 0
+        },
+        "future": {
+          "flag": false,
+          "none": null
+        }
+      }
+    },
+    {
+      "profile": "key-express",
+      "stream": false,
+      "resource": "publishers/google/models/image-fixture",
+      "url": "https://vertex-images.example.invalid/prefix/v1/publishers/google/models/image-fixture:generateContent",
+      "headers": {
+        "x-goog-api-key": "fixture-image-key"
+      },
+      "request": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "保留原生输入"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AQID"
+                },
+                "thoughtSignature": "input-signature=="
+              }
+            ]
+          },
+          {
+            "role": "model",
+            "parts": [
+              {
+                "text": "history",
+                "thoughtSignature": "history-signature=="
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "edit",
+                "fileData": {
+                  "mimeType": "image/png",
+                  "fileUri": "gs://fixture-bucket/a%2Fb.png"
+                }
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "TEXT",
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9"
+          },
+          "seed": 9007199254740993,
+          "temperature": 0
+        },
+        "future": {
+          "flag": false,
+          "none": null
+        }
+      }
+    },
+    {
+      "profile": "key-express",
+      "stream": true,
+      "resource": "publishers/google/models/image-fixture",
+      "url": "https://vertex-images.example.invalid/prefix/v1/publishers/google/models/image-fixture:streamGenerateContent?alt=sse",
+      "headers": {
+        "x-goog-api-key": "fixture-image-key"
+      },
+      "request": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "保留原生输入"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AQID"
+                },
+                "thoughtSignature": "input-signature=="
+              }
+            ]
+          },
+          {
+            "role": "model",
+            "parts": [
+              {
+                "text": "history",
+                "thoughtSignature": "history-signature=="
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "edit",
+                "fileData": {
+                  "mimeType": "image/png",
+                  "fileUri": "gs://fixture-bucket/a%2Fb.png"
+                }
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "TEXT",
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9"
+          },
+          "seed": 9007199254740993,
+          "temperature": 0
+        },
+        "future": {
+          "flag": false,
+          "none": null
+        }
+      }
+    }
+  ],
+  "response": {
+    "candidates": [
+      {
+        "index": 0,
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "explanation",
+              "thought": true,
+              "thoughtSignature": "reasoning=="
+            },
+            {
+              "inlineData": {
+                "mimeType": "image/png",
+                "data": "AQID"
+              },
+              "thoughtSignature": "signed-image==",
+              "future": false
+            }
+          ]
+        },
+        "finishReason": "STOP",
+        "safetyRatings": [
+          {
+            "category": "fixture",
+            "probability": "NEGLIGIBLE"
+          }
+        ]
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 9007199254740993,
+      "candidatesTokenCount": 8,
+      "thoughtsTokenCount": 2
+    },
+    "responseId": "vertex-fixture",
+    "modelVersion": "native-image-version",
+    "future": null
+  },
+  "blocked": {
+    "promptFeedback": {
+      "blockReason": "SAFETY",
+      "future": false
+    },
+    "usageMetadata": {
+      "promptTokenCount": 1
+    }
+  },
+  "filtered": {
+    "candidates": [
+      {
+        "finishReason": "NO_IMAGE",
+        "safetyRatings": [
+          {
+            "blocked": true
+          }
+        ]
+      }
+    ],
+    "future": false
+  },
+  "error": {
+    "error": {
+      "code": 403,
+      "message": "fixture permission",
+      "status": "PERMISSION_DENIED",
+      "details": [
+        {
+          "future": 9007199254740993
+        }
+      ]
+    }
+  }
+}

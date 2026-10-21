@@ -1,0 +1,66 @@
+[
+  {
+    "responseId": "r1",
+    "modelVersion": "model-a",
+    "candidates": [
+      {
+        "index": 0,
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "你好"
+            }
+          ]
+        }
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 3,
+      "candidatesTokenCount": 0,
+      "totalTokenCount": 3
+    }
+  },
+  {
+    "responseId": "r1",
+    "modelVersion": "model-a",
+    "candidates": [
+      {
+        "index": 0,
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "functionCall": {
+                "id": "call_1",
+                "name": "lookup",
+                "args": {
+                  "x": 0
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "responseId": "r1",
+    "modelVersion": "model-a",
+    "candidates": [
+      {
+        "index": 0,
+        "content": {
+          "role": "model",
+          "parts": []
+        },
+        "finishReason": "STOP"
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 3,
+      "candidatesTokenCount": 2,
+      "totalTokenCount": 5
+    }
+  }
+]

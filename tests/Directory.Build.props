@@ -5,6 +5,8 @@
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
+    <!-- 普通测试匹配 global.json 的 MTP；独立联调保留原生 xUnit 命令行。 -->
+    <UseMicrosoftTestingPlatformRunner Condition="!$(MSBuildProjectName.EndsWith('.IntegrationTests'))">true</UseMicrosoftTestingPlatformRunner>
   </PropertyGroup>
 
   <ItemGroup>

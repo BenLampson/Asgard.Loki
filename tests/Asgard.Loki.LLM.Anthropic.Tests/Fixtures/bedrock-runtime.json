@@ -1,0 +1,532 @@
+{
+  "provenance": "Independently authored native contract, not SDK output or live account/model verification.",
+  "root": "https://bedrock-runtime.us-east-1.amazonaws.com/anthropic/v1/",
+  "model": "us.anthropic.claude-sonnet-5",
+  "path": "https://bedrock-runtime.us-east-1.amazonaws.com/anthropic/v1/messages",
+  "keyHeader": "x-api-key",
+  "bearerHeader": "Authorization",
+  "apiVersion": "2023-06-01",
+  "completeRequest": {
+    "model": "us.anthropic.claude-sonnet-5",
+    "max_tokens": 2048,
+    "system": [
+      {
+        "type": "text",
+        "text": "精确保留原生字段",
+        "cache_control": {
+          "type": "ephemeral",
+          "ttl": "5m"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "已有推理",
+            "signature": "signed+/=="
+          },
+          {
+            "type": "redacted_thinking",
+            "data": "opaque-history+/=="
+          },
+          {
+            "type": "tool_use",
+            "id": "call_prev",
+            "name": "lookup",
+            "input": {
+              "n": 9007199254740993
+            },
+            "future": false
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_prev",
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"ok\":false}"
+              }
+            ],
+            "is_error": false
+          },
+          {
+            "type": "image",
+            "source": {
+              "type": "base64",
+              "media_type": "image/png",
+              "data": "AAE="
+            }
+          },
+          {
+            "type": "document",
+            "source": {
+              "type": "base64",
+              "media_type": "application/pdf",
+              "data": "JVBERi0="
+            },
+            "title": "原生 PDF"
+          },
+          {
+            "type": "text",
+            "text": "继续中文"
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "name": "lookup",
+        "description": "查找",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "n"
+          ],
+          "additionalProperties": false
+        },
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "auto",
+      "disable_parallel_tool_use": false
+    },
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "output_config": {
+      "format": {
+        "type": "json_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ok"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "nil": null
+    },
+    "stream": false
+  },
+  "streamRequest": {
+    "model": "us.anthropic.claude-sonnet-5",
+    "max_tokens": 2048,
+    "system": [
+      {
+        "type": "text",
+        "text": "精确保留原生字段",
+        "cache_control": {
+          "type": "ephemeral",
+          "ttl": "5m"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "已有推理",
+            "signature": "signed+/=="
+          },
+          {
+            "type": "redacted_thinking",
+            "data": "opaque-history+/=="
+          },
+          {
+            "type": "tool_use",
+            "id": "call_prev",
+            "name": "lookup",
+            "input": {
+              "n": 9007199254740993
+            },
+            "future": false
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_prev",
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"ok\":false}"
+              }
+            ],
+            "is_error": false
+          },
+          {
+            "type": "image",
+            "source": {
+              "type": "base64",
+              "media_type": "image/png",
+              "data": "AAE="
+            }
+          },
+          {
+            "type": "document",
+            "source": {
+              "type": "base64",
+              "media_type": "application/pdf",
+              "data": "JVBERi0="
+            },
+            "title": "原生 PDF"
+          },
+          {
+            "type": "text",
+            "text": "继续中文"
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "name": "lookup",
+        "description": "查找",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "n": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "n"
+          ],
+          "additionalProperties": false
+        },
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "auto",
+      "disable_parallel_tool_use": false
+    },
+    "thinking": {
+      "type": "enabled",
+      "budget_tokens": 1024
+    },
+    "output_config": {
+      "format": {
+        "type": "json_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ok"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "zero": 0,
+      "false": false,
+      "nil": null
+    },
+    "stream": true
+  },
+  "complete": {
+    "id": "msg_native",
+    "type": "message",
+    "role": "assistant",
+    "model": "us.anthropic.claude-sonnet-5",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "先查询",
+        "signature": "signed-new+/=="
+      },
+      {
+        "type": "redacted_thinking",
+        "data": "opaque-new+/=="
+      },
+      {
+        "type": "text",
+        "text": "需要查询",
+        "citations": []
+      },
+      {
+        "type": "tool_use",
+        "id": "call_new",
+        "name": "lookup",
+        "input": {
+          "n": 9007199254740993
+        },
+        "future": false
+      }
+    ],
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 17,
+      "output_tokens": 8,
+      "cache_read_input_tokens": 5,
+      "cache_creation_input_tokens": 3,
+      "future": 0
+    },
+    "future": {
+      "integer": 9007199254740993,
+      "nil": null
+    }
+  },
+  "events": [
+    {
+      "data": {
+        "type": "message_start",
+        "message": {
+          "id": "msg_native",
+          "type": "message",
+          "role": "assistant",
+          "model": "us.anthropic.claude-sonnet-5",
+          "content": [],
+          "stop_reason": null,
+          "usage": {
+            "input_tokens": 17,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 5,
+            "cache_creation_input_tokens": 3
+          }
+        }
+      },
+      "event": "message_start",
+      "id": "evt-0",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_start",
+        "index": 0,
+        "content_block": {
+          "type": "thinking",
+          "thinking": ""
+        }
+      },
+      "event": "content_block_start",
+      "id": "evt-1",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_delta",
+        "index": 0,
+        "delta": {
+          "type": "thinking_delta",
+          "thinking": "先查询"
+        }
+      },
+      "event": "content_block_delta",
+      "id": "evt-2",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_delta",
+        "index": 0,
+        "delta": {
+          "type": "signature_delta",
+          "signature": "signed-new+/=="
+        }
+      },
+      "event": "content_block_delta",
+      "id": "evt-3",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_stop",
+        "index": 0
+      },
+      "event": "content_block_stop",
+      "id": "evt-4",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_start",
+        "index": 1,
+        "content_block": {
+          "type": "redacted_thinking",
+          "data": "opaque-new+/=="
+        }
+      },
+      "event": "content_block_start",
+      "id": "evt-5",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_stop",
+        "index": 1
+      },
+      "event": "content_block_stop",
+      "id": "evt-6",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_start",
+        "index": 2,
+        "content_block": {
+          "type": "text",
+          "text": ""
+        }
+      },
+      "event": "content_block_start",
+      "id": "evt-7",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_delta",
+        "index": 2,
+        "delta": {
+          "type": "text_delta",
+          "text": "需要查询"
+        }
+      },
+      "event": "content_block_delta",
+      "id": "evt-8",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_stop",
+        "index": 2
+      },
+      "event": "content_block_stop",
+      "id": "evt-9",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_start",
+        "index": 3,
+        "content_block": {
+          "type": "tool_use",
+          "id": "call_new",
+          "name": "lookup",
+          "input": {},
+          "future": false
+        }
+      },
+      "event": "content_block_start",
+      "id": "evt-10",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_delta",
+        "index": 3,
+        "delta": {
+          "type": "input_json_delta",
+          "partial_json": "{\"n\":"
+        }
+      },
+      "event": "content_block_delta",
+      "id": "evt-11",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_delta",
+        "index": 3,
+        "delta": {
+          "type": "input_json_delta",
+          "partial_json": "9007199254740993}"
+        }
+      },
+      "event": "content_block_delta",
+      "id": "evt-12",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "content_block_stop",
+        "index": 3
+      },
+      "event": "content_block_stop",
+      "id": "evt-13",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "message_delta",
+        "delta": {
+          "stop_reason": "tool_use",
+          "stop_sequence": null
+        },
+        "usage": {
+          "output_tokens": 8,
+          "future": 0
+        }
+      },
+      "event": "message_delta",
+      "id": "evt-14",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "message_stop",
+        "future": false
+      },
+      "event": "message_stop",
+      "id": "evt-15",
+      "retry": 1200
+    },
+    {
+      "data": {
+        "type": "vendor.future",
+        "error": {
+          "business": true
+        },
+        "future": {
+          "integer": 9007199254740993,
+          "nil": null
+        }
+      },
+      "event": "vendor.future",
+      "id": "evt-16",
+      "retry": 1200
+    }
+  ],
+  "wire": ": full native Messages fixture\r\nevent: message_start\r\nid: evt-0\r\nretry: 1200\r\ndata: {\"type\":\"message_start\",\r\ndata: \"message\":{\"id\":\"msg_native\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"us.anthropic.claude-sonnet-5\",\"content\":[],\"stop_reason\":null,\"usage\":{\"input_tokens\":17,\"output_tokens\":0,\"cache_read_input_tokens\":5,\"cache_creation_input_tokens\":3}}}\r\n\r\nevent: content_block_start\r\nid: evt-1\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-2\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"先查询\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-3\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"signed-new+/==\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-4\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":0}\r\n\r\nevent: content_block_start\r\nid: evt-5\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":1,\"content_block\":{\"type\":\"redacted_thinking\",\"data\":\"opaque-new+/==\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-6\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":1}\r\n\r\nevent: content_block_start\r\nid: evt-7\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":2,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-8\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":2,\"delta\":{\"type\":\"text_delta\",\"text\":\"需要查询\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-9\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":2}\r\n\r\nevent: content_block_start\r\nid: evt-10\r\nretry: 1200\r\ndata: {\"type\":\"content_block_start\",\r\ndata: \"index\":3,\"content_block\":{\"type\":\"tool_use\",\"id\":\"call_new\",\"name\":\"lookup\",\"input\":{},\"future\":false}}\r\n\r\nevent: content_block_delta\r\nid: evt-11\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":3,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"n\\\":\"}}\r\n\r\nevent: content_block_delta\r\nid: evt-12\r\nretry: 1200\r\ndata: {\"type\":\"content_block_delta\",\r\ndata: \"index\":3,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"9007199254740993}\"}}\r\n\r\nevent: content_block_stop\r\nid: evt-13\r\nretry: 1200\r\ndata: {\"type\":\"content_block_stop\",\r\ndata: \"index\":3}\r\n\r\nevent: message_delta\r\nid: evt-14\r\nretry: 1200\r\ndata: {\"type\":\"message_delta\",\r\ndata: \"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"usage\":{\"output_tokens\":8,\"future\":0}}\r\n\r\nevent: message_stop\r\nid: evt-15\r\nretry: 1200\r\ndata: {\"type\":\"message_stop\",\r\ndata: \"future\":false}\r\n\r\nevent: vendor.future\r\nid: evt-16\r\nretry: 1200\r\ndata: {\"type\":\"vendor.future\",\r\ndata: \"error\":{\"business\":true},\"future\":{\"integer\":9007199254740993,\"nil\":null}}\r\n\r\n: real EOF follows\r\n\r\n"
+}

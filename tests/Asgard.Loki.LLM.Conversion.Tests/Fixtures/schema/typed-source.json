@@ -1,0 +1,82 @@
+{
+  "Gemini": {
+    "model": "schema-model",
+    "contents": [{ "role": "user", "parts": [{ "text": "return typed" }] }],
+    "generationConfig": {
+      "maxOutputTokens": 128,
+      "responseMimeType": "application/json",
+      "responseSchema": {
+        "type": "OBJECT", "title": "typed-result", "description": "", "nullable": false,
+        "minProperties": "0", "maxProperties": "3e0",
+        "properties": {
+          "label": { "type": "STRING", "nullable": true, "format": "enum", "enum": ["", "ok"], "minLength": "0", "maxLength": "2", "pattern": "^(|ok)$", "default": null },
+          "items": { "type": "ARRAY", "minItems": "0", "maxItems": "2e1", "items": { "type": "OBJECT", "properties": { "qty": { "type": "INTEGER", "minimum": 0, "maximum": 1000 } } } },
+          "flag": { "type": "BOOLEAN", "default": false }
+        },
+        "required": ["label", "items"],
+        "anyOf": [{ "type": "OBJECT", "required": ["label"] }, { "type": "OBJECT", "required": ["items"] }],
+        "example": { "label": "", "items": [] }, "default": {}
+      }
+    }
+  },
+  "ChatCompletions": {
+    "model": "schema-model",
+    "messages": [{ "role": "user", "content": [{ "type": "text", "text": "return typed" }] }],
+    "max_completion_tokens": 128,
+    "response_format": { "type": "json_schema", "json_schema": {
+      "name": "result", "strict": true,
+      "schema": {
+        "type": "object", "title": "typed-result", "description": "",
+        "minProperties": 0, "maxProperties": 3,
+        "properties": {
+          "label": { "type": ["string", "null"], "format": "enum", "enum": ["", "ok"], "minLength": 0, "maxLength": 2, "pattern": "^(|ok)$", "default": null },
+          "items": { "type": "array", "minItems": 0, "maxItems": 20, "items": { "type": "object", "properties": { "qty": { "type": "integer", "minimum": 0, "maximum": 1000 } } } },
+          "flag": { "type": "boolean", "default": false }
+        },
+        "required": ["label", "items"],
+        "anyOf": [{ "type": "object", "required": ["label"] }, { "type": "object", "required": ["items"] }],
+        "examples": [{ "label": "", "items": [] }], "default": {}
+      }
+    } }
+  },
+  "Responses": {
+    "model": "schema-model",
+    "input": [{ "type": "message", "role": "user", "content": [{ "type": "input_text", "text": "return typed" }] }],
+    "max_output_tokens": 128,
+    "text": { "format": {
+      "type": "json_schema", "name": "result", "strict": true,
+      "schema": {
+        "type": "object", "title": "typed-result", "description": "",
+        "minProperties": 0, "maxProperties": 3,
+        "properties": {
+          "label": { "type": ["string", "null"], "format": "enum", "enum": ["", "ok"], "minLength": 0, "maxLength": 2, "pattern": "^(|ok)$", "default": null },
+          "items": { "type": "array", "minItems": 0, "maxItems": 20, "items": { "type": "object", "properties": { "qty": { "type": "integer", "minimum": 0, "maximum": 1000 } } } },
+          "flag": { "type": "boolean", "default": false }
+        },
+        "required": ["label", "items"],
+        "anyOf": [{ "type": "object", "required": ["label"] }, { "type": "object", "required": ["items"] }],
+        "examples": [{ "label": "", "items": [] }], "default": {}
+      }
+    } }
+  },
+  "ClaudeMessages": {
+    "model": "schema-model",
+    "messages": [{ "role": "user", "content": [{ "type": "text", "text": "return typed" }] }],
+    "max_tokens": 128,
+    "output_config": { "format": {
+      "type": "json_schema",
+      "schema": {
+        "type": "object", "title": "typed-result", "description": "",
+        "minProperties": 0, "maxProperties": 3,
+        "properties": {
+          "label": { "type": ["string", "null"], "format": "enum", "enum": ["", "ok"], "minLength": 0, "maxLength": 2, "pattern": "^(|ok)$", "default": null },
+          "items": { "type": "array", "minItems": 0, "maxItems": 20, "items": { "type": "object", "properties": { "qty": { "type": "integer", "minimum": 0, "maximum": 1000 } } } },
+          "flag": { "type": "boolean", "default": false }
+        },
+        "required": ["label", "items"],
+        "anyOf": [{ "type": "object", "required": ["label"] }, { "type": "object", "required": ["items"] }],
+        "examples": [{ "label": "", "items": [] }], "default": {}
+      }
+    } }
+  }
+}

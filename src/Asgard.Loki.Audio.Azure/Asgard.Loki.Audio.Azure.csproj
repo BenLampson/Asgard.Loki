@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Native deployment-scoped Azure audio speech, transcription and translation provider for Asgard.Loki.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.Audio/Asgard.Loki.Audio.csproj" />
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>

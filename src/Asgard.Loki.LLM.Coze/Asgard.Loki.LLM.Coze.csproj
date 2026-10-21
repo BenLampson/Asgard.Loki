@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Explicit native Coze v3 bot chat calls for Asgard.Loki without polling or model-format projection.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Asgard.Loki.LLM/Asgard.Loki.LLM.csproj" />
+    <ProjectReference Include="../Asgard.Loki.Infrastructure/Asgard.Loki.Infrastructure.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+  </ItemGroup>
+</Project>

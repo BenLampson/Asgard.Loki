@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.DeepSeek/Asgard.Loki.LLM.DeepSeek.csproj" />
+    <EmbeddedResource Include="Fixtures/**/*.json" />
+  </ItemGroup>
+</Project>

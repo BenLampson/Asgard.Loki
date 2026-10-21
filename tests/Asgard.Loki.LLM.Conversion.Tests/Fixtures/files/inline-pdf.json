@@ -1,0 +1,78 @@
+{
+  "source": {
+    "ChatCompletions": {
+      "model":"model-a","max_completion_tokens":128,
+      "messages":[
+        {"role":"user","content":[{"type":"text","text":"前😀"},{"type":"file","file":{"file_data":"data:application/pdf;base64,JVBERi0xLjcKAP9BQgo="}},{"type":"text","text":"后"}]},
+        {"role":"assistant","content":[],"tool_calls":[{"id":"call_pdf","type":"function","function":{"name":"lookup","arguments":"{\"x\":0}"}}]},
+        {"role":"tool","tool_call_id":"call_pdf","content":"{\"ok\":true}"}
+      ],
+      "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object","properties":{"x":{"type":"integer"}}}}}]
+    },
+    "Responses": {
+      "model":"model-a","max_output_tokens":128,
+      "input":[
+        {"type":"message","role":"user","content":[{"type":"input_text","text":"前😀"},{"type":"input_file","file_data":"data:application/pdf;base64,JVBERi0xLjcKAP9BQgo="},{"type":"input_text","text":"后"}]},
+        {"type":"function_call","call_id":"call_pdf","name":"lookup","arguments":"{\"x\":0}"},
+        {"type":"function_call_output","call_id":"call_pdf","output":"{\"ok\":true}"}
+      ],
+      "tools":[{"type":"function","name":"lookup","parameters":{"type":"object","properties":{"x":{"type":"integer"}}}}]
+    },
+    "ClaudeMessages": {
+      "model":"model-a","max_tokens":128,
+      "messages":[
+        {"role":"user","content":[{"type":"text","text":"前😀"},{"type":"document","source":{"type":"base64","media_type":"application/pdf","data":"JVBERi0xLjcKAP9BQgo="}},{"type":"text","text":"后"}]},
+        {"role":"assistant","content":[{"type":"tool_use","id":"call_pdf","name":"lookup","input":{"x":0}}]},
+        {"role":"user","content":[{"type":"tool_result","tool_use_id":"call_pdf","content":"{\"ok\":true}"}]}
+      ],
+      "tools":[{"name":"lookup","input_schema":{"type":"object","properties":{"x":{"type":"integer"}}}}]
+    },
+    "Gemini": {
+      "model":"model-a","generationConfig":{"maxOutputTokens":128},
+      "contents":[
+        {"role":"user","parts":[{"text":"前😀"},{"inlineData":{"mimeType":"application/pdf","data":"JVBERi0xLjcKAP9BQgo="}},{"text":"后"}]},
+        {"role":"model","parts":[{"functionCall":{"id":"call_pdf","name":"lookup","args":{"x":0}}}]},
+        {"role":"user","parts":[{"functionResponse":{"id":"call_pdf","name":"lookup","response":{"ok":true}}}]}
+      ],
+      "tools":[{"functionDeclarations":[{"name":"lookup","parametersJsonSchema":{"type":"object","properties":{"x":{"type":"integer"}}}}]}]
+    }
+  },
+  "golden": {
+    "ChatCompletions": {
+      "model":"model-a","max_completion_tokens":128,
+      "messages":[
+        {"role":"user","content":[{"type":"text","text":"前😀"},{"type":"file","file":{"file_data":"data:application/pdf;base64,JVBERi0xLjcKAP9BQgo="}},{"type":"text","text":"后"}]},
+        {"role":"assistant","content":[],"tool_calls":[{"id":"call_pdf","type":"function","function":{"name":"lookup","arguments":"{\"x\":0}"}}]},
+        {"role":"tool","tool_call_id":"call_pdf","content":"{\"ok\":true}"}
+      ],
+      "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object","properties":{"x":{"type":"integer"}}}}}]
+    },
+    "Responses": {
+      "model":"model-a","max_output_tokens":128,
+      "input":[
+        {"type":"message","role":"user","content":[{"type":"input_text","text":"前😀"},{"type":"input_file","file_data":"data:application/pdf;base64,JVBERi0xLjcKAP9BQgo="},{"type":"input_text","text":"后"}]},
+        {"type":"function_call","call_id":"call_pdf","name":"lookup","arguments":"{\"x\":0}"},
+        {"type":"function_call_output","call_id":"call_pdf","output":"{\"ok\":true}"}
+      ],
+      "tools":[{"type":"function","name":"lookup","parameters":{"type":"object","properties":{"x":{"type":"integer"}}}}]
+    },
+    "ClaudeMessages": {
+      "model":"model-a","max_tokens":128,
+      "messages":[
+        {"role":"user","content":[{"type":"text","text":"前😀"},{"type":"document","source":{"type":"base64","media_type":"application/pdf","data":"JVBERi0xLjcKAP9BQgo="}},{"type":"text","text":"后"}]},
+        {"role":"assistant","content":[{"type":"tool_use","id":"call_pdf","name":"lookup","input":{"x":0}}]},
+        {"role":"user","content":[{"type":"tool_result","tool_use_id":"call_pdf","content":"{\"ok\":true}"}]}
+      ],
+      "tools":[{"name":"lookup","input_schema":{"type":"object","properties":{"x":{"type":"integer"}}}}]
+    },
+    "Gemini": {
+      "model":"model-a","generationConfig":{"maxOutputTokens":128},
+      "contents":[
+        {"role":"user","parts":[{"text":"前😀"},{"inlineData":{"mimeType":"application/pdf","data":"JVBERi0xLjcKAP9BQgo="}},{"text":"后"}]},
+        {"role":"model","parts":[{"functionCall":{"id":"call_pdf","name":"lookup","args":{"x":0}}}]},
+        {"role":"user","parts":[{"functionResponse":{"id":"call_pdf","name":"lookup","response":{"ok":true}}}]}
+      ],
+      "tools":[{"functionDeclarations":[{"name":"lookup","parametersJsonSchema":{"type":"object","properties":{"x":{"type":"integer"}}}}]}]
+    }
+  }
+}

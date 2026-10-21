@@ -1,0 +1,59 @@
+{
+  "sources": [
+    "https://docs.volcengine.com/docs/JimengAI/JimengAI-VideoGeneration30Pro-InterfaceDocumentation?lang=zh",
+    "https://docs.volcengine.com/docs/JimengAI/JimengAI-VideoGeneration301080P-Text-to-Video-InterfaceDocumentation?lang=zh",
+    "https://raw.githubusercontent.com/volcengine/volc-sdk-python/master/volcengine/auth/SignerV4.py",
+    "https://raw.githubusercontent.com/volcengine/volc-sdk-python/master/volcengine/visual/VisualService.py"
+  ],
+  "submit_action": "CVSync2AsyncSubmitTask",
+  "query_action": "CVSync2AsyncGetResult",
+  "version": "2022-08-31",
+  "region": "cn-north-1",
+  "service": "cv",
+  "submissions": [
+    { "wire_request": { "req_key": "jimeng_ti2v_v30_pro", "prompt": "A fictional paper boat on a lake. 紙船🌊", "seed": -1, "frames": 121, "aspect_ratio": "16:9", "Future": { "large": 9007199254740993, "false": false, "null": null } } },
+    { "wire_request": { "req_key": "jimeng_ti2v_v30_pro", "image_urls": ["https://media.invalid/first.png"], "prompt": "Animate the fictional boat.", "seed": 0, "frames": 241, "Future": [null, false, 9007199254740993] } },
+    { "wire_request": { "req_key": "jimeng_i2v_first_tail_v30_1080", "binary_data_base64": ["ZmFrZS1maXJzdA==", "ZmFrZS1sYXN0"], "prompt": "Transition between the fictional frames.", "seed": -1, "frames": 121, "Future": { "Case": "kept" } } }
+  ],
+  "submit_response": { "code": 10000, "data": { "task_id": "jimeng-fixture-01", "Future": false }, "message": "Success", "request_id": "fictional-submit-trace", "time_elapsed": "1.5ms", "Future": { "large": 9007199254740993 } },
+  "query_parameters": { "req_json": "{\"aigc_meta\":{\"content_producer\":\"fictional-producer\",\"producer_id\":\"fictional-id\"},\"Future\":9007199254740993}", "Future": { "Case": false, "null": null } },
+  "queries": [
+    { "code": 10000, "data": { "status": "in_queue", "Future": 9007199254740993 }, "message": "Success", "status": 10000, "request_id": "fictional-query-trace" },
+    { "code": 10000, "data": { "status": "generating", "Future": false }, "message": "Success", "request_id": "fictional-query-trace" },
+    { "code": 10000, "data": { "status": "done", "video_url": "https://cdn.invalid/video.mp4?signature=fictional%2Fvalue", "aigc_meta_tagged": true, "Future": { "large": 9007199254740993, "Case": "原文" } }, "message": "Success", "status": 10000, "request_id": "fictional-query-trace", "time_elapsed": "1.5ms", "Future": null },
+    { "code": 10000, "data": { "status": "not_found" }, "message": "Success", "request_id": "fictional-query-trace" },
+    { "code": 10000, "data": { "status": "expired" }, "message": "Success", "request_id": "fictional-query-trace" },
+    { "code": 10000, "data": { "status": "future_state", "Future": { "unknown": true } }, "message": "Success", "request_id": "fictional-query-trace" }
+  ],
+  "native_error": { "code": 50413, "data": null, "message": "Fictional processing rejection", "status": 50413, "request_id": "fictional-error-trace", "time_elapsed": "1.5ms", "Future": 9007199254740993 },
+  "openapi_error": { "ResponseMetadata": { "RequestId": "fictional-auth-trace", "Error": { "Code": "InvalidSignature", "Message": "Fictional authentication failure", "Future": false } } },
+  "signatures": [
+  {
+    "action": "CVSync2AsyncSubmitTask",
+    "host": "jimeng.invalid",
+    "session_token": null,
+    "request_key": "fixture_req_key",
+    "parameters": {
+      "prompt": "boat",
+      "seed": 0
+    },
+    "body": "{\"prompt\":\"boat\",\"seed\":0,\"req_key\":\"fixture_req_key\"}",
+    "date": "20261020T010203Z",
+    "payload_hash": "d4cb04c48fec7ee18e4a14fe0af4e9eba26242d7e7f0993ff95bae553ab6ac1d",
+    "canonical_hash": "5cda0d53d3212e7bc3678dcc12cc57ce30c52a4e4d698b429bb44b18742f4df6",
+    "authorization": "HMAC-SHA256 Credential=fixture-access/20261020/cn-north-1/cv/request, SignedHeaders=content-type;host;x-content-sha256;x-date, Signature=7c397d67aedbfcb5ca5da450d5e4dc5e43410d44d914da4a0f2b9f43dc1334ae"
+  },
+  {
+    "action": "CVSync2AsyncGetResult",
+    "host": "jimeng.invalid:8443",
+    "session_token": "fixture-session-token",
+    "request_key": "fixture_req_key",
+    "parameters": {},
+    "body": "{\"req_key\":\"fixture_req_key\",\"task_id\":\"jimeng-fixture-01\"}",
+    "date": "20261020T010203Z",
+    "payload_hash": "1bf2a53230e2d61ee1b117fa5d6e2f7a8b1dffd11c01e013e257227b68956c4c",
+    "canonical_hash": "52de5595c7dff77f45c7b31116c1d63902ea833a86f3a4ddcc333b4c8a0ed6bd",
+    "authorization": "HMAC-SHA256 Credential=fixture-access/20261020/cn-north-1/cv/request, SignedHeaders=content-type;host;x-content-sha256;x-date;x-security-token, Signature=5098664fad9210e739cb959d505ee1ab4df43d05c9c8d8f402f20e28251da564"
+  }
+]
+}

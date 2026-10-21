@@ -1,0 +1,7 @@
+[
+{"id":"bot-chat-a","model":"reported-underlying-model","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"role":"assistant","reasoning_content":"原生思考","tool_calls":[{"index":0,"id":"call-a","type":"function","function":{"name":"lookup","arguments":""}}]},"finish_reason":null}],"references":[{"id":"ref-b","url":"https://result.invalid/b","content":"完整B"},{"id":"ref-a","url":"https://result.invalid/a","content":"完整A"}]},
+{"id":"bot-chat-a","choices":[{"index":0,"delta":{"content":"原生回答","tool_calls":[{"index":0,"function":{"arguments":"{\"ok\":false}"}}]},"finish_reason":null}]},
+{"id":"bot-chat-a","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"metadata":{"target_character_name":"检索员"}},
+{"id":"bot-chat-a","choices":[],"bot_usage":{"model_usage":[{"name":"ep-a","prompt_tokens":0,"completion_tokens":2,"total_tokens":2},{"name":"ep-b","prompt_tokens":3,"completion_tokens":0,"total_tokens":3}],"action_usage":[{"action_name":"content_plugin","count":0}],"action_details":[{"name":"content_plugin","count":1,"tool_details":[{"name":"search","input":{"queries":["原始查询"]},"output":{"id":"business-output","url":"https://result.invalid/page"},"created_at":0,"completed_at":0}]}]},"future":{"exact":9007199254740993}},
+{"type":"vendor.future","id":"business-not-chat","model":"business-not-underlying","response":{"id":"business-response","status":"failed"},"flags":[false,null]}
+]

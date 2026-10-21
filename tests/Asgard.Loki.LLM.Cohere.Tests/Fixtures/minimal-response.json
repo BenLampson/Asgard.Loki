@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"weather","parameters":{"city":"上海","future":null}},{"name":"weather","parameters":{"city":"北京","precision":9007199254740993}}],"future":false}

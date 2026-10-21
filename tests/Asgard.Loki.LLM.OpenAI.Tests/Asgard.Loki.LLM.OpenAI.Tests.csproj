@@ -1,10 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <EmbeddedResource Include="Fixtures/**/*.json" />
+    <EmbeddedResource Include="Fixtures/Codex/*.sse" />
+    <EmbeddedResource Include="Fixtures/Text/*.sse" />
+    <EmbeddedResource Include="../Asgard.Loki.LLM.Cloudflare.Tests/Fixtures/chat.json" LogicalName="Cloudflare.chat.json" />
+    <EmbeddedResource Include="../Asgard.Loki.LLM.Cloudflare.Tests/Fixtures/chat.sse" LogicalName="Cloudflare.chat.sse" />
+    <EmbeddedResource Include="../Asgard.Loki.LLM.Cloudflare.Tests/Fixtures/responses.json" LogicalName="Cloudflare.responses.json" />
+    <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaBodyStream.cs" Link="OllamaBodyStream.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaHttpClient.cs" Link="OllamaHttpClient.cs" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
     <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
     <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
     <Compile Include="../Shared/StubHttpClientFactory.cs" Link="StubHttpClientFactory.cs" />
     <Compile Include="../Shared/FragmentedReadStream.cs" Link="FragmentedReadStream.cs" />
     <Compile Include="../Shared/HttpLlmProviderTests.cs" Link="HttpLlmProviderTests.cs" />
+    <Compile Include="../Shared/HttpLlmPayloadTests.cs" Link="HttpLlmPayloadTests.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLock.cs" Link="TestSessionLock.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/ControlledSessionStore.cs" Link="ControlledSessionStore.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLease.cs" Link="TestSessionLease.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestTargetSelector.cs" Link="TestTargetSelector.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/FailingDistributedCache.cs" Link="FailingDistributedCache.cs" />
   </ItemGroup>
 </Project>

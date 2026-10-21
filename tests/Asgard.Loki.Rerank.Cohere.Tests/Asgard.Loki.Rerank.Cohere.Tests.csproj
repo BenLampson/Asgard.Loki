@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Rerank.Cohere/Asgard.Loki.Rerank.Cohere.csproj" />
+    <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
+    <Compile Include="../Shared/StubHttpClientFactory.cs" Link="StubHttpClientFactory.cs" />
+    <Compile Include="../Shared/FragmentedReadStream.cs" Link="FragmentedReadStream.cs" />
+    <EmbeddedResource Include="Fixtures/**/*.json" />
+  </ItemGroup>
+</Project>

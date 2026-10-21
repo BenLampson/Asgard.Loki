@@ -1,0 +1,4 @@
+event: error
+id: failure-id
+data: {"request_id":"stream-id","code":"DataInspectionFailed","message":"fixture error","future":null}
+

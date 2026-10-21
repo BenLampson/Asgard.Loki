@@ -1,0 +1,245 @@
+{
+  "provenance": {
+    "kind": "Independently authored complete request/target shapes; no converter-derived expectations.",
+    "source": "Pinned New API internal/gemini_chat/to_oai_chat_req.go maps GenerationConfig.CandidateCount to OpenAIRequest.N.",
+    "scope": "Only Gemini candidateCount to Chat n. Current pinned Chat to Gemini request code does not map n, so that inverse request setting remains unsupported. No multi-candidate stream claim."
+  },
+  "cases": [
+    {
+      "name": "count-settings",
+      "source": {
+        "model": "model-a",
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "structured é 😀"
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "candidateCount": 2,
+          "maxOutputTokens": 64,
+          "temperature": 0,
+          "topP": 1,
+          "thinkingConfig": {
+            "thinkingLevel": "HIGH"
+          },
+          "responseMimeType": "application/json",
+          "responseJsonSchema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "n": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 9007199254740993
+              }
+            },
+            "required": [
+              "ok",
+              "n"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "target": {
+        "model": "model-a",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "structured é 😀"
+              }
+            ]
+          }
+        ],
+        "max_completion_tokens": 64,
+        "temperature": 0,
+        "top_p": 1,
+        "reasoning_effort": "high",
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean"
+                },
+                "n": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 9007199254740993
+                }
+              },
+              "required": [
+                "ok",
+                "n"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true,
+            "name": "Answer"
+          }
+        },
+        "n": 2
+      },
+      "reply": {
+        "id": "count-reply",
+        "object": "chat.completion",
+        "created": 0,
+        "model": "model-a",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\"ok\":true,\"n\":9007199254740993}"
+            },
+            "finish_reason": "stop"
+          },
+          {
+            "index": 1,
+            "message": {
+              "role": "assistant",
+              "content": "{\"ok\":false,\"n\":null}"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 11,
+          "completion_tokens": 6,
+          "total_tokens": 17
+        }
+      },
+      "result": {
+        "responseId": "count-reply",
+        "modelVersion": "model-a",
+        "candidates": [
+          {
+            "index": 0,
+            "content": {
+              "role": "model",
+              "parts": [
+                {
+                  "text": "{\"ok\":true,\"n\":9007199254740993}"
+                }
+              ]
+            },
+            "finishReason": "STOP"
+          },
+          {
+            "index": 1,
+            "content": {
+              "role": "model",
+              "parts": [
+                {
+                  "text": "{\"ok\":false,\"n\":null}"
+                }
+              ]
+            },
+            "finishReason": "STOP"
+          }
+        ],
+        "usageMetadata": {
+          "promptTokenCount": 11,
+          "candidatesTokenCount": 6,
+          "totalTokenCount": 17
+        }
+      }
+    },
+    {
+      "name": "count-one",
+      "source": {
+        "model": "model-a",
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "one"
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "candidateCount": 1,
+          "maxOutputTokens": 32
+        }
+      },
+      "target": {
+        "model": "model-a",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "one"
+              }
+            ]
+          }
+        ],
+        "max_completion_tokens": 32,
+        "n": 1
+      },
+      "reply": {
+        "id": "one-reply",
+        "object": "chat.completion",
+        "created": 0,
+        "model": "model-a",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "one"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 1,
+          "completion_tokens": 1,
+          "total_tokens": 2
+        }
+      },
+      "result": {
+        "responseId": "one-reply",
+        "modelVersion": "model-a",
+        "candidates": [
+          {
+            "index": 0,
+            "content": {
+              "role": "model",
+              "parts": [
+                {
+                  "text": "one"
+                }
+              ]
+            },
+            "finishReason": "STOP"
+          }
+        ],
+        "usageMetadata": {
+          "promptTokenCount": 1,
+          "candidatesTokenCount": 1,
+          "totalTokenCount": 2
+        }
+      }
+    }
+  ]
+}

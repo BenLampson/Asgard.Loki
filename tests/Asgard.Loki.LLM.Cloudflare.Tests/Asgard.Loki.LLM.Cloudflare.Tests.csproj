@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
+    <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.LLM.Cloudflare/Asgard.Loki.LLM.Cloudflare.csproj" />
+    <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLock.cs" Link="TestSessionLock.cs" />
+    <Compile Include="../Asgard.Loki.LLM.Tests/TestSessionLease.cs" Link="TestSessionLease.cs" />
+    <EmbeddedResource Include="Fixtures/*.json" />
+    <EmbeddedResource Include="Fixtures/*.sse" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,249 @@
+{
+  "sources": [
+    "https://help.aliyun.com/zh/model-studio/text-to-video-api-reference",
+    "https://help.aliyun.com/zh/model-studio/wan-s2v-api",
+    "https://help.aliyun.com/zh/model-studio/legacy-wan-text-to-video-api-reference"
+  ],
+  "checked": "2026-10-20",
+  "note": "Synthetic offline protocol examples. Unknown fields test preservation, not model-specific acceptance.",
+  "submissions": [
+    {
+      "operation": "VideoGeneration",
+      "wire_request": {
+        "model": "configured-wan-1",
+        "input": {
+          "prompt": "A fictional paper boat on a lake. 紙船🌊",
+          "audio_url": "https://media.invalid/audio.wav?opaque=a%2Fb"
+        },
+        "parameters": {
+          "seed": 0,
+          "watermark": false,
+          "prompt_extend": false,
+          "duration": 5,
+          "Future": {
+            "large": 9007199254740993,
+            "null": null
+          }
+        },
+        "Future": {
+          "flag": false,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "request_id": "fixture-submit-1",
+        "output": {
+          "task_id": "wan-fixture-01",
+          "task_status": "PENDING",
+          "Future": {
+            "empty": null
+          }
+        },
+        "usage": null,
+        "Future": false
+      }
+    },
+    {
+      "operation": "ImageToVideo",
+      "wire_request": {
+        "model": "configured-wan-2",
+        "input": {
+          "first_frame_url": "https://media.invalid/first.png",
+          "last_frame_url": "https://media.invalid/last.png",
+          "prompt": "A slow transition."
+        },
+        "parameters": {
+          "seed": 0,
+          "watermark": false,
+          "prompt_extend": false,
+          "duration": 5,
+          "Future": {
+            "large": 9007199254740993,
+            "null": null
+          }
+        },
+        "Future": {
+          "flag": false,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "request_id": "fixture-submit-2",
+        "output": {
+          "task_id": "wan-fixture-01",
+          "task_status": "PENDING",
+          "Future": {
+            "empty": null
+          }
+        },
+        "usage": null,
+        "Future": false
+      }
+    },
+    {
+      "operation": "ImageToVideo",
+      "wire_request": {
+        "model": "configured-wan-3",
+        "input": {
+          "image_url": "https://media.invalid/portrait.png",
+          "audio_url": "https://media.invalid/speech.wav"
+        },
+        "parameters": {
+          "seed": 0,
+          "watermark": false,
+          "prompt_extend": false,
+          "duration": 5,
+          "Future": {
+            "large": 9007199254740993,
+            "null": null
+          }
+        },
+        "Future": {
+          "flag": false,
+          "text": "素材🌋"
+        }
+      },
+      "response": {
+        "request_id": "fixture-submit-3",
+        "output": {
+          "task_id": "wan-fixture-01",
+          "task_status": "PENDING",
+          "Future": {
+            "empty": null
+          }
+        },
+        "usage": null,
+        "Future": false
+      }
+    }
+  ],
+  "queries": [
+    {
+      "request_id": "fixture-query-PENDING",
+      "output": {
+        "task_id": "wan-fixture-01",
+        "task_status": "PENDING",
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      },
+      "Future": {
+        "flag": false,
+        "empty": null
+      }
+    },
+    {
+      "request_id": "fixture-query-RUNNING",
+      "output": {
+        "task_id": "wan-fixture-01",
+        "task_status": "RUNNING",
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      },
+      "Future": {
+        "flag": false,
+        "empty": null
+      }
+    },
+    {
+      "request_id": "fixture-query-FAILED",
+      "output": {
+        "task_id": "wan-fixture-01",
+        "task_status": "FAILED",
+        "Future": {
+          "zero": 0,
+          "null": null
+        },
+        "code": "FixtureRenderFailure",
+        "message": "虚构处理错误"
+      },
+      "Future": {
+        "flag": false,
+        "empty": null
+      }
+    },
+    {
+      "request_id": "fixture-query-CANCELED",
+      "output": {
+        "task_id": "wan-fixture-01",
+        "task_status": "CANCELED",
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      },
+      "Future": {
+        "flag": false,
+        "empty": null
+      }
+    },
+    {
+      "request_id": "fixture-query-UNKNOWN",
+      "output": {
+        "task_id": "wan-fixture-01",
+        "task_status": "UNKNOWN",
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      },
+      "Future": {
+        "flag": false,
+        "empty": null
+      }
+    },
+    {
+      "request_id": "fixture-query-FUTURE_STATE",
+      "output": {
+        "task_id": "wan-fixture-01",
+        "task_status": "FUTURE_STATE",
+        "Future": {
+          "zero": 0,
+          "null": null
+        }
+      },
+      "Future": {
+        "flag": false,
+        "empty": null
+      }
+    },
+    {
+      "request_id": "fixture-query-SUCCEEDED",
+      "output": {
+        "task_id": "wan-fixture-01",
+        "task_status": "SUCCEEDED",
+        "Future": {
+          "zero": 0,
+          "null": null
+        },
+        "video_url": "https://media.invalid/generated.mp4?opaque=a%2Fb&expires=86400",
+        "orig_prompt": "Original native prompt",
+        "submit_time": "2026-10-20 09:00:00.001",
+        "scheduled_time": "2026-10-20 09:00:01.002",
+        "end_time": "2026-10-20 09:00:02.003"
+      },
+      "Future": {
+        "flag": false,
+        "empty": null
+      },
+      "usage": {
+        "duration": 5.25,
+        "input_video_duration": 0,
+        "output_video_duration": 5,
+        "video_count": 1,
+        "SR": 720,
+        "ratio": "16:9",
+        "Future": 9007199254740993
+      }
+    }
+  ],
+  "api_error": {
+    "code": "FixtureDenied",
+    "message": "虚构 API 错误",
+    "request_id": "fixture-error",
+    "Future": null
+  }
+}
