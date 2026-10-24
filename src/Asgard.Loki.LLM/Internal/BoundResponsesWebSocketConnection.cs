@@ -2,7 +2,7 @@ namespace Asgard.Loki.LLM.Internal;
 
 /// <summary>约束一个原生双工连接始终使用原 Session、实际模型与响应归属。</summary>
 internal sealed class BoundResponsesWebSocketConnection(LlmInvocation invocation, LlmSessionBinding binding,
-    IResponsesWebSocketConnection connection, LlmResultMetadata metadata) : IResponsesWebSocketConnection
+    IResponsesWebSocketConnection connection, LlmResultMetadata metadata, LlmTarget target) : IResponsesWebSocketConnection
 {
     private readonly SemaphoreSlim _send = new(1, 1);
     private int _reader;
@@ -29,6 +29,7 @@ internal sealed class BoundResponsesWebSocketConnection(LlmInvocation invocation
             if (snapshot.ContainsKey("stream") || snapshot.ContainsKey("background"))
                 throw new ArgumentException("WebSocket 创建事件不接受 stream 或 background 字段。", nameof(message));
             if (snapshot["previous_response_id"] is not null) previous = RequiredText(snapshot, "previous_response_id");
+            LlmOutputFormats.Validate(target, LlmProtocol.Responses, snapshot);
             snapshot["model"] = Metadata.UpstreamModel;
         }
         else if (type == "response.steer") previous = RequiredText(snapshot, "previous_response_id");

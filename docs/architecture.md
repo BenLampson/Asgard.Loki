@@ -1,5 +1,27 @@
 # Asgard.Loki Architecture Specification
 
+## Native LLM output-format policy
+
+`LlmTarget.AllowedOutputFormats` is an optional per-SDK-protocol declaration on the complete upstream target. It is owned by the LLM capability and introduces no dependency on supplier or Conversion packages. The registry validates known single protocol keys and exact format names, deep-copies the map/lists into read-only snapshots and sorts them for stable serialization. Null, an empty map and missing protocol entries remain undeclared; an empty protocol list rejects explicit formats. Null is omitted from serialization, preserving previous default target fingerprint bytes. Equivalent declarations compare by canonical serialized target values across routes; changed declarations invalidate the existing full-target Session fingerprint.
+
+```mermaid
+classDiagram
+    LlmTarget --> LlmProtocol : AllowedOutputFormats keys
+    LlmConfiguration --> LlmOutputFormats : validate and freeze declarations
+    LlmConfiguration --> LlmTarget : immutable canonical target
+    LlmInvocation --> LlmOutputFormats : validate selected and actual bound target
+    LlmInvocation --> ILlmSessionStore : explicit first-binding coordination
+    BoundResponsesWebSocketConnection --> LlmOutputFormats : validate response.create snapshot
+    LlmOutputFormats --> LlmTarget : inspect explicit native format intent
+    LlmInvocation --> ILlmProvider : invoke only after validation
+```
+
+Protocol clients freeze original JSON before their first Session wait and pass that snapshot to target resolution. Selection uses the existing protocol/optional-operation candidates, never format-based filtering. The selected candidate is checked before a new binding is created; the actual coordinated/existing target is checked again before adapter invocation. A race may return another call's binding, which must satisfy its own format policy or fail without switching targets. Responses WebSocket captures the same frozen target and checks each response.create before asynchronous send. No default format, schema conversion, prompt repair, field deletion, retry, protocol switch or fallback is introduced.
+
+Known envelope readers cover Chat/Responses, Claude Messages, Gemini legacy/modern text settings, native Ollama Chat/generate, Bedrock Converse, Cohere v1 Chat and Workers AI text. Responses checks standard text.format and the existing Perplexity native root response_format independently, without moving fields or choosing precedence; shared syntax does not certify either envelope for other suppliers. Readers classify only explicit native output settings, preserve Schema objects/strings and unknown data, and do not inspect tool input schemas. Unsupported protocol declaration keys fail registration. Explicit malformed/null format envelopes fail under an active declaration; omitted formats do not assert upstream defaults. Text/FIM, compaction, Realtime/media, native Nova, Hunyuan and Spark remain outside this policy. Direct adapter calls remain caller-owned and bypass SDK validation.
+
+On converting providers, the target map constrains the public SDK protocol envelope only. Existing `LlmConversionOptions.TargetSettings.AllowedOutputFormats` independently constrains the final emitted native request and keeps its strict diagnostics even with loss consent. There is no implicit access from core LLM to supplier or conversion implementation details. Format declarations do not certify supplier/model/account support, schema dialect validity or returned-output enforcement. See [native format contracts and examples](llm-output-formats.md).
+
 ## Native Zhipu v4 Image
 
 `Image.Zhipu` depends only on Image, Infrastructure and standard HTTP factory support. ZhipuImageAdapter implements existing generation routes with an explicit complete v4 endpoint/model/independent Bearer key. It snapshots native root parameters before I/O and preserves quality/size/false watermark/user identity and unknown fields without a model catalog or defaults. It does not reference another provider or capability, perform v3 signing, infer async/SSE operations or download result URLs.

@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Volcengine
 
+Use complete-target `AllowedOutputFormats` entries for `ChatCompletions` and `Responses` to enforce the selected Ark model's accepted formats before SDK adapter invocation. Native Chat `response_format` and Responses `text.format` remain distinct, with no Schema downgrade or format-based target selection. Recorded live Schema success below applies to that tested model/account only. See the [format matrix and configuration guide](../../docs/llm-output-formats.md).
+
 Volcengine Ark LLM provider for Asgard.Loki.
 
 | API | Complete result | Streaming |

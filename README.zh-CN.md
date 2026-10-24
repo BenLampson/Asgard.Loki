@@ -1,5 +1,7 @@
 # Asgard.Loki
 
+LLM 的 JSON mode 与 JSON Schema 由 `LlmTarget.AllowedOutputFormats` 按完整目标及协议分别声明，适配器调用前严格校验，不自动降级或切换目标。详见[格式支持矩阵、各端点限制及 DeepSeek 完整示例](docs/llm-output-formats.md)。未声明的协议保持既有透传行为，不代表供应商支持。
+
 [English](README.md) | **简体中文**
 
 Asgard.Loki 是面向 **.NET 10 / C# 14** 的模型调用 SDK，通过统一 `LokiClient` 使用 **LLM、音频、视频、图片、Embedding、Rerank** 六类独立能力，按需安装供应商包。

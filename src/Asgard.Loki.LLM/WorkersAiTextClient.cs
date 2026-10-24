@@ -9,7 +9,7 @@ internal sealed class WorkersAiTextClient(LlmInvocation invocation) : IWorkersAi
     public async Task<WorkersAiTextCompletion> CompleteAsync(WorkersAiTextRequest request, LlmCallOptions options, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested(); var payload = Snapshot(request, false);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.WorkersAiText, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.WorkersAiText, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         cancellationToken.ThrowIfCancellationRequested();
         var result = await ((IWorkersAiTextAdapter)call.Provider).CompleteAsync(payload, call.Context, cancellationToken).ConfigureAwait(false);
         cancellationToken.ThrowIfCancellationRequested(); return result;
@@ -18,7 +18,7 @@ internal sealed class WorkersAiTextClient(LlmInvocation invocation) : IWorkersAi
     public async IAsyncEnumerable<WorkersAiTextEvent> StreamAsync(WorkersAiTextRequest request, LlmCallOptions options, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested(); var payload = Snapshot(request, true);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.WorkersAiText, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.WorkersAiText, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         cancellationToken.ThrowIfCancellationRequested();
         await foreach (var item in ((IWorkersAiTextAdapter)call.Provider).StreamAsync(payload, call.Context, cancellationToken).ConfigureAwait(false))
         { cancellationToken.ThrowIfCancellationRequested(); yield return item; }

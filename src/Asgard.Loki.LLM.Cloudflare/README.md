@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Cloudflare
 
+Native text-format declarations use target `AllowedOutputFormats[LlmProtocol.WorkersAiText]`; compatible Chat/Responses targets have independent protocol entries. SDK calls constrain `response_format.type` before invocation, preserving native fields without format downgrade. [JSON/Schema support depends on the selected model](https://developers.cloudflare.com/workers-ai/features/json-mode/); see the [format matrix and declaration semantics](../../docs/llm-output-formats.md).
+
 Explicit native Workers AI **`ai/run/{model}` text JSON and SSE**. This package references only LLM, capability-independent Infrastructure and standard HTTP. Audio/Embedding and compatible OpenAI calls use their separate packages/configuration; no peer provider or cross-capability business coordinator is introduced.
 
 ## Support matrix

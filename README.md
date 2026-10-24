@@ -1,5 +1,7 @@
 # Asgard.Loki
 
+LLM JSON mode and JSON Schema are declared per target/protocol through `LlmTarget.AllowedOutputFormats`, with strict validation before adapter invocation and no automatic downgrade. See the [native format support matrix, endpoint limitations and DeepSeek examples](docs/llm-output-formats.md).
+
 [![CI](https://github.com/BenLampson/Asgard.Loki/actions/workflows/ci.yml/badge.svg)](https://github.com/BenLampson/Asgard.Loki/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 

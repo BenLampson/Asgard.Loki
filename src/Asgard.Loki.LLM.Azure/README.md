@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Azure
 
+Declare accepted formats on the complete deployment target through `AllowedOutputFormats`, independently for Chat (`response_format`) and Responses (`text.format`). SDK complete/streaming calls and Responses WebSocket creates reject disallowed formats before invocation/send; deployed model/API-version support remains caller-owned. This text policy does not apply to Realtime media configuration. See the [format matrix and examples](../../docs/llm-output-formats.md).
+
 Native Azure OpenAI model calls for the existing LLM capability. This provider references `Asgard.Loki.LLM`, `Asgard.Loki.Infrastructure` and standard Microsoft HTTP components. It does not manage deployments, accounts, billing or a forwarding server.
 
 ## Support matrix
