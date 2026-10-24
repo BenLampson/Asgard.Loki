@@ -2,6 +2,8 @@
 
 Image generation also offers an opt-in [unified request, factory and reusable handlers](docs/image-generation.md): one public model can select complete official or relay targets, supported parameters map explicitly, unsupported values fail locally, native calls remain available, and image bytes can be retrieved explicitly.
 
+See the [1.1.0 release notes](docs/releases/1.1.0.md) for the unified image workflow, compatibility and installation.
+
 LLM JSON mode and JSON Schema are declared per target/protocol through `LlmTarget.AllowedOutputFormats`, with strict validation before adapter invocation and no automatic downgrade. See the [native format support matrix, endpoint limitations and DeepSeek examples](docs/llm-output-formats.md).
 
 [![CI](https://github.com/BenLampson/Asgard.Loki/actions/workflows/ci.yml/badge.svg)](https://github.com/BenLampson/Asgard.Loki/actions/workflows/ci.yml)
