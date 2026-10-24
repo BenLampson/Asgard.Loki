@@ -52,6 +52,6 @@ public sealed class ZhipuImageAdapter : IImageGenerationAdapter
             || header.CharSet is { } charset && !charset.Trim('"').Equals("utf-8", StringComparison.OrdinalIgnoreCase))) throw new InvalidDataException("Zhipu 完整图片结果必须为 UTF-8 JSON。");
         var root = ZhipuImageJson.Parse(bytes);
         if (root.TryGetProperty("error", out var error) && error.ValueKind != JsonValueKind.Null) throw new ImageUpstreamException("智谱 v4 图片返回原生 API 错误。", status, bytes, type);
-        var images = ZhipuImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, new(publicModel, _options.Model, Id), images);
+        var images = ZhipuImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, new(publicModel, _options.Model, Id), images) { RawResponse = new(status, bytes, type) };
     }
 }

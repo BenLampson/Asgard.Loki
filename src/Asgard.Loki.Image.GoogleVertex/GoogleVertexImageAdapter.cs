@@ -23,9 +23,9 @@ public sealed class GoogleVertexImageAdapter : IImageGenerationAdapter
         => GenerateCoreAsync(VertexImagePayload.Prepare(request, _http.Options, cancellationToken), request.PublicModel, cancellationToken);
     private async Task<ImageGenerationResult> GenerateCoreAsync(byte[] body, string publicModel, CancellationToken token)
     {
-        var root = await _http.SendAsync(body, token).ConfigureAwait(false);
-        var lifecycle = new VertexImageLifecycle(); lifecycle.Observe(root); lifecycle.Complete();
-        var images = VertexImageJson.Images(root); _http.Check(token); return new(root, _http.Metadata(publicModel), images);
+        var response = await _http.SendRawAsync(body, token).ConfigureAwait(false);
+        var root = response.Data; var lifecycle = new VertexImageLifecycle(); lifecycle.Observe(root); lifecycle.Complete();
+        var images = VertexImageJson.Images(root); _http.Check(token); return new(root, _http.Metadata(publicModel), images) { RawResponse = response.Raw };
     }
     /// <inheritdoc />
     public IAsyncEnumerable<ImageGenerationEvent> StreamAsync(ImageGenerationRequest request, CancellationToken cancellationToken = default)

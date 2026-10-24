@@ -29,7 +29,7 @@ internal static class ImageNativeJson
             }
             if (!found) throw new InvalidDataException("图片结果缺少原生 b64_json/url。");
         }
-        return new(root, metadata);
+        return new(root, metadata) { RawResponse = new((int)response.StatusCode, body, response.Content.Headers.ContentType?.ToString()) };
     }
     /// <summary>拒绝重复成员和无效字符串，不按末值覆盖输入/成功/错误含义。</summary>
     internal static void Unique(JsonElement value)

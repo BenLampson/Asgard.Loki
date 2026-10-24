@@ -15,6 +15,10 @@ public sealed class GeneratedImage
     { Data = data.Clone(); _native = true; _url = url; _base64 = base64; }
     /// <summary>未删减的图像数据项。</summary>
     public JsonElement Data { get; }
+    /// <summary>可选的原始二进制图片，自定义 Handler 可以直接提供，不需要先编码 Base64。</summary>
+    public LokiImageContent? Content { get; init; }
+    /// <summary>供应商明确返回的图片媒体类型，未知时为空。</summary>
+    public string? ContentType { get; init; }
     /// <summary>供应商返回的 Base64 内容；URL 模式可能为空。</summary>
     public string? Base64 => _native ? _base64 : Data.TryGetProperty("b64_json", out var value) ? value.GetString() : null;
     /// <summary>供应商返回的 URL，不由类库自动下载。</summary>

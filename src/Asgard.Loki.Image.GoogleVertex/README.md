@@ -43,3 +43,9 @@ Complete Data and every original SSE JSON/name/id/retry remain unchanged. Images
 Configurable request and total response/SSE byte limits apply before decoding. Per-call messages, responses and clients are disposed, while borrowed dependencies stay application-owned. Disable handler retries, hedging and redirects. No sessions, media download, file management, cloud project/IAM setup, background workers, billing, LLM/Video dependencies or generic gateway services.
 
 Live status: **not verified with real Vertex image credentials**. Tests use independent full native vectors and fake HTTP/auth/time only. [Cloud REST auth](https://docs.cloud.google.com/docs/authentication/rest), [Express endpoints/key header](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/start/express-mode/overview), [retired Imagen endpoints](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/imagen/4-0-generate). Protocol coverage does not claim every model/version/key supports an operation. The separate Video providers retain their configured preview/stable calls; Imagen retirement does not alter them.
+
+## Unified generation handler
+
+`GoogleVertexImageGenerationHandler` can be reused across explicitly configured official or compatible relay targets. Register the handler object or name under `LokiImageProvider`, then create a client through `LokiImageFactory`. Unified optional parameters require actual-target declarations; unsupported fields/values and native collisions fail before generation HTTP. Full native access and existing adapters remain available. Results keep original JSON and exact HTTP bytes; binary retrieval is explicit. See [registration, supported mapping matrix, limits and examples](../../docs/image-generation.md). Verification is offline only; no real model or parameter-effect validation is claimed.
+
+The bundled unified handler uses the explicit API Key profile; borrowed-token callers retain the existing native adapter.

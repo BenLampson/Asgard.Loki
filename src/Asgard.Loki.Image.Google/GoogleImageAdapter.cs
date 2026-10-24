@@ -20,9 +20,9 @@ public sealed class GoogleImageAdapter : IImageGenerationAdapter
         => GenerateCoreAsync(GoogleImagePayload.Prepare(request, _http.Options, cancellationToken), request.PublicModel, cancellationToken);
     private async Task<ImageGenerationResult> GenerateCoreAsync(byte[] body, string publicModel, CancellationToken token)
     {
-        var root = await _http.SendAsync(Address(false), body, token).ConfigureAwait(false);
-        var lifecycle = new GoogleImageLifecycle(); lifecycle.Observe(root); lifecycle.Complete();
-        var images = GoogleImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, _http.Metadata(publicModel), images);
+        var response = await _http.SendRawAsync(Address(false), body, token).ConfigureAwait(false);
+        var root = response.Data; var lifecycle = new GoogleImageLifecycle(); lifecycle.Observe(root); lifecycle.Complete();
+        var images = GoogleImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, _http.Metadata(publicModel), images) { RawResponse = response.Raw };
     }
     private Uri Address(bool streaming) => _http.Address("models/" + Uri.EscapeDataString(_http.Options.Model)
         + (streaming ? ":streamGenerateContent?alt=sse" : ":generateContent"));

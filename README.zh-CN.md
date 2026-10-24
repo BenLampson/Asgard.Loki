@@ -1,5 +1,7 @@
 # Asgard.Loki
 
+图片生成可选使用[统一请求、Factory 和可复用 Handler](docs/image-generation.md)：公开模型下注册多个官方或中转站完整目标，可靠映射统一参数，不支持的字段和值在调用前报错；保留现有和原生接口，并可显式获取 Base64/URL 对应的图片二进制。
+
 LLM 的 JSON mode 与 JSON Schema 由 `LlmTarget.AllowedOutputFormats` 按完整目标及协议分别声明，适配器调用前严格校验，不自动降级或切换目标。详见[格式支持矩阵、各端点限制及 DeepSeek 完整示例](docs/llm-output-formats.md)。未声明的协议保持既有透传行为，不代表供应商支持。
 
 [English](README.md) | **简体中文**

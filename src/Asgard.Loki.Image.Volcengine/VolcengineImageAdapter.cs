@@ -98,7 +98,7 @@ public sealed class VolcengineImageAdapter : IImageGenerationAdapter
             if (item.TryGetProperty("error", out var itemError) && itemError.ValueKind != System.Text.Json.JsonValueKind.Null) ArkImageJson.Error(itemError);
             else ArkImageJson.Image(item);
         }
-        return new(root, metadata);
+        return new(root, metadata) { RawResponse = new(status, bytes, contentType) };
     }
     private ImageResultMetadata Metadata(ArkImageRequest request) => new(request.PublicModel, _options.Model, Id);
     private static ImageGenerationEvent Event(ArkImageFrame frame, ImageResultMetadata metadata) => new(frame.Data, metadata, frame.EventName, frame.EventId, frame.Retry);

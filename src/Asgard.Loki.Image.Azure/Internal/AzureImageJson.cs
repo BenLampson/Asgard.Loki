@@ -54,7 +54,7 @@ internal static class AzureImageJson
                 }
                 if (!found) throw new InvalidDataException("Azure 图像项缺少原生图像载荷。");
             }
-            return new(root, metadata);
+            return new(root, metadata) { RawResponse = new((int)response.Status, response.Body, response.ContentType) };
         }
         catch (Exception error) when (error is JsonException or InvalidOperationException or DecoderFallbackException or EncoderFallbackException)
         { throw new InvalidDataException("Azure 图像原生 JSON 或编码无效。", error); }

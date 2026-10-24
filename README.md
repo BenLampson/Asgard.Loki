@@ -1,5 +1,7 @@
 # Asgard.Loki
 
+Image generation also offers an opt-in [unified request, factory and reusable handlers](docs/image-generation.md): one public model can select complete official or relay targets, supported parameters map explicitly, unsupported values fail locally, native calls remain available, and image bytes can be retrieved explicitly.
+
 LLM JSON mode and JSON Schema are declared per target/protocol through `LlmTarget.AllowedOutputFormats`, with strict validation before adapter invocation and no automatic downgrade. See the [native format support matrix, endpoint limitations and DeepSeek examples](docs/llm-output-formats.md).
 
 [![CI](https://github.com/BenLampson/Asgard.Loki/actions/workflows/ci.yml/badge.svg)](https://github.com/BenLampson/Asgard.Loki/actions/workflows/ci.yml)
@@ -129,7 +131,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki` | Client implementation and module lifecycle |
 | `Asgard.Loki.LLM` | Native LLM protocols, routing, Session storage and registration |
 | `Asgard.Loki.Audio` | Independent speech, audio-file transcription/translation contracts, routing and results |
-| `Asgard.Loki.Image` | Independent image contracts, routing and results |
+| `Asgard.Loki.Image` | Independent image contracts, routing, unified generation factory/handler contracts and opt-in binary results |
 | `Asgard.Loki.Embedding` | Independent native embedding contracts, routing and results; custom adapters |
 | `Asgard.Loki.Rerank` | Independent native reranking contracts, routing and results; custom adapters |
 | `Asgard.Loki.Rerank.Cohere` | Native Cohere v1/v2 reranking and provider-owned ranking views |

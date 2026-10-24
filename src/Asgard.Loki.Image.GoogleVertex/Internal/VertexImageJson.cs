@@ -66,7 +66,7 @@ internal static class VertexImageJson
                 if (!mime.GetString()!.StartsWith("image/", StringComparison.OrdinalIgnoreCase)) continue;
                 if (!inline.TryGetProperty("data", out var bytes) || bytes.ValueKind != JsonValueKind.String || string.IsNullOrEmpty(bytes.GetString()))
                     throw new InvalidDataException("Gemini 内联图片缺少原生 data。");
-                images.Add(new(part, null, bytes.GetString()));
+                images.Add(new(part, null, bytes.GetString()) { ContentType = mime.GetString() });
             }
         }
         return images.AsReadOnly();
