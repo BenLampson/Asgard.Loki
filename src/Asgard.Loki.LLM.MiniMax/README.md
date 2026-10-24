@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.MiniMax
 
+This provider's Chat SDK calls honor complete-target `AllowedOutputFormats[LlmProtocol.ChatCompletions]` for the native `response_format` envelope; declare only formats actually accepted by the selected v2 endpoint/model. The separate Messages service requires its own declaration: thinking/effort support is not a Schema capability claim. See the [format support guide](../../docs/llm-output-formats.md).
+
 Native MiniMax v2 Chat JSON/SSE through the existing LLM ChatCompletions SDK contract. This provider calls `text/chatcompletion_v2` under the complete configured root. It references only LLM, Infrastructure and standard HTTP support; it has no Image, Audio, Video or supplier-peer dependency.
 
 ## Support matrix

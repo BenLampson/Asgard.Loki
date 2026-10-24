@@ -10,6 +10,8 @@ public sealed class AliImageTask
     { Data = data.Clone(); Reference = reference; }
     /// <summary>完整未改写的原生正文。</summary>
     public JsonElement Data { get; }
+    /// <summary>单次提交或查询的原始 HTTP 响应。</summary>
+    public ImageRawResponse? RawResponse { get; init; }
     /// <summary>完整目标绑定。</summary>
     public AliImageTaskReference Reference { get; }
     /// <summary>原生状态，不把未知状态猜测为成功。</summary>

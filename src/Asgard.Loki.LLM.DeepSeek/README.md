@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.DeepSeek
 
+For model-generation JSON mode/Schema support, use the existing [OpenAI-compatible generation adapter](../Asgard.Loki.LLM.OpenAI/README.md#explicit-deepseek-native-endpoints) or separate Messages adapter and their explicit targets. The [format matrix and call examples](../../docs/llm-output-formats.md) distinguish DeepSeek Chat JSON mode, Responses Schema and unsupported Messages formatting. Search/Fetch in this package has no model output-format declaration.
+
 Native DeepSeek Search and Fetch JSON calls for the LLM supplier package. `DeepSeekToolsClient` captures one service root and explicit API Key, and borrows `IHttpClientFactory`. The native tools do not require a model or conversation, so they use a supplier-specific client and result without adding a model selector, Session or another capability module. Model-generation adapters and protocol conversion are separate.
 
 ## Support matrix

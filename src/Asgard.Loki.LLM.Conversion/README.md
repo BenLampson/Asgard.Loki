@@ -409,6 +409,8 @@ The separate explicit single-text-part Responses → Gemini stream profile maps 
 
 ## Caller-declared target settings
 
+Native SDK calls also support `LlmTarget.AllowedOutputFormats`, keyed by the SDK caller's protocol. That target policy checks the incoming native envelope before adapter invocation, including converting adapters; it does not infer a decorator's emitted protocol. Continue using the `TargetSettings.AllowedOutputFormats` below to constrain the final converted native request. Both checks are strict and neither downgrades Schema into JSON mode. See the [native format matrix and supplier examples](../../docs/llm-output-formats.md).
+
 Optional `TargetSettings` declares the support of the configured converting target. It checks the **actual native request after conversion**, including caller-selected budget replacements and defaults. The SDK does not query a model catalog, infer support from names, adjust tokens or remove rejected fields. Declarations restrict implemented mappings; `true` never enables an otherwise unsupported protocol feature. Violations produce field-level `LlmConversionException` diagnostics even with `AllowLoss = true`.
 
 ```csharp

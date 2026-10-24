@@ -10,7 +10,7 @@ internal sealed class ChatCompletionsClient(LlmInvocation invocation) : IChatCom
     {
         Validate(request);
         var payload = LlmInvocation.Payload(request, request.Model, false);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.ChatCompletions, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.ChatCompletions, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         return await ((IChatCompletionsAdapter)call.Provider).CompleteAsync(
             payload, call.Context, cancellationToken).ConfigureAwait(false);
@@ -22,7 +22,7 @@ internal sealed class ChatCompletionsClient(LlmInvocation invocation) : IChatCom
     {
         Validate(request);
         var payload = LlmInvocation.Payload(request, request.Model, true);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.ChatCompletions, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.ChatCompletions, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         await foreach (var item in ((IChatCompletionsAdapter)call.Provider).StreamAsync(
             payload, call.Context, cancellationToken).ConfigureAwait(false))

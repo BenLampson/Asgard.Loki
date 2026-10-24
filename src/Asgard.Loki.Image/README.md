@@ -1,12 +1,20 @@
 # Asgard.Loki.Image
 
+## Unified generation
+
+`LokiImageProvider` registers public models, each with complete upstream providers and a reusable handler object or registered handler name. `LokiImageFactory.CreateClient()` exposes unified `LokiImageGenerationRequest`, explicitly pinned native calls and optional task queries. Configure `ImageOptions.GenerationFactory` to also access this client at `loki.Image.Generation`; existing target-typed `.Image.GenerateAsync(new() { ... })`, streams and edits remain source compatible.
+
+Each explicitly set optional field requires a reliable handler mapping and an actual-target parameter declaration. Unsupported fields, values and native-extension collisions fail before generation I/O; selection never filters or retries targets. Results preserve original JSON and available exact raw HTTP responses, plus ordered images, image-level errors and explicit states. `GetImageContentAsync` explicitly decodes Base64 or downloads URL results with independent HTTP credentials and bounded bytes; it does not save files or regenerate on download failure.
+
+See [complete registration, calls, mapping matrix, native access and task examples](../../docs/image-generation.md). The capability references Abstractions, capability-independent Infrastructure and Microsoft.Extensions.Http; no supplier or sibling capability dependency is introduced. Bundled handler/transport behavior is verified offline, with no real model or image-quality verification.
+
 [Azure](../Asgard.Loki.Image.Azure/README.md) supplies separately configured native deployment/version/API-Key JSON generation and multipart editing. It preserves original results and upload ownership, with native generation SSE and multipart editing SSE. Dated JSON-reference editing remains unsupported and fails locally without media/protocol conversion. Its edit completion marker describes the whole call; original per-image completed events remain intact.
 
 Independent image generation/editing contracts, routing and module registration for Asgard.Loki.
 
 Provides `AddImage()`, `.Image.GenerateAsync()` and `.Image.StreamAsync()`. Generation calls snapshot parameters at method invocation, including before stream enumeration. Requests retain arbitrary JSON parameters; results preserve full provider JSON, image data, URLs, usage and metadata. `GeneratedImage.Decode()` decodes Base64 on demand without downloading URL results.
 
-Install providers separately: [OpenAI](../Asgard.Loki.Image.OpenAI/README.md), [Azure](../Asgard.Loki.Image.Azure/README.md), [Volcengine](../Asgard.Loki.Image.Volcengine/README.md), [Ali](../Asgard.Loki.Image.Ali/README.md), [Google](../Asgard.Loki.Image.Google/README.md), [Google Vertex](../Asgard.Loki.Image.GoogleVertex/README.md), [MiniMax](../Asgard.Loki.Image.MiniMax/README.md) [SiliconFlow](../Asgard.Loki.Image.SiliconFlow/README.md) [xAI native editing](../Asgard.Loki.Image.XAI/README.md) [Zhipu v4](../Asgard.Loki.Image.Zhipu/README.md) [Replicate](../Asgard.Loki.Image.Replicate/README.md) and [Midjourney proxy](../Asgard.Loki.Image.Midjourney/README.md) document their own native support. This capability depends only on generic abstractions and has no dependency on LLM, audio or other capabilities.
+Install providers separately: [OpenAI](../Asgard.Loki.Image.OpenAI/README.md), [Azure](../Asgard.Loki.Image.Azure/README.md), [Volcengine](../Asgard.Loki.Image.Volcengine/README.md), [Ali](../Asgard.Loki.Image.Ali/README.md), [Google](../Asgard.Loki.Image.Google/README.md), [Google Vertex](../Asgard.Loki.Image.GoogleVertex/README.md), [MiniMax](../Asgard.Loki.Image.MiniMax/README.md) [SiliconFlow](../Asgard.Loki.Image.SiliconFlow/README.md) [xAI native editing](../Asgard.Loki.Image.XAI/README.md) [Zhipu v4](../Asgard.Loki.Image.Zhipu/README.md) [Replicate](../Asgard.Loki.Image.Replicate/README.md) and [Midjourney proxy](../Asgard.Loki.Image.Midjourney/README.md) document their own native support. This capability depends on generic abstractions, capability-independent Infrastructure and standard HTTP factory support, with no dependency on LLM, audio or other capabilities.
 
 ## Native image editing contracts
 

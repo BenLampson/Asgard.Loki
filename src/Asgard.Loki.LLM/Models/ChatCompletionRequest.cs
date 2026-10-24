@@ -10,6 +10,7 @@ public sealed record ChatCompletionRequest
     [JsonPropertyName("messages")]
     public required JsonArray Messages { get; init; }
     /// <summary>未在本类型声明的所有协议字段。</summary>
+    /// <remarks>输出格式使用原生 response_format；透传不代表所选服务或模型支持。通过 LlmTarget.AllowedOutputFormats 按 ChatCompletions 声明允许的格式，SDK 调用前拒绝不支持的值，不自动降级。</remarks>
     [JsonExtensionData]
     public Dictionary<string, JsonElement> Parameters { get; init; } = [];
 }

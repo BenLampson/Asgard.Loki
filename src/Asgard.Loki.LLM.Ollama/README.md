@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Ollama
 
+Set target `AllowedOutputFormats` independently for `OllamaChat` and `OllamaGenerate` to constrain native `format`: `"json"` is JSON mode and a Schema object is Schema output. Local and cloud support differ; [Ollama Cloud currently excludes structured outputs](https://docs.ollama.com/capabilities/structured-outputs). See the [format matrix and declaration semantics](../../docs/llm-output-formats.md). SDK calls reject disallowed formats before invocation without dropping `format` or switching targets.
+
 Native Ollama **`POST /api/chat` and `/api/generate`** JSON and NDJSON provider. This package references `Asgard.Loki.LLM`, capability-independent `Asgard.Loki.Infrastructure` and standard HTTP dependencies. It does not install the separate Embedding provider, start a server, manage models, execute tools or run a conversation loop.
 
 ## Support matrix

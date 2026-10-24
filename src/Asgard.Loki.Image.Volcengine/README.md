@@ -106,3 +106,7 @@ The [official Visual SDK](https://github.com/volcengine/volc-sdk-python/blob/mas
 ## Verification
 
 75 xUnit v3 fake-HTTP cases (39 Ark and 36 Jimeng) using independent complete JSON/SSE vectors cover scalar/array references, native omitted prompt, full mixed/layer results, group partial failures, single-image EOF, identity/order, snapshots, overall errors, byte/length/cancellation/disposal boundaries and no replay. Independent Jimeng exact-byte signing vectors include permanent and temporary credentials, original arrays/metadata, native errors and resource boundaries. No real Ark/Jimeng model/endpoint, image quality, feature acceptance, pixel validity or live availability has been verified. This package has no live-test environment variables.
+
+## Unified generation handler
+
+`VolcengineImageGenerationHandler` can be reused across explicitly configured official or compatible relay targets. Register the handler object or name under `LokiImageProvider`, then create a client through `LokiImageFactory`. Unified optional parameters require actual-target declarations; unsupported fields/values and native collisions fail before generation HTTP. Full native access and existing adapters remain available. Results keep original JSON and exact HTTP bytes; binary retrieval is explicit. See [registration, supported mapping matrix, limits and examples](../../docs/image-generation.md). Verification is offline only; no real model or parameter-effect validation is claimed.

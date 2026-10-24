@@ -88,3 +88,7 @@ Complete results retain the original JSON envelope and image order, Base64 strin
 ## Verification
 
 Tests compare independent JSON requests, four complete multipart byte goldens, original SSE wires and full original Azure result/error envelopes using fake HTTP only. The tests also cover multi-image whole-call completion, native errors and unknown events, exact numeric spelling, request snapshots, single-use enumeration, early stop and final resource/cancellation boundaries. Tests cover fixed URI/authentication, input/result snapshots, exact values, image/mask ownership, nonseekable uploads, replay refusal, byte bounds, read/disposal failures and cancellation. No real Azure credentials, image/model acceptance, filtering outcome, pixel quality or live availability have been verified. This package has no live-test environment configuration.
+
+## Unified generation handler
+
+`AzureImageGenerationHandler` can be reused across explicitly configured official or compatible relay targets. Register the handler object or name under `LokiImageProvider`, then create a client through `LokiImageFactory`. Unified optional parameters require actual-target declarations; unsupported fields/values and native collisions fail before generation HTTP. Full native access and existing adapters remain available. Results keep original JSON and exact HTTP bytes; binary retrieval is explicit. See [registration, supported mapping matrix, limits and examples](../../docs/image-generation.md). Verification is offline only; no real model or parameter-effect validation is claimed.

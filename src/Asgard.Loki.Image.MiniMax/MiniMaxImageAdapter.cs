@@ -54,6 +54,6 @@ public sealed class MiniMaxImageAdapter : IImageGenerationAdapter
         if (!root.TryGetProperty("base_resp", out var state) || state.ValueKind != JsonValueKind.Object || !state.TryGetProperty("status_code", out var code)
             || code.ValueKind != JsonValueKind.Number || !code.TryGetInt64(out var value)) throw new InvalidDataException("MiniMax 图片结果缺少原生整数 base_resp.status_code。");
         if (value != 0) throw new ImageUpstreamException("MiniMax 图片原生业务错误。", status, bytes, type);
-        var images = MiniMaxImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, new(publicModel, _options.Model, Id), images);
+        var images = MiniMaxImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, new(publicModel, _options.Model, Id), images) { RawResponse = new(status, bytes, type) };
     }
 }

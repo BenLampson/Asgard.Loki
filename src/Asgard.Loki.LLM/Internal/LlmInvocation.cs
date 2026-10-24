@@ -24,7 +24,7 @@ internal sealed class LlmInvocation(LlmConfiguration configuration)
     /// <summary>恢复已有目标，首次调用才经过目标选择器。</summary>
     internal async ValueTask<(LlmAdapterContext Context, LlmSessionBinding Binding, ILlmProvider Provider)> ResolveAsync(
         string model, LlmProtocol protocol, LlmCallOptions options, string? previousResponseId, CancellationToken cancellationToken,
-        LlmTargetFeatures requiredFeatures = LlmTargetFeatures.None)
+        LlmTargetFeatures requiredFeatures = LlmTargetFeatures.None, JsonObject? request = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(model);
         ArgumentNullException.ThrowIfNull(options);
@@ -40,6 +40,7 @@ internal sealed class LlmInvocation(LlmConfiguration configuration)
             if (candidates.Length == 0) throw new NotSupportedException("此路由没有支持请求协议的目标。");
             var candidate = configuration.Selector.Select(candidates);
             if (!candidates.Contains(candidate)) throw new InvalidOperationException("目标选择器返回了候选集之外的目标。");
+            LlmOutputFormats.Validate(candidate, protocol, request);
             binding = await Sessions.GetOrCreateAsync(new LlmSessionBinding(options.SessionId, model, protocol,
                 candidate.Id, configuration.Fingerprint(candidate)), cancellationToken).ConfigureAwait(false);
         }
@@ -51,6 +52,8 @@ internal sealed class LlmInvocation(LlmConfiguration configuration)
         if (!target.Protocols.HasFlag(protocol) || configuration.Fingerprint(target) != binding.Fingerprint)
             throw new InvalidOperationException("Session 原目标配置或凭据已改变，不允许自动切换。");
         if (!target.Features.HasFlag(requiredFeatures)) throw new NotSupportedException("Session 原目标不支持请求的原生可选操作，不允许切换目标。");
+        // 并发首次绑定可能返回另一调用已绑定的目标，必须再次检查真正的目标，不能重选。
+        LlmOutputFormats.Validate(target, protocol, request);
         if (previousResponseId is not null
             && !await Sessions.OwnsResponseAsync(binding, previousResponseId, cancellationToken).ConfigureAwait(false))
             throw new InvalidOperationException("previous_response_id 不属于当前 Session 或记录已过期。");

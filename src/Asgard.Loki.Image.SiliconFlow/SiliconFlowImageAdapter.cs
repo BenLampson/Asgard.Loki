@@ -58,6 +58,6 @@ public sealed class SiliconFlowImageAdapter : IImageGenerationAdapter
         }
         if (!root.TryGetProperty("images", out _) && root.TryGetProperty("message", out var messageText) && messageText.ValueKind == JsonValueKind.String && !string.IsNullOrEmpty(messageText.GetString()))
             throw new ImageUpstreamException("SiliconFlow 图片返回原生错误消息。", status, bytes, type);
-        var images = SiliconFlowImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, new(publicModel, _options.Model, Id), images);
+        var images = SiliconFlowImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, new(publicModel, _options.Model, Id), images) { RawResponse = new(status, bytes, type) };
     }
 }

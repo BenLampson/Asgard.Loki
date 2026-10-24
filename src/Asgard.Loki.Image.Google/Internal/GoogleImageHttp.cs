@@ -53,6 +53,9 @@ internal sealed class GoogleImageHttp
             throw new InvalidDataException("Gemini图片实际响应目标/方法与绑定不一致。");
     }
     internal async Task<JsonElement> SendAsync(Uri address, byte[] body, CancellationToken token)
+        => (await SendRawAsync(address, body, token).ConfigureAwait(false)).Data;
+    /// <summary>同时保留原始字节，不通过 JSON 重序列化制造原始响应。</summary>
+    internal async Task<(JsonElement Data, ImageRawResponse Raw)> SendRawAsync(Uri address, byte[] body, CancellationToken token)
     {
         byte[] bytes; int status; string? type;
         using (var request = Message(address, body))
@@ -62,7 +65,7 @@ internal sealed class GoogleImageHttp
             bytes = await HttpBodyReader.ReadAsync(response.Content, Options.MaxResponseBytes, token).ConfigureAwait(false);
             status = (int)response.StatusCode; type = response.Content.Headers.ContentType?.ToString();
         }
-        token.ThrowIfCancellationRequested(); return Result(bytes, status, type);
+        token.ThrowIfCancellationRequested(); return (Result(bytes, status, type), new(status, bytes, type));
     }
     internal static JsonElement Result(byte[] bytes, int status, string? type)
     {

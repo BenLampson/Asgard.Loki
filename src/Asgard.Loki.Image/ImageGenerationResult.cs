@@ -25,6 +25,8 @@ public sealed class ImageGenerationResult
     public JsonElement Data { get; }
     /// <summary>不包含密钥的模型与供应商身份。</summary>
     public ImageResultMetadata Metadata { get; }
+    /// <summary>可选的完整原始 HTTP 响应；旧构造及自定义适配器不强制提供。</summary>
+    public ImageRawResponse? RawResponse { get; init; }
     /// <summary>按原始顺序访问生成图像。</summary>
     public IReadOnlyList<GeneratedImage> Images => _nativeImages ?? (Data.TryGetProperty("data", out var images)
         && images.ValueKind == JsonValueKind.Array ? images.EnumerateArray().Select(item => new GeneratedImage(item)).ToArray() : []);

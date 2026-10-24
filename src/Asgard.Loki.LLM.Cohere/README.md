@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Cohere
 
+`LlmTarget.AllowedOutputFormats[LlmProtocol.CohereChat]` distinguishes JSON mode from Schema intent: native `response_format.type = "json_object"` with `schema` requires `json_schema` permission while retaining that original type. SDK complete/streaming calls reject disallowed formats before invocation. [Cohere's model and RAG/tool restrictions](https://docs.cohere.com/v1/reference/chat) still apply independently. See the [format guide](../../docs/llm-output-formats.md).
+
 Native Cohere **v1 `POST chat` JSON and default newline-delimited streaming**. The package references only LLM, capability-independent Infrastructure and standard HTTP support. Rerank.Cohere remains a separate capability/provider with independent credentials and state.
 
 ## Support matrix

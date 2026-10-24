@@ -1,5 +1,11 @@
 # Asgard.Loki.LLM
 
+## Native output-format declarations
+
+`LlmTarget.AllowedOutputFormats` optionally maps an enabled SDK protocol to `text`, `json_object` and/or `json_schema`. A null/missing protocol is undeclared; an empty list rejects explicit formats while permitting omission. Configuration is frozen and participates in the complete-target Session fingerprint. Complete/streaming requests are checked against the selected or bound target before adapter invocation; first-call failures do not create a binding. Responses WebSocket checks `response.create` before send. Unsupported formats throw `NotSupportedException` with target/protocol/native field path; malformed explicit envelopes throw `ArgumentException`. No request rewriting, format-based target selection or automatic downgrade occurs.
+
+See the [supported native envelopes, supplier limitations and initialization/call examples](../../docs/llm-output-formats.md). This policy governs SDK call protocols; a converting provider's `TargetSettings.AllowedOutputFormats` separately governs its final emitted native request. Omission grants no capability and no model-name/host inference or network discovery is performed. Direct adapter calls remain lower-level caller-owned operations.
+
 ## Native Realtime
 
 `loki.LLM.Realtime.OpenAsync(model, callOptions, cancellationToken)` requires a target declaring `LlmProtocol.Realtime` and a provider implementing `IRealtimeAdapter`. The returned `IRealtimeConnection` exposes caller-driven `SendAsync(JsonObject)`, `ReadEventsAsync()` yielding original `RealtimeEvent` snapshots, explicit `CloseAsync` and async disposal. Complete-target Session affinity and validation apply; reconnecting does not recover remote history. Native errors, tool associations, audio and all response statuses remain in original `Data`. Normal transport closure does not establish generation success. Realtime does not share HTTP Responses continuation ownership or Audio business state. The [OpenAI package](../Asgard.Loki.LLM.OpenAI/README.md#native-realtime-websocket) documents initialization, limits and offline-only validation. There is no implicit conversion, tool executor, retry or background loop.

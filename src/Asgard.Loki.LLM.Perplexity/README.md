@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Perplexity
 
+Use complete-target `AllowedOutputFormats` declarations separately for `Responses` and Sonar `ChatCompletions`. Perplexity's native Responses format is root `response_format`, not OpenAI's `text.format`; SDK Responses checks both known paths independently, without moving fields or selecting a precedence. Sonar's Schema uses its original `response_format` envelope. The declaration vocabulary is `text`/`json_object`/`json_schema`; other explicit formats such as Sonar regex are rejected under an active list. Undeclared protocols retain native forwarding, not a support guarantee. See the [format matrix and examples](../../docs/llm-output-formats.md).
+
 Native Perplexity Responses and Sonar Chat JSON/SSE using the existing LLM clients. Separate providers own their original protocol state and explicit endpoint selection. This package references only LLM, Infrastructure and standard HTTP factory support.
 
 ## Support matrix
