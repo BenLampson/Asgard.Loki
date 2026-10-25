@@ -1,43 +1,141 @@
 # Asgard.Loki
 
-Image generation also offers an opt-in [unified request, factory and reusable handlers](docs/image-generation.md): one public model can select complete official or relay targets, supported parameters map explicitly, unsupported values fail locally, native calls remain available, and image bytes can be retrieved explicitly.
-
-See the [1.1.0 release notes](docs/releases/1.1.0.md) for the unified image workflow, compatibility and installation.
-
-LLM JSON mode and JSON Schema are declared per target/protocol through `LlmTarget.AllowedOutputFormats`, with strict validation before adapter invocation and no automatic downgrade. See the [native format support matrix, endpoint limitations and DeepSeek examples](docs/llm-output-formats.md).
+**Bring text, speech, images, video and retrieval models into your .NET application.**
 
 [![CI](https://github.com/BenLampson/Asgard.Loki/actions/workflows/ci.yml/badge.svg)](https://github.com/BenLampson/Asgard.Loki/actions/workflows/ci.yml)
+[![.NET 10](https://img.shields.io/badge/.NET-10-512BD4)](https://dotnet.microsoft.com/)
+[![NuGet](https://img.shields.io/nuget/v/Asgard.Loki.svg)](https://www.nuget.org/packages/Asgard.Loki)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
 **English** | [简体中文](README.zh-CN.md)
 
-A modular .NET 10 / C# 14 client library for model APIs. Use one `LokiClient` and install only the capabilities and providers you need.
+Asgard.Loki is a modular **.NET 10 / C# 14 AI SDK**. Access six independent capabilities through one `LokiClient`, install only the provider packages you need, and keep access to native parameters, results and streaming events.
 
-Use Loki for **LLM, Audio, Video, Image, Embedding and Rerank** calls. Provider packages preserve native request parameters, responses and streaming events. Optional protocol conversion supports only the mappings documented by the conversion package; unsupported mappings fail explicitly.
+Connect to **OpenAI, Claude, Gemini, Ollama, Azure OpenAI, Amazon Bedrock, Volcengine** and more. Each provider supports a specific set of operations; use the [full support matrix](#supported-capabilities) to choose your integration.
 
-| Start here | Guide |
-| --- | --- |
-| Choose a capability and provider | [Support matrix](#supported-capabilities) |
-| Install the required packages | [Installation](#installation) and [package dependencies](#packages-and-dependencies) |
-| Make a text-model call | [LLM initialization](#initialize-llm) |
-| Generate speech or images | [Speech example](#volcengine-speech) · [Image example](#openai-images) |
-| Work with asynchronous media | [Video](src/Asgard.Loki.Video/README.md) · [Music and lyrics](src/Asgard.Loki.Audio.SunoAPI/README.md) |
-| Build or extend Loki | [Build and test](#build-and-test) · [Architecture](docs/architecture.md) |
+[Quick start](#quick-start-generate-an-image) · [LLM setup](#initialize-llm) · [Providers](#supported-capabilities) · [Packages](#packages-and-dependencies) · [Contributing](CONTRIBUTING.md)
+
+## What can you build?
+
+| Capability | Use it for | Start here |
+| --- | --- | --- |
+| **LLM** | Chat, streaming answers, structured output and native tool-call data | [LLM setup](#initialize-llm) · [JSON / JSON Schema](docs/llm-output-formats.md) |
+| **Audio** | Text to speech, file transcription / translation, music and lyrics tasks | [Speech example](#volcengine-speech) · [Audio guide](src/Asgard.Loki.Audio/README.md) |
+| **Image** | Generate images, edit with supported native APIs, retrieve image bytes | [Quick start](#quick-start-generate-an-image) · [Unified generation](docs/image-generation.md) |
+| **Video** | Submit generation tasks and query their progress and results | [Video guide](src/Asgard.Loki.Video/README.md) |
+| **Embedding** | Turn supported text or media inputs into vectors for semantic retrieval | [Embedding guide](src/Asgard.Loki.Embedding/README.md) |
+| **Rerank** | Rank candidate documents against a query in a search or RAG pipeline | [Rerank guide](src/Asgard.Loki.Rerank/README.md) |
+
+## Why Loki?
+
+- **Install what you use.** Capabilities and providers are separate NuGet packages. Adding image generation keeps your dependency graph focused on images.
+- **Keep native control.** Access original JSON, tool associations, reasoning fields, usage and stream events. Optional [protocol conversion](src/Asgard.Loki.LLM.Conversion/README.md) documents its supported mappings and reports unsupported semantics.
+- **Keep conversations on the right upstream.** An LLM Session binds the server, actual model, credential identity and adapter together, including when your application runs across instances.
+- **Reuse image generation code.** The optional image factory maps supported common parameters across registered providers, preserves original results and reports unsupported values before sending a generation request.
+
+Loki fits applications that want explicit control over model calls and provider configuration. Applications supply credentials, own tool execution and decide when to query asynchronous tasks. Generation calls are attempted once, with no automatic retries or target switching.
 
 ## Installation
 
-Target **.NET 10**. Install the entry package and the provider packages you use; their capability and infrastructure dependencies are resolved transitively. Replace `<version>` below with a matching Loki version available from your configured NuGet feed:
+Use **.NET 10** and matching Loki package versions. Install `Asgard.Loki` plus the provider packages for your application; capability dependencies are resolved transitively.
+
+For the image quick start, install matching **1.1.0** packages:
 
 ```sh
-dotnet add package Asgard.Loki --version <version>
-dotnet add package Asgard.Loki.LLM.Volcengine --version <version>
+dotnet new console --framework net10.0 -n LokiDemo
+cd LokiDemo
+dotnet add package Asgard.Loki --version 1.1.0
+dotnet add package Asgard.Loki.Image.OpenAI --version 1.1.0
 ```
 
-Use matching Loki package versions. To build packages from this checkout instead, follow [Build and test](#build-and-test) and use `artifacts/packages` as a local NuGet source. Each provider README contains its initialization, native operations, limits and live-verification status.
+For LLM calls, choose a package such as `Asgard.Loki.LLM.OpenAI`, `Asgard.Loki.LLM.Anthropic`, `Asgard.Loki.LLM.Google` or `Asgard.Loki.LLM.Volcengine`, then follow [LLM setup](#initialize-llm). To build packages from source, see [Build and test](#build-and-test) and use `artifacts/packages` as a local NuGet source.
 
-Loki is a client library: it does not host a gateway, execute tools, manage billing or run background polling. Generation calls do not automatically retry or switch targets. Applications own credentials and explicitly query asynchronous tasks. General file management and fine-tuning are outside the API; the [Ark media asset library](src/Asgard.Loki.Video.Volcengine/README.md) is a provider-specific feature for model inputs.
+## Quick start: generate an image
+
+This console example configures one OpenAI image target, generates an image, and explicitly retrieves its bytes. It needs no Session cache. Replace `Program.cs` with the following, then set the two placeholders to your authorized image model and API key. In an application, load the key from your secret configuration.
+
+```csharp
+using Asgard.Loki;
+using Asgard.Loki.Image;
+using Asgard.Loki.Image.OpenAI;
+using Microsoft.Extensions.DependencyInjection;
+
+var services = new ServiceCollection();
+services.AddHttpClient("images", client => client.Timeout = TimeSpan.FromMinutes(3))
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        AllowAutoRedirect = false, UseCookies = false
+    });
+using var dependencies = services.BuildServiceProvider();
+var httpFactory = dependencies.GetRequiredService<IHttpClientFactory>();
+
+var factory = new LokiImageFactory(new LokiImageProvider
+{
+    Models =
+    [
+        new LokiImageModel
+        {
+            Name = "pictures",
+            Providers =
+            [
+                new LokiImageUpstreamProvider
+                {
+                    Id = "openai",
+                    BaseAddress = new Uri("https://api.openai.com/v1/"),
+                    UpstreamModel = "<your-image-model>",
+                    ApiKey = "<your-api-key>",
+                    HttpClientName = "images",
+                    Handler = new OpenAiImageGenerationHandler()
+                }
+            ]
+        }
+    ]
+}, httpFactory);
+
+await using var loki = new LokiClientBuilder()
+    .AddImage(new ImageOptions { GenerationFactory = factory })
+    .Build();
+
+var result = await loki.Image.Generation.GenerateAsync(new LokiImageGenerationRequest
+{
+    Model = "pictures",
+    Prompt = "A watercolor lighthouse at dawn"
+});
+
+Console.WriteLine($"{result.State} | {result.ProviderId} | {result.UpstreamModel}");
+foreach (var image in result.Images)
+{
+    if (image.Error is not null) continue;
+    var content = await loki.Image.Generation.GetImageContentAsync(image);
+    Console.WriteLine($"{content.Bytes.Length} bytes | {content.ContentType}");
+}
+```
+
+Run `dotnet run`. The program prints the generation state, selected target, and the byte count / media type of each successful image. `content.Bytes` is ready for your application to save or return; `result.Data` keeps the original response. This makes a real provider call and may incur provider charges.
+
+`pictures` is your application's model alias; `UpstreamModel` is the actual provider model. The example leaves optional generation settings to the upstream defaults. To set count, size or quality, declare support for the selected model as shown in the [unified image guide](docs/image-generation.md). The guide also covers multiple providers, native calls and asynchronous image tasks. [Release 1.1.0](docs/releases/1.1.0.md) describes the unified workflow and compatibility.
+
+## Next steps
+
+| Your next task | Guide |
+| --- | --- |
+| Call Chat / Responses and stream a conversation | [LLM initialization](#initialize-llm) · [Session storage](#session-storage) |
+| Call Claude or Gemini using native request shapes | [Native protocols and explicit conversion](#native-claude-gemini-and-explicit-conversion) |
+| Generate speech or use native image parameters | [Speech](#volcengine-speech) · [Native images](#openai-images) |
+| Add semantic retrieval and ranking | [Embeddings](src/Asgard.Loki.Embedding/README.md) · [Reranking](src/Asgard.Loki.Rerank/README.md) |
+| Check exact operations, initialization and limits | [Support matrix](#supported-capabilities) · [Additional provider guides](#additional-provider-guides) |
+| Extend the SDK or contribute | [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md) · [Build and test](#build-and-test) |
+
+## Support and verification
+
+Provider support describes implemented SDK operations. Real account permissions, model availability and parameter behavior need separate live checks; offline protocol tests do not establish model quality. Each provider README records its initialization, limitations and live-verification status. The opt-in live suite and results are documented in [testing](docs/testing.md) and [LLM parameter verification](docs/llm-parameter-verification.md).
+
+Loki is an embeddable client library. General file management and fine-tuning are outside its scope; the [Ark media asset library](src/Asgard.Loki.Video.Volcengine/README.md) is a provider-specific feature for model inputs.
 
 ## Supported capabilities
+
+<details>
+<summary>Expand the full capability and provider matrix</summary>
 
 Audio, image and video uploads are model inputs. The provider-specific Ark asset client is documented separately from ordinary upload operations.
 
@@ -124,7 +222,12 @@ The independent [DeepSeek native tools client](src/Asgard.Loki.LLM.DeepSeek/READ
 
 The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md) implements native Gemini/Claude JSON/SSE with explicit full project/location/model resources and borrowed external authentication. It preserves native fields and fixed-target Sessions through token rotation. Express Gemini API Key JSON/SSE is available through a separate provider in the same package; MaaS Chat JSON/SSE is also delivered; wire fixtures do not establish live acceptance of Developer API-only fields.
 
+</details>
+
 ## Packages and dependencies
+
+<details>
+<summary>Expand all packages and their dependencies</summary>
 
 | Package | Responsibility |
 | --- | --- |
@@ -198,6 +301,11 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 The entry package depends only on abstractions. Capability packages do not reference each other. Providers reference their own capability, optional shared Infrastructure and necessary standard components. Installing OpenAI images does not install LLM or audio providers.
 
 These are the package identities produced by this checkout. The PR/release CI configuration builds and verifies the full package set when invoked and attaches them to that workflow run. The separate manual `Publish NuGet` workflow supports OIDC login verification and explicit publication; its default `verify` mode does not upload packages. See [release instructions](docs/releasing.md). Local preview packages can be created with `dotnet pack`.
+
+</details>
+
+<details>
+<summary>LLM initialization, Session storage, conversion, speech and native image examples</summary>
 
 ## Native Claude, Gemini and explicit conversion
 
@@ -424,7 +532,12 @@ ReadOnlyMemory<byte> imageBytes = result.Images[0].Decode();
 
 Use `loki.Image.StreamAsync(...)` for partial/final image events when supported by the configured upstream model. Image count, size, quality, compression, transparency and other parameters are passed through unchanged. Provider URLs are returned without downloading them. The library does not rewrite prompts or infer model availability.
 
+</details>
+
 ## Additional provider guides
+
+<details>
+<summary>Expand native protocol and provider-specific guides</summary>
 
 ### Native Cohere v1 Chat contract
 
@@ -499,6 +612,8 @@ Native Claude-compatible deployments also support [explicit Messages paths and A
 Native Gemini deployments support [explicit model paths or declared fixed-model endpoints, with ApiKey/Bearer/header/query/Anonymous authentication](src/Asgard.Loki.LLM.Google/README.md#explicit-native-gemini-endpoints-and-authentication). Actual models and credentials remain explicit and fully bound; native bodies, tool associations and candidate endings retain their own protocol semantics.
 
 The [native alpha/search client](src/Asgard.Loki.LLM.NewAPI/README.md#explicit-search-endpoint-and-authentication) also accepts an explicitly configured operation path and Bearer/header/query/Anonymous authentication. It preserves one opaque native HTTP result; returned operation metadata excludes injected query credentials and no search workflow or Session is created.
+
+</details>
 
 ## Build and test
 
