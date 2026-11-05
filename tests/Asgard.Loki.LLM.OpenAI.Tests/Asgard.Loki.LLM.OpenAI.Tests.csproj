@@ -8,7 +8,7 @@
     <EmbeddedResource Include="../Asgard.Loki.LLM.Cloudflare.Tests/Fixtures/responses.json" LogicalName="Cloudflare.responses.json" />
     <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaBodyStream.cs" Link="OllamaBodyStream.cs" />
     <Compile Include="../Asgard.Loki.LLM.Ollama.Tests/OllamaHttpClient.cs" Link="OllamaHttpClient.cs" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.14" />
     <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki.LLM.OpenAI/Asgard.Loki.LLM.OpenAI.csproj" />
     <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />

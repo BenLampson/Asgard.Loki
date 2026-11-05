@@ -7,7 +7,7 @@
     <EmbeddedResource Include="../Shared/Fixtures/converse-reasoning-requests.json" LogicalName="ConverseReasoningRequests.Fixture" />
     <EmbeddedResource Include="../Shared/Fixtures/converse-anthropic-reasoning.json" LogicalName="ConverseAnthropicReasoning.Fixture" />
     <EmbeddedResource Include="../Shared/Fixtures/converse-chat-stream.json" LogicalName="ConverseChatStream.Fixture" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.14" />
     <ProjectReference Include="../../src/Asgard.Loki.LLM.Conversion/Asgard.Loki.LLM.Conversion.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
     <ProjectReference Include="../../src/Asgard.Loki.LLM.Anthropic/Asgard.Loki.LLM.Anthropic.csproj" />
