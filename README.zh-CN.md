@@ -37,13 +37,13 @@ Asgard.Loki 是面向 **.NET 10 / C# 14** 的模块化 AI SDK。通过一个 `Lo
 
 ## 安装
 
-使用 **.NET 10**，安装入口包及所需供应商包，能力依赖会自动传递。下面使用相同的 **1.1.0** 版本。
+使用 **.NET 10**，安装入口包及所需供应商包，能力依赖会自动传递。下面使用相同的 **1.2.0** 版本。
 
 ```sh
 dotnet new console --framework net10.0 -n LokiDemo
 cd LokiDemo
-dotnet add package Asgard.Loki --version 1.1.0
-dotnet add package Asgard.Loki.Image.OpenAI --version 1.1.0
+dotnet add package Asgard.Loki --version 1.2.0
+dotnet add package Asgard.Loki.Image.OpenAI --version 1.2.0
 ```
 
 接入 LLM 时，可选择 `Asgard.Loki.LLM.OpenAI`、`Asgard.Loki.LLM.Anthropic`、`Asgard.Loki.LLM.Google` 或 `Asgard.Loki.LLM.Volcengine` 等分包，然后按[LLM 示例](README.md#initialize-llm)初始化。也可[从源码构建](README.md#build-and-test)，将 `artifacts/packages` 作为本地 NuGet 源。

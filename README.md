@@ -39,13 +39,13 @@ Loki fits applications that want explicit control over model calls and provider 
 
 Use **.NET 10** and matching Loki package versions. Install `Asgard.Loki` plus the provider packages for your application; capability dependencies are resolved transitively.
 
-For the image quick start, install matching **1.1.0** packages:
+For the image quick start, install matching **1.2.0** packages:
 
 ```sh
 dotnet new console --framework net10.0 -n LokiDemo
 cd LokiDemo
-dotnet add package Asgard.Loki --version 1.1.0
-dotnet add package Asgard.Loki.Image.OpenAI --version 1.1.0
+dotnet add package Asgard.Loki --version 1.2.0
+dotnet add package Asgard.Loki.Image.OpenAI --version 1.2.0
 ```
 
 For LLM calls, choose a package such as `Asgard.Loki.LLM.OpenAI`, `Asgard.Loki.LLM.Anthropic`, `Asgard.Loki.LLM.Google` or `Asgard.Loki.LLM.Volcengine`, then follow [LLM setup](#initialize-llm). To build packages from source, see [Build and test](#build-and-test) and use `artifacts/packages` as a local NuGet source.
