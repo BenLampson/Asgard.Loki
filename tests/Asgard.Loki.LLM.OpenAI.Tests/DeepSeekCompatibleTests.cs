@@ -15,6 +15,57 @@ public sealed class DeepSeekCompatibleTests
     private static JsonElement Profile(int index) => Window.GetProperty("profiles")[index];
     private static LlmTarget Target(int profile, string mode) => new() { Id = "deepseek-target", ProviderId = "deepseek-native", BaseAddress = new(Profile(profile).GetProperty("origin").GetString()+Part(mode).GetProperty("base_path").GetString()), UpstreamModel = Window.GetProperty("model").GetString()!, CredentialId = "deepseek-key", Protocols = mode == "chat" ? LlmProtocol.ChatCompletions : mode == "responses" ? LlmProtocol.Responses : LlmProtocol.TextCompletions };
     private static ILokiClient Build(OpenAiHttpFactory factory, int profile, string mode, ILlmSessionStore? store = null, LlmTarget? target = null, string? key = null) => new LokiClientBuilder().AddLLM(new LlmOptions { Providers = [new OpenAiLlmProvider(factory, id: "deepseek-native", httpClientName: "Explicit.DeepSeek.Native")], Credentials = [new("deepseek-key", key ?? Profile(profile).GetProperty("key").GetString()!)], SessionStore = store ?? CompactionFixture.Store(), Routes = [new() { Model = "public", Targets = [target ?? Target(profile, mode)] }] }).Build();
+
+    /// <summary>显式兼容只改 Chat 消息角色，原有原生默认与 Responses 保持原文。</summary>
+    [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(true, false, false)]
+    [InlineData(true, false, true)]
+    [InlineData(true, true, false)]
+    public async Task ExplicitDeveloperRoleMapping_OnlyAffectsChat(bool enabled, bool responses, bool stream)
+    {
+        var mode = responses ? "responses" : "chat";
+        var source = stream ? Part(mode).GetProperty("sse").GetString()! : Part(mode).GetProperty("result").GetRawText();
+        using var handler = new StubHttpHandler(async (message, token) =>
+        {
+            using var body = JsonDocument.Parse(await message.Content!.ReadAsByteArrayAsync(token));
+            var messages = body.RootElement.GetProperty(responses ? "input" : "messages");
+            Assert.Equal(enabled && !responses ? "system" : "developer", messages[0].GetProperty("role").GetString());
+            Assert.Equal("developer", messages[0].GetProperty("content").GetString());
+            Assert.Equal("user", messages[1].GetProperty("role").GetString());
+            return Reply(new OllamaBodyStream(Bytes(source)), stream);
+        });
+        var factory = new OpenAiHttpFactory(handler);
+        var provider = new OpenAiLlmProvider(factory, new OpenAiHttpOptions { MapChatDeveloperRoleToSystem = enabled }, id: "deepseek-native");
+        var target = Target(0, mode);
+        await using var sdk = new LokiClientBuilder().AddLLM(new LlmOptions
+        {
+            Providers = [provider], Credentials = [new("deepseek-key", "fixture-key")],
+            SessionStore = CompactionFixture.Store(), Routes = [new() { Model = "public", Targets = [target] }]
+        }).Build();
+        const string messages = """[{"role":"developer","content":"developer"},{"role":"user","content":"hello"}]""";
+        var call = CompactionFixture.Call();
+        var ct = TestContext.Current.CancellationToken;
+        if (responses)
+        {
+            var input = System.Text.Json.Nodes.JsonNode.Parse(messages);
+            await sdk.LLM.Responses.CreateAsync(new() { Model = "public", Input = input }, call, ct);
+        }
+        else
+        {
+            var request = JsonSerializer.Deserialize<ChatCompletionRequest>("{\"model\":\"public\",\"messages\":" + messages + "}")!;
+            var before = JsonSerializer.Serialize(request);
+            if (stream)
+            {
+                var seen = 0;
+                await foreach (var _ in sdk.LLM.ChatCompletions.StreamAsync(request, call, ct)) seen++;
+                Assert.True(seen > 0);
+            }
+            else await sdk.LLM.ChatCompletions.CompleteAsync(request, call, ct);
+            Assert.Equal(before, JsonSerializer.Serialize(request));
+        }
+        Assert.Equal(1, handler.Calls);
+    }
     /// <summary>每种请求使用原生完整 caller，调用前后实际请求记录保持不变。</summary>
     private static async Task<LlmJsonResult?> Invoke(ILokiClient sdk, string mode, bool stream = false, List<LlmJsonEvent>? seen = null, Action<LlmJsonEvent>? observe = null)
     {

@@ -24,6 +24,28 @@ public sealed class NativeWebSocketTests
         await connection.DisposeAsync(); await connection.DisposeAsync(); Assert.Equal(1, factory.Sockets.Single().Disposals); Assert.Equal(0, factory.Disposals);
     }
 
+    /// <summary>Azure v1 API Key 使用已有 Responses WebSocket 原生协议和独立部署身份。</summary>
+    [Fact]
+    public async Task AzureV1ApiKey_UsesNativeWebSocketWithDeployment()
+    {
+        var factory = new StubResponsesWebSocketFactory();
+        var target = Target() with { BaseAddress = new("https://fixture.openai.azure.com/openai/v1/"), UpstreamModel = "deployment-01" };
+        await using var client = Build(factory, targets: [target]);
+        var ct = TestContext.Current.CancellationToken;
+        await using var connection = await client.LLM.Responses.OpenWebSocketAsync("public", Call(), ct);
+        var handshake = Assert.Single(factory.Calls);
+        Assert.Equal("wss://fixture.openai.azure.com/openai/v1/responses", handshake.Address.AbsoluteUri);
+        Assert.Equal("Bearer test-key-a", handshake.Headers["Authorization"]);
+        await connection.SendAsync(Create(), ct);
+        var socket = Assert.Single(factory.Sockets);
+        using var sent = JsonDocument.Parse(Assert.Single(socket.Sent).Bytes);
+        Assert.Equal("deployment-01", sent.RootElement.GetProperty("model").GetString());
+        socket.Text(Lifecycle("response.created"));
+        socket.Text(Lifecycle("response.completed"));
+        socket.PeerClose();
+        Assert.Equal("response.completed", (await Drain(connection, ct))[^1].GetProperty("type").GetString());
+    }
+
     /// <summary>同连接的并行命名流可交错，工具调用、签名、用量与未知字段完整透传。</summary>
     [Fact]
     public async Task ParallelLanes_PreserveNativeTranscriptAndResponseOwnership()
