@@ -430,6 +430,8 @@ var target = new LlmTarget
 
 [Chat](https://api-docs.deepseek.com/api/create-chat-completion/) preserves reasoning_content, selected thinking/effort, JSON mode, original tool IDs and argument fragments. [Beta FIM](https://api-docs.deepseek.com/api/create-completion/) preserves caller prompt/suffix, logprobs or echo: the service forbids combining echo with suffix or logprobs. For streaming include_usage, usage accompanies the final content choice; no separate usage-only frame is required. Actual `[DONE]` remains required. The SDK does not insert FIM markers, normalize effort, strip model suffixes or repair unsupported parameter combinations.
 
+For a Chat endpoint that rejects `developer` messages, register a separate provider with `new OpenAiHttpOptions { MapChatDeveloperRoleToSystem = true }`. Both Chat methods send those roles as `system` without changing caller data or any other fields. This opt-in affects the provider's Chat targets and enters the Session binding; the default keeps roles unchanged. It does not apply to Responses. Supply original reasoning items with their associated tool history on Responses; the SDK does not synthesize missing reasoning.
+
 Tests verify native and proxy roots, full JSON/SSE for Chat/Responses and three mutually valid FIM variants, exact unknown values, reversed tool outputs, original metadata, terminal loss, stateless Session recovery and root/key drift. No real DeepSeek account/model, optional-setting effectiveness or beta availability was tested. Protocol/model/parameter support is caller-declared per target; preserving optional fields does not certify acceptance.
 
 ## Explicit Moonshot and Kimi Coding native endpoints

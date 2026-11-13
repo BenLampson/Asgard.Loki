@@ -9,8 +9,8 @@ OpenAI native image generation and editing provider for Asgard.Loki.
 | SSE partial/final image events | Yes, when supported by the upstream model |
 | Base64 and URL outputs | Preserved; Base64 decoding is available on demand |
 | Quality, size, transparency, output format, image count and future parameters | Passed through |
-| `POST /v1/images/edits` JSON | Yes, explicit native `images` references and optional `mask` object |
-| `POST /v1/images/edits` multipart | Yes, ordered `image[]` uploads and optional separate `mask` upload |
+| `POST /v1/images/edits` JSON | Yes, explicit native `images` references and optional `mask` or `markup` reference |
+| `POST /v1/images/edits` multipart | Yes, ordered `image[]` uploads and optional separate `mask` or `markup` upload |
 | Editing SSE | Yes, explicit native JSON/multipart stream methods; nonstream editing rejects `stream=true` |
 | Image variations | Not implemented |
 
@@ -19,6 +19,8 @@ Create `OpenAiImageAdapter(IHttpClientFactory, OpenAiImageOptions)` and register
 The default named HTTP client is `Asgard.Loki.Image.OpenAI`. Disable generation POST retries and hedging. Prompts and unknown JSON fields are not rewritten. Incomplete streams fail instead of claiming completion. URLs are returned without automatic downloads.
 
 Local tests verify request/response and SSE behavior. No live image generation or provider entitlement check is performed by those tests.
+
+For supported GPT Image 2.6 targets, use native JSON `Parameters` for `complexity`, `output_format`, `svg`, `frame_count` and `frame_duration_ms`. SVG is a generation option; GIF is available in generation or edits. Use the complete JSON calls for SVG/GIF, with frame settings only for GIF. Returned `b64_json` decodes to the original bytes; save SVG or GIF with the corresponding extension. Model access and parameter combinations follow the [official Image API guide](https://developers.openai.com/api/docs/guides/image-generation).
 
 ## Native image editing
 
@@ -47,7 +49,7 @@ var result = await loki.Image.EditAsync(new ImageEditRequest
 
 Import `Asgard.Loki`, `Asgard.Loki.Image`, `Asgard.Loki.Image.OpenAI` and `System.Text.Json`. JSON references carry exactly one native `image_url` or `file_id`; attached unknown fields retain their types and values. File IDs/URLs/data URLs are passed unchanged, without downloading, uploading/resolving files, inventing MIME types or converting to multipart. Native model/account reference eligibility remains upstream-owned.
 
-For files, explicitly call `loki.Image.EditMultipartAsync(new ImageMultipartEditRequest { ... }, cancellationToken)` with caller-owned `ImageUpload` entries and optional separate `Mask`. Images use native repeated `image[]` parts in their original order; mask uses `mask`. Literal `ImageMultipartField` entries retain ordered/repeated unknown names, bracket syntax, empty strings and raw text. Known scalar duplicates, model/prompt/image/mask overrides, invalid UTF-8/header controls, reused stream objects and unreadable inputs fail before HTTP. Optional content types are validated as MIME values, never guessed from file names.
+For files, explicitly call `loki.Image.EditMultipartAsync(new ImageMultipartEditRequest { ... }, cancellationToken)` with caller-owned `ImageUpload` entries and an optional separate `Mask` or `Markup`. Images use repeated `image[]` parts in their original order. `Markup = new ImageUpload { Content = annotationStream, FileName = "annotation.png", ContentType = "image/png" }` sends its own `markup` file part. For JSON edits, use `Parameters["markup"]` with exactly one `image_url` or `file_id`. Markup applies to the first image and cannot be combined with a mask. Literal `ImageMultipartField` entries retain ordered/repeated unknown names, bracket syntax, empty strings and raw text. Known scalar duplicates, overrides of bound inputs, invalid UTF-8/header controls, reused streams and unreadable inputs fail before HTTP. Optional content types are validated as MIME values, never guessed from file names.
 
 The caller keeps streams alive through completion. Uploads start at their current positions, do not query length/position, rewind, close, decode, resize or validate mask pixels/dimensions. The official masked-edit contract associates a mask with the first image; this SDK preserves that native ordering and separate mask role. It never remaps masks or checks their visual effect. Arbitrary fixture bytes in tests are not accepted image-format evidence.
 

@@ -166,7 +166,7 @@ Loki 是嵌入应用的客户端类库，不包含模型微调或通用文件管
 | Azure 音频 | `Asgard.Loki.Audio.Azure` | 显式部署/API 版本/api-key；原生 JSON 语音与 multipart 转录/翻译，可选固定请求体模型，不猜部署映射 |
 | 音乐／歌词任务 | `Asgard.Loki.Audio.SunoAPI` | 应用显式配置代理；原生 MUSIC/LYRICS 提交、状态／批量 POST 与独立结果 GET · 单次原生 JSON；无后台轮询或媒体下载 |
 | 文件转录/翻译 | `Asgard.Loki.Audio.OpenAI` | 原生 multipart、完整 JSON/字幕结果及转录 delta/segment/done SSE |
-| 图片 | `Asgard.Loki.Image.OpenAI` | Images Generations、原生 JSON/multipart 编辑、Base64/URL、生成/编辑部分与最终图像 SSE |
+| 图片 | `Asgard.Loki.Image.OpenAI` | 原生生成及 JSON/multipart 编辑、独立标注层、Base64/URL（含受支持的 SVG/GIF）、受支持格式的原生 SSE |
 | 兼容图片生成 | `Asgard.Loki.Image.OpenAI` | 显式 xAI 原生完整 JSON 配置，独立地址／模型／凭据并保留 data[] · 已做离线协议验证；xAI 编辑使用不同的原生 JSON 契约 |
 | 图片编辑 | `Asgard.Loki.Image.XAI` | xAI 原生单图／有序多图 JSON 引用，保留完整结果 · 独立编辑路由，不转换 multipart 或管理文件 |
 | 图片 | `Asgard.Loki.Image.Midjourney` | 显式非官方代理图片操作、原生任务／文本结果、输入上传与 seed 请求 · 完整目标绑定，单次／批量查询；不伪造同步生成结果 |
@@ -194,7 +194,7 @@ Loki 是嵌入应用的客户端类库，不包含模型微调或通用文件管
 | 视频 | `Asgard.Loki.Video.Volcengine` | 即梦 Visual 原生签名提交/查询，固定 req_key，原始媒体、结果及可选查询配置 |
 | 视频 | `Asgard.Loki.Video.Ali` | 百炼万相原生 video-generation/image2video 提交与任务查询，完整目标绑定及原始结果 |
 | 视频 | `Asgard.Loki.Video.Google` | Gemini Veo 原生长操作提交、查询与显式结果复制；预览模型公告于 2026-10-22 下线 |
-| 视频 | `Asgard.Loki.Video.GoogleVertex` | Vertex Veo 完整资源作用域内原生提交/查询、借用令牌、原始 GCS 与内联结果 |
+| 视频 | `Asgard.Loki.Video.GoogleVertex` | Vertex Veo 和 Gemini Omni Interactions 原生提交/单次查询、借用令牌、原始 GCS 与内联结果 |
 | 视频 | `Asgard.Loki.Video.MiniMax` | MiniMax 原生 v1/v2 显式提交/查询、v1 视频结果元数据，保留媒体、用量和错误 |
 | 视频 | `Asgard.Loki.Video.Kling` | 可灵原生文生/图生视频提交与对应服务查询，显式 API Key 或 AK/SK JWT，保留完整原生结果 |
 | 视频 | `Asgard.Loki.Video.Vidu` | 显式文生/图生/首尾帧/参考生视频与 creations 查询，原生 Token 鉴权，保留全部结果及元数据 |

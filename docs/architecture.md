@@ -661,10 +661,11 @@ The model lives in the URL; native `instances/parameters` and unknown members re
 classDiagram
 IVideoTaskAdapter <|.. GoogleVertexVideoAdapter
 GoogleVertexVideoAdapter --> GoogleVertexVideoOptions : captures full resource and principal
-GoogleVertexVideoAdapter --> IGoogleVertexVideoTokenSource : borrows
+GoogleVertexVideoAdapter --> VertexVideoHttp : one native HTTP operation
+VertexVideoHttp --> IGoogleVertexVideoTokenSource : borrows
 IGoogleVertexVideoTokenSource --> GoogleVertexVideoAccessToken : one asserted principal/token/expiry
-GoogleVertexVideoAdapter --> TimeProvider : borrows expiry clock
-GoogleVertexVideoAdapter --> HttpBodyReader : bounded raw bytes
+VertexVideoHttp --> TimeProvider : borrows expiry clock
+VertexVideoHttp --> HttpBodyReader : bounded raw bytes
 GoogleVertexVideoAdapter --> VertexVideoOperation : native parser
 VertexVideoOperation --> VideoTaskSnapshot : full videos/errors/filtering
 ```
@@ -672,6 +673,20 @@ VertexVideoOperation --> VideoTaskSnapshot : full videos/errors/filtering
 The target fingerprint includes root, actual full resource, stable principal, authentication-source identity, explicit native request project header, HTTP client, implementation and byte policies. Short-lived Bearer rotation retains that binding. Wrong/expired tokens and authentication-source drift fail without changing identities or retrying generation. The application owns login, scopes, refresh and the accuracy of the source's principal assertion; no credentials are discovered or JWTs interpreted. Expiry is rechecked immediately before send, including after factory creation. The source, factory and clock are borrowed, while all call-created resources finish disposal before source/final cancellation checks and result delivery.
 
 Original `instances/parameters` are snapshotted before authentication waits. Full operation names must match project, location, Google publisher, model and requested operation. Missing `done` means running; known terminals distinguish native errors, all-filtered failure and valid native output carriers. Multiple `response.videos`, GCS URIs, inline base64 strings, metadata and unknown fields remain unchanged; no Gemini API result wrapper, data URL, storage client or downloader is introduced. Malformed or contradictory terminals fail explicitly. See the [provider matrix, initialization and limits](../src/Asgard.Loki.Video.GoogleVertex/README.md).
+
+### Native Gemini Omni video
+
+`GoogleVertexOmniVideoAdapter` uses the same Video task contract and borrowed authentication, with a distinct Interactions endpoint, request and result parser. It sends one POST with explicit `background=true` and one GET per requested query, preserving native input order, media references, result steps and error diagnostics. Persisted task references bind the complete endpoint, model, principal and implementation. The adapter checks returned identity and requires a native video carrier before marking a completed interaction as successful.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. GoogleVertexOmniVideoAdapter
+GoogleVertexOmniVideoAdapter --> GoogleVertexOmniVideoOptions : fixed endpoint model and principal
+GoogleVertexOmniVideoAdapter --> VertexVideoHttp : POST submit or GET query
+GoogleVertexVideoAdapter --> VertexVideoHttp : Veo transport
+GoogleVertexOmniVideoAdapter --> VertexOmniVideoInteraction : native identity state and output
+VertexOmniVideoInteraction --> VideoTaskSnapshot : original interaction
+```
 
 ## Native unofficial Midjourney proxy video
 
@@ -1708,8 +1723,8 @@ ImageEditingClient --> ImageEditRouteState : per-model selection
 ImageEditRouteState --> IImageEditAdapter : one complete borrowed target
 IStreamingImageEditAdapter --|> IImageEditAdapter
 IImageEditAdapter --> ImageEditRequest : native JSON
-IImageEditAdapter --> ImageMultipartEditRequest : ordered uploads and mask
-ImageMultipartEditRequest --> ImageUpload : borrowed stream
+IImageEditAdapter --> ImageMultipartEditRequest : ordered uploads and optional mask or markup
+ImageMultipartEditRequest --> ImageUpload : independent borrowed streams
 ImageMultipartEditRequest --> ImageMultipartField : literal repeated text
 IImageEditAdapter --> ImageGenerationResult : full native image response
 IStreamingImageEditAdapter --> ImageEditEvent : native JSON and SSE identity
@@ -1723,7 +1738,7 @@ OpenAiImageAdapter --> ImageNativeJson : pure container validation
 OpenAiImageEditAdapter --> ImageNativeJson : pure container validation
 ```
 
-JSON extension values are cloned without downloading references or resolving file IDs. Multipart snapshots preserve original image order, a separate mask role, names/content types and literal repeated/empty fields. Each image/mask slot requires a distinct readable stream object. The core neither reads nor queries length/position, rewinds, opens filenames, decodes media or disposes borrowed uploads/adapters. Native part encoding, reference eligibility, mask association semantics and format constraints belong to the provider. The existing `ImageGenerationResult` preserves the common complete image response container, without falling back to generation.
+JSON extension values are cloned without downloading references or resolving file IDs. Multipart snapshots preserve original image order, separate mask and markup roles, names/content types and literal repeated/empty fields. Every file slot requires a distinct readable stream. The core neither reads nor queries length/position, rewinds, opens filenames, decodes media or disposes borrowed uploads/adapters. Part encoding, eligibility and format constraints belong to the provider. OpenAI accepts one of mask or markup in either native form; the Azure adapter rejects a markup upload before I/O. The existing `ImageGenerationResult` preserves the common complete image response container, without falling back to generation.
 
 Editing streams require every configured target to implement the optional interface before selection. `ImageEditEvent` retains full JSON, metadata and SSE name/id/retry plus an adapter-confirmed completion marker. Only the original terminal is held until source enumeration and disposal succeed; absent/duplicate/late events, tail errors and cancellation cannot first expose success. Unknown names and EOF never imply completion. Generation retains its separate event contract and native provider state/guards described below. Ninety-six offline core tests verify custom-adapter routing, snapshots, ownership and terminal boundaries. No HTTP multipart, real image or model-quality verification is claimed by the core tests.
 
@@ -3113,7 +3128,9 @@ Independent whole-window tests cover35 OpenAI profile/fault cases and15 Messages
 
 ### Explicit DeepSeek native profiles
 
-Existing OpenAiLlmProvider implements native Chat, Responses and TextCompletions with three separately configured complete roots. AnthropicLlmProvider independently handles native Messages and selected ApiKey/Bearer authentication. No new package, protocol, public option, dependency edge, brand wrapper or endpoint/model heuristic is introduced. DeepSeekToolsClient remains the separate model-free Search/Fetch operation; it does not supply model Sessions or execute returned tools.
+OpenAiLlmProvider implements native Chat, Responses and TextCompletions with three separately configured complete roots. AnthropicLlmProvider independently handles native Messages and selected ApiKey/Bearer authentication. DeepSeekToolsClient remains the separate model-free Search/Fetch operation; it does not supply model Sessions or execute returned tools.
+
+For a Chat target that rejects `developer`, `OpenAiHttpOptions.MapChatDeveloperRoleToSystem` explicitly replaces the role in a copied Chat request, including SSE. The configured provider identity includes this opt-in; absent/default keeps the existing identity bytes. Native Responses does not apply the role mapping or synthesize missing reasoning history.
 
 ```plantuml
 @startuml
@@ -3125,6 +3142,7 @@ LlmOptions --> "DeepSeek beta target" : selected TextCompletions model / credent
 "DeepSeek beta target" --> OpenAiLlmProvider : native text / FIM
 LlmOptions --> "DeepSeek anthropic/v1 target" : selected Messages model / auth
 "DeepSeek anthropic/v1 target" --> AnthropicLlmProvider : native Messages
+OpenAiLlmProvider --> OpenAiHttpOptions : explicit Chat compatibility and binding
 @enduml
 ```
 

@@ -10,6 +10,21 @@ namespace Asgard.Loki.LLM.OpenAI;
 /// <summary>构造已绑定原生请求，复用供应商内部 HTTP/JSON 与 SSE 传输及独立原生状态。</summary>
 public sealed partial class OpenAiLlmProvider
 {
+    /// <summary>仅在显式启用的 Chat 目标中复制并替换顶层消息角色，不触及工具、嵌套内容或其他协议。</summary>
+    private JsonObject ChatPayload(JsonObject payload, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        ArgumentNullException.ThrowIfNull(payload);
+        if (!_httpOptions.MapChatDeveloperRoleToSystem || payload["messages"] is not JsonArray) return payload;
+
+        var copy = (JsonObject)payload.DeepClone();
+        foreach (var item in (JsonArray)copy["messages"]!)
+            if (item is JsonObject message && message["role"] is JsonValue role
+                && role.TryGetValue<string>(out var value) && value == "developer")
+                message["role"] = "system";
+        return copy;
+    }
+
     /// <summary>完整结果的字段、资源和 EOF 契约保持不变。</summary>
     private Task<JsonElement> PostAsync(string path, JsonObject payload, LlmAdapterContext context, CancellationToken token)
     {

@@ -33,6 +33,9 @@ internal static class RequestReader
         Check(source, doc, "$", "model", "messages", "stream", "temperature", "top_p", "max_tokens", "max_completion_tokens", "stop", "tools", "tool_choice", "response_format", "reasoning_effort", "parallel_tool_calls");
         if (source.ContainsKey("max_tokens") && source.ContainsKey("max_completion_tokens"))
             throw new ArgumentException("不能同时转换两个输出上限字段。");
+        if (source["stop"] is { } stop && !IsStopString(stop)
+            && (stop is not JsonArray stops || stops.Any(item => !IsStopString(item))))
+            throw new ArgumentException("Chat stop 必须是字符串或纯字符串数组。");
         Settings(source, doc, ("temperature", "temperature"), ("top_p", "topP"), ("max_tokens", "maxTokens"),
             ("max_completion_tokens", "maxTokens"), ("stop", "stop"), ("parallel_tool_calls", "parallel"));
         foreach (var node in Array(source["messages"]))
@@ -167,4 +170,7 @@ internal static class RequestReader
     {
         foreach (var (from, to) in names) Copy(source, from, doc.Settings, to);
     }
+
+    /// <summary>转换不丢弃非字符串停词，也不将其强制转换成文本。</summary>
+    private static bool IsStopString(JsonNode? value) => value is JsonValue item && item.TryGetValue<string>(out _);
 }
