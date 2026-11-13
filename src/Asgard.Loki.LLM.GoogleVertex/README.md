@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.GoogleVertex
 
+Complete-target `AllowedOutputFormats` declarations apply independently to native Gemini, Claude Messages and MaaS Chat SDK calls. Gemini uses its native MIME/Schema fields, Claude uses `output_config.format`, and MaaS Chat uses `response_format`; deployed model/resource support remains caller-declared. SDK complete/streaming calls reject disallowed formats before adapter authentication or HTTP without Schema conversion or protocol fallback. See the [format matrix and declaration semantics](../../docs/llm-output-formats.md).
+
 Native Vertex Gemini, Claude and MaaS Chat calls for the existing LLM capability. This independent supplier package references only `Asgard.Loki.LLM` and standard Microsoft HTTP components. It does not depend on the Gemini Developer API supplier, Anthropic supplier, Azure, Conversion, a cloud identity SDK or another capability.
 
 ## Support matrix

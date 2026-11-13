@@ -20,7 +20,8 @@ public sealed class AliImageAdapter : IImageGenerationAdapter
         => GenerateCoreAsync(AliImagePayload.Prepare(request, _http.Options, false, cancellationToken), request.PublicModel, cancellationToken);
     private async Task<ImageGenerationResult> GenerateCoreAsync(byte[] body, string publicModel, CancellationToken token)
     {
-        var root = await _http.SendAsync(_http.Address("services/aigc/multimodal-generation/generation"), body, false, token).ConfigureAwait(false);
+        var response = await _http.SendRawAsync(_http.Address("services/aigc/multimodal-generation/generation"), body, false, token).ConfigureAwait(false);
+        var root = response.Data;
         if (!root.TryGetProperty("output", out var output) || output.ValueKind != System.Text.Json.JsonValueKind.Object
             || !output.TryGetProperty("choices", out var choices) || choices.ValueKind != System.Text.Json.JsonValueKind.Array || choices.GetArrayLength() == 0
             || output.TryGetProperty("finished", out var finished) && finished.ValueKind != System.Text.Json.JsonValueKind.True)
@@ -28,7 +29,7 @@ public sealed class AliImageAdapter : IImageGenerationAdapter
         foreach (var choice in choices.EnumerateArray())
             if (choice.ValueKind != System.Text.Json.JsonValueKind.Object || !choice.TryGetProperty("finish_reason", out var reason)
                 || reason.ValueKind != System.Text.Json.JsonValueKind.String || reason.GetString() != "stop") throw new InvalidDataException("阿里同步 choice 未正常 stop。");
-        var images = AliImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, _http.Metadata(publicModel), images);
+        var images = AliImageJson.Images(root); token.ThrowIfCancellationRequested(); return new(root, _http.Metadata(publicModel), images) { RawResponse = response.Raw };
     }
     /// <inheritdoc />
     public IAsyncEnumerable<ImageGenerationEvent> StreamAsync(ImageGenerationRequest request, CancellationToken cancellationToken = default)

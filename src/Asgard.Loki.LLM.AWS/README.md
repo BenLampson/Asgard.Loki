@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.AWS
 
+SDK native output-format declarations are separate for `ClaudeMessages` (`output_config.format`) and `BedrockConverse` (`outputConfig.textFormat`). Converse keeps `structure.jsonSchema.schema` as a JSON string; Claude keeps its native Schema object. Configure the selected model's `LlmTarget.AllowedOutputFormats`; unsupported SDK requests fail before the adapter acquires credentials or sends HTTP. Native Nova declaration entries are not implemented and fail registration. See the [native format matrix](../../docs/llm-output-formats.md).
+
 Native Bedrock Claude `InvokeModel` JSON/EventStream and explicit Converse JSON/EventStream with borrowed SigV4 or explicit Bedrock API Key/Bearer authentication for the existing LLM capability. This supplier package depends only on `Asgard.Loki.LLM` and standard Microsoft HTTP components. It does not reference another supplier, Conversion, an AWS identity SDK or another capability.
 
 ## Support matrix

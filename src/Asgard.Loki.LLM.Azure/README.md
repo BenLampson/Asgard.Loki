@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Azure
 
+Declare accepted formats on the complete deployment target through `AllowedOutputFormats`, independently for Chat (`response_format`) and Responses (`text.format`). SDK complete/streaming calls and Responses WebSocket creates reject disallowed formats before invocation/send; deployed model/API-version support remains caller-owned. This text policy does not apply to Realtime media configuration. See the [format matrix and examples](../../docs/llm-output-formats.md).
+
 Native Azure OpenAI model calls for the existing LLM capability. This provider references `Asgard.Loki.LLM`, `Asgard.Loki.Infrastructure` and standard Microsoft HTTP components. It does not manage deployments, accounts, billing or a forwarding server.
 
 ## Support matrix
@@ -13,6 +15,8 @@ Native Azure OpenAI model calls for the existing LLM capability. This provider r
 | Explicit Responses compaction, complete JSON | `responses/compact`; target feature required | Same relative endpoint with explicit version; offline routing evidence only |
 | Native Realtime JSON WebSocket | `realtime?model={deployment}` | `realtime?api-version={version}&deployment={deployment}` |
 | Responses WebSocket | Not implemented | Not implemented |
+
+For **Azure v1 Responses WebSocket with an API key**, use the existing [OpenAI Responses WebSocket adapter](../Asgard.Loki.LLM.OpenAI/README.md) as a separate configured provider. Set the target's complete root to `https://{resource}.openai.azure.com/openai/v1/`, `UpstreamModel` to the deployment name, `Protocols = LlmProtocol.Responses`, and `Features = LlmTargetFeatures.ResponsesWebSocket`. Use the API-key credential on that target. The [Microsoft v1 handshake](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/websockets) uses Bearer for this socket; the native Azure HTTP adapter remains the choice for Azure HTTP authentication. Open a separate socket for parallel generations and send one turn at a time per socket. Dated URLs and Entra token acquisition for this compatible socket profile are unsupported. The profile is verified offline only.
 | Authentication | Selected `api-key`, or borrowed external Bearer token source | Same explicit choice |
 
 For v1, provide an API root ending in `/openai/v1/`; `ApiVersion` is omitted unless explicitly configured. For dated APIs, provide a root ending in `/openai/` and a nonempty `ApiVersion`. Proxy prefixes are retained. The SDK does not infer a host, version, deployment name, token scope or cloud from model names. Deployment dots are retained; path/query components are escaped. Account/model/API-version availability remains caller-owned.

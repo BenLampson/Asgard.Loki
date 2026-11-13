@@ -1,6 +1,8 @@
 # Asgard.Loki.Video.GoogleVertex
 
-Native resource-scoped **Vertex Veo** operations for the pure .NET SDK. References only Video, Infrastructure and `Microsoft.Extensions.Http`. Authentication, resources, result parsing and native state stay in this package; no LLM or Gemini Developer API provider is required.
+Native **Vertex Veo** and **Gemini Omni** video operations for the pure .NET SDK. References only Video, Infrastructure and `Microsoft.Extensions.Http`. Authentication, resources, result parsing and native state stay in this package; no LLM or Gemini Developer API provider is required.
+
+## Veo
 
 | Operation | Native wire | SDK entry |
 | --- | --- | --- |
@@ -65,3 +67,33 @@ Defaults are 64 MiB request and 128 MiB response/error bytes; the response bound
 Offline xUnit v3 tests cover independent REST fixtures, native request/result fidelity, persisted target binding, omitted done, errors/filtering, inline media/GCS results, token rotation/expiry/principal drift, input snapshots, byte limits and final disposal/cancellation. **No real Vertex Veo generation, cloud authentication, storage access or account/model availability has been verified.**
 
 References: [text generation and operation query](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/video/generate-videos-from-text), [image generation and inline output](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/video/generate-videos-from-an-image).
+
+## Gemini Omni Interactions
+
+| Operation | Native wire | Result |
+| --- | --- | --- |
+| Submit | POST to the configured project/location `interactions` collection | Original interaction ID and status |
+| Query once | GET `interactions/{id}` | Original steps, inline `data` or GCS `uri`, usage and errors |
+
+```csharp
+var omni = new GoogleVertexOmniVideoAdapter(factory, tokenSource, new GoogleVertexOmniVideoOptions
+{
+    InteractionsEndpoint = new Uri($"https://aiplatform.googleapis.com/v1beta1/projects/{project}/locations/global/interactions"),
+    Model = "gemini-omni-1.2-flash",
+    PrincipalIdentity = principalIdentity
+});
+// Register omni in the existing VideoOptions.Routes for your public model alias.
+var submitted = await loki.Video.SubmitAsync(new VideoTaskRequest
+{
+    Model = "omni",
+    Parameters = JsonNode.Parse("""
+        {"background":true,"input":[{"type":"text","text":"A paper bird over a moonlit lake."}],
+         "response_format":[{"type":"video","duration":"8s","delivery":"inline"}]}
+        """)!.AsObject()
+}, cancellationToken);
+var current = await loki.Video.GetAsync(submitted.Reference, cancellationToken);
+```
+
+Configure the full versioned endpoint for the actual project and deployment region; the example uses the global endpoint. Use the same borrowed token-source contract as Veo. Submit with native `background: true`; `store` may be true or omitted and `stream` may be false or omitted. The adapter inserts only its configured `model`. Text, multiple image references, video settings and their ordering are preserved. A persisted reference remains bound to the exact endpoint, model, principal and adapter configuration. `completed` requires a video output; `failed` and `incomplete` retain their original diagnostics. The SDK provides no automatic polling, downloads, SSE or account/interaction management operations.
+
+Offline substitute HTTP tests cover the [documented Interactions submission and query](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/video/generate-videos-from-text), multi-image input, original result data, task identity and native failure states. Cloud access, regional availability and actual generation have not been verified.

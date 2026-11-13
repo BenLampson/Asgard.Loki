@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Google
 
+Gemini text-output restrictions can be declared with `LlmTarget.AllowedOutputFormats[LlmProtocol.Gemini]`. SDK complete/streaming calls recognize native legacy MIME/Schema fields and modern `responseFormat.text`; Schema dialects and request fields stay unchanged. See the [format matrix and target configuration](../../docs/llm-output-formats.md). Declare only the selected model's accepted formats; no MIME/default injection or automatic downgrade occurs.
+
 Native Gemini Developer API provider for the Asgard.Loki .NET SDK.
 
 | API / feature | Support |

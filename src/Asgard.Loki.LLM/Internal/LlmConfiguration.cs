@@ -54,10 +54,10 @@ internal sealed class LlmConfiguration
             LlmJsonInput.Text(route.Model);
             ArgumentNullException.ThrowIfNull(route.Targets);
             ArgumentOutOfRangeException.ThrowIfZero(route.Targets.Count);
-            var copies = route.Targets.Select(target => ValidateTarget(target) with { }).ToArray();
+            var copies = route.Targets.Select(target => LlmOutputFormats.Snapshot(ValidateTarget(target))).ToArray();
             foreach (var target in copies)
             {
-                if (targets.TryGetValue(target.Id, out var prior) && prior != target)
+                if (targets.TryGetValue(target.Id, out var prior) && JsonSerializer.Serialize(prior) != JsonSerializer.Serialize(target))
                     throw new ArgumentException("同一目标标识不能对应不同配置。", nameof(options));
                 targets[target.Id] = target;
             }

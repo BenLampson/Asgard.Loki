@@ -128,6 +128,7 @@
     <Project Path="tests/Asgard.Loki.Audio.Tests/Asgard.Loki.Audio.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Embedding.Tests/Asgard.Loki.Embedding.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Image.Tests/Asgard.Loki.Image.Tests.csproj" />
+    <Project Path="tests/Asgard.Loki.Image.Generation.Tests/Asgard.Loki.Image.Generation.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.LLM.Tests/Asgard.Loki.LLM.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Rerank.Tests/Asgard.Loki.Rerank.Tests.csproj" />
     <Project Path="tests/Asgard.Loki.Video.Tests/Asgard.Loki.Video.Tests.csproj" />

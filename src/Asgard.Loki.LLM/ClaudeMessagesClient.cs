@@ -10,7 +10,7 @@ internal sealed class ClaudeMessagesClient(LlmInvocation invocation) : IClaudeMe
     {
         Validate(request);
         var payload = LlmInvocation.Payload(request, request.Model, false);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.ClaudeMessages, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.ClaudeMessages, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         return await ((IClaudeMessagesAdapter)call.Provider).CreateAsync(payload, call.Context, cancellationToken).ConfigureAwait(false);
     }
@@ -21,7 +21,7 @@ internal sealed class ClaudeMessagesClient(LlmInvocation invocation) : IClaudeMe
     {
         Validate(request);
         var payload = LlmInvocation.Payload(request, request.Model, true);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.ClaudeMessages, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.ClaudeMessages, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         await foreach (var item in ((IClaudeMessagesAdapter)call.Provider).StreamAsync(payload, call.Context, cancellationToken).ConfigureAwait(false))
             yield return item;

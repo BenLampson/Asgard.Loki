@@ -4,6 +4,8 @@ OpenAiLlmProvider uses API-Key authentication by default. Optional [explicit HTT
 
 OpenAI LLM provider for Asgard.Loki.
 
+Native output formats are constrained through the complete target's `AllowedOutputFormats`, independently for Chat (`response_format`) and Responses (`text.format`). Protocol compatibility alone does not guarantee JSON Schema support for a particular model/service. See the [format matrix and complete examples](../../docs/llm-output-formats.md). Declarations check SDK complete/streaming calls and Responses WebSocket creates before adapter invocation/send; no format downgrade or rerouting occurs. Undeclared protocols retain native passthrough.
+
 | API | Complete result | Streaming |
 | --- | --- | --- |
 | Chat Completions | Yes | SSE |
@@ -389,6 +391,15 @@ Tests verify legacy/workspace/proxy roots, JSON/SSE over all three native operat
 
 ## Explicit DeepSeek native endpoints
 
+| Native operation | Output format parameter | Documented values / declaration |
+| --- | --- | --- |
+| Chat | `response_format.type` | `text`, `json_object`; declare `ChatCompletions = ["text", "json_object"]`; Chat `json_schema` is unsupported |
+| Responses | `text.format.type` | `text`, `json_object`, `json_schema`; declare the selected Responses model's accepted subset separately |
+| Messages in the Anthropic package | `output_config.format` | Not supported by DeepSeek; declare `ClaudeMessages = []`; `output_config.effort` is independent |
+| Beta text/FIM | No output-format declaration implemented | Do not assume Chat/Responses format settings apply |
+
+Chat JSON mode requires a JSON instruction containing `json`, a suitable token budget and handling possible empty/truncated content; it does not enforce a caller Schema. [Full initialization and Chat JSON / Responses Schema calls](../../docs/llm-output-formats.md#deepseek-initialization-and-calls) show native field placement, independent targets and Sessions, and strict preflight rejection without automatic downgrade.
+
 Configure separate complete targets with independently selected actual models and API Keys. The provider appends the operation path only; it does not infer a root or rewrite model suffixes. The existing [Anthropic package](../Asgard.Loki.LLM.Anthropic/README.md#explicit-deepseek-messages) owns native Messages separately.
 
 | Native operation | Complete SDK BaseAddress | Protocol / SDK client |
@@ -405,7 +416,11 @@ var target = new LlmTarget
     Id = "deepseek-responses", ProviderId = provider.Id,
     BaseAddress = new Uri("https://api.deepseek.com/"),
     UpstreamModel = selectedResponsesModel, CredentialId = "deepseek-key",
-    Protocols = LlmProtocol.Responses
+    Protocols = LlmProtocol.Responses,
+    AllowedOutputFormats = new Dictionary<LlmProtocol, IReadOnlyList<string>>
+    {
+        [LlmProtocol.Responses] = ["text", "json_object", "json_schema"]
+    }
 };
 // Register provider/target, independent deepSeekKey and caller-owned SessionStore in LlmOptions.
 // Register separate selected Chat or beta TextCompletions targets with their complete roots.
@@ -414,6 +429,8 @@ var target = new LlmTarget
 [Responses](https://api-docs.deepseek.com/guides/responses_api/) is stateless: send complete input on every call, including original reasoning and tool call/output history. The SDK does not inject previous_response_id, conversation state or hidden history. Native reasoning_text, custom apply_patch tool input/output, call IDs, schema/effort, usage and future fields remain data. No local patch/search/tool execution occurs. Native completed/incomplete/failed events retain their status; SSE requires its semantic terminal without manufacturing `[DONE]`. Core ownership of returned IDs does not establish that this endpoint supports server-side continuation.
 
 [Chat](https://api-docs.deepseek.com/api/create-chat-completion/) preserves reasoning_content, selected thinking/effort, JSON mode, original tool IDs and argument fragments. [Beta FIM](https://api-docs.deepseek.com/api/create-completion/) preserves caller prompt/suffix, logprobs or echo: the service forbids combining echo with suffix or logprobs. For streaming include_usage, usage accompanies the final content choice; no separate usage-only frame is required. Actual `[DONE]` remains required. The SDK does not insert FIM markers, normalize effort, strip model suffixes or repair unsupported parameter combinations.
+
+For a Chat endpoint that rejects `developer` messages, register a separate provider with `new OpenAiHttpOptions { MapChatDeveloperRoleToSystem = true }`. Both Chat methods send those roles as `system` without changing caller data or any other fields. This opt-in affects the provider's Chat targets and enters the Session binding; the default keeps roles unchanged. It does not apply to Responses. Supply original reasoning items with their associated tool history on Responses; the SDK does not synthesize missing reasoning.
 
 Tests verify native and proxy roots, full JSON/SSE for Chat/Responses and three mutually valid FIM variants, exact unknown values, reversed tool outputs, original metadata, terminal loss, stateless Session recovery and root/key drift. No real DeepSeek account/model, optional-setting effectiveness or beta availability was tested. Protocol/model/parameter support is caller-declared per target; preserving optional fields does not certify acceptance.
 
@@ -652,6 +669,8 @@ Finish-bearing frames and following usage/unknown metadata wait for actual DONE,
 Complete root/model/credential/provider/client/policy/version Session identity and existing byte/tail limits apply. A named-client pipeline is trusted caller configuration: when appid or other semantic defaults change, change the client name or target Version before reusing Sessions. The SDK does not hash arbitrary factory internals. Cache, explicit coordinator and factory are borrowed; per-call HTTP resources are owned. Disable generation retries/hedging in the caller pipeline. Independent plain/appid/proxy JSON/SSE windows and fault tests verify these boundaries offline. No real Key, model, search/filter policy, parameter effect or generated quality has been validated.
 
 ## Explicit Zhipu v4 native Chat and Responses
+
+Declare format support per configured target: native Chat documents `text` and `json_object`, so use `AllowedOutputFormats = new Dictionary<LlmProtocol, IReadOnlyList<string>> { [LlmProtocol.ChatCompletions] = ["text", "json_object"] }` to reject Chat Schema requests before invocation. Responses uses its own `text.format` contract and a separate declaration. A schema in native tools is not a text-output capability. See the [native format guide](../../docs/llm-output-formats.md).
 
 Reuse OpenAiLlmProvider with complete caller-selected targets and independent native API Keys. Chat and Responses have separate roots and native schemas. The SDK does not choose a Coding Plan or infer a protocol from a model name.
 

@@ -97,6 +97,9 @@ internal sealed class VertexImageHttp
     }
     /// <summary>完整原生响应经过所有权释放和来源校验之后再返回。</summary>
     internal async Task<JsonElement> SendAsync(byte[] body, CancellationToken token)
+        => (await SendRawAsync(body, token).ConfigureAwait(false)).Data;
+    /// <summary>同时保留原始字节，不通过 JSON 重序列化制造原始响应。</summary>
+    internal async Task<(JsonElement Data, ImageRawResponse Raw)> SendRawAsync(byte[] body, CancellationToken token)
     {
         var access = await AuthenticateAsync(token).ConfigureAwait(false); byte[] bytes; int status; string? type;
         using (var request = Message(body, false, access))
@@ -106,7 +109,7 @@ internal sealed class VertexImageHttp
             bytes = await HttpBodyReader.ReadAsync(response.Content, Options.MaxResponseBytes, token).ConfigureAwait(false);
             status = (int)response.StatusCode; type = response.Content.Headers.ContentType?.ToString();
         }
-        Check(token); return Result(bytes, status, type);
+        Check(token); return (Result(bytes, status, type), new(status, bytes, type));
     }
     /// <summary>保留实际 HTTP/API 错误字节，仅成功正文进入原生 JSON 校验。</summary>
     internal static JsonElement Result(byte[] bytes, int status, string? type)

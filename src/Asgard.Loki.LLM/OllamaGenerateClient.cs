@@ -9,7 +9,7 @@ internal sealed class OllamaGenerateClient(LlmInvocation invocation) : IOllamaGe
     public async Task<OllamaGenerateResponse> GenerateAsync(OllamaGenerateRequest request, LlmCallOptions options, CancellationToken cancellationToken = default)
     {
         var payload = Payload(request, false);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.OllamaGenerate, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.OllamaGenerate, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         return await ((IOllamaGenerateAdapter)call.Provider).GenerateAsync(payload, call.Context, cancellationToken).ConfigureAwait(false);
     }
@@ -18,7 +18,7 @@ internal sealed class OllamaGenerateClient(LlmInvocation invocation) : IOllamaGe
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var payload = Payload(request, true);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.OllamaGenerate, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.OllamaGenerate, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         await foreach (var item in ((IOllamaGenerateAdapter)call.Provider).StreamAsync(payload, call.Context, cancellationToken).ConfigureAwait(false))
         { cancellationToken.ThrowIfCancellationRequested(); yield return item; }

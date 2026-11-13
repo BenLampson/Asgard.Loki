@@ -9,7 +9,7 @@ internal sealed class CohereChatClient(LlmInvocation invocation) : ICohereChatCl
     public async Task<CohereChatCompletion> CompleteAsync(CohereChatRequest request, LlmCallOptions options, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested(); var payload = Snapshot(request, false);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.CohereChat, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.CohereChat, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel; cancellationToken.ThrowIfCancellationRequested();
         var result = await ((ICohereChatAdapter)call.Provider).CompleteAsync(payload, call.Context, cancellationToken).ConfigureAwait(false);
         cancellationToken.ThrowIfCancellationRequested(); return result;
@@ -18,7 +18,7 @@ internal sealed class CohereChatClient(LlmInvocation invocation) : ICohereChatCl
     public async IAsyncEnumerable<CohereChatEvent> StreamAsync(CohereChatRequest request, LlmCallOptions options, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested(); var payload = Snapshot(request, true);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.CohereChat, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.CohereChat, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel; cancellationToken.ThrowIfCancellationRequested();
         await foreach (var item in ((ICohereChatAdapter)call.Provider).StreamAsync(payload, call.Context, cancellationToken).ConfigureAwait(false))
         { cancellationToken.ThrowIfCancellationRequested(); yield return item; }

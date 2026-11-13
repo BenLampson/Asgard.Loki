@@ -8,11 +8,15 @@ public sealed class ImageClient
     private readonly Dictionary<string, IImageGenerationAdapter[]> _routes = new(StringComparer.Ordinal);
     private int _sequence = -1;
     private readonly ImageEditingClient _edits;
+    private readonly LokiImageClient? _generation;
+    /// <summary>统一图片生成入口；未注册工厂时明确失败，不影响既有生成和编辑入口。</summary>
+    public LokiImageClient Generation => _generation ?? throw new InvalidOperationException("尚未配置统一图片生成工厂。");
     /// <summary>校验并保存独立的图像配置快照。</summary>
     internal ImageClient(ImageConfiguration configuration)
     {
         _routes = configuration.GenerationRoutes.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
         _edits = new ImageEditingClient(configuration);
+        _generation = configuration.GenerationFactory?.CreateClient();
     }
     /// <summary>生成完整图像结果。</summary>
     public Task<ImageGenerationResult> GenerateAsync(ImageGenerationRequest request, CancellationToken cancellationToken = default)

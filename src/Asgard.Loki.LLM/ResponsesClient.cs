@@ -16,7 +16,7 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
         {
             await invocation.ValidateBoundAsync(call.Binding, null, cancellationToken).ConfigureAwait(false);
             if (connection.Metadata != call.Context.Metadata) throw new InvalidOperationException("连接返回了不同目标的元数据。");
-            return new BoundResponsesWebSocketConnection(invocation, call.Binding, connection, call.Context.Metadata);
+            return new BoundResponsesWebSocketConnection(invocation, call.Binding, connection, call.Context.Metadata, call.Context.Target);
         }
         catch
         {
@@ -48,7 +48,7 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
         Validate(request);
         var payload = LlmInvocation.Payload(request, request.Model, false);
         var call = await invocation.ResolveAsync(request.Model, LlmProtocol.Responses, options,
-            request.PreviousResponseId, cancellationToken).ConfigureAwait(false);
+            request.PreviousResponseId, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         var response = await ((IResponsesAdapter)call.Provider).CreateAsync(
             payload, call.Context, cancellationToken).ConfigureAwait(false);
@@ -65,7 +65,7 @@ internal sealed class ResponsesClient(LlmInvocation invocation) : IResponsesClie
         Validate(request);
         var payload = LlmInvocation.Payload(request, request.Model, true);
         var call = await invocation.ResolveAsync(request.Model, LlmProtocol.Responses, options,
-            request.PreviousResponseId, cancellationToken).ConfigureAwait(false);
+            request.PreviousResponseId, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         await foreach (var item in ((IResponsesAdapter)call.Provider).StreamAsync(
             payload, call.Context, cancellationToken).ConfigureAwait(false))

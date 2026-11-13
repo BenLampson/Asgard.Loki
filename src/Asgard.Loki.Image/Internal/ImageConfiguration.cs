@@ -7,6 +7,7 @@ internal sealed class ImageConfiguration
     internal ImageConfiguration(ImageOptions options)
     {
         ArgumentNullException.ThrowIfNull(options); ArgumentNullException.ThrowIfNull(options.Routes); ArgumentNullException.ThrowIfNull(options.EditRoutes);
+        GenerationFactory = options.GenerationFactory;
         foreach (var route in options.Routes)
         {
             ArgumentNullException.ThrowIfNull(route); ArgumentException.ThrowIfNullOrWhiteSpace(route.Model); ArgumentNullException.ThrowIfNull(route.Targets);
@@ -21,10 +22,12 @@ internal sealed class ImageConfiguration
             foreach (var target in targets) { ArgumentNullException.ThrowIfNull(target); ArgumentException.ThrowIfNullOrWhiteSpace(target.Id); }
             if (!EditRoutes.TryAdd(route.Model, targets)) throw new ArgumentException("图像编辑路由重复。", nameof(options));
         }
-        if (GenerationRoutes.Count == 0 && EditRoutes.Count == 0) throw new ArgumentOutOfRangeException(nameof(options), "至少配置一种图像操作。");
+        if (GenerationRoutes.Count == 0 && EditRoutes.Count == 0 && GenerationFactory is null) throw new ArgumentOutOfRangeException(nameof(options), "至少配置一种图像操作。");
     }
     /// <summary>仅模块内部读取，不暴露给调用者修改。</summary>
     internal Dictionary<string, IImageGenerationAdapter[]> GenerationRoutes { get; } = new(StringComparer.Ordinal);
+    /// <summary>统一生成工厂，不改变旧路由和编辑操作。</summary>
+    internal LokiImageFactory? GenerationFactory { get; }
     /// <summary>仅编辑操作使用的目标集合。</summary>
     internal Dictionary<string, IImageEditAdapter[]> EditRoutes { get; } = new(StringComparer.Ordinal);
 }

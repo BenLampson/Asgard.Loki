@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../src/Asgard.Loki/Asgard.Loki.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.OpenAI/Asgard.Loki.Image.OpenAI.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.Volcengine/Asgard.Loki.Image.Volcengine.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.SiliconFlow/Asgard.Loki.Image.SiliconFlow.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.MiniMax/Asgard.Loki.Image.MiniMax.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.Zhipu/Asgard.Loki.Image.Zhipu.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.Google/Asgard.Loki.Image.Google.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.GoogleVertex/Asgard.Loki.Image.GoogleVertex.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.Azure/Asgard.Loki.Image.Azure.csproj" />
+    <ProjectReference Include="../../src/Asgard.Loki.Image.Ali/Asgard.Loki.Image.Ali.csproj" />
+    <Compile Include="../Shared/StubHttpHandler.cs" Link="StubHttpHandler.cs" />
+  </ItemGroup>
+</Project>

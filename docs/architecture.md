@@ -1,5 +1,63 @@
 # Asgard.Loki Architecture Specification
 
+## Unified image generation factory and handlers
+
+The Image capability owns `LokiImageProvider`, `LokiImageModel`, `LokiImageUpstreamProvider`, `LokiImageFactory`, `LokiImageClient` and unified request/result contracts. A public model contains multiple complete targets: server, actual model, independent key, HTTP policy and an explicitly selected reusable handler. A handler object or registered name is resolved when the factory snapshots registration. Default selection is thread-safe round-robin independently per built client and public model; custom selectors are borrowed. One selected target is invoked once. No parameter filtering, retries, hedging, failover or model-name/hostname protocol detection occurs.
+
+Supplier packages implement `ILokiImageGenerationHandler`, normally by deriving from `LokiImageGenerationHandler` and bridging an existing native adapter. Mapping stays supplier-owned, with no supplier-to-supplier references. Explicit optional unified fields require both a reliable handler mapping and a model/target parameter rule. Unknown support, unsupported values and native-extension collisions fail locally. Omission preserves native defaults. Exact Count does not become a maximum; Ark only maps Count=1 to explicit single-image mode. Full native calls pin ProviderId and bypass unified rules while retaining native contract checks. A singleton handler stores no invocation-specific model, credentials or request data.
+
+`ImageOptions.GenerationFactory` adds `.Image.Generation` alongside the existing Image API. There is no ambiguous new GenerateAsync overload, so existing target-typed calls, streams and editing routes remain source compatible. Exact HTTP response bytes/status/media type are optionally attached to existing results without changing their constructors; the bundled unified generation handlers populate them. Unified results retain original JSON and original-order image views, preserve individual failures and distinguish partial success, no-image and task states.
+
+The optional `ILokiImageTaskHandler` performs one caller-driven query. Ali's modern asynchronous handler reuses its native task client and references. A serializable reference binds the original public route, complete target fingerprint, native ID and native reference. Server/model/key/HTTP-policy/handler or operation changes invalidate queries; target reordering does not. Unknown status, HTTP 200 or a URL never establishes task success. There is no persistent runtime, polling loop or callback host.
+
+Explicit image-content retrieval is owned by Image and uses the capability-independent bounded HTTP reader. Image therefore directly references Abstractions, Infrastructure and Microsoft.Extensions.Http; the entry still references only Abstractions and sibling capabilities stay independent. Binary/Base64/URL carriers become bytes only when requested, without image transformation or disk writes. Independent content clients never receive generation keys and must disable transport credentials/redirects. Content failure does not erase the original result or trigger another generation. Borrowed factories, handlers and selectors remain application-owned. See [image generation contracts and complete usage](image-generation.md).
+
+```mermaid
+classDiagram
+    LokiImageFactory --> LokiImageProvider : freezes registration
+    LokiImageProvider "1" *-- "*" LokiImageModel
+    LokiImageModel "1" *-- "*" LokiImageUpstreamProvider
+    LokiImageUpstreamProvider --> ILokiImageGenerationHandler : object or registered name
+    LokiImageFactory --> LokiImageClient : creates
+    LokiImageClient --> ILokiImageProviderSelector : selects one complete target
+    LokiImageClient --> LokiImageGenerationRequest : snapshots
+    LokiImageClient --> ILokiImageGenerationHandler : fixed invocation
+    LokiImageGenerationHandler ..|> ILokiImageGenerationHandler
+    OpenAiImageGenerationHandler --|> LokiImageGenerationHandler
+    OpenAiImageGenerationHandler --> OpenAiImageAdapter : existing native contract
+    VolcengineImageGenerationHandler --|> LokiImageGenerationHandler
+    VolcengineImageGenerationHandler --> VolcengineImageAdapter
+    AliImageTaskGenerationHandler ..|> ILokiImageTaskHandler
+    AliImageTaskGenerationHandler --> AliImageTaskClient : submit or query once
+    LokiImageClient --> LokiImageTaskReference : fixed target fingerprint
+    LokiImageClient --> LokiImageGenerationResult
+    LokiImageGenerationResult --> ImageGenerationResult : original JSON and HTTP bytes
+    LokiImageClient --> LokiImageContentReader : explicit bytes
+    LokiImageContentReader --> HttpBodyReader : bounded independent GET
+```
+
+## Native LLM output-format policy
+
+`LlmTarget.AllowedOutputFormats` is an optional per-SDK-protocol declaration on the complete upstream target. It is owned by the LLM capability and introduces no dependency on supplier or Conversion packages. The registry validates known single protocol keys and exact format names, deep-copies the map/lists into read-only snapshots and sorts them for stable serialization. Null, an empty map and missing protocol entries remain undeclared; an empty protocol list rejects explicit formats. Null is omitted from serialization, preserving previous default target fingerprint bytes. Equivalent declarations compare by canonical serialized target values across routes; changed declarations invalidate the existing full-target Session fingerprint.
+
+```mermaid
+classDiagram
+    LlmTarget --> LlmProtocol : AllowedOutputFormats keys
+    LlmConfiguration --> LlmOutputFormats : validate and freeze declarations
+    LlmConfiguration --> LlmTarget : immutable canonical target
+    LlmInvocation --> LlmOutputFormats : validate selected and actual bound target
+    LlmInvocation --> ILlmSessionStore : explicit first-binding coordination
+    BoundResponsesWebSocketConnection --> LlmOutputFormats : validate response.create snapshot
+    LlmOutputFormats --> LlmTarget : inspect explicit native format intent
+    LlmInvocation --> ILlmProvider : invoke only after validation
+```
+
+Protocol clients freeze original JSON before their first Session wait and pass that snapshot to target resolution. Selection uses the existing protocol/optional-operation candidates, never format-based filtering. The selected candidate is checked before a new binding is created; the actual coordinated/existing target is checked again before adapter invocation. A race may return another call's binding, which must satisfy its own format policy or fail without switching targets. Responses WebSocket captures the same frozen target and checks each response.create before asynchronous send. No default format, schema conversion, prompt repair, field deletion, retry, protocol switch or fallback is introduced.
+
+Known envelope readers cover Chat/Responses, Claude Messages, Gemini legacy/modern text settings, native Ollama Chat/generate, Bedrock Converse, Cohere v1 Chat and Workers AI text. Responses checks standard text.format and the existing Perplexity native root response_format independently, without moving fields or choosing precedence; shared syntax does not certify either envelope for other suppliers. Readers classify only explicit native output settings, preserve Schema objects/strings and unknown data, and do not inspect tool input schemas. Unsupported protocol declaration keys fail registration. Explicit malformed/null format envelopes fail under an active declaration; omitted formats do not assert upstream defaults. Text/FIM, compaction, Realtime/media, native Nova, Hunyuan and Spark remain outside this policy. Direct adapter calls remain caller-owned and bypass SDK validation.
+
+On converting providers, the target map constrains the public SDK protocol envelope only. Existing `LlmConversionOptions.TargetSettings.AllowedOutputFormats` independently constrains the final emitted native request and keeps its strict diagnostics even with loss consent. There is no implicit access from core LLM to supplier or conversion implementation details. Format declarations do not certify supplier/model/account support, schema dialect validity or returned-output enforcement. See [native format contracts and examples](llm-output-formats.md).
+
 ## Native Zhipu v4 Image
 
 `Image.Zhipu` depends only on Image, Infrastructure and standard HTTP factory support. ZhipuImageAdapter implements existing generation routes with an explicit complete v4 endpoint/model/independent Bearer key. It snapshots native root parameters before I/O and preserves quality/size/false watermark/user identity and unknown fields without a model catalog or defaults. It does not reference another provider or capability, perform v3 signing, infer async/SSE operations or download result URLs.
@@ -603,10 +661,11 @@ The model lives in the URL; native `instances/parameters` and unknown members re
 classDiagram
 IVideoTaskAdapter <|.. GoogleVertexVideoAdapter
 GoogleVertexVideoAdapter --> GoogleVertexVideoOptions : captures full resource and principal
-GoogleVertexVideoAdapter --> IGoogleVertexVideoTokenSource : borrows
+GoogleVertexVideoAdapter --> VertexVideoHttp : one native HTTP operation
+VertexVideoHttp --> IGoogleVertexVideoTokenSource : borrows
 IGoogleVertexVideoTokenSource --> GoogleVertexVideoAccessToken : one asserted principal/token/expiry
-GoogleVertexVideoAdapter --> TimeProvider : borrows expiry clock
-GoogleVertexVideoAdapter --> HttpBodyReader : bounded raw bytes
+VertexVideoHttp --> TimeProvider : borrows expiry clock
+VertexVideoHttp --> HttpBodyReader : bounded raw bytes
 GoogleVertexVideoAdapter --> VertexVideoOperation : native parser
 VertexVideoOperation --> VideoTaskSnapshot : full videos/errors/filtering
 ```
@@ -614,6 +673,20 @@ VertexVideoOperation --> VideoTaskSnapshot : full videos/errors/filtering
 The target fingerprint includes root, actual full resource, stable principal, authentication-source identity, explicit native request project header, HTTP client, implementation and byte policies. Short-lived Bearer rotation retains that binding. Wrong/expired tokens and authentication-source drift fail without changing identities or retrying generation. The application owns login, scopes, refresh and the accuracy of the source's principal assertion; no credentials are discovered or JWTs interpreted. Expiry is rechecked immediately before send, including after factory creation. The source, factory and clock are borrowed, while all call-created resources finish disposal before source/final cancellation checks and result delivery.
 
 Original `instances/parameters` are snapshotted before authentication waits. Full operation names must match project, location, Google publisher, model and requested operation. Missing `done` means running; known terminals distinguish native errors, all-filtered failure and valid native output carriers. Multiple `response.videos`, GCS URIs, inline base64 strings, metadata and unknown fields remain unchanged; no Gemini API result wrapper, data URL, storage client or downloader is introduced. Malformed or contradictory terminals fail explicitly. See the [provider matrix, initialization and limits](../src/Asgard.Loki.Video.GoogleVertex/README.md).
+
+### Native Gemini Omni video
+
+`GoogleVertexOmniVideoAdapter` uses the same Video task contract and borrowed authentication, with a distinct Interactions endpoint, request and result parser. It sends one POST with explicit `background=true` and one GET per requested query, preserving native input order, media references, result steps and error diagnostics. Persisted task references bind the complete endpoint, model, principal and implementation. The adapter checks returned identity and requires a native video carrier before marking a completed interaction as successful.
+
+```mermaid
+classDiagram
+IVideoTaskAdapter <|.. GoogleVertexOmniVideoAdapter
+GoogleVertexOmniVideoAdapter --> GoogleVertexOmniVideoOptions : fixed endpoint model and principal
+GoogleVertexOmniVideoAdapter --> VertexVideoHttp : POST submit or GET query
+GoogleVertexVideoAdapter --> VertexVideoHttp : Veo transport
+GoogleVertexOmniVideoAdapter --> VertexOmniVideoInteraction : native identity state and output
+VertexOmniVideoInteraction --> VideoTaskSnapshot : original interaction
+```
 
 ## Native unofficial Midjourney proxy video
 
@@ -1650,8 +1723,8 @@ ImageEditingClient --> ImageEditRouteState : per-model selection
 ImageEditRouteState --> IImageEditAdapter : one complete borrowed target
 IStreamingImageEditAdapter --|> IImageEditAdapter
 IImageEditAdapter --> ImageEditRequest : native JSON
-IImageEditAdapter --> ImageMultipartEditRequest : ordered uploads and mask
-ImageMultipartEditRequest --> ImageUpload : borrowed stream
+IImageEditAdapter --> ImageMultipartEditRequest : ordered uploads and optional mask or markup
+ImageMultipartEditRequest --> ImageUpload : independent borrowed streams
 ImageMultipartEditRequest --> ImageMultipartField : literal repeated text
 IImageEditAdapter --> ImageGenerationResult : full native image response
 IStreamingImageEditAdapter --> ImageEditEvent : native JSON and SSE identity
@@ -1665,7 +1738,7 @@ OpenAiImageAdapter --> ImageNativeJson : pure container validation
 OpenAiImageEditAdapter --> ImageNativeJson : pure container validation
 ```
 
-JSON extension values are cloned without downloading references or resolving file IDs. Multipart snapshots preserve original image order, a separate mask role, names/content types and literal repeated/empty fields. Each image/mask slot requires a distinct readable stream object. The core neither reads nor queries length/position, rewinds, opens filenames, decodes media or disposes borrowed uploads/adapters. Native part encoding, reference eligibility, mask association semantics and format constraints belong to the provider. The existing `ImageGenerationResult` preserves the common complete image response container, without falling back to generation.
+JSON extension values are cloned without downloading references or resolving file IDs. Multipart snapshots preserve original image order, separate mask and markup roles, names/content types and literal repeated/empty fields. Every file slot requires a distinct readable stream. The core neither reads nor queries length/position, rewinds, opens filenames, decodes media or disposes borrowed uploads/adapters. Part encoding, eligibility and format constraints belong to the provider. OpenAI accepts one of mask or markup in either native form; the Azure adapter rejects a markup upload before I/O. The existing `ImageGenerationResult` preserves the common complete image response container, without falling back to generation.
 
 Editing streams require every configured target to implement the optional interface before selection. `ImageEditEvent` retains full JSON, metadata and SSE name/id/retry plus an adapter-confirmed completion marker. Only the original terminal is held until source enumeration and disposal succeed; absent/duplicate/late events, tail errors and cancellation cannot first expose success. Unknown names and EOF never imply completion. Generation retains its separate event contract and native provider state/guards described below. Ninety-six offline core tests verify custom-adapter routing, snapshots, ownership and terminal boundaries. No HTTP multipart, real image or model-quality verification is claimed by the core tests.
 
@@ -3055,7 +3128,9 @@ Independent whole-window tests cover35 OpenAI profile/fault cases and15 Messages
 
 ### Explicit DeepSeek native profiles
 
-Existing OpenAiLlmProvider implements native Chat, Responses and TextCompletions with three separately configured complete roots. AnthropicLlmProvider independently handles native Messages and selected ApiKey/Bearer authentication. No new package, protocol, public option, dependency edge, brand wrapper or endpoint/model heuristic is introduced. DeepSeekToolsClient remains the separate model-free Search/Fetch operation; it does not supply model Sessions or execute returned tools.
+OpenAiLlmProvider implements native Chat, Responses and TextCompletions with three separately configured complete roots. AnthropicLlmProvider independently handles native Messages and selected ApiKey/Bearer authentication. DeepSeekToolsClient remains the separate model-free Search/Fetch operation; it does not supply model Sessions or execute returned tools.
+
+For a Chat target that rejects `developer`, `OpenAiHttpOptions.MapChatDeveloperRoleToSystem` explicitly replaces the role in a copied Chat request, including SSE. The configured provider identity includes this opt-in; absent/default keeps the existing identity bytes. Native Responses does not apply the role mapping or synthesize missing reasoning history.
 
 ```plantuml
 @startuml
@@ -3067,6 +3142,7 @@ LlmOptions --> "DeepSeek beta target" : selected TextCompletions model / credent
 "DeepSeek beta target" --> OpenAiLlmProvider : native text / FIM
 LlmOptions --> "DeepSeek anthropic/v1 target" : selected Messages model / auth
 "DeepSeek anthropic/v1 target" --> AnthropicLlmProvider : native Messages
+OpenAiLlmProvider --> OpenAiHttpOptions : explicit Chat compatibility and binding
 @enduml
 ```
 

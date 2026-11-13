@@ -31,9 +31,9 @@ public sealed class AliImageTaskClient
         => SubmitCoreAsync(AliImagePayload.Prepare(request, _http.Options, false, cancellationToken, asyncTask: true), request.PublicModel, cancellationToken);
     private async Task<AliImageTask> SubmitCoreAsync(byte[] body, string model, CancellationToken token)
     {
-        var root = await _http.SendAsync(_http.Address("services/aigc/" + _service), body, true, token).ConfigureAwait(false);
-        var output = Output(root); var id = Text(output, "task_id"); ValidateId(id); ValidateStatus(output, false);
-        token.ThrowIfCancellationRequested(); return new(root, new(model, _http.Options.Id, Fingerprint(model), id));
+        var response = await _http.SendRawAsync(_http.Address("services/aigc/" + _service), body, true, token).ConfigureAwait(false);
+        var root = response.Data; var output = Output(root); var id = Text(output, "task_id"); ValidateId(id); ValidateStatus(output, false);
+        token.ThrowIfCancellationRequested(); return new(root, new(model, _http.Options.Id, Fingerprint(model), id)) { RawResponse = response.Raw };
     }
     /// <summary>只查询当前完整目标绑定的原生任务；任务 ID 作为单个路径段转义。</summary>
     public Task<AliImageTask> GetAsync(AliImageTaskReference reference, CancellationToken cancellationToken = default)
@@ -45,10 +45,10 @@ public sealed class AliImageTaskClient
     }
     private async Task<AliImageTask> GetCoreAsync(AliImageTaskReference reference, CancellationToken token)
     {
-        var root = await _http.SendAsync(_http.Address("tasks/" + Uri.EscapeDataString(reference.TaskId)), null, false, token).ConfigureAwait(false);
-        var output = Output(root);
+        var response = await _http.SendRawAsync(_http.Address("tasks/" + Uri.EscapeDataString(reference.TaskId)), null, false, token).ConfigureAwait(false);
+        var root = response.Data; var output = Output(root);
         if (Text(output, "task_id") != reference.TaskId) throw new InvalidDataException("阿里查询返回了其他任务。");
-        ValidateStatus(output, true); token.ThrowIfCancellationRequested(); return new(root, reference);
+        ValidateStatus(output, true); token.ThrowIfCancellationRequested(); return new(root, reference) { RawResponse = response.Raw };
     }
     private string Fingerprint(string model) => Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(new[] { _fingerprint, model })));
     private static JsonElement Output(JsonElement root) => root.TryGetProperty("output", out var output) && output.ValueKind == JsonValueKind.Object

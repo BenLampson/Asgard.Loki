@@ -21,14 +21,16 @@ internal static class ImageEditSnapshot
         ArgumentNullException.ThrowIfNull(request.Images); ArgumentNullException.ThrowIfNull(request.Fields);
         var sources = new HashSet<Stream>(ReferenceEqualityComparer.Instance); var images = request.Images.Select(image => Upload(image, sources)).ToArray();
         ArgumentOutOfRangeException.ThrowIfZero(images.Length);
-        var mask = request.Mask is null ? null : Upload(request.Mask, sources); var fields = request.Fields.ToArray();
+        var mask = request.Mask is null ? null : Upload(request.Mask, sources);
+        var markup = request.Markup is null ? null : Upload(request.Markup, sources);
+        var fields = request.Fields.ToArray();
         foreach (var field in fields)
         {
             ArgumentNullException.ThrowIfNull(field); Header(field.Name); ArgumentNullException.ThrowIfNull(field.Value);
-            if (field.Name is "model" or "prompt" or "image" or "image[]" or "images" or "mask")
-                throw new ArgumentException("multipart 扩展字段不能覆盖已绑定的模型、提示词、图片或遮罩。");
+            if (field.Name is "model" or "prompt" or "image" or "image[]" or "images" or "mask" or "markup")
+                throw new ArgumentException("multipart 扩展字段不能覆盖已绑定的模型、提示词或文件。");
         }
-        return request with { Images = Array.AsReadOnly(images), Mask = mask, Fields = Array.AsReadOnly(fields) };
+        return request with { Images = Array.AsReadOnly(images), Mask = mask, Markup = markup, Fields = Array.AsReadOnly(fields) };
     }
     /// <summary>公共身份不裁剪提示词或绑定供应商模型目录。</summary>
     private static void Identity(string model, string prompt)
@@ -37,8 +39,8 @@ internal static class ImageEditSnapshot
     private static ImageUpload Upload(ImageUpload upload, HashSet<Stream> sources)
     {
         ArgumentNullException.ThrowIfNull(upload); ArgumentNullException.ThrowIfNull(upload.Content);
-        if (!upload.Content.CanRead) throw new ArgumentException("图片/遮罩上传必须可读。");
-        if (!sources.Add(upload.Content)) throw new ArgumentException("每个图片/遮罩 part 必须使用独立的流对象，SDK 不隐式回卷。");
+        if (!upload.Content.CanRead) throw new ArgumentException("编辑上传必须可读。");
+        if (!sources.Add(upload.Content)) throw new ArgumentException("每个编辑文件必须使用独立的流对象，SDK 不隐式回卷。");
         Header(upload.FileName); if (upload.ContentType is not null) Header(upload.ContentType); return upload with { };
     }
     /// <summary>头部元数据不允许控制字符，不将文件名当作路径访问。</summary>

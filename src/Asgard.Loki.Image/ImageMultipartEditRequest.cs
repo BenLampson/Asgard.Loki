@@ -11,6 +11,8 @@ public sealed record ImageMultipartEditRequest
     public required IReadOnlyList<ImageUpload> Images { get; init; }
     /// <summary>可选且独立的遮罩上传；核心不修改图像/遮罩的尺寸、像素或关联。</summary>
     public ImageUpload? Mask { get; init; }
+    /// <summary>可选的独立标注层上传；仅用于支持原生 markup 文件的编辑目标。</summary>
+    public ImageUpload? Markup { get; init; }
     /// <summary>原生扩展文本字段，数组/嵌套字段名不自动展开或改名。</summary>
     public IReadOnlyList<ImageMultipartField> Fields { get; init; } = [];
 }

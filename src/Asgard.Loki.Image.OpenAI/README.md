@@ -9,8 +9,8 @@ OpenAI native image generation and editing provider for Asgard.Loki.
 | SSE partial/final image events | Yes, when supported by the upstream model |
 | Base64 and URL outputs | Preserved; Base64 decoding is available on demand |
 | Quality, size, transparency, output format, image count and future parameters | Passed through |
-| `POST /v1/images/edits` JSON | Yes, explicit native `images` references and optional `mask` object |
-| `POST /v1/images/edits` multipart | Yes, ordered `image[]` uploads and optional separate `mask` upload |
+| `POST /v1/images/edits` JSON | Yes, explicit native `images` references and optional `mask` or `markup` reference |
+| `POST /v1/images/edits` multipart | Yes, ordered `image[]` uploads and optional separate `mask` or `markup` upload |
 | Editing SSE | Yes, explicit native JSON/multipart stream methods; nonstream editing rejects `stream=true` |
 | Image variations | Not implemented |
 
@@ -19,6 +19,8 @@ Create `OpenAiImageAdapter(IHttpClientFactory, OpenAiImageOptions)` and register
 The default named HTTP client is `Asgard.Loki.Image.OpenAI`. Disable generation POST retries and hedging. Prompts and unknown JSON fields are not rewritten. Incomplete streams fail instead of claiming completion. URLs are returned without automatic downloads.
 
 Local tests verify request/response and SSE behavior. No live image generation or provider entitlement check is performed by those tests.
+
+For supported GPT Image 2.6 targets, use native JSON `Parameters` for `complexity`, `output_format`, `svg`, `frame_count` and `frame_duration_ms`. SVG is a generation option; GIF is available in generation or edits. Use the complete JSON calls for SVG/GIF, with frame settings only for GIF. Returned `b64_json` decodes to the original bytes; save SVG or GIF with the corresponding extension. Model access and parameter combinations follow the [official Image API guide](https://developers.openai.com/api/docs/guides/image-generation).
 
 ## Native image editing
 
@@ -47,7 +49,7 @@ var result = await loki.Image.EditAsync(new ImageEditRequest
 
 Import `Asgard.Loki`, `Asgard.Loki.Image`, `Asgard.Loki.Image.OpenAI` and `System.Text.Json`. JSON references carry exactly one native `image_url` or `file_id`; attached unknown fields retain their types and values. File IDs/URLs/data URLs are passed unchanged, without downloading, uploading/resolving files, inventing MIME types or converting to multipart. Native model/account reference eligibility remains upstream-owned.
 
-For files, explicitly call `loki.Image.EditMultipartAsync(new ImageMultipartEditRequest { ... }, cancellationToken)` with caller-owned `ImageUpload` entries and optional separate `Mask`. Images use native repeated `image[]` parts in their original order; mask uses `mask`. Literal `ImageMultipartField` entries retain ordered/repeated unknown names, bracket syntax, empty strings and raw text. Known scalar duplicates, model/prompt/image/mask overrides, invalid UTF-8/header controls, reused stream objects and unreadable inputs fail before HTTP. Optional content types are validated as MIME values, never guessed from file names.
+For files, explicitly call `loki.Image.EditMultipartAsync(new ImageMultipartEditRequest { ... }, cancellationToken)` with caller-owned `ImageUpload` entries and an optional separate `Mask` or `Markup`. Images use repeated `image[]` parts in their original order. `Markup = new ImageUpload { Content = annotationStream, FileName = "annotation.png", ContentType = "image/png" }` sends its own `markup` file part. For JSON edits, use `Parameters["markup"]` with exactly one `image_url` or `file_id`. Markup applies to the first image and cannot be combined with a mask. Literal `ImageMultipartField` entries retain ordered/repeated unknown names, bracket syntax, empty strings and raw text. Known scalar duplicates, overrides of bound inputs, invalid UTF-8/header controls, reused streams and unreadable inputs fail before HTTP. Optional content types are validated as MIME values, never guessed from file names.
 
 The caller keeps streams alive through completion. Uploads start at their current positions, do not query length/position, rewind, close, decode, resize or validate mask pixels/dimensions. The official masked-edit contract associates a mask with the first image; this SDK preserves that native ordering and separate mask role. It never remaps masks or checks their visual effect. Arbitrary fixture bytes in tests are not accepted image-format evidence.
 
@@ -120,3 +122,7 @@ var editing = new OpenAiImageEditAdapter(httpClientFactory, compatible);
 Compatibility is a caller-declared protocol choice. It is not inferred from a hostname, provider brand, model name or placeholder route. The configured root, actual model, independent key and named client remain explicit; no new supplier wrapper, fallback or server-side routing configuration is added. The target must accept the same standard operation paths and authentication. Different header/query authentication, arbitrary path/method templates, task envelopes or supplier-specific image fields are not established by this profile and require their own explicitly supported contract.
 
 Tests compare two independently configured targets against the original complete generation JSON/SSE and JSON/multipart edit JSON/SSE fixtures. Only the expected actual model changes. All image references, file IDs, mask roles, ordered upload parts, repeated/empty text fields, exact unknown numbers, native image results, original SSE identity and completed-event boundaries remain intact. Borrowed uploads/factories stay open. The scoped Image.OpenAI suite is tests; these local protocol checks do not prove a real compatible server, account, model, streaming enablement or image quality. Existing supplier-specific restrictions, including the separate xAI edit protocol, still apply.
+
+## Unified generation handler
+
+`OpenAiImageGenerationHandler` can be reused across explicitly configured official or compatible relay targets. Register the handler object or name under `LokiImageProvider`, then create a client through `LokiImageFactory`. Unified optional parameters require actual-target declarations; unsupported fields/values and native collisions fail before generation HTTP. Full native access and existing adapters remain available. Results keep original JSON and exact HTTP bytes; binary retrieval is explicit. See [registration, supported mapping matrix, limits and examples](../../docs/image-generation.md). Verification is offline only; no real model or parameter-effect validation is claimed.

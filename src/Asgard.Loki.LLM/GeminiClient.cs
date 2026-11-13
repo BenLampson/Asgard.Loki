@@ -10,7 +10,7 @@ internal sealed class GeminiClient(LlmInvocation invocation) : IGeminiClient
     {
         Validate(request);
         var payload = LlmInvocation.Payload(request, request.Model, false);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.Gemini, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.Gemini, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         return await ((IGeminiAdapter)call.Provider).GenerateAsync(payload, call.Context, cancellationToken).ConfigureAwait(false);
     }
@@ -21,7 +21,7 @@ internal sealed class GeminiClient(LlmInvocation invocation) : IGeminiClient
     {
         Validate(request);
         var payload = LlmInvocation.Payload(request, request.Model, true);
-        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.Gemini, options, null, cancellationToken).ConfigureAwait(false);
+        var call = await invocation.ResolveAsync(request.Model, LlmProtocol.Gemini, options, null, cancellationToken, request: payload).ConfigureAwait(false);
         payload["model"] = call.Context.Target.UpstreamModel;
         await foreach (var item in ((IGeminiAdapter)call.Provider).StreamAsync(payload, call.Context, cancellationToken).ConfigureAwait(false))
             yield return item;

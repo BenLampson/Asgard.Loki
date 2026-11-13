@@ -1,5 +1,7 @@
 # Asgard.Loki.LLM.Anthropic
 
+Native text Schema output is `output_config.format`; thinking, `output_config.effort` and tool input schemas are separate capabilities. Configure `LlmTarget.AllowedOutputFormats[LlmProtocol.ClaudeMessages]` with the selected endpoint/model's supported format intents. An empty list rejects every explicit format before complete/streaming SDK invocation; omission and effort-only requests remain native. See the [format matrix and examples](../../docs/llm-output-formats.md). These declarations do not change direct adapter calls or certify model/account support.
+
 Native Claude Messages provider for the Asgard.Loki .NET SDK.
 
 | API / feature | Support |
@@ -135,6 +137,8 @@ Original output_config.format schema/effort, thinking, tools/results and their o
 Tests verify both header modes, JSON/SSE, complete paths, transport metadata, native message_stop, full original data, caller immutability and root/key Session drift. These are offline protocol checks, not live model/account/schema/reasoning/search validation. The package continues to depend only on its own LLM capability, Infrastructure and standard HTTP support.
 
 ## Explicit DeepSeek Messages
+
+DeepSeek does not support `output_config.format`. Configure `AllowedOutputFormats = new Dictionary<LlmProtocol, IReadOnlyList<string>> { [LlmProtocol.ClaudeMessages] = [] }` on this complete target to enforce the restriction before model calls. The SDK does not turn it into JSON prompting, tools or another protocol. Chat JSON mode and Responses Schema require their separately configured native targets; see the [DeepSeek format matrix](../../docs/llm-output-formats.md#endpoint-support-and-limitations).
 
 Use a separate complete target with `BaseAddress = new Uri("https://api.deepseek.com/anthropic/v1/")`, selected actual model, independent CredentialId and `LlmProtocol.ClaudeMessages`. This SDK appends only `messages`. Explicit proxy prefixes remain configuration. Construct `AnthropicLlmProvider(httpClientFactory, new AnthropicHttpOptions { Authentication = AnthropicAuthentication.Bearer }, id: "deepseek-messages", httpClientName: "Explicit.DeepSeek.Messages")` and register it through ordinary LlmOptions with the target, Key and borrowed SessionStore. The default ApiKey mode is also supported; select one authentication mode explicitly.
 

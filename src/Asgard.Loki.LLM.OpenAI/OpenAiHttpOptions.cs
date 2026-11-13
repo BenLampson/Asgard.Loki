@@ -23,4 +23,8 @@ public sealed record OpenAiHttpOptions
     /// <summary>可选明确 HTTP 地址与认证；省略保留原路径、认证及既有绑定字节，不影响 WebSocket。</summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public OpenAiHttpTransportOptions? Transport { get; init; }
+
+    /// <summary>仅为需要兼容的 Chat 目标将 developer 角色显式映射为 system；默认保留原生消息。</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool MapChatDeveloperRoleToSystem { get; init; }
 }

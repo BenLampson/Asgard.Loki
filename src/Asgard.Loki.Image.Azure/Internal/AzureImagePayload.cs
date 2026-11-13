@@ -53,6 +53,7 @@ internal static class AzureImagePayload
     internal static ImageMultipartEditRequest Snapshot(ImageMultipartEditRequest request, AzureImageOptions options, CancellationToken token, bool streaming = false)
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(request); Identity(request.Model, request.Prompt);
+        if (request.Markup is not null) throw new NotSupportedException("Azure 图像编辑未实现原生 markup 文件上传。");
         ArgumentNullException.ThrowIfNull(request.Images); ArgumentNullException.ThrowIfNull(request.Fields);
         long bytes = (long)AzureImageJson.Text(request.Prompt) + AzureImageJson.Text(options.BodyModel ?? "");
         var sources = new HashSet<Stream>(ReferenceEqualityComparer.Instance);

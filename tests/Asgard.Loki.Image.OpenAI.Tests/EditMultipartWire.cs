@@ -24,7 +24,7 @@ internal static class EditMultipartWire
             var disposition = ContentDispositionHeaderValue.Parse(headers.Single(h => h.StartsWith("Content-Disposition: ", StringComparison.Ordinal))[21..]);
             var bytes = Encoding.Latin1.GetBytes(raw[(separator + 4)..]);
             var item = new JsonObject { ["headers"] = new JsonArray(headers.Select(h => (JsonNode?)JsonValue.Create(h)).ToArray()) };
-            if (disposition.Name?.Trim('"') is "image[]" or "mask") item["base64"] = Convert.ToBase64String(bytes);
+            if (disposition.Name?.Trim('"') is "image[]" or "mask" or "markup") item["base64"] = Convert.ToBase64String(bytes);
             else item["text"] = new UTF8Encoding(false, true).GetString(bytes);
             result.Add(item);
         }
