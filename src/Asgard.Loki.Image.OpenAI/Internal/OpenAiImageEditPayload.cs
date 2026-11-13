@@ -21,7 +21,11 @@ internal static class OpenAiImageEditPayload
         if (!parameters.TryGetValue("images", out var images) || images.ValueKind != JsonValueKind.Array || images.GetArrayLength() == 0)
             throw new ArgumentException("JSON 编辑要求非空 images 原生引用数组。");
         foreach (var image in images.EnumerateArray()) Reference(image);
-        if (parameters.TryGetValue("mask", out var mask) && mask.ValueKind != JsonValueKind.Null) Reference(mask);
+        var hasMask = parameters.TryGetValue("mask", out var mask) && mask.ValueKind != JsonValueKind.Null;
+        var hasMarkup = parameters.TryGetValue("markup", out var markup) && markup.ValueKind != JsonValueKind.Null;
+        if (hasMask && hasMarkup) throw new ArgumentException("原生编辑不能同时使用 mask 和 markup。");
+        if (hasMask) Reference(mask);
+        if (hasMarkup) Reference(markup);
         if (parameters.TryGetValue("stream", out var stream))
         {
             if (stream.ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw new ArgumentException("原生 stream 必须为布尔值。");
@@ -36,16 +40,20 @@ internal static class OpenAiImageEditPayload
     {
         token.ThrowIfCancellationRequested(); ArgumentNullException.ThrowIfNull(request); Identity(request.Model, request.Prompt);
         ArgumentNullException.ThrowIfNull(request.Images); ArgumentNullException.ThrowIfNull(request.Fields);
+        if (request.Mask is not null && request.Markup is not null) throw new ArgumentException("原生编辑不能同时使用 mask 和 markup。");
         var sources = new HashSet<Stream>(ReferenceEqualityComparer.Instance);
         var images = request.Images.Select(value => Upload(value, sources)).ToArray(); ArgumentOutOfRangeException.ThrowIfZero(images.Length);
-        var mask = request.Mask is null ? null : Upload(request.Mask, sources); var fields = request.Fields.ToArray();
+        var mask = request.Mask is null ? null : Upload(request.Mask, sources);
+        var markup = request.Markup is null ? null : Upload(request.Markup, sources);
+        var fields = request.Fields.ToArray();
         var scalars = new HashSet<string>(StringComparer.Ordinal);
         foreach (var field in fields)
         {
             ArgumentNullException.ThrowIfNull(field); Header(field.Name); Text(field.Value);
-            if (field.Name is "model" or "prompt" or "image" or "image[]" or "images" or "mask") throw new ArgumentException("表单扩展不能覆盖绑定的编辑输入。");
+            if (field.Name is "model" or "prompt" or "image" or "image[]" or "images" or "mask" or "markup") throw new ArgumentException("表单扩展不能覆盖绑定的编辑输入。");
             if (field.Name is "stream" or "response_format" or "background" or "input_fidelity" or "n" or "output_compression"
-                or "output_format" or "quality" or "size" or "user" or "partial_images" or "moderation")
+                or "output_format" or "quality" or "size" or "user" or "partial_images" or "moderation"
+                or "complexity" or "frame_count" or "frame_duration_ms")
             { if (!scalars.Add(field.Name)) throw new ArgumentException("已知原生单值字段不能重复。"); }
             if (field.Name == "stream")
             {
@@ -55,7 +63,7 @@ internal static class OpenAiImageEditPayload
             }
         }
         if (streaming && !scalars.Contains("stream")) fields = [.. fields, new("stream", "true")];
-        return request with { Images = Array.AsReadOnly(images), Mask = mask, Fields = Array.AsReadOnly(fields) };
+        return request with { Images = Array.AsReadOnly(images), Mask = mask, Markup = markup, Fields = Array.AsReadOnly(fields) };
     }
     /// <summary>绑定实际模型，其余 JSON 值保留原生类型/数值，不注入默认 stream 或格式。</summary>
     internal static HttpContent Json(ImageEditRequest request, string model)
@@ -69,7 +77,7 @@ internal static class OpenAiImageEditPayload
         }
         var content = new ByteArrayContent(bytes.ToArray()); content.Headers.ContentType = new("application/json"); return content;
     }
-    /// <summary>原生 image[] parts 按输入顺序发送，mask 单独命名；文本字段不展开/改名。</summary>
+    /// <summary>原生 image[] 按输入顺序发送，mask 和 markup 各自命名；文本字段不展开/改名。</summary>
     internal static HttpContent Multipart(ImageMultipartEditRequest request, string model)
     {
         var content = new MultipartFormDataContent();
@@ -78,6 +86,7 @@ internal static class OpenAiImageEditPayload
             content.Add(new StringContent(model, NativeUtf8), "model"); content.Add(new StringContent(request.Prompt, NativeUtf8), "prompt");
             foreach (var image in request.Images) Add(content, image, "image[]");
             if (request.Mask is { } mask) Add(content, mask, "mask");
+            if (request.Markup is { } markup) Add(content, markup, "markup");
             foreach (var field in request.Fields) content.Add(new StringContent(field.Value, NativeUtf8), field.Name);
             return content;
         }
@@ -100,11 +109,11 @@ internal static class OpenAiImageEditPayload
         if (source.ValueKind != JsonValueKind.String) throw new ArgumentException("原生图片引用必须为字符串。");
         ArgumentException.ThrowIfNullOrWhiteSpace(source.GetString());
     }
-    /// <summary>上传不查询 Length/Position；相同流不能复用到后续图片或遮罩。</summary>
+    /// <summary>上传不查询 Length/Position；编辑文件之间不复用流。</summary>
     private static ImageUpload Upload(ImageUpload upload, HashSet<Stream> sources)
     {
         ArgumentNullException.ThrowIfNull(upload); ArgumentNullException.ThrowIfNull(upload.Content);
-        if (!upload.Content.CanRead || !sources.Add(upload.Content)) throw new ArgumentException("图片/遮罩要求独立的可读流。");
+        if (!upload.Content.CanRead || !sources.Add(upload.Content)) throw new ArgumentException("编辑文件要求独立的可读流。");
         Header(upload.FileName);
         if (upload.ContentType is { } media) { Header(media); _ = MediaTypeHeaderValue.Parse(media); }
         return upload with { };

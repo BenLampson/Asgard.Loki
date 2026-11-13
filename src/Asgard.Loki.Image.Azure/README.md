@@ -9,6 +9,7 @@ Native deployment-scoped Azure image generation and multipart editing. This pack
 | `AzureImageAdapter.GenerateAsync` | POST `openai/deployments/{deployment}/images/generations?api-version=...`, JSON | Complete original result, including all images, filtering, usage and unknown fields |
 | `AzureImageEditAdapter.EditMultipartAsync` | POST `openai/deployments/{deployment}/images/edits?api-version=...`, multipart | One `image` or multiple `image[]` uploads, separate optional mask and ordered literal text fields |
 | JSON image-reference editing | Different wire from the documented dated multipart operation | Unsupported; fails locally without downloading references or converting inputs |
+| Multipart markup file | — | Unsupported; fails before sending |
 | `AzureImageAdapter.StreamAsync` | Generation JSON with explicit `stream=true`; native SSE | Original partial/final image events, unknown JSON and SSE name/id/retry |
 | `AzureImageEditAdapter.StreamMultipartEditAsync` | Native streaming multipart edits | Borrowed images/mask, original edit events and whole-call completion |
 

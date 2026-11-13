@@ -115,7 +115,7 @@ public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IRespon
 
     /// <inheritdoc />
     public async Task<ChatCompletion> CompleteAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
-        => new(await PostAsync("chat/completions", request, context, cancellationToken).ConfigureAwait(false), context.Metadata);
+        => new(await PostAsync("chat/completions", ChatPayload(request, cancellationToken), context, cancellationToken).ConfigureAwait(false), context.Metadata);
 
     /// <inheritdoc />
     public async Task<Response> CreateAsync(JsonObject request, LlmAdapterContext context, CancellationToken cancellationToken = default)
@@ -129,7 +129,7 @@ public sealed partial class OpenAiLlmProvider : IChatCompletionsAdapter, IRespon
     public async IAsyncEnumerable<ChatCompletionEvent> StreamAsync(JsonObject request, LlmAdapterContext context,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (var item in StreamProtocolAsync("chat/completions", request, context, false, cancellationToken).ConfigureAwait(false))
+        await foreach (var item in StreamProtocolAsync("chat/completions", ChatPayload(request, cancellationToken), context, false, cancellationToken).ConfigureAwait(false))
         {
             using var document = JsonDocument.Parse(item.Data);
             yield return new ChatCompletionEvent(document.RootElement, context.Metadata, item.EventName, item.EventId, item.RetryMilliseconds);

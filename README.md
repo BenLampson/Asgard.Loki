@@ -39,13 +39,13 @@ Loki fits applications that want explicit control over model calls and provider 
 
 Use **.NET 10** and matching Loki package versions. Install `Asgard.Loki` plus the provider packages for your application; capability dependencies are resolved transitively.
 
-For the image quick start, install matching **1.1.0** packages:
+For the image quick start, install matching **1.2.0** packages:
 
 ```sh
 dotnet new console --framework net10.0 -n LokiDemo
 cd LokiDemo
-dotnet add package Asgard.Loki --version 1.1.0
-dotnet add package Asgard.Loki.Image.OpenAI --version 1.1.0
+dotnet add package Asgard.Loki --version 1.2.0
+dotnet add package Asgard.Loki.Image.OpenAI --version 1.2.0
 ```
 
 For LLM calls, choose a package such as `Asgard.Loki.LLM.OpenAI`, `Asgard.Loki.LLM.Anthropic`, `Asgard.Loki.LLM.Google` or `Asgard.Loki.LLM.Volcengine`, then follow [LLM setup](#initialize-llm). To build packages from source, see [Build and test](#build-and-test) and use `artifacts/packages` as a local NuGet source.
@@ -168,7 +168,7 @@ Audio, image and video uploads are model inputs. The provider-specific Ark asset
 | Azure audio | `Asgard.Loki.Audio.Azure` | Explicit deployment/API-version/api-key speech JSON and native multipart transcription/translation | Ordered opaque audio or complete original file results; optional fixed body model |
 | Music / lyrics tasks | `Asgard.Loki.Audio.SunoAPI` | Explicit native MUSIC/LYRICS submit, status/batch POST and separate raw result GET on an application-configured proxy | One-shot native JSON; no background polling or media download |
 | File transcription / translation | `Asgard.Loki.Audio.OpenAI` | Native multipart, complete JSON/verbose/diarized or text/subtitle results | Native transcription delta/segment/done SSE |
-| Images | `Asgard.Loki.Image.OpenAI` | OpenAI image generations and native JSON/multipart edits; Base64 and URL results | Native generation/edit SSE partial/final events |
+| Images | `Asgard.Loki.Image.OpenAI` | OpenAI generations and JSON/multipart edits with optional markup; native Base64 and URL results including supported SVG/GIF outputs | Native generation/edit SSE for supported formats |
 | Compatible image generation | `Asgard.Loki.Image.OpenAI` | Explicit xAI native complete JSON profile with independent root/model/key and original data[] results | Verified offline; xAI editing uses a distinct native JSON contract |
 | Image editing | `Asgard.Loki.Image.XAI` | Native xAI JSON image.url or ordered images[].url/file_id references; complete original results | Separate edit routes; no multipart conversion or file management |
 | Image | `Asgard.Loki.Image.Midjourney` | Explicit unofficial proxy image operations, original task/text outcomes, input upload and seed requests | Bound native task references and single/batch queries; no synchronous-result fabrication |
@@ -196,7 +196,7 @@ Audio, image and video uploads are model inputs. The provider-specific Ark asset
 | Video | `Asgard.Loki.Video.Volcengine` | Jimeng Visual signed native submit/query, fixed req_key, original fields and optional query settings | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Ali` | DashScope native video-generation/image2video submission and task-query results | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Google` | Native Gemini Veo predictLongRunning, operation query and explicit output copy; previews retire 2026-10-22 | Caller-driven task snapshots/content |
-| Video | `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo resource-scoped prediction/query, borrowed tokens, GCS and inline results | Caller-driven task snapshots |
+| Video | `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo prediction/query and Gemini Omni Interactions, borrowed tokens, GCS and inline results | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.MiniMax` | Explicit native v1/v2 generation/query and v1 video-result metadata, original media/usage/errors | Caller-driven task snapshots/results |
 | Video | `Asgard.Loki.Video.Kling` | Native text2video/image2video submit/query, explicit API Key or AK/SK JWT, original task/video metadata | Caller-driven task snapshots |
 | Video | `Asgard.Loki.Video.Vidu` | Four explicit native generation operations and creations query, Token authentication, all original media/metadata | Caller-driven task snapshots |
@@ -216,7 +216,7 @@ Public LLM snapshots reject malformed original Unicode before JSON serialization
 
 LLM additionally exposes an explicit [external authentication identity](src/Asgard.Loki.LLM/README.md#external-authentication-identity) for provider-owned token/signing sources. Core Sessions bind the stable principal and configuration, never a rotating access token. Existing API Key/anonymous contracts and fingerprint bytes stay compatible; a dedicated cloud provider must opt in and implement its own transport/authentication.
 
-The independent [Azure LLM provider](src/Asgard.Loki.LLM.Azure/README.md) implements complete native Chat/Responses/text Completions JSON and SSE with explicit v1/dated routing and API Key or borrowed external token authentication. Stable principal Sessions survive token rotation; configuration/principal changes fail. Native SSE preserves delayed filter/usage tails and holds terminal events through EOF/disposal; explicit native compaction preserves complete windows under a target feature declaration. Independent native Realtime uses explicit v1/preview deployment handshakes and preserves raw events under per-I/O authentication/byte guards. Responses WebSocket is unsupported; no live Azure authentication or model validation is claimed.
+The independent [Azure LLM provider](src/Asgard.Loki.LLM.Azure/README.md) implements complete native Chat/Responses/text Completions JSON and SSE with explicit v1/dated routing and API Key or borrowed external token authentication. Stable principal Sessions survive token rotation; configuration/principal changes fail. Native SSE preserves delayed filter/usage tails and holds terminal events through EOF/disposal; explicit native compaction preserves complete windows under a target feature declaration. Independent native Realtime uses explicit v1/preview deployment handshakes and preserves raw events under per-I/O authentication/byte guards. Azure v1 API Key Responses WebSocket uses a separately configured OpenAI adapter. No live Azure authentication or model validation is claimed.
 
 The independent [DeepSeek native tools client](src/Asgard.Loki.LLM.DeepSeek/README.md) exposes explicit Search/Fetch JSON calls with an application-supplied Key and fixed service root. Native query/page content and ranked results stay complete; these model-free auxiliary APIs require no model route or Session. Applications choose each call and own any retrieval/model workflow.
 
@@ -254,7 +254,7 @@ The independent [Vertex LLM provider](src/Asgard.Loki.LLM.GoogleVertex/README.md
 | `Asgard.Loki.Video.Volcengine` | Ark and signed native Jimeng Visual video generation providers |
 | `Asgard.Loki.Video.Ali` | Native DashScope video task provider with explicit service selection |
 | `Asgard.Loki.Video.Google` | Native Gemini Veo operations and explicit content transfer |
-| `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo operations with complete resource/principal binding |
+| `Asgard.Loki.Video.GoogleVertex` | Native Vertex Veo and Gemini Omni operations with complete target/principal binding |
 | `Asgard.Loki.Video.MiniMax` | Native MiniMax video v1/v2 provider with explicit protocol selection |
 | `Asgard.Loki.Video.Kling` | Native Kling video provider with explicit operation and authentication |
 | `Asgard.Loki.Video.Vidu` | Native Vidu text/image/start-end/reference generation and creations query |
